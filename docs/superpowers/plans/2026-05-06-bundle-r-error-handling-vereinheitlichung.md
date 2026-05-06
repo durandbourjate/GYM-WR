@@ -521,15 +521,15 @@ return (
 )
 ```
 
-ODER (cleaner): Im äussersten return-Tree einen einzigen `<ToastContainer />` neben dem Routing-Wurzel-Element platzieren. Implementer entscheidet beim Lesen der App.tsx-Struktur. **Anker-Punkt:** mind. die finalen 4 Pfade in `App.tsx` (LP-Layout, SuS-Layout, KorrekturEinsicht, FragenUebersicht-Variante).
-
-Konkrete Stelle finden:
+Konkrete Stellen finden und JEDE patchen:
 ```bash
 grep -n "return (" ExamLab/src/App.tsx
 grep -n "</FrageModeProvider>" ExamLab/src/App.tsx
 ```
 
-Pro `</FrageModeProvider>` (oder äusserster Wrapper im jeweiligen Pfad) ein `<ToastContainer />` als Sibling davor einfügen.
+**Verbindlich:** Pro `</FrageModeProvider>` (oder äusserster Wrapper im jeweiligen Pfad) ein `<ToastContainer />` als Sibling davor einfügen. Mind. abgedeckt: LP-Layout-Pfad, SuS-Layout-Pfad, KorrekturEinsicht-Pfad, FragenUebersicht-Pfad. Wenn nur EIN ToastContainer mounted (z.B. neben Routes-Wurzel), MUSS er ausserhalb aller Conditional-Returns gehoben werden — sonst zeigen manche Pfade keinen Toast.
+
+**Mount-Verifikation am Ende von Task 1.7:** Nach dem Edit DevTools-Console öffnen, einmal `useToastStore.getState().add('info', 'Mount-Test')` ausführen — Toast muss in jedem der 4 Pfade sichtbar sein (LP-Login, SuS-Login, KorrekturEinsicht, FragenUebersicht). Wenn nicht in allen Pfaden: Mount-Stelle nachpatchen.
 
 - [ ] **Step 3: Build & Tests**
 
@@ -590,7 +590,9 @@ git add docs/superpowers/audits/2026-05-06-bundle-r-console-error-audit.md
 git commit -m "Bundle R Phase 1.5: console.error-Audit (Bucket-a/b/c)"
 ```
 
-> **Erwartung:** ~10-20 Bucket-(b)-Stellen. Wenn die Zahl ausserhalb dieses Korridors liegt (z.B. >30), in Phase 3 eskalieren ob Scope-Cut nötig ist.
+> **Erwartung:** ~10-20 Bucket-(b)-Stellen.
+> - **>30 Bucket-(b)-Stellen:** Scope-Cut zwingend. Stop-the-line, mit User klären: entweder Phase 3 in Bundle R behalten und nur die kritischsten ~10 abdecken (Login, SuS-Pfade, Auto-Save, Backend-Calls), Rest auf Spawn-Task „Bundle R-Followup silent-fail" verschieben. Oder die ganze Phase 3 als eigenes Bundle ausgliedern.
+> - **<5 Bucket-(b)-Stellen:** Erwartet wäre dass mehr Pfade silent-fail-en. Audit-Methodik nochmal prüfen (Bucket-Klassifikation zu konservativ?).
 
 ---
 
