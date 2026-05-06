@@ -8,13 +8,14 @@ interface UseToastResult {
   dismiss: (id: string) => void
 }
 
+const toastApi: UseToastResult = {
+  error: (message, opts) => useToastStore.getState().add('error', message, opts),
+  success: (message, opts) => useToastStore.getState().add('success', message, opts),
+  info: (message, opts) => useToastStore.getState().add('info', message, opts),
+  warning: (message, opts) => useToastStore.getState().add('warning', message, opts),
+  dismiss: (id) => useToastStore.getState().dismiss(id),
+}
+
 export function useToast(): UseToastResult {
-  const store = useToastStore.getState()
-  return {
-    error: (message, opts) => store.add('error', message, opts),
-    success: (message, opts) => store.add('success', message, opts),
-    info: (message, opts) => store.add('info', message, opts),
-    warning: (message, opts) => store.add('warning', message, opts),
-    dismiss: (id) => store.dismiss(id),
-  }
+  return toastApi
 }

@@ -38,6 +38,15 @@ setKontenrahmenData(kontenrahmenJson.konten as Parameters<typeof setKontenrahmen
 // Im Demo-Modus wird die einrichtungsPruefung aus data/einrichtungsPruefung.ts verwendet.
 
 export default function App() {
+  return (
+    <>
+      <AppRoutes />
+      <ToastContainer />
+    </>
+  )
+}
+
+function AppRoutes() {
   // Build-Timestamp für Versions-Verifikation
   useEffect(() => {
     console.log('[Pruefung] Build:', __BUILD_TIMESTAMP__)
@@ -265,16 +274,16 @@ export default function App() {
 
   // Auth-Gate: Kein User → Login-Screen
   if (!user) {
-    return <><LoginScreen /><ToastContainer /></>
+    return <LoginScreen />
   }
 
   // LP-Modus: mit ?id= → Durchführen, ohne → Startseite
   // Multi-Dashboard (?ids=) wird jetzt in LPStartseite unter /pruefung/monitoring gehandhabt
   if (user.rolle === 'lp') {
     if (pruefungIdAusUrl) {
-      return <><DurchfuehrenDashboard pruefungId={pruefungIdAusUrl} /><ToastContainer /></>
+      return <DurchfuehrenDashboard pruefungId={pruefungIdAusUrl} />
     }
-    return <><LPStartseite /><ToastContainer /></>
+    return <LPStartseite />
   }
 
   // SuS ohne Prüfungs-ID: Startseite mit Üben/Prüfen-Auswahl.
@@ -289,47 +298,41 @@ export default function App() {
     )
     if (zeigeSuSStartseite) {
       if (korrekturId) {
-        return <><KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} /><ToastContainer /></>
+        return <KorrekturEinsicht pruefungId={korrekturId} onZurueck={() => setKorrekturId(null)} />
       }
-      return <><SuSStartseite onKorrekturWaehle={setKorrekturId} /><ToastContainer /></>
+      return <SuSStartseite onKorrekturWaehle={setKorrekturId} />
     }
   }
 
   // Ladefehler
   if (ladeFehler) {
     return (
-      <>
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
-          <div className="absolute top-4 right-4">
-            <ThemeToggle />
-          </div>
-          <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
-            <div className="w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-              <span className="text-red-600 dark:text-red-400 text-xl">!</span>
-            </div>
-            <p className="text-slate-700 dark:text-slate-300 mb-4">{ladeFehler}</p>
-            <button
-              onClick={() => { setLadeFehler(null); void useAuthStore.getState().abmelden() }}
-              className="px-4 py-2 text-sm bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer"
-            >
-              Zurück zum Login
-            </button>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4 relative">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
         </div>
-        <ToastContainer />
-      </>
+        <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
+          <div className="w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+            <span className="text-red-600 dark:text-red-400 text-xl">!</span>
+          </div>
+          <p className="text-slate-700 dark:text-slate-300 mb-4">{ladeFehler}</p>
+          <button
+            onClick={() => { setLadeFehler(null); void useAuthStore.getState().abmelden() }}
+            className="px-4 py-2 text-sm bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer"
+          >
+            Zurück zum Login
+          </button>
+        </div>
+      </div>
     )
   }
 
   // Wird geladen (kontextabhängig: Prüfung oder Übung)
   if (!pruefungsConfig) {
     return (
-      <>
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-          <p className="text-slate-500 dark:text-slate-400">Wird geladen...</p>
-        </div>
-        <ToastContainer />
-      </>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-slate-500 dark:text-slate-400">Wird geladen...</p>
+      </div>
     )
   }
 
@@ -345,22 +348,20 @@ export default function App() {
             wiederhergestellt={wiederhergestellt}
             wurdeZurueckgesetzt={wurdeZurueckgesetzt}
           />
-          <ToastContainer />
         </FrageModeProvider>
       )
     case 'pruefung':
-      return <FrageModeProvider mode="pruefung"><Layout /><ToastContainer /></FrageModeProvider>
+      return <FrageModeProvider mode="pruefung"><Layout /></FrageModeProvider>
     case 'uebersicht':
       return (
         <FrageModeProvider mode="pruefung">
           <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
             <FragenUebersicht />
           </div>
-          <ToastContainer />
         </FrageModeProvider>
       )
     case 'abgegeben':
-      return <FrageModeProvider mode="pruefung"><AbgabeBestaetigung /><ToastContainer /></FrageModeProvider>
+      return <FrageModeProvider mode="pruefung"><AbgabeBestaetigung /></FrageModeProvider>
     default:
       return null
   }
