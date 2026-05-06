@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { uebenGruppenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
+import { useToast } from '../../../../hooks/useToast'
 
 export default function MitgliederTab() {
+  const toast = useToast()
   const { aktiveGruppe, mitglieder } = useUebenGruppenStore()
   const [einladenEmail, setEinladenEmail] = useState('')
   const [einladenRolle, setEinladenRolle] = useState<'admin' | 'lernend'>('lernend')
@@ -27,7 +29,7 @@ export default function MitgliederTab() {
       await uebenGruppenAdapter.entfernen(aktiveGruppe.id, email)
       refreshMitglieder()
     } catch {
-      alert('Entfernen fehlgeschlagen.')
+      toast.error('Entfernen fehlgeschlagen.')
     }
   }
 
