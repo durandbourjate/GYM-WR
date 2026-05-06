@@ -85,6 +85,11 @@ Vereinheitlichung wäre Bundle P-Migration (Backend-Vertrag betroffen).
 nur wenn explizit Frontend-only-Field ohne Sheet-Mapping. Lager 3 nicht
 ausweiten.
 
+> **Hinweis zu `Musterloesung` (PascalCase, mit `e`):** Diese Treffer sind
+> UI-Strings und JSX-Comments (`{/* Musterloesung */}`), kein Identifier-Lager.
+> Werden vom Audit-Skript trotzdem auf Baseline gelockt, damit neue Treffer
+> bewusst geprüft werden.
+
 **Regel für Refactor:** Innerhalb regulärer Bundles **nicht** umbenennen. Die
 Vereinheitlichung läuft über Bundle P-Migration (separater Plan, Backend-Migration
 nötig).
@@ -137,6 +142,8 @@ declare -A BASELINE=(
 
 ### 6.5 Output-Format
 
+Format-String-Pattern 1:1 aus `audit-as-any.sh` übernehmen (`printf "%-20s %5d %5d  %s\n"` o.ä.), damit das Skript-Look konsistent bleibt.
+
 ```
 musterloesung-Audit:
   Token             Count   Baseline   Status
@@ -188,8 +195,7 @@ Production-Block (analog Bundle R `--if-present`-Pattern für chicken-and-egg):
   run: npm run lint:musterloesung --if-present
 ```
 
-Position: nach `Audit __tests__/ Directories (Bundle Q Gate)` (Z. 63), vor
-`Run vitest` (Z. 65).
+Position: nach Step `Audit __tests__/ Directories (Bundle Q Gate)`, vor Step `Run vitest`. (Step-Namen statt Zeilennummern, weil deploy.yml zwischen Spec und Implementation editiert werden kann.)
 
 Staging-Block (analog Bundle Q): denselben Step mit `if: steps.checkout-preview.outcome == 'success'` und ohne `--if-present` einbauen — preview wird vor Merge auf den main-Stand gezogen (FF-Push aus deployment-workflow-Regel).
 
@@ -200,7 +206,7 @@ Staging-Block (analog Bundle Q): denselben Step mit `if: steps.checkout-preview.
   run: npm run lint:musterloesung
 ```
 
-Position: nach `Audit __tests__/ Directories (Bundle Q Gate, staging)` (Z. 127), vor `Run vitest (staging)` (Z. 129).
+Position: nach Step `Audit __tests__/ Directories (Bundle Q Gate, staging)`, vor Step `Run vitest (staging)`.
 
 ## 8. Test-Plan
 
@@ -248,6 +254,7 @@ Geschätzte Implementation-Zeit: 1 Session (~30-45 min).
 - [ ] Lokal alle 7 Test-Plan-Punkte aus Sektion 8 grün
 - [ ] HANDOFF.md aktualisiert
 - [ ] CI auf Branch grün
+- [ ] Vor Merge: `git log origin/preview ^origin/main --oneline` zeigt leer (Preview-Force-Push-Regel — preview ist FF-bereit)
 - [ ] Merge auf main + `git push origin main:preview`
 - [ ] CI auf main grün
 
