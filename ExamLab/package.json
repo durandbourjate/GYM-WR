@@ -10,6 +10,7 @@
     "build:lernen": "VITE_APP_MODE=lernen tsc -b && VITE_APP_MODE=lernen vite build --outDir dist-lernen",
     "lint": "eslint .",
     "lint:as-any": "../scripts/audit-as-any.sh --strict",
+    "lint:musterloesung": "../scripts/audit-musterloesung.sh --strict",
     "lint:no-alert": "../scripts/audit-no-alert.sh --strict",
     "lint:no-tests-dir": "../scripts/audit-test-locations.sh --strict",
     "preview": "vite preview",
