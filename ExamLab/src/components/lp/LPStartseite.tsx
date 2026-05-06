@@ -83,8 +83,8 @@ function LPStartseiteInner() {
   // Navigation via React Router (URL-basiert)
   const {
     setModus,
-    zurueckZumDashboard,
-    navigiereZuComposer,
+    backToDashboard,
+    openComposer,
   } = useLPNavigation()
 
   // UI-State bleibt im Store (Panels, Keys)
@@ -407,8 +407,8 @@ function LPStartseiteInner() {
     const config = configs.find(c => c.id === aktiveConfigId)
     if (!config) return
     setEditConfig(config)
-    // navigiereZuComposer nicht nötig — URL ist bereits korrekt (Router hat hierher navigiert)
-    useLPNavigationStore.getState().navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
+    // openComposer nicht nötig — URL ist bereits korrekt (Router hat hierher navigiert)
+    useLPNavigationStore.getState().openComposer(config.titel || 'Bearbeiten', config.id)
   }, [configsLadeStatus, aktiveConfigId, configs])
 
   // Bundle 3 P-C.4: beforeunload-Listener — warnt vor ungespeicherten Änderungen
@@ -427,18 +427,18 @@ function LPStartseiteInner() {
 
   function handleNeue(): void {
     setEditConfig(null)
-    navigiereZuComposer('Neue Prüfung')
+    openComposer('Neue Prüfung')
   }
 
   function handleNeueUebung(): void {
     setEditConfig({ ...leereUebung })
     neuerComposerKey()
-    navigiereZuComposer('Neue Übung')
+    openComposer('Neue Übung')
   }
 
   function handleBearbeiten(config: PruefungsConfig): void {
     setEditConfig(config)
-    navigiereZuComposer(config.titel || 'Bearbeiten', config.id)
+    openComposer(config.titel || 'Bearbeiten', config.id)
   }
 
   function handleDuplizieren(config: PruefungsConfig): void {
@@ -457,11 +457,11 @@ function LPStartseiteInner() {
     }
     setEditConfig(kopie)
     neuerComposerKey()
-    navigiereZuComposer(`${config.titel} (Kopie)`)
+    openComposer(`${config.titel} (Kopie)`)
   }
 
   function handleZurueck(): void {
-    zurueckZumDashboard()
+    backToDashboard()
     // Configs neu laden
     setConfigsLadeStatus('laden')
     if (user && apiService.istKonfiguriert() && !istDemoModus) {
@@ -884,7 +884,7 @@ function LPStartseiteInner() {
             <FragenBrowser
               inline
               onHinzufuegen={() => {}}
-              onSchliessen={() => useLPNavigationStore.getState().zurueck()}
+              onSchliessen={() => useLPNavigationStore.getState().back()}
               bereitsVerwendet={[]}
               initialEditFrageId={urlFrageId ?? queryFrageId ?? deepLinkFrageId ?? undefined}
               onFrageAktualisiert={() => { clearDeepLinkFrageId() }}
@@ -910,7 +910,7 @@ function LPStartseiteInner() {
           onSchliessen={() => {
             setZeigEinstellungen(false)
             // Zurück zum aktuellen Modus-Dashboard
-            zurueckZumDashboard()
+            backToDashboard()
           }}
         />
         </Suspense>

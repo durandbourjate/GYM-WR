@@ -43,8 +43,8 @@ interface LPUIState {
   aktiveConfigId: string | null
 
   // Aktionen
-  navigiereZuComposer: (titel: string, configId?: string) => void
-  zurueckZumDashboard: () => void
+  openComposer: (titel: string, configId?: string) => void
+  backToDashboard: () => void
   setModus: (m: LPModus) => void
   setListenTab: (tab: ListenTab) => void
   setUebungsTab: (tab: UebungsTab) => void
@@ -55,7 +55,7 @@ interface LPUIState {
   clearDeepLinkComposerTab: () => void
   neuerComposerKey: () => void
   kannZurueck: () => boolean
-  zurueck: () => void
+  back: () => void
   setBreadcrumbs: (crumbs: BreadcrumbEintrag[]) => void
 
   // Config-ID (wird per useLPRouteSync aus URL gesetzt)
@@ -90,19 +90,19 @@ export const useLPUIStore = create<LPUIState>((set, get) => ({
   breadcrumbs: [],
   aktiveConfigId: null,
 
-  navigiereZuComposer: (titel, configId) => {
+  openComposer: (titel, configId) => {
     set(state => ({
       ansichtHistory: [...state.ansichtHistory, state.ansicht],
       ansicht: 'composer',
       aktiveConfigId: configId ?? null,
       breadcrumbs: [
-        { label: state.modus === 'uebung' ? 'Üben' : 'Prüfen', aktion: () => get().zurueckZumDashboard() },
+        { label: state.modus === 'uebung' ? 'Üben' : 'Prüfen', aktion: () => get().backToDashboard() },
         { label: titel },
       ],
     }))
   },
 
-  zurueckZumDashboard: () => {
+  backToDashboard: () => {
     set({ ansicht: 'dashboard', ansichtHistory: [], breadcrumbs: [], aktiveConfigId: null })
   },
 
@@ -136,7 +136,7 @@ export const useLPUIStore = create<LPUIState>((set, get) => ({
 
   kannZurueck: () => get().ansichtHistory.length > 0,
 
-  zurueck: () => {
+  back: () => {
     const { ansichtHistory, modus, vorherigerModus } = get()
     if (modus === 'fragensammlung' || modus === 'papierkorb') {
       try { sessionStorage.setItem(MODUS_KEY, vorherigerModus) } catch { /* ignore */ }

@@ -3,13 +3,13 @@ import { useCallback } from 'react'
 
 /**
  * Navigation-Hook für LP-Bereich.
- * Ersetzt die store-basierten navigiereZuComposer/setModus/etc. Aufrufe
+ * Ersetzt die store-basierten openComposer/setModus/etc. Aufrufe
  * durch URL-basierte Navigation via React Router.
  */
 export function useLPNavigation() {
   const navigate = useNavigate()
 
-  const navigiereZuComposer = useCallback((_titel: string, configId?: string) => {
+  const openComposer = useCallback((_titel: string, configId?: string) => {
     // Modus aus URL ableiten (pruefung oder uebung)
     const istUebung = window.location.pathname.includes('/uebung')
     const prefix = istUebung ? '/uebung' : '/pruefung'
@@ -21,7 +21,7 @@ export function useLPNavigation() {
     }
   }, [navigate])
 
-  const zurueckZumDashboard = useCallback(() => {
+  const backToDashboard = useCallback(() => {
     // Zum aktuellen Modus-Dashboard zurück (nicht navigate(-1), da Deep Links)
     const istUebung = window.location.pathname.includes('/uebung')
     navigate(istUebung ? '/uebung' : '/pruefung')
@@ -50,37 +50,37 @@ export function useLPNavigation() {
     else navigate('/uebung')
   }, [navigate])
 
-  const navigiereZuEinstellungen = useCallback((tab?: string) => {
+  const openEinstellungen = useCallback((tab?: string) => {
     navigate(tab ? `/einstellungen/${tab}` : '/einstellungen')
   }, [navigate])
 
-  const navigiereZuKorrektur = useCallback((configId: string) => {
+  const openKorrektur = useCallback((configId: string) => {
     navigate(`/pruefung/${configId}/korrektur`)
   }, [navigate])
 
-  const navigiereZuMonitoring = useCallback((configId: string) => {
+  const openMonitoring = useCallback((configId: string) => {
     navigate(`/pruefung/${configId}/monitoring`)
   }, [navigate])
 
-  const navigiereZuFrageneditor = useCallback((frageId: string) => {
+  const openFrageneditor = useCallback((frageId: string) => {
     navigate(`/fragensammlung/${frageId}`)
   }, [navigate])
 
-  const navigiereZuFavoriten = useCallback(() => {
+  const openFavoriten = useCallback(() => {
     navigate('/favoriten')
   }, [navigate])
 
   return {
-    navigiereZuComposer,
-    zurueckZumDashboard,
+    openComposer,
+    backToDashboard,
     setModus,
     setListenTab,
     setUebungsTab,
-    navigiereZuEinstellungen,
-    navigiereZuKorrektur,
-    navigiereZuMonitoring,
-    navigiereZuFrageneditor,
-    navigiereZuFavoriten,
+    openEinstellungen,
+    openKorrektur,
+    openMonitoring,
+    openFrageneditor,
+    openFavoriten,
     navigate,
   }
 }
