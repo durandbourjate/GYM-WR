@@ -370,3 +370,23 @@ Wenn Du einen neuen Bezeichner einführst, frag:
 ### Re-Evaluation
 
 Bei einer **Backend-Migration weg von Apps-Script** ist der natürliche Re-Entry-Point für vollständige Vereinheitlichung — dann wäre der Daten-Migrations-Aufwand sowieso anstehend, und Sheet-Spalten + Endpoint-Naming könnten in einem Schritt mit-vereinheitlicht werden.
+
+## Test-Layer-Strategie
+
+Drei Test-Schichten, jeweils klarer Ort:
+
+| Schicht | Ort | Wann |
+|---|---|---|
+| **Unit** | colocated `*.test.{ts,tsx}` neben der Source-Datei | Test deckt eine einzelne Funktion / Komponente / Hook ab, importiert primär aus einem Modul. |
+| **Integration / Service** | flach in `ExamLab/src/tests/` | Test berührt mehrere Module, Stores oder Service-Calls; Cache-/Prefetch-Pattern; Skeleton/Latency-Tests. |
+| **Regression** | `ExamLab/src/tests/regression/` | Test fixiert einen behobenen Incident (Datei-Header beschreibt Session/Bug). Soll nicht refactort werden. |
+
+**Mock-Helpers:** unter `ExamLab/src/test-helpers/` (Storage-Frage-Mocks etc.) bzw. `packages/shared/src/test-helpers/` (Core-Frage-Mocks). Helper-Files selbst können colocated `.test.ts` haben.
+
+**Verboten:** `__tests__/`-Verzeichnisse (Bundle Q, 2026-05). Gate: `npm run lint:no-tests-dir` (CI). Begründung: Heuristik B („Test wandert zur Source") braucht keinen Wrapper-Ordner — colocated `.test.{ts,tsx}` ist eindeutig. Subdir nur für die expliziten Layer oben.
+
+**Heuristik bei neuem Test:**
+1. Hat der Test eine 1:1-Source? → colocate.
+2. Multi-Modul / Store-Reset / Service-Mock? → `src/tests/`.
+3. Fixiert einen Incident mit Session/Bug-Bezug? → `src/tests/regression/`.
+4. Testet `@shared/...`-Code? → colocate in `packages/shared/src/...`.
