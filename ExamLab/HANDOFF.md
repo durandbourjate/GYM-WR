@@ -8,6 +8,46 @@
 
 ## Letzter Stand auf main
 
+### Bundle S.c — Utils-Splits (poolConverter + fibuAutoKorrektur) ✅ READY FOR MERGE (2026-05-06)
+
+Branch `refactor/bundle-s-c-utils-splits` (von main, parallel zu S.b auf separater Branch). 5 Commits seit S.a-Merge `ad70bed`. Drittes und letztes Sub-Bundle aus Bundle S — achtes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Master-Spec Sektion 5.3.
+
+**Was geliefert:**
+- `ExamLab/src/utils/poolConverter.ts` (744 Z.) → Folder mit 10 Sub-Dateien (1 `index.ts` Re-Export-Hub + `BasisFelder`-Interface + `konvertierePoolFrage`-Bucket-Dispatcher + 5 Helper-Files (konstanten, helpers, punkte, zeitbedarf, snapshot) + 4 Bucket-Strategy-Files (Standard 11 Cases, Bild 3, Fibu 4, Aufgabengruppe gruppe+default))
+- `ExamLab/src/utils/fibuAutoKorrektur.ts` (600 Z.) → Folder mit 7 Sub-Dateien (1 `index.ts` Re-Export-Hub + 1 `types.ts` zentral + 1 `util.ts` für Bilanz/ER + 4 Strategy-Files: buchungssatz/tkonto/kontenbestimmung/bilanzER)
+- Caller-Imports byte-identisch — `git diff main..HEAD` zeigt 0 Caller-Änderungen (Folder-Resolution fängt alle 3 Caller: `poolConverter.test.ts`, `services/poolSync.ts`, `utils/autoKorrektur.ts`, da keine `.ts`-Extensions in Originalen)
+- Plan: `docs/superpowers/plans/2026-05-06-bundle-s-c-utils-splits.md` (rev1, Reviewer-NIT-Cleanup)
+
+**Hotspot-Bilanz Files >500 Z.:** 2 raus (poolConverter 744 + fibuAutoKorrektur 600). Bundle S komplett (S.a+S.b+S.c kumuliert): **17 → 12** Master-Spec-Ziel ✅
+
+**Verifikation:**
+- vitest **1253 passed | 4 todo (1257 total)** — drift = 0 ✅
+- tsc -b clean (force-mode + Output-Inspektion via grep), build clean
+- lint:as-any 0 / lint:no-alert 0 / lint:no-tests-dir clean
+- Spec-Compliance-Reviewer-Subagent: APPROVED (alle 17 Sub-Files byte-identisch, Bucket-Routing 19 Cases + default korrekt, Bundle-L.b-Defensive-Cast preserviert, Skeleton-Dormancy bestätigt vor Cutover)
+
+**Browser-E2E:** offen — User testet auf staging (3× Pool-Frage-Pfade nach Bucket-Domain Standard/Bild/Fibu + 4× FiBu-AutoKorrektur-Pfade). Sequenz: S.b zuerst mergen, dann S.c (per Master-Spec 7.2: max. 1 Bundle-S-Merge in flight).
+
+**Phase-4-Security-Check:** Bundle ist reiner Refactor ohne Wire-Vertrag-/API-Body-/Session-Token-/Response-Filter-Berührung. `poolConverter.test.ts` (colocated) läuft unverändert.
+
+**Sub-Commits:**
+- `889b5b7` Plan rev1 (mit Reviewer-NIT-Cleanup)
+- `0386cda` Phase 1.1: poolConverter/ Folder-Skeleton (10 Sub-Dateien)
+- `41b509b` Phase 2.1: fibuAutoKorrektur/ Folder-Skeleton (7 Sub-Dateien)
+- `39a2f4d` Phase 1.2: poolConverter Cutover
+- `5ac0f98` Phase 2.2: fibuAutoKorrektur Cutover
+
+**Lehren:**
+- **Bucket-Pattern als Antwort auf Spec-Vague-"3-4 Files"** — Master-Spec Sektion 5.3 sagte "3-4 Sub-Files (Detail-Schnitt in Phase-Audit)". Audit fand: monolithisches `konvertierePoolFrage`-Switch ist ~510 Z., kein 4-File-Split kommt unter 500. Lösung: 4 Bucket-Files nach Domain (Standard/Bild/Fibu/Aufgabengruppe). Total 10 statt 4 — aber alle Sub-Files <300 Z. und semantisch sauber gruppiert. Spec-Compliance via "Detail-Schnitt"-Klausel erhalten.
+- **Type-only Zirkular-Import funktioniert in TS** — `BasisFelder` aus `./index` in 4 Bucket-Files importieren ist sicher. TS erased `import type` zur Compile-Zeit, Cycle ist Type-only-safe. Kein extra `basis.ts` nötig.
+- **Defensive-Cast (Bundle L.b-Lehre) byte-identisch in mechanischen Splits übernehmen** — `konvertiereAufgabengruppe.ts` Z. 16-19 hat den `as unknown as PoolFrage`-Cast inkl. Defensive-Comment 1:1 aus original Z. 717-720. Bei jedem mech. Refactor MUSS der Defensive-Marker mitwandern, sonst maskierte Datentyp-Drift.
+
+**Folge:**
+- Bundle S komplett nach S.c-Merge — Phase 2 Cleanup-Roadmap abgeschlossen.
+- Phase 3 (Bundle P musterlosung Field-Drift, Bundle T Hooks-Splits) und Phase 4 (Bundle U PDFSeite) in Folge-Sessions.
+
+---
+
 ### Bundle S.a — Renderer-Splits (KorrekturFrageVollansicht + DruckAnsicht) ✅ READY FOR MERGE (2026-05-06)
 
 Branch `refactor/bundle-s-a-renderer-splits` (auch auf `origin/preview` für Staging-E2E gepusht). 4 Implementation-Commits + 3 Doc-Commits (Master-Spec + Plan). Erstes Sub-Bundle aus Bundle S (Niedrig-Risiko-Datei-Splits) — sechstes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05).
