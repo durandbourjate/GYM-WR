@@ -202,14 +202,14 @@ export function pruefeAntwort(frage: Frage, antwort: Antwort | unknown): boolean
       // Pool-Import-Konvention: alle Hotspots sind in bereiche[], nur der korrekte
       // hat punktzahl>0. LP-Editor: alle Bereiche haben punktzahl>0. Filter loest beides.
       const punkteBereiche = alle.filter(b => (b.punktzahl ?? 0) > 0)
-      const zuPruefen = punkteBereiche.length > 0 ? punkteBereiche : alle
+      const openPruefen = punkteBereiche.length > 0 ? punkteBereiche : alle
       function trifft(b: typeof alle[0], k: { x: number; y: number }): boolean {
         return istPunktInPolygon(k, b.punkte ?? [])
       }
       // Korrekt = alle punkte-Bereiche getroffen UND kein punkte=0-Bereich getroffen.
-      const alleKorrekteGetroffen = zuPruefen.every(b => klicks.some(k => trifft(b, k)))
+      const alleKorrekteGetroffen = openPruefen.every(b => klicks.some(k => trifft(b, k)))
       if (!alleKorrekteGetroffen) return false
-      const nichtKorrekte = alle.filter(b => !zuPruefen.includes(b))
+      const nichtKorrekte = alle.filter(b => !openPruefen.includes(b))
       const falscheGetroffen = nichtKorrekte.some(b => klicks.some(k => trifft(b, k)))
       return !falscheGetroffen
     }

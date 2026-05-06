@@ -46,7 +46,7 @@ interface PruefungState {
   // Actions
   setAntwort: (frageId: string, antwort: Antwort) => void
   toggleMarkierung: (frageId: string) => void
-  navigiere: (index: number) => void
+  navigate: (index: number) => void
   naechsteFrage: () => void
   vorherigeFrage: () => void
   setPhase: (phase: AppPhase) => void
@@ -63,7 +63,7 @@ interface PruefungState {
   setDurchfuehrungId: (id: string | null) => void
   setMultiTabWarnung: (warnung: boolean) => void
   setConfigUndFragen: (config: PruefungsConfig, fragen: Frage[], alleFragen?: Frage[]) => void
-  zuruecksetzen: () => void
+  reset: () => void
 }
 
 const initialState = {
@@ -107,7 +107,7 @@ export const usePruefungStore = create<PruefungState>()(
           },
         })),
 
-      navigiere: (index) => {
+      navigate: (index) => {
         const { fragen } = get()
         if (index >= 0 && index < fragen.length) {
           set({ aktuelleFrageIndex: index })
@@ -180,7 +180,7 @@ export const usePruefungStore = create<PruefungState>()(
       setConfigUndFragen: (config, fragen, alleFragen) =>
         set({ config, fragen, alleFragen: alleFragen ?? fragen }),
 
-      zuruecksetzen: () => set(initialState),
+      reset: () => set(initialState),
     }),
     {
       name: 'pruefung-state-' + (new URLSearchParams(window.location.search).get('id') || 'default'),

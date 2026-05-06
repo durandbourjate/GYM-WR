@@ -62,7 +62,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const { starteSession } = useUebenUebungsStore()
   const { ladeFortschritt, getThemenFortschritt, fortschritte, lernziele } = useUebenFortschrittStore()
   const { ladeAuftraege, auftraege } = useUebenAuftragStore()
-  const { zuUebung } = useSuSNavigation()
+  const { openUebung } = useSuSNavigation()
   const { sichtbareFaecher, fachFarben } = useUebenKontext()
   const { freischaltungen, ladeFreischaltungen, getStatus, getAktiveUnterthemen } = useThemenSichtbarkeitStore()
   const { einstellungen } = useUebenSettingsStore()
@@ -357,7 +357,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     // Gesperrtes Thema → freiwilliges Üben ohne Tracking
     const istFreiwillig = freischaltungen.length > 0 && getStatus(fach, thema) === 'nicht_freigeschaltet'
     starteSession(aktiveGruppe.id, user.email, fach, thema, fragenOverride, 'standard', undefined, istFreiwillig)
-    zuUebung(thema)
+    openUebung(thema)
   }
 
   const handleStarteGefiltert = () => {
@@ -372,14 +372,14 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const handleStarteMix = (quellen: ThemaQuelle[]) => {
     if (!aktiveGruppe || !user || quellen.length < 2) return
     starteSession(aktiveGruppe.id, user.email, 'Mix', 'Gemischte Übung', undefined, 'mix', quellen)
-    zuUebung('mix')
+    openUebung('mix')
     setMixDialogOffen(false)
   }
 
   const handleStarteRepetition = () => {
     if (!aktiveGruppe || !user) return
     starteSession(aktiveGruppe.id, user.email, 'Repetition', 'Schwächen trainieren', undefined, 'repetition')
-    zuUebung('repetition')
+    openUebung('repetition')
   }
 
   const toggleChip = <T,>(set: Set<T>, setFn: (s: Set<T>) => void, val: T) => {

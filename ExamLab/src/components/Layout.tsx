@@ -241,7 +241,7 @@ export default function Layout() {
           <button
             onClick={() => {
               if (window.confirm('Alle bisherigen Antworten gehen verloren. Fortfahren?')) {
-                usePruefungStore.getState().zuruecksetzen()
+                usePruefungStore.getState().reset()
                 window.location.reload()
               }
             }}

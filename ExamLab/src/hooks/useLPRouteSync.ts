@@ -109,7 +109,7 @@ export function useLPRouteSync(): void {
 
     // Favoriten: /favoriten — kein Store-Sync nötig. Composer schliessen falls noch offen.
     if (store.ansicht === 'composer') {
-      store.zurueckZumDashboard()
+      store.backToDashboard()
     }
   }, [location.pathname])
 }
@@ -127,7 +127,7 @@ function syncComposerState(
   if (configIdInUrl === 'neu') {
     // Neue/Duplizierte Prüfung: Composer direkt öffnen, keine Config-ID im Store setzen
     if (store.ansicht !== 'composer') {
-      store.navigiereZuComposer('Neu')
+      store.openComposer('Neu')
     }
     return
   }
@@ -142,6 +142,6 @@ function syncComposerState(
 
   // Kein Composer-Pfad → zurück zum Dashboard, wenn noch offen
   if (store.ansicht === 'composer') {
-    store.zurueckZumDashboard()
+    store.backToDashboard()
   }
 }

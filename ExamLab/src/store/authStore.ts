@@ -96,7 +96,7 @@ async function resetPruefungState(): Promise<void> {
   if (state.beendetUm) {
     // LP hat beendet → aufräumen, Backend liefert istBeendet=true
     console.log(`[auth] Prüfung ${pruefungId}: LP-beendet — State wird aufgeräumt`)
-    usePruefungStore.getState().zuruecksetzen()
+    usePruefungStore.getState().reset()
     try { localStorage.removeItem(`pruefung-state-${pruefungId}`) } catch { /* ignore */ }
     // Beide IDB-Cleanups awaiten — Privacy-Garantie vor potenzieller Hard-Nav
     // im Caller (abmelden ruft window.location.href direkt nach uns).
@@ -194,7 +194,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   demoStarten: (rolle: 'sus' | 'lp' = 'sus') => {
     // Alten Prüfungszustand zurücksetzen (sonst bleibt z.B. 'abgegeben' hängen)
-    usePruefungStore.getState().zuruecksetzen()
+    usePruefungStore.getState().reset()
     const user: AuthUser = rolle === 'lp' ? {
       email: 'demo-lp@gymhofwil.ch',
       name: 'Demo-Lehrperson',
@@ -238,7 +238,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     clearSession()
     await resetPruefungState()
     set({ user: null, istDemoModus: false, ladeStatus: 'idle', fehler: null })
-    // Hart auf /login navigieren — verhindert dass alte Pfade wie /sus/ueben hängen
+    // Hart auf /login navigaten — verhindert dass alte Pfade wie /sus/ueben hängen
     // bleiben (würden nach Re-Login wieder das SuSStartseite-Layout statt direkt
     // Prüfung zeigen) und triggert keinen Demo-Login-Loop.
     if (typeof window !== 'undefined') {

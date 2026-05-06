@@ -39,7 +39,7 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
   const IST_DEMO = !!DEMO_PARAM || hauptAuthDemo
 
   // Router-basierte Navigation
-  const { zuDashboard, zuUebung, zuErgebnis, zuAdmin, zuGruppenAuswahl } = useSuSNavigation()
+  const { openDashboard, openUebung, openErgebnis, openAdmin, openGruppenAuswahl } = useSuSNavigation()
 
   // URL → Store Sync (Übergangs-Hook)
   useSuSRouteSync()
@@ -78,9 +78,9 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
 
       // Demo: Leeren Fortschritt setzen statt Backend aufzurufen
       useUebenFortschrittStore.setState({ fortschritte: {} })
-      zuDashboard()
+      openDashboard()
     }
-  }, [demoAktiv, zuDashboard])
+  }, [demoAktiv, openDashboard])
 
   // Session nur wiederherstellen wenn NICHT embedded (standalone Üben-Login)
   // Bei embedded (via SuSStartseite/UebungsToolView) wurde der Login bereits gebrückt
@@ -99,16 +99,16 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
     if (aktiveGruppe && user?.email) {
       const istAdmin = aktiveGruppe.adminEmail.toLowerCase() === user.email.toLowerCase()
       if (istAdmin) {
-        if (user.rolle !== 'admin') useUebenAuthStore.getState().setzeRolle('admin')
-        if (aktuellerScreen !== 'admin') zuAdmin()
+        if (user.rolle !== 'admin') useUebenAuthStore.getState().setRolle('admin')
+        if (aktuellerScreen !== 'admin') openAdmin()
       } else {
-        if (user.rolle !== 'lernend') useUebenAuthStore.getState().setzeRolle('lernend')
+        if (user.rolle !== 'lernend') useUebenAuthStore.getState().setRolle('lernend')
         if (aktuellerScreen !== 'dashboard' && aktuellerScreen !== 'uebung' && aktuellerScreen !== 'ergebnis') {
-          zuDashboard()
+          openDashboard()
         }
       }
     }
-  }, [aktiveGruppe, user?.email, user?.rolle, aktuellerScreen, zuAdmin, zuDashboard])
+  }, [aktiveGruppe, user?.email, user?.rolle, aktuellerScreen, openAdmin, openDashboard])
 
   // Navigation-State synchronisieren
   useEffect(() => {
@@ -117,25 +117,25 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
       return
     }
     if (istAngemeldet && aktuellerScreen === 'login') {
-      if (aktiveGruppe) zuDashboard()
-      else zuGruppenAuswahl()
+      if (aktiveGruppe) openDashboard()
+      else openGruppenAuswahl()
     }
-  }, [istAngemeldet, aktiveGruppe, aktuellerScreen, zuDashboard, zuGruppenAuswahl])
+  }, [istAngemeldet, aktiveGruppe, aktuellerScreen, openDashboard, openGruppenAuswahl])
 
   // Session → Übung/Ergebnis-Screen
   useEffect(() => {
     if (session && !session.beendet && aktuellerScreen !== 'uebung') {
-      zuUebung(session.thema)
+      openUebung(session.thema)
     }
     if (session?.beendet && aktuellerScreen !== 'ergebnis') {
-      zuErgebnis()
+      openErgebnis()
     }
     // Nur von 'uebung' zurück zum Dashboard wenn keine Session — NICHT von 'ergebnis'
     // (Zusammenfassung zeigt Fallback-UI wenn Session bereits null ist)
     if (!session && aktuellerScreen === 'uebung') {
-      zuDashboard()
+      openDashboard()
     }
-  }, [session, session?.beendet, aktuellerScreen, zuUebung, zuErgebnis, zuDashboard])
+  }, [session, session?.beendet, aktuellerScreen, openUebung, openErgebnis, openDashboard])
 
   // Laden
   if (!IST_DEMO && authStatus === 'laden') {
@@ -211,14 +211,14 @@ export default function AppUeben({ onZurueck, onModusWechsel }: AppUebenProps = 
       <UebenKontextProvider>
         <AppShell onExamLabHome={onZurueck} onModusWechsel={onModusWechsel}>
           {aktuellerScreen === 'admin' && (
-            <AdminDashboard onZuUeben={zuDashboard} />
+            <AdminDashboard onZuUeben={openDashboard} />
           )}
 
           {(aktuellerScreen === 'ergebnis' || (session?.beendet && aktuellerScreen === 'uebung')) && (
             <Zusammenfassung
               onZurueck={() => {
                 useUebenUebungsStore.setState({ session: null })
-                zuDashboard()
+                openDashboard()
               }}
               onNochmal={() => {
                 if (aktiveGruppe && user && session) {

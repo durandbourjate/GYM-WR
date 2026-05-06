@@ -24,7 +24,7 @@ interface ThemaEintrag {
 export default function AdminThemensteuerung() {
   const { aktiveGruppe } = useUebenGruppenStore()
   const { user } = useUebenAuthStore()
-  const { freischaltungen, ladeFreischaltungen, setzeStatus, getStatus, getAktiveThemen, getAktiveUnterthemen, setzeUnterthemen } = useThemenSichtbarkeitStore()
+  const { freischaltungen, ladeFreischaltungen, setStatus, getStatus, getAktiveThemen, getAktiveUnterthemen, setUnterthemen } = useThemenSichtbarkeitStore()
   const { fachFarben } = useUebenKontext()
   const maxAktiveThemen = useUebenSettingsStore(s => s.einstellungen?.maxAktiveThemen ?? 5)
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
@@ -90,7 +90,7 @@ export default function AdminThemensteuerung() {
 
   const handleStatusAendern = async (fach: string, thema: string, neuerStatus: ThemenStatus) => {
     if (!aktiveGruppe || !user) return
-    await setzeStatus(aktiveGruppe.id, fach, thema, neuerStatus, user.email, 'manuell')
+    await setStatus(aktiveGruppe.id, fach, thema, neuerStatus, user.email, 'manuell')
   }
 
   const toggleAusgeklappt = (key: string) => {
@@ -321,29 +321,29 @@ export default function AdminThemensteuerung() {
 
                   // Thema automatisch aktivieren wenn es noch nicht freigeschaltet ist
                   if (!themaIstAktivOderAbgeschlossen) {
-                    await setzeStatus(aktiveGruppe.id, eintrag.fach, eintrag.thema, 'aktiv', user.email, 'manuell')
+                    await setStatus(aktiveGruppe.id, eintrag.fach, eintrag.thema, 'aktiv', user.email, 'manuell')
                     // Nur dieses Unterthema aktiv setzen
-                    setzeUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, [utName])
+                    setUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, [utName])
                     return
                   }
 
                   if (alleAktiv) {
                     // Alle waren aktiv → alle ausser dieses deaktivieren
                     const alle = eintrag.unterthemen.map(u => u.name).filter(n => n !== utName)
-                    setzeUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, alle)
+                    setUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, alle)
                   } else {
                     const istAktiv = aktiveUT!.includes(utName)
                     if (istAktiv) {
                       // Deaktivieren
                       const neueUT = aktiveUT!.filter(n => n !== utName)
-                      setzeUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, neueUT.length > 0 ? neueUT : undefined)
+                      setUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, neueUT.length > 0 ? neueUT : undefined)
                     } else {
                       // Aktivieren
                       const neueUT = [...aktiveUT!, utName]
                       // Wenn alle Unterthemen aktiv → undefined (= alle)
                       const alleNamen = eintrag.unterthemen.map(u => u.name)
                       const sindAlle = alleNamen.every(n => neueUT.includes(n))
-                      setzeUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, sindAlle ? undefined : neueUT)
+                      setUnterthemen(aktiveGruppe.id, eintrag.fach, eintrag.thema, sindAlle ? undefined : neueUT)
                     }
                   }
                 }

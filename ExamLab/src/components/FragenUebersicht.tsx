@@ -9,7 +9,7 @@ export default function FragenUebersicht() {
   const alleFragen = usePruefungStore((s) => s.alleFragen)
   const antworten = usePruefungStore((s) => s.antworten)
   const markierungen = usePruefungStore((s) => s.markierungen)
-  const navigiere = usePruefungStore((s) => s.navigiere)
+  const navigate = usePruefungStore((s) => s.navigate)
   const setPhase = usePruefungStore((s) => s.setPhase)
 
   if (!config) return null
@@ -132,7 +132,7 @@ export default function FragenUebersicht() {
                 return (
                   <button
                     key={frageId}
-                    onClick={() => { navigiere(idx); setPhase('pruefung') }}
+                    onClick={() => { navigate(idx); setPhase('pruefung') }}
                     className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-colors cursor-pointer"
                   >
                     <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 ${statusColor}`}>

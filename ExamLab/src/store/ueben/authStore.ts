@@ -15,7 +15,7 @@ interface UebenAuthState {
   anmeldenMitCode: (code: string) => Promise<void>
   sessionWiederherstellen: () => Promise<void>
   abmelden: () => void
-  setzeRolle: (rolle: UebenRolle) => void
+  setRolle: (rolle: UebenRolle) => void
 }
 
 export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
@@ -128,7 +128,7 @@ export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
     set({ user: null, istAngemeldet: false, ladeStatus: 'fertig', fehler: null })
   },
 
-  setzeRolle: (rolle: UebenRolle) => {
+  setRolle: (rolle: UebenRolle) => {
     const user = get().user
     if (!user) return
     const aktualisiert = { ...user, rolle }

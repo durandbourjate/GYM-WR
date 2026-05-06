@@ -9,7 +9,7 @@ export function useDeepLink(schliesseEinstellungen: () => void) {
     schliesseEinstellungen()
     switch (ziel.art) {
       case 'frage':
-        nav.navigiereZuFrageneditor(ziel.id)
+        nav.openFrageneditor(ziel.id)
         break
       case 'pruefung':
       case 'gruppe':

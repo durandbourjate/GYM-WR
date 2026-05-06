@@ -39,7 +39,7 @@ export default function UebungsScreen() {
     speichertPruefung, pruefFehler, letzteMusterloesung,
     letzteAntwortKorrekt,
   } = useUebenUebungsStore()
-  const { zuErgebnis } = useSuSNavigation()
+  const { openErgebnis } = useSuSNavigation()
 
   const frage = aktuelleFrage()
 
@@ -95,7 +95,7 @@ export default function UebungsScreen() {
         e.preventDefault()
         if (istSessionFertig()) {
           beendeSession()
-          zuErgebnis()
+          openErgebnis()
         } else {
           naechsteFrage()
         }
@@ -119,7 +119,7 @@ export default function UebungsScreen() {
       if (feedbackSichtbar) {
         if (istSessionFertig()) {
           beendeSession()
-          zuErgebnis()
+          openErgebnis()
         } else {
           naechsteFrage()
         }
@@ -135,7 +135,7 @@ export default function UebungsScreen() {
       // ständig invalidieren (S130-Lehre: Hooks-Stabilität).
       pruefeAntwortJetzt(frage.id)
     }
-  }, [frage, session, feedbackSichtbar, kannZurueck, vorherigeFrage, naechsteFrage, ueberspringen, istSessionFertig, beendeSession, zuErgebnis, pruefeAntwortJetzt])
+  }, [frage, session, feedbackSichtbar, kannZurueck, vorherigeFrage, naechsteFrage, ueberspringen, istSessionFertig, beendeSession, openErgebnis, pruefeAntwortJetzt])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
@@ -146,9 +146,9 @@ export default function UebungsScreen() {
   useEffect(() => {
     if (session && !frage && !session.beendet) {
       beendeSession()
-      zuErgebnis()
+      openErgebnis()
     }
-  }, [session, frage, beendeSession, zuErgebnis])
+  }, [session, frage, beendeSession, openErgebnis])
 
   if (!session || !frage) return null
 
@@ -177,11 +177,11 @@ export default function UebungsScreen() {
   const handleWeiter = () => naechsteFrage()
   const handleErgebnis = () => {
     beendeSession()
-    zuErgebnis()
+    openErgebnis()
   }
   const handleBeenden = () => {
     beendeSession()
-    zuErgebnis()
+    openErgebnis()
   }
 
   return (

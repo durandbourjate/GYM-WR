@@ -12,9 +12,9 @@ interface UebenSettingsState {
   saveFehler: string | null
   /** Läuft gerade ein Backend-Save? Für optionalen "Wird gespeichert…"-Indikator. */
   speichertGerade: boolean
-  setzeDefaults: (typ: 'gym' | 'familie') => void
+  setDefaults: (typ: 'gym' | 'familie') => void
   /** Wird nach Backend-Load aufgerufen — persistiert NICHT zurück. */
-  setzeEinstellungen: (e: GruppenEinstellungen) => void
+  setEinstellungen: (e: GruppenEinstellungen) => void
   /** LP-Änderung: In-Memory sofort, Backend-Save debounced (500 ms). */
   aktualisiereEinstellungen: (partial: Partial<GruppenEinstellungen>) => void
   /** Bricht laufenden debounced Save ab (z. B. beim Gruppen-Wechsel). */
@@ -34,11 +34,11 @@ export const useUebenSettingsStore = create<UebenSettingsState>((set, get) => ({
   saveFehler: null,
   speichertGerade: false,
 
-  setzeDefaults: (typ) => {
+  setDefaults: (typ) => {
     set({ einstellungen: defaultEinstellungen(typ), ladeStatus: 'fertig', saveFehler: null })
   },
 
-  setzeEinstellungen: (e) => {
+  setEinstellungen: (e) => {
     // Load-Pfad: NICHT persistieren — sonst Endlosschleife.
     set({ einstellungen: e, ladeStatus: 'fertig', saveFehler: null })
   },

@@ -97,8 +97,8 @@ vi.mock('../hooks/useLPRouteSync', () => ({
 vi.mock('../hooks/useLPNavigation', () => ({
   useLPNavigation: () => ({
     setModus: vi.fn(),
-    zurueckZumDashboard: vi.fn(),
-    navigiereZuComposer: vi.fn(),
+    backToDashboard: vi.fn(),
+    openComposer: vi.fn(),
   }),
 }))
 

@@ -8,6 +8,56 @@
 
 ## Letzter Stand auf main
 
+### Bundle O — Store-Action-Naming-Vereinheitlichung ✅ MERGED (2026-05-06)
+
+Merge-Commit `<TBD nach Merge>` auf `main`. Branch `refactor/bundle-o-store-naming` lokal + remote gelöscht. 7 Sub-Commits + 1 HANDOFF/Memory. Viertes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 22 Action-Renames in 6 Stores + 2 Navigation-Hooks nach Bundle-V-Sprach-Konvention (Programming-Primitives englisch, Domain-Verben deutsch).
+
+**Audit-Token-Diff:**
+| Token | vorher | nachher |
+|---|---:|---:|
+| `setze*` (Setter-Präfix Identifier) | ~50 | 0 |
+| `zuruecksetzen` (pruefungStore) | 8 | 0 |
+| `registriere(` (draftStore) | 19 | 0 |
+| `abmelde(` (draftStore — un-register, NICHT Auth-Domain) | ~10 | 0 |
+| `navigiereZuComposer` | 14 | 0 |
+| `zurueckZumDashboard` | 11 | 0 |
+| `\.navigiere(` (pruefungStore) | ~3 | 0 |
+| `\.zurueck()` (lpUIStore + useSuSNavigation) | ~3 | 0 |
+| `navigiereZuEinstellungen/Korrektur/Monitoring/Frageneditor/Favoriten` | 11 | 0 |
+| `\.zu(Dashboard\|Uebung\|Ergebnis\|Admin\|GruppenAuswahl\|Pruefen)\(` | 60+ | 0 |
+| `set*` / `register/openX/backToDashboard/back/reset/navigate/unregister` | (Baseline) | ~190 |
+
+**Domain-Verben unverändert (Bundle-V-Konvention):** `anmelden / anmeldenMitGoogle / anmeldenMitCode / abmelden` bleiben deutsch. Auth-Domain `abmelden` (mit `n`) ist NICHT identisch mit draftStore-`abmelde` (Word-Boundary-Grep-Disambiguierung).
+
+**Out-of-Scope-Ausnahmen:**
+- `apiService.setzeTeilnehmer` (HTTP-Wire-Vertrag-Property) — nicht Store-Action.
+- `lockdown.registriereVerstoss` (Lockdown-State-Action, separate Domain) — nicht draftStore.
+- `AppShell.tsx::navigiereZuDashboard` (Component-internal Wrapper-Helper) — nicht Hook/Store.
+
+**Sub-Commits:**
+- `227d369` Phase 1: ueben/authStore setzeRolle → setRolle (Smoke-Test, 1 Rename)
+- `25582fc` Phase 2: ueben/settingsStore setze*-Setter → set* (2 Renames)
+- `9318a2e` Phase 3: ueben/themenSichtbarkeitStore setze*-Setter → set* (2 Renames)
+- `c0acd85` Phase 4: draftStore registriere/abmelde/setze* → register/unregister/set* (4 Renames inkl. Reviewer-aufgedeckt abmelde)
+- `84b0f00` Phase 5: pruefungStore navigiere/zuruecksetzen → navigate/reset (2 Renames)
+- `5ba11fd` Phase 6: lpUIStore + useLPNavigation navigiere*/zurueck* → openX/backToDashboard/back (8 Renames: 3 Store + 5 Hook)
+- `32cc6de` Phase 7: useSuSNavigation zu*/zurueck → open*/back (7 Renames)
+- `<TBD>` Phase 8: HANDOFF + Memory
+
+**Pre-Push-Verifikation:**
+- vitest: 1234 passed | 4 todo (gleiche Baseline wie nach Bundle Q) ✅
+- tsc -b: clean ✅
+- npm run build: clean ✅
+- npm run lint:as-any: 0 ✅ (Baseline gehalten)
+- npm run lint:no-tests-dir: 0 ✅
+- Final-Audit-Grep: 0 Treffer (mit Ausnahme-Filter `setzeTeilnehmer`/`abmelden`/`Defensive`) ✅
+
+**Apps-Script-Deploy:** nicht nötig (rein Frontend-TS).
+**Preview-Sync:** `git push origin main:preview` nach Merge (deployment-workflow-Lehre 2026-05-06).
+**Browser-E2E:** Phase 6 + 7 sind UI-betreffend — empfohlen vor PR/Merge mit echten Logins (LP wr.test@gymhofwil.ch + SuS wr.test@stud.gymhofwil.ch).
+
+**Plan-Lehre (Lernschleife):** Pre-Plan-Recheck hat Hook-Scope-Lücke aufgedeckt (`useLPNavigation`+`useSuSNavigation`) die der Audit nicht erfasste. Plan-Reviewer fand zusätzlich (a) `setzeTeilnehmer`-False-Positive im Final-Audit-Grep (apiService) und (b) `draftStore.abmelde`-Sibling fehlend zu `registriere`. Diese 3 Items wurden vor Implementation in Spec/Plan eingebaut. Konvention dokumentiert: bei Store-Action-Bundles auch Hook-API-Spiegelungen + lokale Helper-Funktionen scannen.
+
 ### Bundle Q — Test-Verzeichnis-Konsolidierung ✅ MERGED (2026-05-06)
 
 Merge-Commit `dc25f9a` auf `main`. Branch `refactor/bundle-q-tests-konsolidierung` lokal + remote gelöscht. 4 Sub-Commits + 1 Follow-up. Drittes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). 19 Test-/Helper-Dateien aus 3 `__tests__/`-Verzeichnissen umverteilt nach Heuristik B („Test wandert zur Source"); CI-Gate `lint:no-tests-dir` analog zu `lint:as-any`.
