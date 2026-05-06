@@ -10,7 +10,7 @@
 
 ### Bundle R — Error-Handling-Vereinheitlichung ✅ MERGED (2026-05-06)
 
-Merge-Commit `<TBD-nach-merge>` auf `main`. Branch `feature/bundle-r-error-handling-vereinheitlichung` lokal + remote nach Merge gelöscht. 26 Sub-Commits inkl. 2 Hotfixes. Fünftes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Toast-System app-weit, alle alert() migriert, silent-fail console.error ergänzt.
+Merge-Commit `6789aa2` auf `main`. Branch `feature/bundle-r-error-handling-vereinheitlichung` lokal + remote gelöscht. 26 Sub-Commits inkl. 2 Hotfixes. Fünftes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Toast-System app-weit, alle alert() migriert, silent-fail console.error ergänzt.
 
 **Was geliefert:**
 - `ExamLab/src/store/toastStore.ts` — Zustand-Store mit `add/dismiss/clear`, `error`-sticky-Default, 4s Auto-Hide für andere Variants
