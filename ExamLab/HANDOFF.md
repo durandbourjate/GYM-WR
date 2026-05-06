@@ -8,6 +8,44 @@
 
 ## Letzter Stand auf main
 
+### Bundle T — Master-Spec für Hook-Extraktion (6 mittel-Risiko-Files) ✅ MERGED (2026-05-06)
+
+Branch `spec/bundle-t-master`. Reine Brainstorming + Spec-Phase, kein Code-Change. Phase-3-Tiefen-Refactor aus Audit-Roadmap (2026-05-05). Bundle T zerlegt 6 Mittel-Risiko-File-Hotspots per Hook-Extraktion in 6 Sub-Bundles T.a–T.f, je 1 File, Risiko-aufsteigend.
+
+**Was geliefert:**
+- Master-Spec `docs/superpowers/specs/2026-05-06-bundle-t-hooks-splits-design.md` mit Architektur-Konvention (Hook-Ablage, Test-Hybrid, Pre-Audit-Tiefe, DoD), 6 Sub-Bundle-Definitionen, Mini-Pre-Audit für 3 hoch-R-Files (T.d ZeichnenCanvas, T.e Dashboard-Üben, T.f LPStartseite), Risiko-Strategie und Roadmap.
+- **Sub-Bundles** (Risiko-aufsteigend):
+
+| Sub | File | Z. | Audit-Hook-Hypothese |
+|---|---|---:|---|
+| T.a | DurchfuehrenDashboard.tsx | 677 | Phasen-+URL-State-Hook (Naming pro writing-plans, NICHT `useMonitoringData` wegen Kollision mit `usePruefungsMonitoring`) |
+| T.b | TKontoFrage.tsx | 763 | `<KontoEingabeForm>` + lokal `tkontoUtils.ts` |
+| T.c | FragenBrowser.tsx | 768 | `useFragenFilterEngine`, `useFragenEditorSync` |
+| T.d | ZeichnenCanvas.tsx | 804 | `useTextOverlay`, `useCanvasSetup`, `useStiftRendering`, `useDebounce`-Auslagerung |
+| T.e | Dashboard.tsx (Üben) | 930 | `useLernpfadData`, `useThemenKomputationen`, `useFragenFilter`/`<FragenFilterPanel>`, `<FachSektion>` |
+| T.f | LPStartseite.tsx | 1043 | `useLPConfigFiltering`, `useLPFavoriten`, `useLPLetzteAktivitaet`, ggf. `<DashboardContentLayout>` (YAGNI-Kandidat) |
+
+**Architektur-Entscheidungen (in Spec dokumentiert):**
+- Hook-Ablage: etablierte Konvention (`src/hooks/useLP*` flach für LP, `src/hooks/ueben/` für Üben, file-lokal für fragetyp-spezifische Hooks)
+- Test-Strategie Hybrid: pure-Logic-Hooks bekommen Vitest co-located, Wrapper-Hooks nicht
+- Pre-Audit differenziert: Mini-Audit nur für hoch-R-Files in Master-Spec, mittel-R-Files erst in writing-plans
+- DoD pro Sub-Bundle: Bundle-S/L-Standard (vitest grün, tsc clean, lint:as-any/no-alert clean, Browser-E2E echte Logins, Code-Reviewer APPROVED)
+
+**Spec-Review:**
+- spec-document-reviewer-Subagent: **Approved** beim ersten Pass. Alle Behauptungen gegen Repo verifiziert (Datei-Zeilen 677/763/768/804/930/1043, Hook-Konvention, `useDebounce` fehlt, `usePruefungsMonitoring`-Naming-Konflikt).
+- Advisory-Recommendations eingearbeitet (Commit `2aa08dd`): T.e State-Inventar von 5 auf vollständige 14 useStates erweitert, zusätzlicher Cut `useFragenFilter`/`<FragenFilterPanel>` für Filter-Cluster ergänzt, T.d useRef-Zahl korrigiert (14 → 18).
+
+**Out of Scope:**
+- Implementation pro Sub-Bundle (eigene Sessions T.a–T.f mit writing-plans + executing-plans)
+- Bundle U (PDFSeite-Hoch-Risiko, eigenes Bundle nach T)
+- Bundle P-Migration (Sheet-Spalten-Migration, separat)
+- HilfeSeite.tsx (906 Z., Audit empfiehlt React.lazy-Strategie statt Hook-Extraktion)
+- Konvergenz Pruefen/Üben-Fragetypen (Adapter-Hook-Pattern aus 2026-04-12-Plan, separat falls je gewünscht)
+
+**Nächster Schritt:** writing-plans für T.a (DurchfuehrenDashboard) auf neuem Branch `feature/bundle-t-a-durchfuehren-dashboard`.
+
+---
+
 ### Bundle P-Doku — `musterlosung` Field-Drift dokumentiert + eingefroren ✅ MERGED (2026-05-06)
 
 Merge `d059ebb` auf main. Branch `feature/bundle-p-musterloesung-doku` gelöscht (lokal+remote). Aufwärm-Bundle aus Audit-Roadmap-Phase 3.
