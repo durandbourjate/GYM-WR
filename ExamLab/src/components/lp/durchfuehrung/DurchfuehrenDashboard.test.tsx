@@ -31,7 +31,7 @@ vi.mock('../../../store/authStore', () => ({
 }))
 
 // Schwere Sub-Komponenten mocken — wir testen nur den Skeleton-Pfad
-vi.mock('./VorbereitungPhase', () => ({
+vi.mock('../vorbereitung/VorbereitungPhase', () => ({
   default: () => <div data-testid="vorbereitung-phase-mock">VorbereitungPhase</div>,
 }))
 vi.mock('./LobbyPhase', () => ({
