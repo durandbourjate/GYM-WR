@@ -6,7 +6,7 @@ import type { KorrekturErgebnis } from '../../../utils/autoKorrektur.ts'
 import { effektivePunkte, quelleLabel } from '../../../utils/korrekturUtils.ts'
 import { apiService } from '../../../services/apiService.ts'
 import AudioRecorder from '../../AudioRecorder.tsx'
-import KorrekturFrageVollansicht from './KorrekturFrageVollansicht.tsx'
+import KorrekturFrageVollansicht from './KorrekturFrageVollansicht'
 import { useToast } from '../../../hooks/useToast'
 
 /** KI-korrigierbare Fragetypen (nicht-deterministische, brauchen Claude API) */

@@ -6,7 +6,7 @@ import { formatDatum } from '../../../../utils/zeit.ts'
 import { typLabel, fachbereichFarbe } from '../../../../utils/fachUtils.ts'
 import MediaAnhang from '../../../MediaAnhang.tsx'
 import { formatFragetext } from '../../../../utils/textFormatierung.tsx'
-import DruckAnsicht from './DruckAnsicht.tsx'
+import DruckAnsicht from './DruckAnsicht'
 
 interface Props {
   pruefung: PruefungsConfig

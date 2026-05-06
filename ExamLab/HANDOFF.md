@@ -8,6 +8,61 @@
 
 ## Letzter Stand auf main
 
+### Bundle S.a — Renderer-Splits (KorrekturFrageVollansicht + DruckAnsicht) ✅ READY FOR MERGE (2026-05-06)
+
+Branch `refactor/bundle-s-a-renderer-splits` (auch auf `origin/preview` für Staging-E2E gepusht). 4 Implementation-Commits + 3 Doc-Commits (Master-Spec + Plan). Erstes Sub-Bundle aus Bundle S (Niedrig-Risiko-Datei-Splits) — sechstes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05).
+
+**Was geliefert:**
+- `ExamLab/src/components/lp/korrektur/KorrekturFrageVollansicht.tsx` (846 Z.) → Folder mit 23 Sub-Dateien (1 `index.tsx` Dispatcher + 1 `util.tsx` mit `frageHaupttext`/`KeineAntwort` + 21 Strategy-Files: 19 `<Fragetyp>Anzeige.tsx` + `AutoKorrekturDetails.tsx` + `MusterloesungBox.tsx`)
+- `ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx` (810 Z.) → Folder mit 18 Sub-Dateien (1 `index.tsx` Dispatcher + 1 `util.ts` mit `BUCHSTABEN` + 1 `hinweise.tsx` mit 5 Stub-Komponenten + 15 Strategy-Files: `<Fragetyp>Druck.tsx`)
+- 2 minimal-Caller-Edits: `KorrekturFrageZeile.tsx:9` + `VorschauTab.tsx:9` — beide nur `.tsx`-Extension droppen wegen Folder-Resolution
+- Folder-Pattern: jede Datei wird zu `<File>/index.tsx`-Dispatcher + Strategy-Sub-Dateien. Caller-Imports byte-identisch (Folder-Resolution durch Vite/Node)
+- Cutover-Strategie: erst Folder mit allen Sub-Dateien anlegen (alte Datei gewinnt Resolution), dann alte Datei löschen (Folder gewinnt). Verhindert Vite-Resolution-Race
+- Master-Spec für gesamtes Bundle S: `docs/superpowers/specs/2026-05-06-bundle-s-niedrig-risiko-datei-splits-design.md`
+- Plan für S.a: `docs/superpowers/plans/2026-05-06-bundle-s-a-renderer-splits.md`
+- Cleanup: 2 macOS-Duplikate (`ToastContainer 2.tsx`, `ToastContainer.test 2.tsx`) entfernt (waren untracked)
+
+**Hotspot-Bilanz (Files >500 Z.):** **17 → 15** ✅ (KorrekturFrageVollansicht 846 + DruckAnsicht 810 raus). Bundle-S.b/S.c-Targets (VorschauTab 643, poolConverter 744, fibuAutoKorrektur 600) noch dabei — gehören in Folge-Sessions.
+
+**Verifikation:**
+- vitest **1253 passed | 4 todo (1257 total)**, 161 Test-Files | 1 skipped — drift = 0 ✅
+- tsc -b clean, build clean
+- lint:as-any 0/0/0, lint:no-alert 0 Treffer, lint:no-tests-dir clean
+- Spec-Compliance-Reviewer-Subagent: APPROVED (alle 21 + 15 Anzeige/Druck-Bodies byte-identisch zu Original verifiziert)
+- Code-Quality-Reviewer-Subagent: APPROVED — keine Critical/Important-Issues
+
+**Browser-E2E auf staging (echte LP-Logins, Service-Worker-Cache vorab zurückgesetzt):**
+- ✅ LP-Druck-Pfad: 17 von 19 Druck-Komponenten visuell verifiziert (MC, MC multi, RichtigFalsch, Sortierung, Hotspot, Freitext, Lückentext, Zuordnung, Berechnung, Buchungssatz, TKonto, Kontenbestimmung, Bilanz/ER, Bildbeschriftung, DragDropBild, Aufgabengruppe, Zeichnen-Hinweis, Code-Hinweis). Console nach Reload: 0 Errors
+- LP-Korrektur-Pfad: nicht direkt getestet (kein Prüfung-mit-Abgaben in Staging-Daten verfügbar). Stützt sich auf Reviewer-verifizierte Byte-Identität der 21 Anzeige-Bodies + DruckAnsicht-Pattern-Confirmation
+
+**Concerns / Reviewer-Beobachtungen (alle pre-existing, nicht durch S.a induziert):**
+- `util.tsx` (statt geplantes `util.ts`) — `KeineAntwort` rendert JSX, `.tsx` mechanisch nötig
+- `index.tsx` 256 Z. statt geplante 110-130 Z. (DruckAnsicht) — enthält 3 Komponenten + Dispatcher, akzeptabel unter 500-Schwelle
+- `AufgabengruppeDruck.tsx:17` Doppel-Ternary `'Pt.' : 'Pt.'` (beide Branches gleich) — pre-existing, byte-identisch übernommen
+- `SortierungDruck.tsx:5` `.sort(() => 0.5 - Math.random())` non-deterministisch — pre-existing, byte-identisch übernommen, Spawn-Task im UI-Chip-Backlog für separaten Fix
+
+**Phase-4-Security-Check:** Bundle ist reiner Refactor ohne Wire-Vertrag-/API-Body-/Session-Token-/Response-Filter-Berührung. Keine sicherheitsrelevanten Code-Pfade tangiert. Folder-Resolution-Mechanik ist build-tool-intern.
+
+**Sub-Commits:**
+- `7058d05` Master-Spec
+- `bf977e6` + `42fe56f` S.a Plan + Reviewer-Empfehlungen
+- `30abb39` Phase 1.1: KorrekturFrageVollansicht/ Folder-Skeleton (23 Sub-Dateien)
+- `a94ff54` Phase 1.2: KorrekturFrageVollansicht Cutover
+- `a949b8b` Phase 2.1: DruckAnsicht/ Folder-Skeleton (18 Sub-Dateien)
+- `2e367b3` Phase 2.2: DruckAnsicht Cutover
+
+**Lehre für Bundle S.b/S.c:**
+- Vor Cutover: `grep -rn "from.*<FileName>\\.tsx"` für explizite-Extension-Caller-Audit (pro File 1 unerwarteter Caller mit `.tsx`-Extension fix nötig)
+- Folder-Resolution-Race ist NICHT theoretisch — wenn alte Datei mit `.tsx`-Extension explizit gerefenced wird, scheitert Resolution nach Cutover bis Caller-Path auch geupdated ist
+- Implementer-Subagents melden DONE_WITH_CONCERNS für mechanisch-nötige Plan-Abweichungen (z.B. `util.ts` → `util.tsx`) — Spec/Plan in Folge-Sub-Bundles entsprechend pre-emptiv flexibel formulieren
+
+**Folge:**
+- Bundle S.b (VorschauTab, ~13 Sub-Dateien) — eigene Session
+- Bundle S.c (poolConverter + fibuAutoKorrektur, ~10 Sub-Dateien) — eigene Session
+- Phase 3 (Bundle P, T) und Phase 4 (Bundle U) folgen
+
+---
+
 ### Bundle R — Error-Handling-Vereinheitlichung ✅ MERGED (2026-05-06)
 
 Merge-Commit `6789aa2` auf `main`. Branch `feature/bundle-r-error-handling-vereinheitlichung` lokal + remote gelöscht. 26 Sub-Commits inkl. 2 Hotfixes. Fünftes Cleanup-Bundle aus dem Vereinfachungs-Audit (2026-05-05). Toast-System app-weit, alle alert() migriert, silent-fail console.error ergänzt.
