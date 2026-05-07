@@ -18,7 +18,7 @@
 
 **Build-Check:** `cd ExamLab && npx tsc -b 2>&1 | tee /tmp/tsc.log` — IMMER Output prüfen (Lehre `feedback_tsc_b_exit_misleading`)
 
-**Vitest-Baseline:** **1357 passed | 4 todo** (gemessen 2026-05-07 nach `npm run setup`). Drift-Erwartung **+35** (15 reducer + 15 geometrie + 5 serialisierung) → **1392** nach Phase 4.
+**Vitest-Baseline:** **1357 passed | 4 todo** (gemessen 2026-05-07 nach `npm run setup`). Drift-Erwartung **+35–42** (Phase 1: +18 Reducer, Phase 2: +18 Geometrie, Phase 3: +6 Serialisierung; Spec-Schätzung war +35, Plan-Math ergibt +42). Final-Counter wird in Phase 8 HANDOFF/Memory aus tatsächlichem Output (`npx vitest run --reporter=dot`) übernommen.
 
 ---
 
@@ -145,7 +145,7 @@ export function canvasReducer(state: CanvasState, action: CanvasAction): CanvasS
 }
 ```
 
-**Wichtig:** Body byte-identisch aus useDrawingEngine.ts kopieren. Keine Logik-Änderung. `verschiebePoint` bleibt nicht-exportiert (interner Helper); `verschiebeCommand` wird exportiert (Test-bar als Sub-Type-Discriminator).
+**Wichtig:** Body byte-identisch aus useDrawingEngine.ts kopieren. Keine Logik-Änderung. `verschiebePoint` bleibt nicht-exportiert (interner Helper); **`verschiebeCommand` wird neu exportiert** — das ist die einzige nicht-byte-identische Signatur-Änderung des Bundles, bewusst für Test-Zugriff (Source Z. 75-89 hatte beide non-exportiert; Hook nutzte `verschiebeCommand` nur intern in `MOVE_SELECTED`-Reducer-Branch). Kein Konsumer ausserhalb des Files heute, also kein Wire-Vertrag-Bruch.
 
 - [ ] **Step 2: tsc-Check**
 
