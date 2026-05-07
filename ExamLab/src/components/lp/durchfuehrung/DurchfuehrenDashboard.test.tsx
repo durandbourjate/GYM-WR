@@ -3,6 +3,7 @@ import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import DurchfuehrenDashboardSource from './DurchfuehrenDashboard.tsx?raw'
 import UseDurchfuehrenMonitoringSource from '../../../hooks/useDurchfuehrenMonitoring.ts?raw'
+import UseDurchfuehrenLoadSource from '../../../hooks/useDurchfuehrenLoad.ts?raw'
 
 // =============================================================================
 // G.f.2 Rendering-Tests: Mocks müssen VOR allen Komponenten-Imports stehen
@@ -129,9 +130,9 @@ describe('DurchfuehrenDashboard — Pre-Warm-Trigger Hebel C', () => {
   })
 
   it('Trigger 3 — Direct-Mount-Edge-Case bei beendet-URL', () => {
-    expect(code).toMatch(/G\.d\.1 Trigger Direct-Mount/)
-    const idx = code.indexOf('G.d.1 Trigger Direct-Mount')
-    expect(code.substring(idx, idx + 500)).toMatch(/preWarmKorrektur/)
+    // Direct-Mount-Trigger wurde in Bundle T.a Phase 3 in useDurchfuehrenLoad extrahiert.
+    expect(UseDurchfuehrenLoadSource).toMatch(/preWarmKorrektur/)
+    expect(UseDurchfuehrenLoadSource).toMatch(/beendetUm.*freigeschaltet.*urlTab|setActiveTab\(['"]auswertung['"]\)/s)
   })
 })
 

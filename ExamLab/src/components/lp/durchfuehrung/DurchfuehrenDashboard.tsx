@@ -6,24 +6,11 @@ import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { preWarmKorrektur } from '../../../services/preWarmApi'
 import { schreibeGespeicherteAnzahl } from '../../../utils/skeletonAnzahl'
-import { demoFragen } from '../../../data/demoFragen.ts'
-import { einrichtungsPruefung } from '../../../data/einrichtungsPruefung.ts'
-import { einrichtungsUebung } from '../../../data/einrichtungsUebung.ts'
-import { einrichtungsUebungFragen } from '../../../data/einrichtungsUebungFragen.ts'
-
-// Eingebaute Versionen für Einrichtungsprüfung/-übung (Fallback wenn Backend-Config veraltet)
-const eingebauteVersionen: Record<string, { config: PruefungsConfig; fragen: Frage[] }> = {
-  'einrichtung-uebung': { config: einrichtungsUebung, fragen: einrichtungsUebungFragen },
-  [einrichtungsPruefung.id]: { config: einrichtungsPruefung, fragen: demoFragen },
-}
 import type { PruefungsNachricht } from '../../../types/monitoring.ts'
-import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
-import type { Frage } from '../../../types/fragen-storage'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import EinstellungenPanel from '../../settings/EinstellungenPanel.tsx'
 import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
-import type { PruefungsConfig } from '../../../types/pruefung'
 import type { PruefungsPhase } from '../../../types/monitoring'
 import { bestimmePhase } from '../../../utils/phase'
 import { exportiereTeilnahmeCSV, downloadCSV } from '../../../utils/exportUtils'
@@ -33,6 +20,7 @@ import AktivPhase from './AktivPhase'
 import BeendetPhase from './BeendetPhase'
 import KorrekturDashboard from '../korrektur/KorrekturDashboard'
 import { useDurchfuehrenMonitoring } from '../../../hooks/useDurchfuehrenMonitoring'
+import { useDurchfuehrenLoad } from '../../../hooks/useDurchfuehrenLoad'
 
 type DurchfuehrenTab = 'vorbereitung' | 'lobby' | 'live' | 'auswertung'
 
@@ -102,25 +90,19 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
 
-  // Abgaben + Fragen (einmalig geladen)
-  const [abgaben, setAbgaben] = useState<Record<string, SchuelerAbgabe>>({})
-  const [fragen, setFragen] = useState<Frage[]>([])
-  const abgabenGeladen = useRef(false)
-
   // Nachrichten (LP → SuS)
   const [_nachrichten, setNachrichten] = useState<PruefungsNachricht[]>([])
 
   // Auswertung: Ergebnis-Übersicht Accordion (offen wenn keine Korrektur gestartet)
   const [ergebnisOffen, setErgebnisOffen] = useState(true)
 
-  // Config der Prüfung
-  const [config, setConfig] = useState<PruefungsConfig | null>(null)
-
   // Phase früh ableiten (wird in Polling-Effekten als Dependency gebraucht)
   // Vorerst aus letzter-Render-Daten via Ref (Task 4 migriert das auf useState)
   const phaseRef = useRef<PruefungsPhase>('vorbereitung')
   const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten } =
     useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase: phaseRef.current })
+  const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
+    useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase: phaseRef.current, urlTab, setActiveTab })
   const phase: PruefungsPhase = config && daten
     ? bestimmePhase(config, daten.schueler)
     : 'vorbereitung'
@@ -169,73 +151,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     schreibeGespeicherteAnzahl(`examlab-lp-letzte-sus-anzahl-${pruefungId}`, anzahl)
     letzteGeschriebeneAnzahlRef.current = anzahl
   }, [ladeStatus, daten?.schueler?.length, pruefungId])
-
-  // Abgaben + Fragen + Config einmalig laden (ladePruefung gibt beides zurück)
-  useEffect(() => {
-    if (abgabenGeladen.current || !user) return
-    async function ladeAbgabenUndFragen() {
-      if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
-        setFragen(demoFragen)
-        abgabenGeladen.current = true
-        return
-      }
-      const [abgabenResult, pruefungResult] = await Promise.all([
-        apiService.ladeAbgaben(pruefungId, user!.email),
-        apiService.ladePruefung(pruefungId, user!.email),
-      ])
-      if (abgabenResult) setAbgaben(abgabenResult)
-
-      // Einrichtungsprüfung/-übung: Eingebaute Config + Fragen verwenden
-      if (pruefungResult && eingebauteVersionen[pruefungId]) {
-        const eingebaut = eingebauteVersionen[pruefungId]
-        pruefungResult.config = { ...eingebaut.config, freigeschaltet: pruefungResult.config.freigeschaltet, durchfuehrungId: pruefungResult.config.durchfuehrungId, beendetUm: pruefungResult.config.beendetUm, teilnehmer: pruefungResult.config.teilnehmer }
-        pruefungResult.fragen = eingebaut.fragen
-      }
-
-      if (pruefungResult?.fragen) setFragen(pruefungResult.fragen)
-      // Config aus ladePruefung übernehmen (spart separaten ladeAlleConfigs-Call)
-      if (pruefungResult?.config) {
-        setConfig(pruefungResult.config)
-        // Beendete Prüfung → direkt Auswertung-Tab anzeigen (statt Vorbereitung)
-        // Nur wenn beendetUm gesetzt UND freigeschaltet (= nicht zurueckgesetzt fuer neue Durchfuehrung)
-        if (pruefungResult.config.beendetUm && pruefungResult.config.freigeschaltet && !urlTab) {
-          setActiveTab('auswertung')
-          // G.d.1 Trigger Direct-Mount — Pre-Warm Korrektur bei beendet-URL
-          if (user?.email && pruefungId) {
-            void preWarmKorrektur(pruefungId, user.email)
-          }
-        }
-      }
-      abgabenGeladen.current = true
-    }
-    ladeAbgabenUndFragen()
-  }, [user, istDemoModus, pruefungId])
-
-  // Config: Demo-Modus — Einrichtungsprüfung verwenden (kein hardcodiertes Demo-Config)
-  useEffect(() => {
-    if (!user || !pruefungId) return
-    if (istDemoModus || pruefungId === 'demo') {
-      setConfig({ ...einrichtungsPruefung, freigeschaltet: true })
-    }
-  }, [user, pruefungId, istDemoModus])
-
-  // Config periodisch aktualisieren (leichtgewichtig via ladeEinzelConfig)
-  // Nur in Vorbereitung/Lobby — dort ändert sich Config (Freischaltung, Teilnehmer)
-  // Lobby: 5s damit neue SuS schnell in Teilnehmerliste erscheinen; Vorbereitung: 30s
-  useEffect(() => {
-    if (!user || !pruefungId || istDemoModus || pruefungId === 'demo') return
-    if (phase !== 'vorbereitung' && phase !== 'lobby') return
-    const ladeConfig = async () => {
-      try {
-        const found = await apiService.ladeEinzelConfig(pruefungId, user.email)
-        if (found) setConfig(found)
-      } catch { /* ignore */ }
-    }
-    // Nicht sofort laden — initialer Load kommt aus ladePruefung (oben)
-    const intervallMs = phase === 'lobby' ? 5000 : 30000
-    const interval = setInterval(ladeConfig, intervallMs)
-    return () => clearInterval(interval)
-  }, [user, pruefungId, istDemoModus, phase])
 
   // Phase-Wechsel → Tab automatisch vorwärts setzen
   useEffect(() => {
@@ -524,7 +439,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                           if (erfolg) {
                             // Alles zurücksetzen: Phase-Tracking, Daten, Config
                             letztePhaseRef.current = 'vorbereitung'
-                            abgabenGeladen.current = false
+                            abgabenGeladenRef.current = false
                             setDaten({ pruefungId: config!.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
                             setAbgaben({})
                             setFragen([])
