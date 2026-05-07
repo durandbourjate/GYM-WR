@@ -46,8 +46,12 @@ export type Antwort =
       beschriftungLinks?: string;
       beschriftungRechts?: string;
       kontenkategorie?: string;
-      eintraegeLinks: { gegenkonto: string; betrag: number }[];
-      eintraegeRechts: { gegenkonto: string; betrag: number }[];
+      sollHaben?: string;
+      zunahmeAbnahme?: string;
+      zunahmeAbnahmeLinks?: string;
+      zunahmeAbnahmeRechts?: string;
+      eintraegeLinks: { gegenkonto: string; betrag: number; gfNr?: number }[];
+      eintraegeRechts: { gegenkonto: string; betrag: number; gfNr?: number }[];
       saldo?: { betragLinks: number; betragRechts: number };
     }[] }
   | { typ: 'kontenbestimmung'; aufgaben: Record<string, {
