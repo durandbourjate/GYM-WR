@@ -2,8 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { apiService } from '../services/apiService'
 import { erstelleDemoMonitoring } from '../data/demoMonitoring'
 import { mappeMonitoringResult } from '../utils/durchfuehrenMonitoringMapper'
-import type { MonitoringDaten } from '../types/monitoring'
-import type { PruefungsPhase } from '../types/monitoring'
+import type { MonitoringDaten, PruefungsPhase } from '../types/monitoring'
 
 export interface UseDurchfuehrenMonitoringResult {
   daten: MonitoringDaten | null
@@ -12,6 +11,7 @@ export interface UseDurchfuehrenMonitoringResult {
   setAutoRefresh: (v: boolean) => void
   zeigeVerbindungsBanner: boolean
   ladeDaten: () => Promise<void>
+  /** TODO Task 4 (T.f wenn phase-useState-Pattern eingeführt): durch resetDaten(pruefungId) oder onPruefungReset-Callback ersetzen — Direct-Setter-Leak vermeiden. */
   setDaten: (d: MonitoringDaten | null) => void
 }
 
@@ -20,7 +20,12 @@ export interface UseDurchfuehrenMonitoringResult {
  * Schützt vor Overlap via AbortController, erkennt Verbindungsfehler nach 3 Misses,
  * mapt Raw-Result zu typisierten MonitoringDaten.
  *
- * Vorher: inline in DurchfuehrenDashboard.tsx (Z.101-150 + Z.169-241).
+ * Verhalts-Hinweis: Liest `ladeStatus` und `zeigeVerbindungsBanner` per Ref aus
+ * `ladeDaten`-Callback heraus. Damit bleibt `ladeDaten` referenziell stabil
+ * (Deps nur user/pruefungId/istDemoModus) und Effect E2/E3 re-laufen nicht
+ * unnötig — gleichzeitig liest der Callback aktuelle Werte (nicht stale closure
+ * wie im Original-Inline-Code, wo `ladeStatus !== 'laden'` permanent false war
+ * und der 3-Fehler-Verbindungsbanner faktisch nie aufgepoppt ist).
  */
 export function useDurchfuehrenMonitoring(opts: {
   user: { email: string } | null
@@ -37,6 +42,13 @@ export function useDurchfuehrenMonitoring(opts: {
   const monitoringAbortRef = useRef<AbortController | null>(null)
   const fehlerCountRef = useRef(0)
 
+  // Ref-Spiegel für ladeStatus + zeigeVerbindungsBanner, damit ladeDaten
+  // referenziell stabil bleibt (Deps reduziert) UND aktuelle Werte sieht.
+  const ladeStatusRef = useRef(ladeStatus)
+  const zeigeVerbindungsBannerRef = useRef(zeigeVerbindungsBanner)
+  useEffect(() => { ladeStatusRef.current = ladeStatus }, [ladeStatus])
+  useEffect(() => { zeigeVerbindungsBannerRef.current = zeigeVerbindungsBanner }, [zeigeVerbindungsBanner])
+
   const ladeDaten = useCallback(async () => {
     if (!user) return
     if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
@@ -49,7 +61,7 @@ export function useDurchfuehrenMonitoring(opts: {
     monitoringAbortRef.current = controller
     const result = await apiService.ladeMonitoring(pruefungId, user.email, { signal: controller.signal })
     if (controller.signal.aborted) return
-    if (!result && !istDemoModus && ladeStatus !== 'laden') {
+    if (!result && !istDemoModus && ladeStatusRef.current !== 'laden') {
       fehlerCountRef.current++
       if (fehlerCountRef.current >= 3) {
         setZeigeVerbindungsBanner(true)
@@ -58,12 +70,12 @@ export function useDurchfuehrenMonitoring(opts: {
     }
     if (result) {
       fehlerCountRef.current = 0
-      if (zeigeVerbindungsBanner) setZeigeVerbindungsBanner(false)
+      if (zeigeVerbindungsBannerRef.current) setZeigeVerbindungsBanner(false)
     }
     const mapped = mappeMonitoringResult(result)
     setDaten(mapped)
     setLadeStatus('fertig')
-  }, [user, istDemoModus, pruefungId, ladeStatus, zeigeVerbindungsBanner])
+  }, [user, istDemoModus, pruefungId])
 
   // Initial-Trigger (E2)
   useEffect(() => { ladeDaten() }, [ladeDaten])
