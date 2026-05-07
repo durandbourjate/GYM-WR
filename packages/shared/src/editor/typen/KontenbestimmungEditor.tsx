@@ -1,4 +1,4 @@
-import type { KontenbestimmungFrage, Kontenaufgabe, KontenauswahlConfig, KontenAntwort } from '../../types/fragen'
+import type { KontenbestimmungFrage, Kontenaufgabe, KontenauswahlConfig, KontenAntwort } from '../../types/fragen-core'
 import { Abschnitt } from '../components/EditorBausteine'
 import KontenSelect from '../components/KontenSelect'
 import { sucheKonten } from '../kontenrahmen'
@@ -25,8 +25,6 @@ export default function KontenbestimmungEditor({
   titelRechts,
 }: KontenbestimmungEditorProps) {
 
-  const safeAufgaben = aufgaben ?? []
-
   const zeigeKonto = modus === 'konto_bestimmen' || modus === 'gemischt'
   const zeigeKategorie = modus === 'kategorie_bestimmen' || modus === 'gemischt'
   const zeigeSeite = modus === 'kategorie_bestimmen' || modus === 'gemischt'
@@ -34,8 +32,8 @@ export default function KontenbestimmungEditor({
   // --- Aufgaben CRUD ---
 
   function addAufgabe(): void {
-    if (safeAufgaben.length >= MAX_AUFGABEN) return
-    setAufgaben([...safeAufgaben, {
+    if (aufgaben.length >= MAX_AUFGABEN) return
+    setAufgaben([...aufgaben, {
       id: String(Date.now()),
       text: '',
       erwarteteAntworten: [{}],
@@ -43,35 +41,35 @@ export default function KontenbestimmungEditor({
   }
 
   function removeAufgabe(index: number): void {
-    if (safeAufgaben.length <= 1) return
-    setAufgaben(safeAufgaben.filter((_, i) => i !== index))
+    if (aufgaben.length <= 1) return
+    setAufgaben(aufgaben.filter((_, i) => i !== index))
   }
 
   function updateAufgabeText(index: number, text: string): void {
-    const neu = [...safeAufgaben]
+    const neu = [...aufgaben]
     neu[index] = { ...neu[index], text }
     setAufgaben(neu)
   }
 
   function updateAntwort(aufgabeIdx: number, antwortIdx: number, partial: Partial<KontenAntwort>): void {
-    const neu = [...safeAufgaben]
-    const antworten = [...neu[aufgabeIdx].erwarteteAntworten]
+    const neu = [...aufgaben]
+    const antworten = [...(neu[aufgabeIdx].erwarteteAntworten || [])]
     antworten[antwortIdx] = { ...antworten[antwortIdx], ...partial }
     neu[aufgabeIdx] = { ...neu[aufgabeIdx], erwarteteAntworten: antworten }
     setAufgaben(neu)
   }
 
   function addAntwort(aufgabeIdx: number): void {
-    const neu = [...safeAufgaben]
-    const antworten = [...neu[aufgabeIdx].erwarteteAntworten, {}]
+    const neu = [...aufgaben]
+    const antworten = [...(neu[aufgabeIdx].erwarteteAntworten || []), {}]
     neu[aufgabeIdx] = { ...neu[aufgabeIdx], erwarteteAntworten: antworten }
     setAufgaben(neu)
   }
 
   function removeAntwort(aufgabeIdx: number, antwortIdx: number): void {
-    const neu = [...safeAufgaben]
-    if (neu[aufgabeIdx].erwarteteAntworten.length <= 1) return
-    const antworten = neu[aufgabeIdx].erwarteteAntworten.filter((_, i) => i !== antwortIdx)
+    const neu = [...aufgaben]
+    if ((neu[aufgabeIdx].erwarteteAntworten || []).length <= 1) return
+    const antworten = (neu[aufgabeIdx].erwarteteAntworten || []).filter((_, i) => i !== antwortIdx)
     neu[aufgabeIdx] = { ...neu[aufgabeIdx], erwarteteAntworten: antworten }
     setAufgaben(neu)
   }
@@ -190,7 +188,7 @@ export default function KontenbestimmungEditor({
       {/* Aufgaben / Musterloesung */}
       <Abschnitt titel="Geschaeftsfaelle & Musterloesung">
         <div className="space-y-4">
-          {safeAufgaben.map((aufgabe, aIdx) => (
+          {aufgaben.map((aufgabe, aIdx) => (
             <div
               key={aufgabe.id}
               className="border border-slate-200 dark:border-slate-600 rounded-lg p-3"
@@ -200,7 +198,7 @@ export default function KontenbestimmungEditor({
                 <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                   Geschaeftsfall {aIdx + 1}
                 </span>
-                {safeAufgaben.length > 1 && (
+                {aufgaben.length > 1 && (
                   <button
                     onClick={() => removeAufgabe(aIdx)}
                     className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-sm cursor-pointer px-1"
@@ -225,7 +223,7 @@ export default function KontenbestimmungEditor({
                 Erwartete Antworten
               </label>
               <div className="space-y-2">
-                {aufgabe.erwarteteAntworten.map((antwort, eIdx) => (
+                {(aufgabe.erwarteteAntworten || []).map((antwort, eIdx) => (
                   <div key={eIdx} className="flex items-center gap-2">
                     {zeigeKonto && (
                       <div className="flex-1 min-w-0">
@@ -261,7 +259,7 @@ export default function KontenbestimmungEditor({
                         <option value="haben">Haben</option>
                       </select>
                     )}
-                    {aufgabe.erwarteteAntworten.length > 1 && (
+                    {(aufgabe.erwarteteAntworten || []).length > 1 && (
                       <button
                         onClick={() => removeAntwort(aIdx, eIdx)}
                         className="w-7 h-7 text-red-400 hover:text-red-600 dark:hover:text-red-300 cursor-pointer text-sm shrink-0"
@@ -283,7 +281,7 @@ export default function KontenbestimmungEditor({
           ))}
         </div>
 
-        {safeAufgaben.length < MAX_AUFGABEN && (
+        {aufgaben.length < MAX_AUFGABEN && (
           <button
             onClick={addAufgabe}
             className="mt-3 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors cursor-pointer"

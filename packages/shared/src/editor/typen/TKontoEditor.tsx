@@ -1,4 +1,4 @@
-import type { TKontoDefinition, TKontoBewertung, KontenauswahlConfig } from '../../types/fragen'
+import type { TKontoDefinition, TKontoBewertung, KontenauswahlConfig } from '../../types/fragen-core'
 import { Abschnitt } from '../components/EditorBausteine'
 import KontenSelect from '../components/KontenSelect'
 import { sucheKonten } from '../kontenrahmen'
@@ -26,21 +26,18 @@ export default function TKontoEditor({
   titelRechts,
 }: TKontoEditorProps) {
 
-  const safeGeschaeftsfaelle = geschaeftsfaelle ?? []
-  const safeKonten = konten ?? []
-
   // --- Geschäftsfälle CRUD ---
 
   function addGeschaeftsfall(): void {
-    setGeschaeftsfaelle([...safeGeschaeftsfaelle, ''])
+    setGeschaeftsfaelle([...geschaeftsfaelle, ''])
   }
 
   function removeGeschaeftsfall(idx: number): void {
-    setGeschaeftsfaelle(safeGeschaeftsfaelle.filter((_, i) => i !== idx))
+    setGeschaeftsfaelle(geschaeftsfaelle.filter((_, i) => i !== idx))
   }
 
   function updateGeschaeftsfall(idx: number, text: string): void {
-    const neu = [...safeGeschaeftsfaelle]
+    const neu = [...geschaeftsfaelle]
     neu[idx] = text
     setGeschaeftsfaelle(neu)
   }
@@ -48,8 +45,8 @@ export default function TKontoEditor({
   // --- T-Konto CRUD ---
 
   function addKonto(): void {
-    if (safeKonten.length >= MAX_KONTEN) return
-    setKonten([...safeKonten, {
+    if (konten.length >= MAX_KONTEN) return
+    setKonten([...konten, {
       id: String(Date.now()),
       kontonummer: '',
       anfangsbestandVorgegeben: false,
@@ -59,12 +56,12 @@ export default function TKontoEditor({
   }
 
   function removeKonto(idx: number): void {
-    if (safeKonten.length <= 1) return
-    setKonten(safeKonten.filter((_, i) => i !== idx))
+    if (konten.length <= 1) return
+    setKonten(konten.filter((_, i) => i !== idx))
   }
 
   function updateKonto(idx: number, partial: Partial<TKontoDefinition>): void {
-    const neu = [...safeKonten]
+    const neu = [...konten]
     neu[idx] = { ...neu[idx], ...partial }
     setKonten(neu)
   }
@@ -72,30 +69,31 @@ export default function TKontoEditor({
   // --- Einträge CRUD ---
 
   function addEintrag(kontoIdx: number): void {
-    const k = safeKonten[kontoIdx]
-    if (k.eintraege.length >= MAX_EINTRAEGE) return
-    const neu = [...safeKonten]
+    const k = konten[kontoIdx]
+    const eintraege = k.eintraege || []
+    if (eintraege.length >= MAX_EINTRAEGE) return
+    const neu = [...konten]
     neu[kontoIdx] = {
       ...k,
-      eintraege: [...k.eintraege, { seite: 'soll', gegenkonto: '', betrag: 0 }],
+      eintraege: [...eintraege, { seite: 'soll', gegenkonto: '', betrag: 0 }],
     }
     setKonten(neu)
   }
 
   function removeEintrag(kontoIdx: number, eintragIdx: number): void {
-    const neu = [...safeKonten]
+    const neu = [...konten]
     const k = neu[kontoIdx]
     neu[kontoIdx] = {
       ...k,
-      eintraege: k.eintraege.filter((_, i) => i !== eintragIdx),
+      eintraege: (k.eintraege || []).filter((_, i) => i !== eintragIdx),
     }
     setKonten(neu)
   }
 
   function updateEintrag(kontoIdx: number, eintragIdx: number, partial: Partial<TKontoDefinition['eintraege'][0]>): void {
-    const neu = [...safeKonten]
+    const neu = [...konten]
     const k = neu[kontoIdx]
-    const eintraege = [...k.eintraege]
+    const eintraege = [...(k.eintraege || [])]
     eintraege[eintragIdx] = { ...eintraege[eintragIdx], ...partial }
     neu[kontoIdx] = { ...k, eintraege }
     setKonten(neu)
@@ -141,7 +139,7 @@ export default function TKontoEditor({
           Einzelne Geschäftsfälle, die von den SuS verbucht werden sollen.
         </p>
         <div className="space-y-2">
-          {safeGeschaeftsfaelle.map((gf, idx) => (
+          {geschaeftsfaelle.map((gf, idx) => (
             <div key={idx} className="flex items-start gap-2">
               <span className="text-xs text-slate-400 dark:text-slate-500 mt-2.5 w-5 shrink-0 text-right">
                 {idx + 1}.
@@ -235,7 +233,7 @@ export default function TKontoEditor({
       {/* Musterlösung: T-Konten */}
       <Abschnitt titel="Musterlösung — T-Konten">
         <div className="space-y-4">
-          {safeKonten.map((konto, kIdx) => (
+          {konten.map((konto, kIdx) => (
             <div
               key={konto.id}
               className="border border-slate-200 dark:border-slate-600 rounded-lg p-3"
@@ -245,7 +243,7 @@ export default function TKontoEditor({
                 <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                   T-Konto {kIdx + 1}
                 </span>
-                {safeKonten.length > 1 && (
+                {konten.length > 1 && (
                   <button
                     onClick={() => removeKonto(kIdx)}
                     className="text-red-400 hover:text-red-600 dark:hover:text-red-300 text-sm cursor-pointer px-1"
@@ -319,7 +317,7 @@ export default function TKontoEditor({
                   Buchungseinträge (Musterlösung)
                 </label>
                 <div className="space-y-1">
-                  {konto.eintraege.map((eintrag, eIdx) => (
+                  {(konto.eintraege || []).map((eintrag, eIdx) => (
                     <div key={eIdx} className="flex items-center gap-2">
                       <select
                         value={eintrag.seite}
@@ -356,7 +354,7 @@ export default function TKontoEditor({
                     </div>
                   ))}
                 </div>
-                {konto.eintraege.length < MAX_EINTRAEGE && (
+                {(konto.eintraege || []).length < MAX_EINTRAEGE && (
                   <button
                     onClick={() => addEintrag(kIdx)}
                     className="mt-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
@@ -391,7 +389,7 @@ export default function TKontoEditor({
           ))}
         </div>
 
-        {safeKonten.length < MAX_KONTEN && (
+        {konten.length < MAX_KONTEN && (
           <button
             onClick={addKonto}
             className="mt-3 px-2.5 py-1 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors cursor-pointer"
