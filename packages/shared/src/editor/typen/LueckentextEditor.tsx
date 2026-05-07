@@ -1,64 +1,30 @@
-import { useRef, useEffect } from 'react'
-import type { LueckentextFrage } from '../../types/fragen-core'
+import { useRef } from 'react'
+import type { LueckentextFrage } from '../../types/fragen'
 import { Abschnitt, Feld } from '../components/EditorBausteine'
-import type { FeldStatus } from '../pflichtfeldValidation'
 
 interface LueckentextEditorProps {
   textMitLuecken: string
   setTextMitLuecken: (v: string) => void
   luecken: LueckentextFrage['luecken']
   setLuecken: (v: LueckentextFrage['luecken']) => void
-  /** Antwort-Modus: Freitext (SuS tippt) oder Dropdown (SuS wählt aus Optionen) */
-  lueckentextModus: 'freitext' | 'dropdown'
-  setLueckentextModus: (v: 'freitext' | 'dropdown') => void
   /** Optionaler Inhalt rechts im Abschnitt-Header (z.B. KI-Buttons) */
   titelRechts?: React.ReactNode
-  /** Pflichtfeld-Status der Lücken-Section (Bundle H Phase 3) */
-  feldStatusLuecken?: FeldStatus
-  /** Pflichtfeld-Status des Lückentext-Felds (Bundle H Phase 3) */
-  feldStatusTextMitLuecken?: FeldStatus
 }
 
-function pflichtCls(status: FeldStatus | undefined): string {
-  return status === 'pflicht-leer'
-    ? 'border border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40 rounded-lg p-3'
-    : 'border border-slate-200 dark:border-slate-700 rounded-lg p-3'
-}
-
-/**
- * Platzhalter-Regex: akzeptiert sowohl `{N}` (alte/importierte Fragen) als
- * auch `{{N}}` (kanonisch). SuS-Renderer nutzt dasselbe Pattern.
- */
-const PLATZHALTER_REGEX = /\{\{?(\d+)\}\}?/g
-
-/** Normalisiert `{N}` → `{{N}}` idempotent, ohne `{{N}}` zu `{{{{N}}}}` zu machen. */
-function normalisierePlatzhalter(text: string): string {
-  return text.replace(PLATZHALTER_REGEX, '{{$1}}')
-}
-
-export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, luecken, setLuecken, lueckentextModus, setLueckentextModus, titelRechts, feldStatusLuecken, feldStatusTextMitLuecken }: LueckentextEditorProps) {
+export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, luecken, setLuecken, titelRechts }: LueckentextEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  // Einmalige Mount-Migration: alte `{N}`-Syntax → kanonisches `{{N}}`. Läuft nur
-  // wenn Text bereits einfach-Klammer-Format enthält (also aus Pool-Import o.ä. stammt).
-  useEffect(() => {
-    if (!textMitLuecken) return
-    const normalisiert = normalisierePlatzhalter(textMitLuecken)
-    if (normalisiert !== textMitLuecken) {
-      setTextMitLuecken(normalisiert)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   // Auto-parse Lücken aus Text
+  const safeLuecken = luecken ?? []
+
   function handleTextChange(text: string): void {
     setTextMitLuecken(text)
-    syncLueckenFromText(text, luecken, setLuecken)
+    syncLueckenFromText(text, safeLuecken, setLuecken)
   }
 
   /** Nächste freie Lücken-ID ermitteln */
   function naechsteId(): string {
-    const matches = textMitLuecken.match(PLATZHALTER_REGEX)
+    const matches = textMitLuecken.match(/\{\{(\d+)\}\}/g)
     if (!matches) return '1'
     const ids = matches.map((m) => parseInt(m.replace(/[{}]/g, ''), 10))
     return String(Math.max(...ids) + 1)
@@ -86,7 +52,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
       const neueLuecke = { id, korrekteAntworten: [markierterText], caseSensitive: false }
       setTextMitLuecken(neuerText)
       // Sync bestehende + neue Lücke
-      const aktualisiert = syncLueckenArray(neuerText, [...luecken, neueLuecke])
+      const aktualisiert = syncLueckenArray(neuerText, [...safeLuecken, neueLuecke])
       setLuecken(aktualisiert)
     } else {
       // Nichts markiert → Platzhalter an Cursor-Position einfügen
@@ -94,7 +60,7 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
       cursorPos = start + platzhalter.length
 
       setTextMitLuecken(neuerText)
-      syncLueckenFromText(neuerText, luecken, setLuecken)
+      syncLueckenFromText(neuerText, safeLuecken, setLuecken)
     }
 
     requestAnimationFrame(() => {
@@ -121,134 +87,71 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
         </div>
         <textarea
           ref={textareaRef}
-          data-testid="lueckentext-textarea"
           value={textMitLuecken}
           onChange={(e) => handleTextChange(e.target.value)}
           rows={4}
           placeholder="Text eingeben und Wörter markieren, um Lücken zu erstellen..."
-          className={`input-field resize-y font-mono text-sm ${
-            feldStatusTextMitLuecken === 'pflicht-leer'
-              ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
-              : ''
-          }`}
+          className="input-field resize-y font-mono text-sm"
         />
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
           Syntax: {'{{1}}'} = erste Lücke, {'{{2}}'} = zweite Lücke, etc.
         </p>
       </Feld>
 
-      {luecken.length > 0 && (
-        <div data-testid="lueckentext-luecken-section" className={`mt-3 space-y-3 ${pflichtCls(feldStatusLuecken)}`}>
-          <div className="flex flex-wrap items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Antwort-Modus:</span>
-            <div className="inline-flex rounded-md border border-slate-300 dark:border-slate-600 overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setLueckentextModus('freitext')}
-                className={`px-3 min-h-[44px] text-sm ${lueckentextModus === 'freitext' ? 'bg-violet-600 text-white' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200'}`}
-                aria-pressed={lueckentextModus === 'freitext'}
-              >
-                Freitext
-              </button>
-              <button
-                type="button"
-                onClick={() => setLueckentextModus('dropdown')}
-                className={`px-3 min-h-[44px] text-sm ${lueckentextModus === 'dropdown' ? 'bg-violet-600 text-white' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200'}`}
-                aria-pressed={lueckentextModus === 'dropdown'}
-              >
-                Dropdown
-              </button>
-            </div>
-            <span className="text-xs text-slate-500 dark:text-slate-400">
-              {lueckentextModus === 'freitext' ? 'SuS tippt Antwort ein' : 'SuS wählt aus Dropdown-Optionen'}
-            </span>
-          </div>
+      {safeLuecken.length > 0 && (
+        <div className="mt-3 space-y-3">
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300">
-            Antworten pro Lücke
+            Korrekte Antworten pro Lücke
           </label>
-          {luecken.map((luecke, lueckenIndex) => {
-            // Defensive: korrekteAntworten kann bei alten/unvollständigen Pool-Fragen undefined sein
-            const korrekteAntw = luecke.korrekteAntworten ?? []
-            const hatKorrekteAntwort = korrekteAntw.some((a) => a && a.trim().length > 0)
+          {safeLuecken.map((luecke, lueckenIndex) => {
             const dropdownText = luecke.dropdownOptionen?.join(', ') ?? ''
             const korrekteImDropdown =
               luecke.dropdownOptionen && luecke.dropdownOptionen.length > 0
-                ? korrekteAntw.some((a) => luecke.dropdownOptionen!.includes(a))
+                ? luecke.korrekteAntworten.some((a) => luecke.dropdownOptionen!.includes(a))
                 : true
             return (
-              <div key={luecke.id} className="flex items-start gap-2 pt-1 border-t border-slate-200 dark:border-slate-700 first:border-t-0 first:pt-0">
-                <span className="text-xs text-slate-500 dark:text-slate-400 font-mono w-10 shrink-0 pt-2" title={`ID: ${luecke.id}`}>
-                  {`{{${lueckenIndex + 1}}}`}
-                </span>
-                <div className="flex-1 space-y-1.5">
-                  <div
-                    data-modus-feld="freitext"
-                    className={lueckentextModus === 'dropdown' ? 'opacity-50' : ''}
-                  >
-                    <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300 mb-0.5">
-                      <span className="inline-block px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 normal-case font-medium text-[10px]">Freitext</span>
-                      Korrekte Antworten (Hauptantwort + Synonyme)
-                    </label>
-                    <input
-                      type="text"
-                      value={korrekteAntw.join(', ')}
-                      onChange={(e) => {
-                        const neu = luecken.map((l) =>
-                          l.id === luecke.id
-                            ? { ...l, korrekteAntworten: e.target.value.split(',').map((a) => a.trim()).filter(Boolean) }
-                            : l
-                        )
-                        setLuecken(neu)
-                      }}
-                      placeholder="Korrekte Antworten (Komma-getrennt, z.B. Antwort1, Antwort2)"
-                      className={`input-field w-full ${hatKorrekteAntwort ? '' : 'border-red-400 dark:border-red-500 bg-red-50 dark:bg-red-900/10'}`}
-                    />
-                    {lueckentextModus === 'dropdown' && (
-                      <p className="text-xs italic text-slate-500 dark:text-slate-400">
-                        — inaktiv im Dropdown-Modus
-                      </p>
-                    )}
-                    {!hatKorrekteAntwort && (
-                      <p className="text-xs text-red-600 dark:text-red-400">
-                        Keine korrekte Antwort hinterlegt — diese Lücke wird bei SuS-Antworten immer als falsch bewertet.
-                      </p>
-                    )}
-                  </div>
-                  <div
-                    data-modus-feld="dropdown"
-                    className={lueckentextModus === 'freitext' ? 'opacity-50' : ''}
-                  >
-                    <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300 mb-0.5">
-                      <span className="inline-block px-1.5 py-0.5 rounded bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 normal-case font-medium text-[10px]">Dropdown</span>
-                      Auswahl-Optionen (1 Korrekte + 4 Distraktoren)
-                    </label>
-                    <input
-                      type="text"
-                      value={dropdownText}
-                      onChange={(e) => {
-                        const optionen = e.target.value.split(',').map((a) => a.trim()).filter(Boolean)
-                        const neu = luecken.map((l) =>
-                          l.id === luecke.id
-                            ? { ...l, dropdownOptionen: optionen.length > 0 ? optionen : undefined }
-                            : l
-                        )
-                        setLuecken(neu)
-                      }}
-                      placeholder="Dropdown-Optionen (1 Korrekte + 4 Distraktoren, Komma-getrennt)"
-                      className="input-field w-full text-xs"
-                    />
-                    {lueckentextModus === 'freitext' && (
-                      <p className="text-xs italic text-slate-500 dark:text-slate-400">
-                        — inaktiv im Freitext-Modus
-                      </p>
-                    )}
-                    {luecke.dropdownOptionen && luecke.dropdownOptionen.length > 0 && !korrekteImDropdown && (
-                      <p className="text-xs text-amber-600 dark:text-amber-400">
-                        Korrekte Antwort nicht in Dropdown-Optionen enthalten
-                      </p>
-                    )}
-                  </div>
+              <div key={luecke.id} className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono w-8 shrink-0" title={`ID: ${luecke.id}`}>
+                    {`{{${lueckenIndex + 1}}}`}
+                  </span>
+                  <input
+                    type="text"
+                    value={luecke.korrekteAntworten.join(', ')}
+                    onChange={(e) => {
+                      const neu = safeLuecken.map((l) =>
+                        l.id === luecke.id
+                          ? { ...l, korrekteAntworten: e.target.value.split(',').map((a) => a.trim()).filter(Boolean) }
+                          : l
+                      )
+                      setLuecken(neu)
+                    }}
+                    placeholder="Korrekte Antworten (Komma-getrennt, z.B. Antwort1, Antwort2)"
+                    className="input-field flex-1"
+                  />
                 </div>
+                <div className="flex items-start gap-2 pl-10">
+                  <input
+                    type="text"
+                    value={dropdownText}
+                    onChange={(e) => {
+                      const optionen = e.target.value.split(',').map((a) => a.trim()).filter(Boolean)
+                      const neu = safeLuecken.map((l) =>
+                        l.id === luecke.id
+                          ? { ...l, dropdownOptionen: optionen.length > 0 ? optionen : undefined }
+                          : l
+                      )
+                      setLuecken(neu)
+                    }}
+                    placeholder="Dropdown-Optionen (optional, Komma-getrennt)"
+                    className="input-field flex-1 text-xs"
+                  />
+                </div>
+                {luecke.dropdownOptionen && luecke.dropdownOptionen.length > 0 && !korrekteImDropdown && (
+                  <p className="pl-10 text-xs text-amber-600 dark:text-amber-400">
+                    Korrekte Antwort nicht in Dropdown-Optionen enthalten
+                  </p>
+                )}
               </div>
             )
           })}
@@ -260,41 +163,21 @@ export default function LueckentextEditor({ textMitLuecken, setTextMitLuecken, l
 
 // ---- Hilfsfunktionen ----
 
-/** IDs aus Text extrahieren: akzeptiert `{N}` und `{{N}}`, dedupliziert. */
-function extrahiereIds(text: string): string[] {
-  const matches = text.match(PLATZHALTER_REGEX)
-  if (!matches) return []
-  return [...new Set(matches.map((m) => m.replace(/[{}]/g, '')))]
-}
-
-/**
- * Findet eine bestehende Lücke zur Platzhalter-ID und berücksichtigt dabei das
- * importierte ID-Format `luecke-N` (Pool-Fragen), damit bestehende
- * korrekteAntworten beim Tippen im Text nicht verloren gehen.
- */
-function findeBestehendeLuecke(
-  id: string,
-  bisherigeLuecken: LueckentextFrage['luecken'],
-): LueckentextFrage['luecken'][number] | undefined {
-  return (
-    bisherigeLuecken.find((l) => l.id === id) ??
-    bisherigeLuecken.find((l) => l.id === `luecke-${id}`)
-  )
-}
-
 /** Lücken-Array mit Text synchronisieren (bestehende beibehalten, neue hinzufügen) */
 function syncLueckenFromText(
   text: string,
   bisherigeLuecken: LueckentextFrage['luecken'],
   setLuecken: (v: LueckentextFrage['luecken']) => void,
 ): void {
-  const ids = extrahiereIds(text)
-  if (ids.length === 0) return
-  const neueLuecken = ids.map((id) => {
-    const bestehend = findeBestehendeLuecke(id, bisherigeLuecken)
-    return bestehend ? { ...bestehend, id } : { id, korrekteAntworten: [''], caseSensitive: false }
-  })
-  setLuecken(neueLuecken)
+  const matches = text.match(/\{\{(\d+)\}\}/g)
+  if (matches) {
+    const ids = [...new Set(matches.map((m) => m.replace(/[{}]/g, '')))]
+    const neueLuecken = ids.map((id) => {
+      const bestehend = bisherigeLuecken.find((l) => l.id === id)
+      return bestehend ?? { id, korrekteAntworten: [''], caseSensitive: false }
+    })
+    setLuecken(neueLuecken)
+  }
 }
 
 /** Lücken-Array synchronisieren und zurückgeben (ohne Setter) */
@@ -302,9 +185,11 @@ function syncLueckenArray(
   text: string,
   bisherigeLuecken: LueckentextFrage['luecken'],
 ): LueckentextFrage['luecken'] {
-  const ids = extrahiereIds(text)
+  const matches = text.match(/\{\{(\d+)\}\}/g)
+  if (!matches) return []
+  const ids = [...new Set(matches.map((m) => m.replace(/[{}]/g, '')))]
   return ids.map((id) => {
-    const bestehend = findeBestehendeLuecke(id, bisherigeLuecken)
-    return bestehend ? { ...bestehend, id } : { id, korrekteAntworten: [''], caseSensitive: false }
+    const bestehend = bisherigeLuecken.find((l) => l.id === id)
+    return bestehend ?? { id, korrekteAntworten: [''], caseSensitive: false }
   })
 }
