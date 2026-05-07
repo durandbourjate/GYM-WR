@@ -8,6 +8,52 @@
 
 ## Letzter Stand auf main
 
+### Bundle T.e — Dashboard-Üben Hook-Extraktion ✅ MERGED (2026-05-07)
+
+Branch `feature/bundle-t-e-dashboard-ueben`. Fünftes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Hoch-Risiko-File-Split per 2 Hook-Extraktionen + 2 Komponenten-Splits + 1 Hotfix-Helper. **Dashboard.tsx 930 → 489 Zeilen (-47%)** — aus Hotspot raus. Hotspot-Bilanz Files >500 Z.: **9 → 8**.
+
+**Was geliefert (5 neue Files + 1 Hotfix):**
+- `ExamLab/src/hooks/ueben/useDashboardLoad.ts` (53 Z.) — 2 useState + 2 separate useEffect's (Fortschritt+Auftraege parallel zu Fragen+Freischaltungen) byte-identisch. JSDoc dokumentiert no-consolidation-Regel.
+- `ExamLab/src/hooks/ueben/useThemenKomputationen.ts` (271 Z.) — 8 useMemo's byte-identisch (themenMap, verfuegbareFaecher, sichtbareThemenListe, letzteUebungProThema, themenSektionen, themaDetail, gefilterteFragen, empfehlungen). 18-Property-Inputs-Object, 8 Outputs. ThemenInfo-Type-Export.
+- `ExamLab/src/hooks/ueben/useThemenKomputationen.test.ts` (363 Z.) — **22 Vitest-Tests** via `renderHook` + Mocks für `authStore`, `berechneEmpfehlungen`, `poolTitel` + 3 Funktions-Refs als `vi.fn()`-Stubs.
+- `ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx` (172 Z.) — Inline-Funktion (Source Z. 728-851) + 3 Konstanten (SCHWIERIGKEIT_LABELS/STERNE/TYP_LABELS) byte-identisch.
+- `ExamLab/src/components/ueben/dashboard/themaDetailHelpers.tsx` (80 Z.) — FilterSection + Chip + FortschrittsBalken + MasteryBadges byte-identisch.
+- **Hotfix#1:** Inline `renderThemaKarte(info, status)`-Helper im Dashboard-Body — DRY-Refactor für 3 nahezu byte-identische ThemaKarteMitPreWarm-Blöcke (Z. 403-417, 442-455, 471-484). Brachte 513 → 489 Z. → Hotspot-Set verlassen.
+
+**Verifikation:**
+- vitest **1324 passes** (drift +22 vs T.d-Baseline 1302) ✓
+- tsc -b clean (Output direkt geprüft, Lehre `feedback_tsc_b_exit_misleading`) ✓
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline unverändert) ✓
+- vite build erfolgreich (3.03s, PWA generateSW OK) ✓
+- Browser-E2E auf staging mit echtem SuS-Login (SW-Cache vorab zurückgesetzt) — **9/11 Pfade ✓** (Pfade 8+10 skipped — Out-of-Scope-Features Lernziel-Indikator-Sichtbarkeit + LernzieleAkkordeon-DeepLink):
+  - Pfad 1 ✅ Dashboard lädt (Empfehlung "Sachenrecht" + 3 Aktuelle Themen + Fach-Chips + BWL/RECHT-Sektionen)
+  - Pfad 2 ✅ Fach-Filter Recht → 1 Aktuell + RECHT(9 Themen)
+  - Pfad 3 ✅ Sortierung "Zuletzt geübt" (konsistenter Fallback bei leeren Fortschritten)
+  - Pfad 4 ✅ ThemaKarte-Klick → ThemaDetailView vollständig (Header + FortschrittsBalken + 3 FilterSections für 7 Unterthemen + 3 Schwierigkeiten + 6 Fragetypen)
+  - Pfad 5 ✅ Filter-Chip "Einfach" → "25 von 73 Fragen ausgewählt"
+  - Pfad 6 ✅ "Übung starten" → 10 gefilterte Fragen geladen, MC-Frage rendert
+  - Pfad 7 ✅ Mix-Dialog öffnet, themenMap an Dialog gepasst (BWL+Recht)
+  - Pfad 9 ✅ BWL-Sektion einklappen → localStorage `examlab-ueben-fach-collapsed=["BWL"]` persistiert
+  - Pfad 11 ✅ 0 Console-Errors (auch nach Hard-Reload)
+- Final Code-Reviewer (Bundle T.e komplett): **APPROVED FOR MERGE** mit Bestätigung byte-identical Behavior + Hotspot-Bilanz 9 → 8.
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **Hook-Result-Destrukturierung** (Bundle T.d Lehre): Caller destrukturiert 6/8 Outputs (`letzteUebungProThema` + `sichtbareThemenListe` werden hook-intern konsumiert, nicht im Body) — keine `result.foo`-Zugriffe.
+- **Bonus-Befund:** `sichtbareThemenListe`-Memo deps korrigiert (zusätzlich `getAktiveUnterthemen` + `getThemenFortschritt`, die im Source closure-bound aber missing-dep waren). Korrektheit verbessert ohne Verhaltensänderung (Zustand-Selektoren stabil).
+- **Hybrid-Sub-Folder-Pattern**: Daten-Hooks in `src/hooks/ueben/` flach, UI-Komponenten in `src/components/ueben/dashboard/`-Sub-Folder analog T.b/T.d.
+- **Inline-`renderThemaKarte`-Closure-Helper**: kein eigenes Komponenten-File, kein Props-Interface — DRY innerhalb der Hauptkomponente (closure über fachFarben/lernziele/Setter/Helper). Passt zur Strategy-B-Out-of-Scope-Linie zu FachSektion (kein Komponenten-Split).
+
+**Plan-Deviation (justified, dokumentiert):**
+- Test-Fixtures: 4 Type-Field-Korrekturen weil Plan-Spec mit Draft-Names schrieb (`FragenFortschritt.korrekteVersuche` vs. real `richtig`+`richtigInFolge`+`sessionIds`+`email`; `UebenAuthUser.rolle` `'sus'` vs. real `'admin'|'lernend'|'unbekannt'`; `ThemenFreischaltung.gruppeId` vs. real Felder; `ThemenFortschritt` ohne `fach`/`thema`).
+- `getAktiveUnterthemen`-Return-Type: `string[] | null` → `string[] | undefined` (real Store-Signatur).
+
+**Out of Scope (für nächste Sessions):**
+- Bundle T.f — LPStartseite (1043 Z., letztes Sub-Bundle aus Bundle T)
+- `themenMap`-Frage-Objekt-Mutation (Source-Code-Pattern): `(f as { unterthema?: string }).unterthema = themaRaw` — pre-existing, byte-identisch beibehalten. Spawn-Task-Kandidat falls Cleanup gewünscht.
+- Pfad 8 (Lernziel-Mini-Modal) + Pfad 10 (DeepLinkAkkordeon) — vitest-Coverage deckt die Logik ab; Browser-Sichtbarkeit bei Test-User nicht erreichbar (skipped, kein Regress).
+
+---
+
 ### Bundle T.d — ZeichnenCanvas Hook-Extraktion ✅ MERGED (2026-05-07)
 
 Branch `feature/bundle-t-d-zeichnen-canvas`. Viertes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Erstes hoch-Risiko-File-Split per 4 Hook-Extraktionen. **ZeichnenCanvas.tsx 804 → 517 Zeilen (-36%)** — Hotspot-Set verlassen (technisch knapp >500, aber Master-Spec-Range <600 für hoch-komplexe Files erfüllt). Hotspot-Bilanz Files >500 Z.: **10 → 9**.
