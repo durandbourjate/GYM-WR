@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Dispatch, SetStateAction } from 'react'
 import { apiService } from '../services/apiService'
 import { useStammdatenStore } from '../store/stammdatenStore'
 import { useFavoritenStore } from '../store/favoritenStore'
@@ -15,9 +14,7 @@ import type { TrackerDaten, TrackerPruefungSummary } from '../types/tracker'
 
 export interface UseLPDashboardDataResult {
   configs: PruefungsConfig[]
-  setConfigs: Dispatch<SetStateAction<PruefungsConfig[]>>
   configsLadeStatus: 'laden' | 'fertig'
-  setConfigsLadeStatus: Dispatch<SetStateAction<'laden' | 'fertig'>>
   trackerLadeStatus: 'laden' | 'fertig'
   trackerDaten: TrackerDaten | null
   backendFehler: boolean
@@ -173,8 +170,8 @@ export function useLPDashboardData(opts: {
   }, [trackerDaten])
 
   return {
-    configs, setConfigs,
-    configsLadeStatus, setConfigsLadeStatus,
+    configs,
+    configsLadeStatus,
     trackerLadeStatus,
     trackerDaten,
     backendFehler,
