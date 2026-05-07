@@ -1,7 +1,7 @@
 // ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts
 import { describe, it, expect } from 'vitest'
-import { zuAntwort, vonAntwort, leereKontoEingabe } from './tkontoUtils'
-import type { KontoEingabe, TKontoAntwort } from './tkontoUtils'
+import { zuAntwort, vonAntwort, leereKontoEingabe, matcheEintraege } from './tkontoUtils'
+import type { KontoEingabe, TKontoAntwort, SusEintrag } from './tkontoUtils'
 import type { TKontoFrage as TKontoFrageType } from '../../../types/fragen-storage'
 
 function frageKontoStub(overrides: Partial<TKontoFrageType['konten'][0]> = {}): TKontoFrageType['konten'][0] {
@@ -126,5 +126,56 @@ describe('vonAntwort', () => {
     expect(result[0].sollHaben).toBe('soll')
     expect(result[0].zunahmeAbnahmeLinks).toBe('+Zunahme')
     expect(result[0].zunahmeAbnahme).toBe('')  // nicht in Antwort, fallback empty
+  })
+})
+
+describe('matcheEintraege', () => {
+  it('beide leer → []', () => {
+    expect(matcheEintraege([], [])).toEqual([])
+  })
+
+  it('matched korrekt-Einträge Reihenfolge-unabhängig (greedy)', () => {
+    const korrekt: SusEintrag[] = [{ gegenkonto: 'A', betrag: 100 }, { gegenkonto: 'B', betrag: 50 }]
+    const sus: SusEintrag[] = [{ gegenkonto: 'B', betrag: 50 }, { gegenkonto: 'A', betrag: 100 }]
+    const result = matcheEintraege(korrekt, sus)
+    expect(result.every(s => s.art === 'korrekt')).toBe(true)
+    expect(result).toHaveLength(2)
+  })
+
+  it('markiert fehlend wenn sus < korrekt', () => {
+    const result = matcheEintraege([{ gegenkonto: 'A', betrag: 100 }], [])
+    expect(result).toEqual([{ art: 'fehlend', gegenkonto: 'A', betrag: 100 }])
+  })
+
+  it('markiert falsch (überflüssig) wenn sus > korrekt', () => {
+    const result = matcheEintraege([], [{ gegenkonto: 'X', betrag: 999 }])
+    expect(result).toEqual([{ art: 'falsch', gegenkonto: 'X', betrag: 999, hinweis: 'Nicht erwartet' }])
+  })
+
+  it('toleriert Decimal-Diff < 0.01', () => {
+    const result = matcheEintraege(
+      [{ gegenkonto: 'A', betrag: 100.005 }],
+      [{ gegenkonto: 'A', betrag: 100.01 }]
+    )
+    expect(result[0].art).toBe('korrekt')
+  })
+
+  it('NICHT toleriert Decimal-Diff ≥ 0.01', () => {
+    // Werte mit klar ≥0.01 Differenz, IEEE-754-stabil (100 vs 100.02 → exakt 0.02)
+    const result = matcheEintraege(
+      [{ gegenkonto: 'A', betrag: 100 }],
+      [{ gegenkonto: 'A', betrag: 100.02 }]
+    )
+    expect(result[0].art).toBe('fehlend')
+    expect(result[1].art).toBe('falsch')
+  })
+
+  it('matched genau 1× pro korrekt-Eintrag (genutzt-Set bei Duplikaten)', () => {
+    const result = matcheEintraege(
+      [{ gegenkonto: 'A', betrag: 100 }],
+      [{ gegenkonto: 'A', betrag: 100 }, { gegenkonto: 'A', betrag: 100 }]
+    )
+    expect(result.filter(s => s.art === 'korrekt')).toHaveLength(1)
+    expect(result.filter(s => s.art === 'falsch')).toHaveLength(1)
   })
 })

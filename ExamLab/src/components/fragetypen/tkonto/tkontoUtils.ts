@@ -145,3 +145,27 @@ export function vonAntwort(
     }
   })
 }
+
+/** Greedy-Match: für jeden korrekten Eintrag einen passenden SuS-Eintrag finden (beide Felder match, Decimal-Toleranz 0.01) */
+export function matcheEintraege(korrekt: SusEintrag[], sus: SusEintrag[]): EintragStatus[] {
+  const genutzt = new Set<number>()
+  const status: EintragStatus[] = []
+  for (const k of korrekt) {
+    const idx = sus.findIndex(
+      (s, i) => !genutzt.has(i) && s.gegenkonto === k.gegenkonto && Math.abs(s.betrag - k.betrag) < 0.01
+    )
+    if (idx >= 0) {
+      genutzt.add(idx)
+      status.push({ art: 'korrekt', gegenkonto: k.gegenkonto, betrag: k.betrag })
+    } else {
+      status.push({ art: 'fehlend', gegenkonto: k.gegenkonto, betrag: k.betrag })
+    }
+  }
+  // Nicht-genutzte SuS-Einträge sind überflüssig
+  sus.forEach((s, i) => {
+    if (!genutzt.has(i)) {
+      status.push({ art: 'falsch', gegenkonto: s.gegenkonto, betrag: s.betrag, hinweis: 'Nicht erwartet' })
+    }
+  })
+  return status
+}
