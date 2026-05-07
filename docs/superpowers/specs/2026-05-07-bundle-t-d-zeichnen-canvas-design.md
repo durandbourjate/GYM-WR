@@ -709,12 +709,13 @@ Per Memory-Regel `feedback_echte_logins` — kein Demo-Modus.
 2. **SuS-Üben Zeichnen-Frage** öffnen → Canvas mit Hintergrundbild lädt, Dimensionen korrekt
 3. **Stift-Performance** schnelles Zeichnen (>20 Punkte/Sekunde) → kein Re-Render-Lag, finalize bei pointerup
 4. **Multi-Strich** Strich 1 + Pause + Strich 2 → Buffer-Reset zwischen Strichen, beide Striche persistiert
-5. **Text-Werkzeug** Klick → Overlay erscheint, Tastatur-Focus auf Input → Tippen → Enter → Text als Command sichtbar
+5. **Text-Werkzeug normal** Klick → Overlay erscheint, Tastatur-Focus auf Input → Tippen → Enter → Text als Command sichtbar
 6. **Text-Werkzeug Outside-Click** Klick → Overlay erscheint → Klick ausserhalb → Overlay schliesst, Text als Command (falls Inhalt) oder verworfen (falls leer)
 7. **Text-Werkzeug Escape** Klick → Overlay → Tippen → Escape → Overlay schliesst, Text verworfen
-8. **Tastatur-Delete** Auswahl-Werkzeug → Klick auf Element → Delete-Taste → Element gelöscht
-9. **Auto-Save-Latenz** Zeichnen → 400ms Pause → onDatenChange triggert (verifizierbar via Network-Tab beim LP-Editor)
-10. **Console-Errors** 0 Errors über alle Pfade
+8. **Text-Werkzeug iOS-Focus** (falls iPad verfügbar) — Touch öffnet Overlay + virtuelle Tastatur
+9. **Tastatur-Delete** Auswahl-Werkzeug → Klick auf Element → Delete-Taste → Element gelöscht
+10. **Auto-Save-Latenz** Zeichnen → 400ms Pause → onDatenChange triggert (verifizierbar via Network-Tab beim LP-Editor)
+11. **Console-Errors** 0 Errors über alle Pfade
 
 Service-Worker-Cache vor E2E zurücksetzen (Memory-Regel `feedback_service_worker_cache_wire_bundle`, hier präventiv obwohl kein Wire-Vertrag berührt wird).
 
@@ -722,7 +723,7 @@ Service-Worker-Cache vor E2E zurücksetzen (Memory-Regel `feedback_service_worke
 
 Nach Master-Spec §4.4 (Bundle-S/L-Standard):
 
-- `cd ExamLab && npx vitest run` grün — drift mindestens +11 Tests (3 useDebounce + 4 berechneDimensionen + 4 useTextOverlay)
+- `cd ExamLab && npx vitest run` grün — drift +15 Tests (3 useDebounce + 5 berechneDimensionen + 7 useTextOverlay)
 - `cd ExamLab && npx tsc -b 2>&1 | tee /tmp/tsc.log` clean (Output direkt prüfen, Lehre `feedback_tsc_b_exit_misleading`)
 - `cd ExamLab && npm run lint:as-any` clean (Total 0/Defensive 0/Undokumentiert 0)
 - `cd ExamLab && npm run lint:no-alert` clean

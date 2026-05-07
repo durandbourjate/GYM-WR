@@ -20,6 +20,24 @@
 
 ---
 
+## Phase 0: Branch-Setup
+
+### Task 0.1: Branch sicherstellen
+
+- [ ] **Step 1: Branch checkout**
+
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git checkout feature/bundle-t-d-zeichnen-canvas
+git pull origin feature/bundle-t-d-zeichnen-canvas
+```
+
+Expected: `On branch feature/bundle-t-d-zeichnen-canvas`. Wenn `pull` "no upstream" sagt → erster Push folgt nach Phase 1.
+
+(Memory-Regel `feedback_subagent_shell_context`: Implementer-Subagents sollen explizit auf den Branch schalten — Master-Shell-Context wird nicht automatisch durchgegeben.)
+
+---
+
 ## File Map
 
 ### Neue Files
@@ -39,6 +57,10 @@
 | Datei | Heute | Nachher | Änderung |
 |---|---:|---:|---|
 | `ExamLab/src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx` | 804 Z. | ~440 Z. | Komposition der 4 Hooks + Pointer-Handler + Render-Loop + JSX |
+
+### Pre-existing Behavior NOT addressed (Out-of-Scope-Hinweis)
+
+`onPNGExport`-Prop von `ZeichnenCanvas` wird heute nirgends im Source aufgerufen — die `onPNGExportRef`/`exportiereRef`-Spiegel existieren als Vorbereitung, aber kein Code löst tatsächlich `onPNGExport(...)` aus. Das ist **pre-existing** (kein Bundle-T.d-Refactor-Bug); ZeichnenFrage.tsx hat den `onPNGExport`-Callback registriert, der aber nicht getriggert wird. Kein Scope für T.d. Plan bewahrt das byte-identisch (Refs werden weiter geschrieben, nie gelesen).
 
 ### Reihenfolge (Risiko-aufsteigend)
 
@@ -870,13 +892,32 @@ export function ZeichnenCanvas({
   })
 
   // Stift-Rendering (rAF-Loop + Buffer)
-  const stift = useStiftRendering({
+  // Destrukturiert für stabile Callback-Identity (sonst re-attached usePointerEvents pro Render)
+  const {
+    stiftBufferRef,
+    stiftMetaRef,
+    istAktivRef: stiftIstAktivRef,
+    starteRendering: starteStiftRendering,
+    stoppeRendering: stoppeStiftRendering,
+  } = useStiftRendering({
     canvasRef,
     renderMitPreview: engine.renderMitPreview,
   })
 
   // Text-Overlay (State-Machine + Auto-Focus + Outside-Click)
-  const textOverlay = useTextOverlay({
+  // Destrukturiert: alle Callbacks/Refs sind useCallback/useRef → stabile Identity
+  const {
+    sichtbar: textOverlaySichtbar,
+    cssLeft: textOverlayCssLeft,
+    cssTop: textOverlayCssTop,
+    text: textOverlayText,
+    setText: textOverlaySetText,
+    oeffnen: textOverlayOeffnen,
+    abschliessen: textOverlayAbschliessen,
+    abschliessenViaBlur: textOverlayAbschliessenViaBlur,
+    inputRef: textOverlayInputRef,
+    sichtbarRef: textOverlaySichtbarRef,
+  } = useTextOverlay({
     onCommit: ({ text, logischX, logischY }) => {
       engine.addCommand({
         typ: 'text',
@@ -918,8 +959,9 @@ export function ZeichnenCanvas({
 
   // Render-Loop: bei State-Änderungen neu zeichnen.
   // Wenn die rAF-Loop aktiv ist, übernimmt sie das Rendering — kein doppeltes Zeichnen.
+  // (deps byte-identisch zu Source: refs werden NICHT in deps geführt — Reviewer M4)
   useEffect(() => {
-    if (stift.istAktivRef.current) return
+    if (stiftIstAktivRef.current) return
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -938,7 +980,8 @@ export function ZeichnenCanvas({
     ctx.scale(dpr, dpr)
     engine.render(ctx)
     ctx.restore()
-  }, [engine.state, engine, hintergrundbild, canvasRef, stift.istAktivRef])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [engine.state, engine, hintergrundbild])
 
   // Auto-Save: debounced onDatenChange bei Commands-Änderung
   const onDatenChangeRef = useRef(onDatenChange)
@@ -980,14 +1023,14 @@ export function ZeichnenCanvas({
 
         case 'stift': {
           const id = generiereCommandId()
-          stift.stiftBufferRef.current = [punkt]
-          stift.stiftMetaRef.current = {
+          stiftBufferRef.current = [punkt]
+          stiftMetaRef.current = {
             id,
             farbe: aktiveFarbe,
             breite: stiftBreite,
             gestrichelt: stiftGestrichelt || undefined,
           }
-          stift.starteRendering()
+          starteStiftRendering()
           break
         }
 
@@ -1044,12 +1087,12 @@ export function ZeichnenCanvas({
         case 'text': {
           const cssLeft = (punkt.x / logischeBreite) * 100
           const cssTop = ((punkt.y - 18) / logischeHoehe) * 100
-          textOverlay.oeffnen({ logischX: punkt.x, logischY: punkt.y, cssLeft, cssTop })
+          textOverlayOeffnen({ logischX: punkt.x, logischY: punkt.y, cssLeft, cssTop })
           break
         }
       }
     },
-    [aktivesTool, aktiveFarbe, stiftBreite, stiftGestrichelt, engine, logischeBreite, logischeHoehe, stift, textOverlay],
+    [aktivesTool, aktiveFarbe, stiftBreite, stiftGestrichelt, engine, logischeBreite, logischeHoehe, starteStiftRendering, textOverlayOeffnen],
   )
 
   const handleMove = useCallback(
@@ -1067,7 +1110,7 @@ export function ZeichnenCanvas({
         }
 
         case 'stift': {
-          stift.stiftBufferRef.current.push(punkt)
+          stiftBufferRef.current.push(punkt)
           break
         }
 
@@ -1103,7 +1146,7 @@ export function ZeichnenCanvas({
           break
       }
     },
-    [aktivesTool, engine, stift],
+    [aktivesTool, engine],
   )
 
   const handleEnd = useCallback(
@@ -1115,20 +1158,20 @@ export function ZeichnenCanvas({
         }
 
         case 'stift': {
-          stift.stoppeRendering()
-          stift.stiftBufferRef.current.push(punkt)
-          const meta = stift.stiftMetaRef.current
-          if (meta && stift.stiftBufferRef.current.length > 0) {
+          stoppeStiftRendering()
+          stiftBufferRef.current.push(punkt)
+          const meta = stiftMetaRef.current
+          if (meta && stiftBufferRef.current.length > 0) {
             engine.addCommand({
               typ: 'stift',
-              punkte: stift.stiftBufferRef.current,
+              punkte: stiftBufferRef.current,
               farbe: meta.farbe,
               breite: meta.breite,
               gestrichelt: meta.gestrichelt,
             } as Omit<DrawCommand, 'id'>)
           }
-          stift.stiftBufferRef.current = []
-          stift.stiftMetaRef.current = null
+          stiftBufferRef.current = []
+          stiftMetaRef.current = null
           break
         }
 
@@ -1161,7 +1204,7 @@ export function ZeichnenCanvas({
           break
       }
     },
-    [aktivesTool, engine, stift],
+    [aktivesTool, engine, stoppeStiftRendering],
   )
 
   // Pointer Events registrieren
@@ -1171,7 +1214,7 @@ export function ZeichnenCanvas({
     breite: logischeBreite,
     hoehe: logischeHoehe,
     disabled,
-    textOverlaySichtbarRef: textOverlay.sichtbarRef,
+    textOverlaySichtbarRef,
     onStart: handleStart,
     onMove: handleMove,
     onEnd: handleEnd,
@@ -1237,12 +1280,12 @@ export function ZeichnenCanvas({
         aria-label="Zeichenfläche"
       />
 
-      {textOverlay.sichtbar && (
+      {textOverlaySichtbar && (
         <div
           style={{
             position: 'absolute',
-            left: `${textOverlay.cssLeft}%`,
-            top: `${textOverlay.cssTop}%`,
+            left: `${textOverlayCssLeft}%`,
+            top: `${textOverlayCssTop}%`,
             zIndex: 20,
           }}
           onPointerDown={e => e.stopPropagation()}
@@ -1251,27 +1294,27 @@ export function ZeichnenCanvas({
           onClick={e => e.stopPropagation()}
         >
           <input
-            ref={textOverlay.inputRef}
+            ref={textOverlayInputRef}
             type="text"
             inputMode="text"
             autoComplete="off"
             autoCapitalize="sentences"
-            value={textOverlay.text}
-            onChange={e => textOverlay.setText(e.target.value)}
+            value={textOverlayText}
+            onChange={e => textOverlaySetText(e.target.value)}
             onPointerDown={e => e.stopPropagation()}
             onMouseDown={e => e.stopPropagation()}
             onTouchStart={e => e.stopPropagation()}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 e.preventDefault()
-                textOverlay.abschliessen(false)
+                textOverlayAbschliessen(false)
               } else if (e.key === 'Escape') {
                 e.preventDefault()
-                textOverlay.abschliessen(true)
+                textOverlayAbschliessen(true)
               }
               e.stopPropagation()
             }}
-            onBlur={textOverlay.abschliessenViaBlur}
+            onBlur={textOverlayAbschliessenViaBlur}
             style={{
               fontSize: '18px',
               fontFamily: 'sans-serif',
@@ -1373,11 +1416,14 @@ git commit --allow-empty -m "Bundle T.d Phase 6: Lint-Gates + Build verified"
 - [ ] **Step 1: Branch zu staging mergen**
 
 ```bash
-git checkout staging
+git fetch origin staging
+git checkout -B staging origin/staging
 git merge feature/bundle-t-d-zeichnen-canvas
 git push origin staging
 git checkout feature/bundle-t-d-zeichnen-canvas
 ```
+
+(Lokales `staging` wird hart von `origin/staging` rekonstruiert um stale-State zu vermeiden, dann gemerged.)
 
 - [ ] **Step 2: Service-Worker-Cache reset (User-Browser)**
 
