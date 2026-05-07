@@ -1,6 +1,6 @@
 // ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts
 import { describe, it, expect } from 'vitest'
-import { zuAntwort, vonAntwort, leereKontoEingabe, matcheEintraege } from './tkontoUtils'
+import { zuAntwort, vonAntwort, leereKontoEingabe, matcheEintraege, bewerteKonto } from './tkontoUtils'
 import type { KontoEingabe, TKontoAntwort, SusEintrag } from './tkontoUtils'
 import type { TKontoFrage as TKontoFrageType } from '../../../types/fragen-storage'
 
@@ -177,5 +177,56 @@ describe('matcheEintraege', () => {
     )
     expect(result.filter(s => s.art === 'korrekt')).toHaveLength(1)
     expect(result.filter(s => s.art === 'falsch')).toHaveLength(1)
+  })
+})
+
+describe('bewerteKonto', () => {
+  it('alle korrekt → kontoKorrekt=true', () => {
+    const konto = frageKontoStub({
+      eintraege: [
+        { gegenkonto: 'A', betrag: 100, seite: 'soll' },
+        { gegenkonto: 'B', betrag: 50, seite: 'haben' },
+      ],
+    })
+    const sus = susKontoStub({
+      eintraegeLinks: [{ gegenkonto: 'A', betrag: 100 }],
+      eintraegeRechts: [{ gegenkonto: 'B', betrag: 50 }],
+    })
+    const result = bewerteKonto(konto, sus)
+    expect(result.kontoKorrekt).toBe(true)
+    expect(result.alleLinksOk).toBe(true)
+    expect(result.alleRechtsOk).toBe(true)
+    expect(result.saldoBalanciert).toBe(true)
+  })
+
+  it('fehlend links → kontoKorrekt=false', () => {
+    const konto = frageKontoStub({ eintraege: [{ gegenkonto: 'A', betrag: 100, seite: 'soll' }] })
+    const sus = susKontoStub()
+    const result = bewerteKonto(konto, sus)
+    expect(result.kontoKorrekt).toBe(false)
+    expect(result.alleLinksOk).toBe(false)
+  })
+
+  it('Saldo unbalanciert → kontoKorrekt=false', () => {
+    const konto = frageKontoStub()
+    const sus = susKontoStub({ saldo: { betragLinks: 100, betragRechts: 50 } })
+    const result = bewerteKonto(konto, sus)
+    expect(result.saldoBalanciert).toBe(false)
+    expect(result.kontoKorrekt).toBe(false)
+  })
+
+  it('kein sus.saldo → saldoBalanciert=true (kein Saldo verlangt)', () => {
+    const konto = frageKontoStub()
+    const sus = susKontoStub()
+    const result = bewerteKonto(konto, sus)
+    expect(result.saldoBalanciert).toBe(true)
+  })
+
+  it('sus=undefined → kontoKorrekt=false (alle fehlend)', () => {
+    const konto = frageKontoStub({ eintraege: [{ gegenkonto: 'A', betrag: 100, seite: 'soll' }] })
+    const result = bewerteKonto(konto, undefined)
+    expect(result.kontoKorrekt).toBe(false)
+    expect(result.alleLinksOk).toBe(false)
+    expect(result.linksStatus[0].art).toBe('fehlend')
   })
 })

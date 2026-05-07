@@ -169,3 +169,23 @@ export function matcheEintraege(korrekt: SusEintrag[], sus: SusEintrag[]): Eintr
   })
   return status
 }
+
+/** Pro-Konto-Bewertung als Single-Source-of-Truth (extrahiert aus heutiger TKontoLoesung) */
+export function bewerteKonto(
+  konto: TKontoFrageType['konten'][0],
+  sus: TKontoAntwort['konten'][0] | undefined,
+): KontoBewertung {
+  const korrektLinks = konto.eintraege.filter((e) => e.seite === 'soll')
+  const korrektRechts = konto.eintraege.filter((e) => e.seite === 'haben')
+  const susLinks: SusEintrag[] = Array.isArray(sus?.eintraegeLinks) ? sus!.eintraegeLinks : []
+  const susRechts: SusEintrag[] = Array.isArray(sus?.eintraegeRechts) ? sus!.eintraegeRechts : []
+  const linksStatus = matcheEintraege(korrektLinks, susLinks)
+  const rechtsStatus = matcheEintraege(korrektRechts, susRechts)
+  const alleLinksOk = linksStatus.every((s) => s.art === 'korrekt') && linksStatus.length === korrektLinks.length
+  const alleRechtsOk = rechtsStatus.every((s) => s.art === 'korrekt') && rechtsStatus.length === korrektRechts.length
+  const saldoBalanciert =
+    !sus?.saldo ||
+    Math.abs((sus.saldo.betragLinks ?? 0) - (sus.saldo.betragRechts ?? 0)) < 0.01
+  const kontoKorrekt = alleLinksOk && alleRechtsOk && saldoBalanciert
+  return { linksStatus, rechtsStatus, alleLinksOk, alleRechtsOk, saldoBalanciert, kontoKorrekt }
+}
