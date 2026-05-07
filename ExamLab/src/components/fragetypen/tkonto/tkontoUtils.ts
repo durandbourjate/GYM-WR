@@ -81,4 +81,35 @@ export function leereKontoEingabe(id: string): KontoEingabe {
   }
 }
 
-// === Pure Functions (zuAntwort/vonAntwort/matcheEintraege/bewerteKonto) folgen in Tasks 1.2-1.5 ===
+// === Pure Functions ===
+
+/** Konvertiert die interne Eingabe ins Antwort-Format für den Store */
+export function zuAntwort(konten: KontoEingabe[]): TKontoAntwort {
+  return {
+    typ: 'tkonto' as const,
+    konten: konten.map((k) => ({
+      id: k.id,
+      beschriftungLinks: k.beschriftungLinks || undefined,
+      beschriftungRechts: k.beschriftungRechts || undefined,
+      kontenkategorie: k.kontenkategorie || undefined,
+      sollHaben: k.sollHaben || undefined,
+      zunahmeAbnahme: k.zunahmeAbnahme || undefined,
+      zunahmeAbnahmeLinks: k.zunahmeAbnahmeLinks || undefined,
+      zunahmeAbnahmeRechts: k.zunahmeAbnahmeRechts || undefined,
+      eintraegeLinks: k.eintraegeLinks.map((e) => ({
+        gegenkonto: e.gegenkonto,
+        betrag: parseFloat(e.betrag) || 0,
+        gfNr: e.gfNr ? parseInt(e.gfNr) : undefined,
+      })),
+      eintraegeRechts: k.eintraegeRechts.map((e) => ({
+        gegenkonto: e.gegenkonto,
+        betrag: parseFloat(e.betrag) || 0,
+        gfNr: e.gfNr ? parseInt(e.gfNr) : undefined,
+      })),
+      saldo: (k.saldoLinks || k.saldoRechts) ? {
+        betragLinks: parseFloat(k.saldoLinks) || 0,
+        betragRechts: parseFloat(k.saldoRechts) || 0,
+      } : undefined,
+    })),
+  }
+}
