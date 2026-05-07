@@ -6,7 +6,6 @@ import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { preWarmKorrektur } from '../../../services/preWarmApi'
 import { schreibeGespeicherteAnzahl } from '../../../utils/skeletonAnzahl'
-import { erstelleDemoMonitoring } from '../../../data/demoMonitoring.ts'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { einrichtungsPruefung } from '../../../data/einrichtungsPruefung.ts'
 import { einrichtungsUebung } from '../../../data/einrichtungsUebung.ts'
@@ -17,7 +16,7 @@ const eingebauteVersionen: Record<string, { config: PruefungsConfig; fragen: Fra
   'einrichtung-uebung': { config: einrichtungsUebung, fragen: einrichtungsUebungFragen },
   [einrichtungsPruefung.id]: { config: einrichtungsPruefung, fragen: demoFragen },
 }
-import type { MonitoringDaten, PruefungsNachricht } from '../../../types/monitoring.ts'
+import type { PruefungsNachricht } from '../../../types/monitoring.ts'
 import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage } from '../../../types/fragen-storage'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
@@ -33,6 +32,7 @@ import LobbyPhase from './LobbyPhase'
 import AktivPhase from './AktivPhase'
 import BeendetPhase from './BeendetPhase'
 import KorrekturDashboard from '../korrektur/KorrekturDashboard'
+import { useDurchfuehrenMonitoring } from '../../../hooks/useDurchfuehrenMonitoring'
 
 type DurchfuehrenTab = 'vorbereitung' | 'lobby' | 'live' | 'auswertung'
 
@@ -98,12 +98,9 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const letztePhaseRef = useRef<PruefungsPhase>('vorbereitung')
 
   // Data-State (aus MonitoringDashboard)
-  const [daten, setDaten] = useState<MonitoringDaten | null>(null)
   const [zeigFragenbank, setZeigFragenbank] = useState(false)
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
-  const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig' | 'fehler'>('laden')
-  const [autoRefresh, setAutoRefresh] = useState(true)
 
   // Abgaben + Fragen (einmalig geladen)
   const [abgaben, setAbgaben] = useState<Record<string, SchuelerAbgabe>>({})
@@ -120,9 +117,14 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const [config, setConfig] = useState<PruefungsConfig | null>(null)
 
   // Phase früh ableiten (wird in Polling-Effekten als Dependency gebraucht)
+  // Vorerst aus letzter-Render-Daten via Ref (Task 4 migriert das auf useState)
+  const phaseRef = useRef<PruefungsPhase>('vorbereitung')
+  const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten } =
+    useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase: phaseRef.current })
   const phase: PruefungsPhase = config && daten
     ? bestimmePhase(config, daten.schueler)
     : 'vorbereitung'
+  phaseRef.current = phase
 
   // Zentral: Nur Teilnehmer aus dem Monitoring anzeigen (nicht-eingeladene SuS ausfiltern)
   const teilnehmerEmails = useMemo(() => {
@@ -138,15 +140,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   // Loading-State für Freischalten-Button
   const [freischaltenLaedt, setFreischaltenLaedt] = useState(false)
 
-  // AbortController für Monitoring-Polling (Overlap-Schutz)
-  const monitoringAbortRef = useRef<AbortController | null>(null)
-
   // G.f.2 — letzter geschriebener Wert für localStorage-Persist (verhindert redundante Writes)
   const letzteGeschriebeneAnzahlRef = useRef<number | null>(null)
-
-  // Verbindungsfehler-Tracking (Ref statt State → kein useCallback-Rebuild)
-  const fehlerCountRef = useRef(0)
-  const [zeigeVerbindungsBanner, setZeigeVerbindungsBanner] = useState(false)
 
   // Timer für aktive Phase
   const [startTimestamp] = useState(() => Date.now())
@@ -164,81 +159,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     const interval = setInterval(ladeNachrichten, 20000)
     return () => clearInterval(interval)
   }, [ladeNachrichten])
-
-  // Daten laden (mit Overlap-Schutz: vorherigen Request abbrechen)
-  const ladeDaten = useCallback(async () => {
-    if (!user) return
-    if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
-      setDaten(erstelleDemoMonitoring())
-      setLadeStatus('fertig')
-      return
-    }
-    // Vorherigen laufenden Request abbrechen
-    monitoringAbortRef.current?.abort()
-    const controller = new AbortController()
-    monitoringAbortRef.current = controller
-    const result = await apiService.ladeMonitoring(pruefungId, user.email, { signal: controller.signal })
-    // Abgebrochene Requests ignorieren (nicht als Fehler werten)
-    if (controller.signal.aborted) return
-    // Verbindungsfehler erkennen: result ist null bei Timeout/Netzwerkfehler
-    // ABER: Beim ersten Laden ist null normal (kein Antworten-Sheet in Vorbereitungsphase)
-    if (!result && !istDemoModus && ladeStatus !== 'laden') {
-      fehlerCountRef.current++
-      if (fehlerCountRef.current >= 3) {
-        setZeigeVerbindungsBanner(true)
-      }
-      return // Bestehende Daten sichtbar lassen, nicht mit leeren überschreiben
-    }
-    // Erfolg → Fehlerzähler zurücksetzen
-    if (result) {
-      fehlerCountRef.current = 0
-      if (zeigeVerbindungsBanner) setZeigeVerbindungsBanner(false)
-    }
-    // result kann null sein wenn noch kein Antworten-Sheet existiert (Vorbereitungsphase)
-    // → Leere Monitoring-Daten statt Fehler, damit die LP normal weiterarbeiten kann
-    const effectiveResult = result || { pruefungTitel: '', schueler: [], gesamtSus: 0 }
-    const mappedResult = {
-      ...effectiveResult,
-      gesamtSus: effectiveResult.gesamtSus ?? (effectiveResult.schueler as unknown[])?.length ?? 0,
-      schueler: (((effectiveResult.schueler || []) as unknown as Record<string, unknown>[]).map((s) => ({
-        email: s.email || '',
-        name: s.name || s.email || '',
-        status: (s.abgabezeit || s.istAbgabe === 'true' || s.istAbgegeben === 'true' || s.istAbgegeben === true) ? 'abgegeben' : (s.status || 'nicht-gestartet'),
-        letzterHeartbeat: s.letzterHeartbeat || null,
-        letzterSave: s.letzterSave || null,
-        beantworteteFragen: Number(s.beantworteteFragen) || 0,
-        gesamtFragen: Number(s.gesamtFragen) || 0,
-        abgabezeit: s.abgabezeit || null,
-        startzeit: s.startzeit || null,
-        heartbeats: Number(s.heartbeats) || 0,
-        netzwerkFehler: Number(s.netzwerkFehler) || 0,
-        autoSaveCount: Number(s.autoSaveCount) || 0,
-        unterbrechungen: Array.isArray(s.unterbrechungen) ? s.unterbrechungen : [],
-        sebVersion: s.sebVersion || undefined,
-        browserInfo: s.browserInfo || undefined,
-        aktuelleFrage: typeof s.aktuelleFrage === 'number' ? s.aktuelleFrage : (s.aktuelleFrage != null && s.aktuelleFrage !== '' ? Number(s.aktuelleFrage) : null),
-        // Lockdown-Felder (B19-Fix: fehlten im Mapping)
-        geraet: (s.geraet as 'laptop' | 'tablet' | 'unbekannt') || undefined,
-        vollbild: s.vollbild === true || s.vollbild === 'true',
-        kontrollStufe: (s.kontrollStufe as 'keine' | 'locker' | 'standard' | 'streng') || undefined,
-        verstossZaehler: Number(s.verstossZaehler) || 0,
-        gesperrt: s.gesperrt === true || s.gesperrt === 'true',
-        verstoesse: Array.isArray(s.verstoesse) ? s.verstoesse : (typeof s.verstoesse === 'string' ? (() => { try { return JSON.parse(s.verstoesse as string) } catch { return [] } })() : []),
-      }))),
-    }
-    setDaten(mappedResult as MonitoringDaten)
-    setLadeStatus('fertig')
-  }, [user, istDemoModus, pruefungId])
-
-  useEffect(() => { ladeDaten() }, [ladeDaten])
-
-  // Auto-Refresh: 5s in Live-Phase (kritisch), 15s sonst (spart Connections für Button-Clicks)
-  useEffect(() => {
-    if (!autoRefresh || ladeStatus === 'fehler') return
-    const intervallMs = (phase === 'aktiv' || phase === 'lobby') ? 5000 : 15000
-    const interval = setInterval(ladeDaten, intervallMs)
-    return () => clearInterval(interval)
-  }, [autoRefresh, ladeStatus, ladeDaten, phase])
 
   // G.f.2 — SuS-Anzahl pro pruefungId persistieren für layout-akkurates Skeleton
   useEffect(() => {

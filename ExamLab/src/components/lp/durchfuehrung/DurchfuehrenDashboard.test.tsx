@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import DurchfuehrenDashboardSource from './DurchfuehrenDashboard.tsx?raw'
+import UseDurchfuehrenMonitoringSource from '../../../hooks/useDurchfuehrenMonitoring.ts?raw'
 
 // =============================================================================
 // G.f.2 Rendering-Tests: Mocks müssen VOR allen Komponenten-Imports stehen
@@ -95,8 +96,9 @@ async function ladeDurchfuehrenDashboard() {
 
 describe('DurchfuehrenDashboard — Polling-Logik', () => {
   it('Hebel A: Lobby-Phase soll 5s-Polling ausloesen (nicht 15s)', () => {
+    // Polling-Logik wurde in Bundle T.a Phase 2 in useDurchfuehrenMonitoring extrahiert.
     const hasLobbyPolling = /\(phase\s*===\s*['"]aktiv['"]\s*\|\|\s*phase\s*===\s*['"]lobby['"]\)/.test(
-      DurchfuehrenDashboardSource
+      UseDurchfuehrenMonitoringSource
     )
     expect(
       hasLobbyPolling,

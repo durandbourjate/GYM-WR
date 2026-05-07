@@ -12,6 +12,7 @@ export interface UseDurchfuehrenMonitoringResult {
   setAutoRefresh: (v: boolean) => void
   zeigeVerbindungsBanner: boolean
   ladeDaten: () => Promise<void>
+  setDaten: (d: MonitoringDaten | null) => void
 }
 
 /**
@@ -75,5 +76,5 @@ export function useDurchfuehrenMonitoring(opts: {
     return () => clearInterval(interval)
   }, [autoRefresh, ladeStatus, ladeDaten, phase])
 
-  return { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten }
+  return { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten }
 }
