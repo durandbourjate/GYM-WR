@@ -62,6 +62,7 @@ export function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, tracker
             )
           })}
         </div>
+        {/* Tracker-Badges */}
         {trackerSummary && (
           <div className="flex items-center gap-2 mt-2 flex-wrap">
             <TrackerBadge summary={trackerSummary} />
@@ -107,16 +108,20 @@ function TrackerBadge({ summary: s }: { summary: TrackerPruefungSummary }) {
   const status = bestimmePruefungsStatus(s)
   return (
     <>
+      {/* Status-Punkt + Label */}
       <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
         <span className={`w-2 h-2 rounded-full ${statusFarbe(status)}`} />
         {statusLabel(status)}
       </span>
+      {/* Teilnahme */}
       <span className="text-xs text-slate-400 dark:text-slate-500">
         {s.eingereicht}/{s.teilnehmerGesamt} eingereicht
       </span>
+      {/* Korrektur */}
       <span className="text-xs text-slate-400 dark:text-slate-500">
         {korrekturLabel(s)}
       </span>
+      {/* Durchschnitt */}
       {s.durchschnittNote !== null && (
         <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
           &#216; {s.durchschnittNote.toFixed(1)}
