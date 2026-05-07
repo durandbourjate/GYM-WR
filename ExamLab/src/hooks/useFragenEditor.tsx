@@ -1,4 +1,4 @@
-// ExamLab/src/hooks/useFragenEditor.ts
+// ExamLab/src/hooks/useFragenEditor.tsx
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { apiService } from '../services/apiService.ts'
 import { useFragensammlungStore } from '../store/fragensammlungStore.ts'
@@ -192,9 +192,15 @@ export function useFragenEditor({ user, istDemoModus, alleFragen, sortierteFrage
     schliessenModalAbschliessen()
   }, [schliessenModalAbschliessen])
 
-  /** un-delete-Race-Mitigation (Bundle 3 P-C.3 hotfix#5):
-   *  draftSyncCancelPending VOR loescheFrage + 2. Cancel NACH (gegen Race mit fresher tippeFrage).
-   *  Byte-identisch zu heutiger FragenBrowser.tsx Z. 295-308. */
+  /** un-delete-Race-Mitigation (Bundle 3 P-C.3 hotfix#5).
+   *
+   *  hotfix#5 — cancel pending IDB+Server-Timer VOR loescheFrage. Ohne diesen Cancel
+   *  räumt der pending 10s-Server-Sync nach loescheFrage die geloescht_am-Spalte
+   *  wieder leer (un-delete-Race). 2. Cancel NACH await: falls während des Server-
+   *  Roundtrips eine neue tippeFrage einen frischen Timer scheduled hat.
+   *
+   *  Beide cancelPending-Aufrufe sind ESSENZIELL — nicht entfernen, nicht
+   *  zusammenfassen. Byte-identisch zu FragenBrowser.tsx Z. 295-308 vor Phase 3. */
   const modalVerwerfen = useCallback(async (): Promise<void> => {
     if (schliessenModal === 'unvollstaendig' && liveFrage && user?.email) {
       draftSyncCancelPending(liveFrage.id)
