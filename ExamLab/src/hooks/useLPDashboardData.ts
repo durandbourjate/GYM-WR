@@ -154,12 +154,16 @@ export function useLPDashboardData(opts: {
       const result = await apiService.ladeAlleConfigs(user.email)
       if (result) {
         setConfigs(result)
+        setBackendFehler(false)
         schreibeGespeicherteAnzahl('examlab-lp-letzte-summative-anzahl', result.filter(c => c.typ !== 'formativ').length)
         schreibeGespeicherteAnzahl('examlab-lp-letzte-formative-anzahl', result.filter(c => c.typ === 'formativ').length)
+      } else {
+        setBackendFehler(true)
       }
       setConfigsLadeStatus('fertig')
     } else {
       setConfigs(demoConfigs())
+      setBackendFehler(false)
       setConfigsLadeStatus('fertig')
     }
   }, [user, istDemoModus])
