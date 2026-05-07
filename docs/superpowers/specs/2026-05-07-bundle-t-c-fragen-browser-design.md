@@ -88,6 +88,7 @@ interface UseFragenEditorResult {
 
   // Service-API (Bundle-3-Race-Mitigation gekapselt)
   oeffnen: (frage: Frage | FrageSummary) => Promise<void>
+  oeffnenNeu: () => void                                       // Editor für neue Frage öffnen (editFrage=null)
   speichern: (neueFrage: Frage, meta?: SpeichernMeta) => Promise<void>
   abbrechen: () => void
   modalAbbrechen: () => void
@@ -96,10 +97,13 @@ interface UseFragenEditorResult {
 }
 ```
 
+**`liveFrage` ist intentional NICHT im Result-Interface** — Single-Source-of-Truth-Principle: Caller hat keinen direkten Zugriff auf `liveFrage`/`setLiveFrage`. Schreib-Pfad ist nur via `autoSaveAdapter.onTippe` (intern), Lese-Pfad ist `editFrage` (für JSX). Verhindert versehentliche Bypass-Mutation der un-delete-Race-Mitigation.
+
 **Internal Implementation:**
 - State (private): `zeigEditor`, `editFrage`, `liveFrage`, `schliessenModal`, `detailLaden`
 - Hooks (private): `useFragenAutoSave(editorId, liveFrage)`, `useEditorNeighborPrefetch(...)`
 - Memos (private): `nachbarFuerPrefetch`, `nachbarCallbacks`, `autoSaveAdapter`
+  - `nachbarCallbacks` ruft `oeffnen(vor)` / `oeffnen(nach)` aus Closure-Scope. `oeffnen` muss als `useCallback` ÜBER der Memo-Definition deklariert sein (oder via privater Helper-Function), damit der Memo es referenzieren kann. eslint-disable-next-line `react-hooks/exhaustive-deps` für `[editFrage, sortierteFragen]`-deps wie heute Z. 210 erhalten bleiben.
 - Effects (private):
   - `liveFrage = editFrage` Sync auf `[editFrage]`
   - Initial-Edit-Trigger auf `[ladeStatus, initialEditFrageId]` mit Idempotenz-Guard
@@ -154,6 +158,7 @@ interface UseFragenAktionenResult {
 **Internal Implementation:**
 - State (private): `loeschKandidat`
 - Helpers: `useFragensammlungStore.getState()` für `entferneFrage`, `fuegeFragenHinzu`, `aktualisiereFrage`, `lade`
+- **Cross-Hook-Coupling-Disclosure:** Beide Hooks (`useFragenEditor` + `useFragenAktionen`) lesen `useFragensammlungStore.getState()` direkt für `aktualisiereFrage` — kein Cross-Hook-Coupling. `useFragenEditor.speichern` und `useFragenAktionen.importieren` rufen denselben Store-Helper aufrufen. Sauber, da Store-Mutation idempotent ist.
 - `setLoeschKandidat` ist **NICHT** der direkte useState-Setter — wandelt `Frage | FrageSummary` zu `loeschKandidat`-Object mit `id`/`fachbereich`/`typ`/`fragetext`-Extract:
   ```typescript
   setLoeschKandidat: (frage) => setLoeschKandidatState({
@@ -199,6 +204,8 @@ interface FragenBrowserBodyProps {
   listeRef: React.RefObject<HTMLDivElement>
 }
 ```
+
+`inline` wird an `<FragenBrowserHeader>` weitergereicht — Header unterdrückt die Ziel-Leiste in inline-Modus (heute Z. 438 `inline` als Header-Prop). overlay-Modus zeigt `zielPruefungTitel`/`zielAbschnittTitel` (heute Z. 627-628). Body selbst rendert in beiden Modi identisch — Unterschied liegt nur am Header-Verhalten + Modal-Mount-Position (Letzteres im Caller).
 
 **Render-Inhalt (1:1 aus heutiger inline-Branch Z. 393-485):**
 1. `<FragenBrowserHeader {...filter} ... />` mit ~32 Filter-Props destruktiert aus `filter`-Object
@@ -255,7 +262,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const drafts = useMemo<Frage[]>(() => alleFragenMitDrafts.filter((f) => (f as { status?: string }).status === 'draft') as Frage[], [alleFragenMitDrafts])
   const alleFragen = useMemo(() => alleFragenMitDrafts.filter((f) => (f as { status?: string }).status !== 'draft'), [alleFragenMitDrafts])
 
-  const { setFragen: setAlleFragen } = useFragensammlungStore.getState()  // für BatchExport-onErfolg
+  const { setFragen: setAlleFragen } = useFragensammlungStore.getState()  // BatchExport-onErfolg bleibt im Caller — konsistent mit Modal-Toggle-Cluster (Brainstorming-Beschluss B)
 
   const [fragenStats, setFragenStats] = useState<Map<string, FragenPerformance>>(new Map())
   useEffect(() => {
@@ -301,7 +308,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       handleEditFrage={editor.oeffnen}
       handleFrageDuplizieren={aktionen.duplizieren}
       handleFrageLoeschen={aktionen.setLoeschKandidat}
-      onNeueFrageErstellen={() => editor.oeffnen-bei-neu /* Caller-Wrapper für editFrage=null */}
+      onNeueFrageErstellen={editor.oeffnenNeu}
       onBatchExport={() => setZeigBatchExport(true)}
       onImport={() => setZeigImport(true)}
       onExcelImport={() => setZeigExcelImport(true)}
@@ -347,7 +354,7 @@ Domain (Frage/Editor/Aktion/Lösch/Verwerfen) deutsch. UI-Strings deutsch mit Um
 
 ### 5.1 Vitest
 
-**Drift = 0** neue Tests. Alle 2 Hooks sind Async-Store-Orchestration (Master-Spec 4.2 → NEIN Vitest, Browser-E2E reicht). UI-Komponenten Body + LoeschDialog sind Render-Komposition → Browser-E2E.
+**Drift = 0** neue Tests. Alle 3 Service-Methods in `useFragenEditor` (`oeffnen`/`speichern`/`modalVerwerfen`) sind async mit Store/Network-Side-Effects (`apiService.ladeDetail` / `apiService.speichereFrage` / `apiService.loescheFrage`). Alle 5 Service-Methods in `useFragenAktionen` ebenfalls async + Store-Mutationen. Damit Master-Spec 4.2 Klassifikation: **Async-Store-Orchestration → NEIN Vitest, Browser-E2E reicht**. UI-Komponenten Body + LoeschDialog sind Render-Komposition → Browser-E2E.
 
 Bestehende Tests bleiben grün — kein Test referenziert `FragenBrowser.tsx` direkt. `useFragenFilter`/`useFragenAutoSave`-Tests (falls vorhanden) sind unberührt.
 
@@ -357,7 +364,7 @@ Bestehende Tests bleiben grün — kein Test referenziert `FragenBrowser.tsx` di
 |---|---|---|
 | 1 | LP-Editor öffnen | Klick auf Frage → Detail-Spinner → Editor mit AutoSave-Status erscheint |
 | 2 | Auto-Save-Pfad | Tippen im Editor → SaveStatusIndikator zeigt 'sync-läuft' → 'sauber' (draftSync-Roundtrip) |
-| 3 | Schliessen-Modal 'sync-pending' | Tippen + sofort Schliessen → Modal blockt; "Verwerfen" → un-delete-Race-Mitigation aktiv (`cancelPending` 2× + `loescheFrage`) |
+| 3 | Schliessen-Modal 'sync-pending' | Tippen + sofort Schliessen → Modal blockt; "Verwerfen" → DevTools-Network zeigt `loescheFrage`-POST + KEIN nachgelagerter `tippeFrage`-POST überschreibt geloescht_am (un-delete-Race-Mitigation observierbar) |
 | 4 | Schliessen-Modal 'unvollstaendig' | Pflichtfeld leer → Modal mit "Als Entwurf behalten" / "Verwerfen" |
 | 5 | Lösch-Dialog | DetailKarte-Trash-Icon → Bestätigungs-Dialog → "Endgültig löschen" → Frage weg aus Liste |
 | 6 | Import-Pfad | JSON/Excel-Import → fuegeFragenHinzu + Backend-Speicher |
