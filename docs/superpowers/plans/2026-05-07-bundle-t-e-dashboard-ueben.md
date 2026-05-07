@@ -200,7 +200,9 @@ EOF
 
 ## Task 2: `ThemaDetailView.tsx` extrahieren
 
-Mechanische Extraktion der inline-Funktion `ThemaDetailView` aus Dashboard.tsx (Z. 709-851) inkl. Konstanten + `ThemaDetailProps`-Interface. Helper-Komponenten via Import aus `themaDetailHelpers.tsx` (Task 1).
+Mechanische Extraktion der inline-Funktion `ThemaDetailView` aus Dashboard.tsx (function-Definition ab Z. 728) inkl. Konstanten + `ThemaDetailProps`-Interface. Helper-Komponenten via Import aus `themaDetailHelpers.tsx` (Task 1).
+
+`ThemenInfo`-Type wird **temporär lokal** in ThemaDetailView.tsx deklariert (Hook-File aus Task 4 existiert noch nicht). In Task 4.8 wird der lokale Type durch Import aus `useThemenKomputationen` ersetzt.
 
 **Files:**
 - Create: `ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx`
@@ -210,10 +212,19 @@ Mechanische Extraktion der inline-Funktion `ThemaDetailView` aus Dashboard.tsx (
 ```tsx
 // ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx
 import type { Frage } from '../../../types/ueben/fragen'
-import type { ThemenInfo } from '../../../hooks/ueben/useThemenKomputationen'
+import type { ThemenFortschritt } from '../../../types/ueben/fortschritt'
 import { berechneSterne, sterneText } from '../../../utils/ueben/gamification'
 import { getFachFarbe } from '../../../utils/ueben/fachFarben'
 import { FilterSection, Chip, FortschrittsBalken, MasteryBadges } from './themaDetailHelpers'
+
+// TEMPORÄR: wird in Task 4.8 durch Import aus useThemenKomputationen ersetzt
+interface ThemenInfo {
+  fach: string
+  thema: string
+  unterthemen: string[]
+  fragen: Frage[]
+  fortschritt: ThemenFortschritt
+}
 
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
 const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }
@@ -373,44 +384,21 @@ export function ThemaDetailView({
 }
 ```
 
-> **HINWEIS:** Der Import `import type { ThemenInfo } from '../../../hooks/ueben/useThemenKomputationen'` zeigt auf das in Task 4 erstellte Hook-File. Dies erzeugt einen vorübergehenden TypeScript-Fehler, der in Task 4 aufgelöst wird. **Workaround für Tasks 2-3:** In Step 2.1 statt dem Import temporär `interface ThemenInfo { fach: string; thema: string; unterthemen: string[]; fragen: Frage[]; fortschritt: ThemenFortschritt }` lokal in ThemaDetailView.tsx deklarieren + `import type { ThemenFortschritt } from '../../../types/ueben/fortschritt'`. In Task 4 wird der lokale Type dann durch den Import aus `useThemenKomputationen` ersetzt.
-
-- [ ] **Step 2.2: Mit lokalem ThemenInfo-Type kompilieren** (Workaround)
-
-In `ThemaDetailView.tsx` Z. 1-5 ändern auf:
-
-```tsx
-import type { Frage } from '../../../types/ueben/fragen'
-import type { ThemenFortschritt } from '../../../types/ueben/fortschritt'
-import { berechneSterne, sterneText } from '../../../utils/ueben/gamification'
-import { getFachFarbe } from '../../../utils/ueben/fachFarben'
-import { FilterSection, Chip, FortschrittsBalken, MasteryBadges } from './themaDetailHelpers'
-
-// TEMPORÄR (wird in Task 4 durch Import aus useThemenKomputationen ersetzt)
-interface ThemenInfo {
-  fach: string
-  thema: string
-  unterthemen: string[]
-  fragen: Frage[]
-  fortschritt: ThemenFortschritt
-}
-```
-
-- [ ] **Step 2.3: tsc-Gate**
+- [ ] **Step 2.2: tsc-Gate**
 
 ```bash
 cd ExamLab && npx tsc -b 2>&1 | tail -10
 ```
 Expected: clean.
 
-- [ ] **Step 2.4: vitest sanity**
+- [ ] **Step 2.3: vitest sanity**
 
 ```bash
 cd ExamLab && npx vitest run 2>&1 | tail -5
 ```
 Expected: 1302 passes.
 
-- [ ] **Step 2.5: Commit**
+- [ ] **Step 2.4: Commit**
 
 ```bash
 git add ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx
@@ -620,7 +608,6 @@ import type { Auftrag, Empfehlung } from '../../types/ueben/auftrag'
 import type { ThemenFreischaltung, ThemenStatus } from '../../types/ueben/themenSichtbarkeit'
 import type { GruppenEinstellungen } from '../../types/ueben/settings'
 import type { UebenAuthUser } from '../../types/ueben/auth'
-import type { Lernziel } from '@shared/types/fragen-core'
 import { useAuthStore } from '../../store/authStore'
 import { berechneEmpfehlungen } from '../../utils/ueben/empfehlungen'
 import { poolTitel } from '../../utils/poolTitelMapping'
@@ -641,7 +628,6 @@ export interface ThemenKomputationenInputs {
   user: UebenAuthUser | null
   freischaltungen: ThemenFreischaltung[]
   einstellungen: GruppenEinstellungen | null
-  lernziele: Lernziel[]
   sichtbareFaecher: string[]
 
   // UI-State
@@ -1349,7 +1335,6 @@ const {
   user,
   freischaltungen,
   einstellungen,
-  lernziele,
   sichtbareFaecher,
   aktiverFach,
   aktivesThema,
@@ -1363,17 +1348,9 @@ const {
   getStatus,
   getAktiveUnterthemen,
 })
-// letzteUebungProThema wird nicht direkt im Body konsumiert — ESLint-Hinweis: bewusst destrukturiert für künftige Verwendung
-void letzteUebungProThema // Markiert als bewusst-ignored
 ```
 
-> **Alternative bei Lint-Strikheit:** statt `void letzteUebungProThema` einfach den Schlüssel aus der Destrukturierung weglassen — die Spec hatte gefordert ihn zu destrukturieren für Test-Coverage, aber der Caller braucht ihn nicht. Pragmatisch: weglassen wenn der `void`-Trick zu hässlich ist. Einfacher Fix:
-> ```typescript
-> const {
->   themenMap, verfuegbareFaecher, sichtbareThemenListe,
->   themenSektionen, themaDetail, gefilterteFragen, empfehlungen,
-> } = useThemenKomputationen({ ... })
-> ```
+> **Hinweis zu `letzteUebungProThema`:** Der Hook exportiert es (für Test-Coverage), der Caller destrukturiert es bewusst NICHT (kein Verbrauch im Body). Tests greifen via `result.current.letzteUebungProThema` direkt zu — kein `void`-Workaround nötig.
 
 **(e) ThemaDetailView-Aufruf prüfen** (Z. 493-516): die existierende inline-Aufruf-JSX bleibt; nur Import-Pfad ist neu (Schritt (a)).
 
