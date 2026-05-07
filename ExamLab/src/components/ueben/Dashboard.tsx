@@ -22,6 +22,8 @@ import SuSAnalyse from './SuSAnalyse'
 import { ThemaDetailView } from './dashboard/ThemaDetailView'
 import type { DeepLinkZiel } from '../../hooks/ueben/useDeepLinkAktivierung'
 import type { ThemaQuelle } from '../../types/ueben/uebung'
+import type { ThemenStatus } from '../../types/ueben/themenSichtbarkeit'
+import type { ThemenInfo } from '../../hooks/ueben/useThemenKomputationen'
 import MixSessionDialog from './MixSessionDialog'
 import UebungsEinsicht from './UebungsEinsicht'
 import { LernzieleMiniModal } from './LernzieleAkkordeon'
@@ -222,6 +224,25 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     }
   }
 
+  // Bundle T.e Phase 4 hotfix#1: DRY-Helper für ThemaKarteMitPreWarm
+  // Closure über fachFarben/lernziele/setAktivesThema/setAktiverFach/setLzMiniModal/preWarmThema
+  const renderThemaKarte = (info: ThemenInfo, status: ThemenStatus) => (
+    <ThemaKarteMitPreWarm
+      key={`${info.fach}-${info.thema}`}
+      thema={info.thema}
+      fach={info.fach}
+      anzahlFragen={info.fragen.length}
+      anzahlUnterthemen={info.unterthemen.length}
+      fortschritt={info.fortschritt}
+      themenStatus={status}
+      fachFarben={fachFarben}
+      onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
+      anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
+      onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
+      onPreWarm={() => preWarmThema(info.fach, info.thema)}
+    />
+  )
+
   return (
     <div>
       <main className="max-w-5xl mx-auto p-6">
@@ -400,22 +421,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                     <span>★</span> Aktuelle Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {themenSektionen.aktuelle.map(info => (
-                      <ThemaKarteMitPreWarm
-                        key={`${info.fach}-${info.thema}`}
-                        thema={info.thema}
-                        fach={info.fach}
-                        anzahlFragen={info.fragen.length}
-                        anzahlUnterthemen={info.unterthemen.length}
-                        fortschritt={info.fortschritt}
-                        themenStatus="aktiv"
-                        fachFarben={fachFarben}
-                        onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
-                        anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
-                        onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
-                        onPreWarm={() => preWarmThema(info.fach, info.thema)}
-                      />
-                    ))}
+                    {themenSektionen.aktuelle.map(info => renderThemaKarte(info, 'aktiv'))}
                   </div>
                 </div>
               )}
@@ -438,22 +444,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                     </button>
                     {!eingeklappt && (
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {themen.map(info => (
-                          <ThemaKarteMitPreWarm
-                            key={`${info.fach}-${info.thema}`}
-                            thema={info.thema}
-                            fach={info.fach}
-                            anzahlFragen={info.fragen.length}
-                            anzahlUnterthemen={info.unterthemen.length}
-                            fortschritt={info.fortschritt}
-                            themenStatus="abgeschlossen"
-                            fachFarben={fachFarben}
-                            onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
-                            anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
-                            onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
-                            onPreWarm={() => preWarmThema(info.fach, info.thema)}
-                          />
-                        ))}
+                        {themen.map(info => renderThemaKarte(info, 'abgeschlossen'))}
                       </div>
                     )}
                   </div>
@@ -467,22 +458,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                     <span>🔒</span> Weitere Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {themenSektionen.weitere.map(info => (
-                      <ThemaKarteMitPreWarm
-                        key={`${info.fach}-${info.thema}`}
-                        thema={info.thema}
-                        fach={info.fach}
-                        anzahlFragen={info.fragen.length}
-                        anzahlUnterthemen={info.unterthemen.length}
-                        fortschritt={info.fortschritt}
-                        themenStatus="nicht_freigeschaltet"
-                        fachFarben={fachFarben}
-                        onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
-                        anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
-                        onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
-                        onPreWarm={() => preWarmThema(info.fach, info.thema)}
-                      />
-                    ))}
+                    {themenSektionen.weitere.map(info => renderThemaKarte(info, 'nicht_freigeschaltet'))}
                   </div>
                 </div>
               )}
