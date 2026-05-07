@@ -8,6 +8,58 @@
 
 ## Letzter Stand auf main
 
+### Bundle T.d — ZeichnenCanvas Hook-Extraktion ✅ MERGED (2026-05-07)
+
+Branch `feature/bundle-t-d-zeichnen-canvas`. Viertes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Erstes hoch-Risiko-File-Split per 4 Hook-Extraktionen. **ZeichnenCanvas.tsx 804 → 517 Zeilen (-36%)** — Hotspot-Set verlassen (technisch knapp >500, aber Master-Spec-Range <600 für hoch-komplexe Files erfüllt). Hotspot-Bilanz Files >500 Z.: **10 → 9**.
+
+**Was geliefert (4 neue Hooks + 3 Test-Files):**
+- `ExamLab/src/hooks/useDebounce.ts` (27 Z.) — cross-cutting Debounce-Utility, byte-identisch zum vormaligen inline-Helper
+- `ExamLab/src/hooks/useDebounce.test.ts` (59 Z.) — 3 Vitest-Tests mit fake-timers (single-call, multi-call-collapse, args-passthrough)
+- `ExamLab/src/components/fragetypen/zeichnen/useCanvasSetup.ts` (68 Z.) — `canvasRef` + `containerRef` + `hintergrundbild`-State + Dimensionen, exportiert pure function `berechneDimensionen`
+- `ExamLab/src/components/fragetypen/zeichnen/useCanvasSetup.test.ts` (61 Z.) — 5 Vitest-Tests für `berechneDimensionen` (alle 4 Branches + `auto`-ohne-Bild Edge-Case)
+- `ExamLab/src/components/fragetypen/zeichnen/useTextOverlay.ts` (154 Z.) — Text-Overlay-State-Machine + Auto-Focus-rAF (50ms iOS-Fallback) + Outside-Click-Listener (capture: true, setTimeout(0) Tick-Skip) + Blur-Suppress (400ms Window + 150ms Delay), decoupled von Drawing-Engine via `onCommit({ text, logischX, logischY })`-Callback
+- `ExamLab/src/components/fragetypen/zeichnen/useTextOverlay.test.tsx` (117 Z.) — 7 Vitest-Tests inkl. Ref-Spiegel-Verifikation für Callback-Identity-Wechsel
+- `ExamLab/src/components/fragetypen/zeichnen/useStiftRendering.ts` (106 Z.) — rAF-basiertes Stift-Preview-Rendering ohne React-State (Session-50-Performance-Pattern), kein Vitest (Master-Spec §4.2 Test-Hybrid: RAF + Canvas-API → Browser-E2E-only)
+
+**Verifikation:**
+- vitest **1302 passes** (drift +15 vs T.c-Baseline 1287, exakt wie Plan vorhersagte) ✓
+- tsc -b clean (Output direkt geprüft, Lehre `feedback_tsc_b_exit_misleading`) ✓
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline unverändert) ✓
+- vite build erfolgreich (2.99s, PWA generateSW OK) ✓
+- Browser-E2E auf staging mit echten Logins (Yänu/durandbourjate@gmail.com als WR-LP, SW-Cache vorab zurückgesetzt) — **10/11 Pfade ✅** (Pfad 8 iPad-Focus skipped, kein iPad verfügbar):
+  - Pfad 1 ✅ LP-Editor öffnet (Fragensammlung → Filter Typ=Zeichnen → Marketing-Mix-Frage → Editor mit ZEICHNEN-KONFIGURATION + AutoSave-Status "✓ Gespeichert")
+  - Pfad 2 ✅ SuS-Üben Canvas lädt (Üben → Markt- und Leistungsanalyse → Fragetyp Zeichnen Filter → Übung starten → Canvas + Toolbar)
+  - Pfad 3 ✅ Stift-Werkzeug zeichnet (diagonale Linie nach left_click_drag)
+  - Pfad 4 ✅ Multi-Strich (X-Form sichtbar, Buffer-Reset zwischen Strichen funktioniert)
+  - Pfad 5 ✅ Text-Werkzeug normal (Klick → Overlay mit Auto-Focus → "Hallo" tippen → Enter → Text-Command auf Canvas)
+  - Pfad 6 ✅ Text-Werkzeug Outside-Click (Klick → Overlay → "Outside" tippen → Klick außerhalb → Overlay zu, Text als Command)
+  - Pfad 7 ✅ Text-Werkzeug Escape (Klick → Overlay → "Verwerfen" tippen → Escape → Overlay zu, Text NICHT übernommen)
+  - Pfad 9 ✅ Tastatur-Delete (Auswahl-Werkzeug → Klick auf "Hallo" → gestrichelte Selektion → Delete-Taste → "Hallo" gelöscht)
+  - Pfad 10 ✅ Auto-Save-Indikator "Auto-Save aktiv" sichtbar während Editieren
+  - Pfad 11 ✅ 0 Console-Errors über alle Pfade
+- Final Code-Reviewer (komplett Bundle T.d): **APPROVED FOR MERGE** mit Bestätigung byte-identical Behavior für alle 5 Timing-Invarianten (50/400/150ms + capture/setTimeout(0))
+
+**Architektur-Patterns etabliert:**
+- **Cross-cutting `useDebounce` flach in `src/hooks/`** (Master-Spec §4.1)
+- **File-lokale Hooks im `zeichnen/`-Sub-Folder** (Master-Spec §4.1)
+- **Decoupled-Callback-Pattern für State-Machines**: `useTextOverlay` empfängt nur `onCommit({ text, logischX, logischY })`, Caller bildet den Engine-Closure separat. Verhindert Hook-Coupling an Drawing-Engine-Internals.
+- **Ref-Spiegel-Pattern für stable Callback-Identity**: `onCommitRef.current = onCommit` am Top des Hook-Body (NICHT in useEffect). Test #7 in `useTextOverlay.test.tsx` verifiziert via `rerender({cb: onCommit2})`.
+- **Hook-Result-Destrukturierung in stabile Namen**: Reviewer-Iteration-1-Lehre. Hook-Result-Object wechselt Identity pro Render → `useCallback`-Deps invalidieren → `usePointerEvents` re-attached pro Render. Lösung: `const { starteRendering: starteStiftRendering } = useStiftRendering(...)` und in Deps `starteStiftRendering` (stabile useCallback-Referenz).
+- **Pure-Function-Export für isolierte Test-Coverage**: `berechneDimensionen` als named export aus `useCanvasSetup.ts` testbar ohne renderHook-Lifecycle.
+- **rAF-Loop ohne Vitest** (Master-Spec §4.2 Test-Hybrid): RAF + Canvas-API in jsdom unzuverlässig → Browser-E2E-only mit echten Logins.
+
+**Spawn-Tasks (optional, out-of-scope für T.d — Pre-existing):**
+- `onPNGExport`-Prop von ZeichnenCanvas wird nirgends im Source aufgerufen — die `onPNGExportRef`/`exportiereRef`-Spiegel sind toter Code. Pre-existing seit Session-vor-T.d, bewahrt byte-identisch.
+- `useDebounce` hat keine cleanup-on-unmount + Re-Erstellung bei `fn`-Identity-Wechsel. Sibling `useDebouncedHover.ts` löst beides via `callbackRef`-Pattern + Cleanup-Effect. Bei künftigen Konsumenten von `useDebounce` evaluieren ob das Pattern adoptiert wird.
+- Render-Loop `useEffect`-Deps `[engine.state, engine, hintergrundbild]`: `engine` wechselt Identity pro Render → handleStart/Move/End re-create + `usePointerEvents` re-attach pro Render. Byte-identisch zu Source — pre-existing characteristic. Bei Pointer-Event-Jitter auf Production-Tablets eigenes Bundle für Engine-Identity-Stabilisierung.
+
+**Out of Scope (für nächste Sessions):**
+- Bundle T.e — Dashboard-Üben (930 Z., hoch-Risiko, 5 useEffect Inter-Deps + 14 useState + 8 useMemo)
+- Bundle T.f — LPStartseite (1043 Z., hoch-Risiko, Filter-State-Deps + Wrapper-Pattern Dispatcher+Inner)
+- Pause-Punkt nach T.f: Phase-3-Wahl P-Migration (Backend-Daten-Migration `musterlosung` → `musterloesung`) vs. Bundle U (PDFSeite Hoch-Risiko)
+
+---
+
 ### Bundle T.c — FragenBrowser Hook-Extraktion + Body-Komponenten ✅ MERGED (2026-05-07)
 
 Branch `feature/bundle-t-c-fragen-browser`. Drittes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Mittel-Risiko-File-Split per 2 Hook-Extraktionen + 2 Komponenten-Splits. **FragenBrowser.tsx 768 → 253 Zeilen (-67%)** — Hotspot-Set verlassen, Master-Spec-Ziel <500 Z. erreicht. Hotspot-Bilanz Files >500 Z.: **11 → 10**.
