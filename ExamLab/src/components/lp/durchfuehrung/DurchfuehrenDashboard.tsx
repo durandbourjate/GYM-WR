@@ -4,7 +4,6 @@ import DurchfuehrenVorbereitungSkeleton from '../skeletons/DurchfuehrenVorbereit
 import DurchfuehrenSusReihenSkeleton from '../skeletons/DurchfuehrenSusReihenSkeleton'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
-import { preWarmKorrektur } from '../../../services/preWarmApi'
 import { schreibeGespeicherteAnzahl } from '../../../utils/skeletonAnzahl'
 import type { PruefungsNachricht } from '../../../types/monitoring.ts'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
@@ -21,8 +20,13 @@ import BeendetPhase from './BeendetPhase'
 import KorrekturDashboard from '../korrektur/KorrekturDashboard'
 import { useDurchfuehrenMonitoring } from '../../../hooks/useDurchfuehrenMonitoring'
 import { useDurchfuehrenLoad } from '../../../hooks/useDurchfuehrenLoad'
-
-type DurchfuehrenTab = 'vorbereitung' | 'lobby' | 'live' | 'auswertung'
+import {
+  useDurchfuehrenPhasenTab,
+  phaseZuTab,
+  istTabVerfuegbar,
+  normalisiereUrlTab,
+  type DurchfuehrenTab,
+} from '../../../hooks/useDurchfuehrenPhasenTab'
 
 const TAB_CONFIG: { key: DurchfuehrenTab; label: string; icon: string }[] = [
   { key: 'vorbereitung', label: 'Vorbereitung', icon: '⚙️' },
@@ -30,40 +34,6 @@ const TAB_CONFIG: { key: DurchfuehrenTab; label: string; icon: string }[] = [
   { key: 'live', label: 'Live', icon: '🟢' },
   { key: 'auswertung', label: 'Auswertung', icon: '✏️' },
 ]
-
-// Phase → Tab Mapping
-function phaseZuTab(phase: PruefungsPhase): DurchfuehrenTab {
-  switch (phase) {
-    case 'vorbereitung': return 'vorbereitung'
-    case 'lobby': return 'lobby'
-    case 'aktiv': return 'live'
-    case 'beendet': return 'auswertung'
-  }
-}
-
-// Tab-Reihenfolge für Vergleich
-const TAB_REIHENFOLGE: DurchfuehrenTab[] = ['vorbereitung', 'lobby', 'live', 'auswertung']
-
-function tabIndex(tab: DurchfuehrenTab): number {
-  return TAB_REIHENFOLGE.indexOf(tab)
-}
-
-// Prüft ob ein Tab basierend auf der aktuellen Phase verfügbar ist
-function istTabVerfuegbar(tab: DurchfuehrenTab, phase: PruefungsPhase): boolean {
-  const aktuellerTabIndex = tabIndex(phaseZuTab(phase))
-  const zielIndex = tabIndex(tab)
-  // Auswertung immer verfügbar (LP muss jederzeit korrigieren können)
-  if (tab === 'auswertung') return true
-  return zielIndex <= aktuellerTabIndex
-}
-
-// URL-Fallback: Alte Tab-Namen auf neuen Namen mappen
-function normalisiereUrlTab(raw: string | null): DurchfuehrenTab | null {
-  if (!raw) return null
-  if (raw === 'ergebnisse' || raw === 'korrektur') return 'auswertung'
-  if (TAB_REIHENFOLGE.includes(raw as DurchfuehrenTab)) return raw as DurchfuehrenTab
-  return null
-}
 
 function formatDauer(ms: number): string {
   const totalSekunden = Math.floor(ms / 1000)
@@ -80,10 +50,27 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
-  // Tab-State (mit Fallback für alte URL-Parameter ?tab=ergebnisse / ?tab=korrektur)
+  // urlTab: synchron aus location lesen (kein State, einmal pro Render OK)
   const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
-  const [activeTab, setActiveTab] = useState<DurchfuehrenTab>(urlTab ?? 'vorbereitung')
-  const letztePhaseRef = useRef<PruefungsPhase>('vorbereitung')
+
+  // Phase als useState statt per-render-Computation, damit alle Hook-Inputs reaktiv sind.
+  // Ohne das gibt es Hook-Input-Zirkularität: phase aus config+daten (Load+Monitoring),
+  // aber die brauchen phase selbst. useState + Sync-Effect löst das sauber.
+  const [phase, setPhase] = useState<PruefungsPhase>('vorbereitung')
+
+  // Hook-Reihenfolge: PhasenTab → Load → Monitoring
+  //   PhasenTab muss vor Load kommen, weil Load setActiveTab als Argument braucht.
+  const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({ phase, urlTab, user, pruefungId })
+  const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
+    useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase, urlTab, setActiveTab })
+  const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten } =
+    useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase })
+
+  // Phase-Sync: ersetzt die alte per-render-Computation.
+  useEffect(() => {
+    const neuePhase: PruefungsPhase = config && daten ? bestimmePhase(config, daten.schueler) : 'vorbereitung'
+    setPhase(neuePhase)
+  }, [config, daten])
 
   // Data-State (aus MonitoringDashboard)
   const [zeigFragenbank, setZeigFragenbank] = useState(false)
@@ -95,18 +82,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
 
   // Auswertung: Ergebnis-Übersicht Accordion (offen wenn keine Korrektur gestartet)
   const [ergebnisOffen, setErgebnisOffen] = useState(true)
-
-  // Phase früh ableiten (wird in Polling-Effekten als Dependency gebraucht)
-  // Vorerst aus letzter-Render-Daten via Ref (Task 4 migriert das auf useState)
-  const phaseRef = useRef<PruefungsPhase>('vorbereitung')
-  const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten } =
-    useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase: phaseRef.current })
-  const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
-    useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase: phaseRef.current, urlTab, setActiveTab })
-  const phase: PruefungsPhase = config && daten
-    ? bestimmePhase(config, daten.schueler)
-    : 'vorbereitung'
-  phaseRef.current = phase
 
   // Zentral: Nur Teilnehmer aus dem Monitoring anzeigen (nicht-eingeladene SuS ausfiltern)
   const teilnehmerEmails = useMemo(() => {
@@ -152,19 +127,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     letzteGeschriebeneAnzahlRef.current = anzahl
   }, [ladeStatus, daten?.schueler?.length, pruefungId])
 
-  // Phase-Wechsel → Tab automatisch vorwärts setzen
-  useEffect(() => {
-    const neuerTab = phaseZuTab(phase)
-    if (tabIndex(neuerTab) > tabIndex(phaseZuTab(letztePhaseRef.current))) {
-      setActiveTab(neuerTab)
-      // G.d.1 Trigger Phase-beendet — Pre-Warm Korrektur bei Auto-Wechsel
-      if (phase === 'beendet' && user?.email && pruefungId) {
-        void preWarmKorrektur(pruefungId, user.email)
-      }
-    }
-    letztePhaseRef.current = phase
-  }, [phase, user, pruefungId])
-
   // Timer für aktive Phase
   useEffect(() => {
     if (phase !== 'aktiv') { setDauer(''); return }
@@ -173,19 +135,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     const interval = setInterval(updateDauer, 1000)
     return () => clearInterval(interval)
   }, [phase, startTimestamp])
-
-  // Tab wechseln + URL aktualisieren
-  function wechsleTab(tab: DurchfuehrenTab) {
-    if (!istTabVerfuegbar(tab, phase)) return
-    setActiveTab(tab)
-    // G.d.1 Trigger Tab-Wechsel — Pre-Warm Korrektur wenn auswertung
-    if (tab === 'auswertung' && user?.email && pruefungId) {
-      void preWarmKorrektur(pruefungId, user.email)
-    }
-    const url = new URL(window.location.href)
-    url.searchParams.set('tab', tab)
-    window.history.replaceState({}, '', url.toString())
-  }
 
   // Zurück zur Startseite
   const zurueck = () => {
@@ -437,8 +386,11 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                           if (!user) return
                           const erfolg = await apiService.resetPruefung(config!.id, user.email)
                           if (erfolg) {
-                            // Alles zurücksetzen: Phase-Tracking, Daten, Config
-                            letztePhaseRef.current = 'vorbereitung'
+                            // Alles zurücksetzen: Daten, Config
+                            // (Phase-Tracking-Reset entfällt — letztePhaseRef ist jetzt im
+                            // useDurchfuehrenPhasenTab-Hook gekapselt; der hook-interne
+                            // Phase-Watch-Effect verarbeitet den 'beendet'→'vorbereitung'-Wechsel
+                            // automatisch ohne Auto-Forward, weil idx 0 ≤ idx 3.)
                             abgabenGeladenRef.current = false
                             setDaten({ pruefungId: config!.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
                             setAbgaben({})
