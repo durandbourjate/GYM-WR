@@ -11,7 +11,7 @@ import type { MonitoringDaten } from '../types/monitoring'
  * Vorher inline in DurchfuehrenDashboard::ladeDaten (Z.200-227).
  */
 export function mappeMonitoringResult(raw: MonitoringDaten | null): MonitoringDaten {
-  const effectiveResult = raw || ({ pruefungTitel: '', schueler: [], gesamtSus: 0 } as MonitoringDaten)
+  const effectiveResult = raw || { pruefungTitel: '', schueler: [], gesamtSus: 0 }
   return {
     ...effectiveResult,
     gesamtSus: effectiveResult.gesamtSus ?? (effectiveResult.schueler as unknown[])?.length ?? 0,
