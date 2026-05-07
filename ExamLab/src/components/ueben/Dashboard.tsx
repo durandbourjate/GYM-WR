@@ -7,6 +7,7 @@ import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
 import { useUebenFortschrittStore } from '../../store/ueben/fortschrittStore'
 import { useUebenAuftragStore } from '../../store/ueben/auftragStore'
 import { useUebenNavigationStore } from '../../store/ueben/navigationStore'
+import { useDashboardLoad } from '../../hooks/ueben/useDashboardLoad'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { preWarmFragen } from '../../services/preWarmApi'
@@ -60,14 +61,13 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
   const { starteSession } = useUebenUebungsStore()
-  const { ladeFortschritt, getThemenFortschritt, fortschritte, lernziele } = useUebenFortschrittStore()
-  const { ladeAuftraege, auftraege } = useUebenAuftragStore()
+  const { getThemenFortschritt, fortschritte, lernziele } = useUebenFortschrittStore()
+  const { auftraege } = useUebenAuftragStore()
   const { openUebung } = useSuSNavigation()
   const { sichtbareFaecher, fachFarben } = useUebenKontext()
-  const { freischaltungen, ladeFreischaltungen, getStatus, getAktiveUnterthemen } = useThemenSichtbarkeitStore()
+  const { freischaltungen, getStatus, getAktiveUnterthemen } = useThemenSichtbarkeitStore()
   const { einstellungen } = useUebenSettingsStore()
-  const [alleFragen, setAlleFragen] = useState<Frage[]>([])
-  const [laden, setLaden] = useState(true)
+  const { alleFragen, laden } = useDashboardLoad(aktiveGruppe)
   const [alleThemenAnzeigen, setAlleThemenAnzeigen] = useState(false)
   // A4: Welche Fach-Sektionen sind eingeklappt (Default: alle offen)
   const [eingeklappteFaecher, setEingeklappteFaecher] = useState<Set<string>>(() => {
@@ -127,23 +127,6 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const [unterthemaFilter, setUnterthemaFilter] = useState<Set<string>>(new Set())
   const [schwierigkeitFilter, setSchwierigkeitFilter] = useState<Set<number>>(new Set())
   const [typFilter, setTypFilter] = useState<Set<string>>(new Set())
-
-  useEffect(() => {
-    ladeFortschritt()
-    if (aktiveGruppe) ladeAuftraege(aktiveGruppe.id)
-  }, [ladeFortschritt, ladeAuftraege, aktiveGruppe])
-
-  useEffect(() => {
-    if (!aktiveGruppe) return
-    const ladeThemen = async () => {
-      setLaden(true)
-      const fragen = await uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
-      setAlleFragen(fragen)
-      setLaden(false)
-    }
-    ladeThemen()
-    ladeFreischaltungen(aktiveGruppe.id)
-  }, [aktiveGruppe, ladeFreischaltungen])
 
   // Deep-Link: Nach dem Laden direkt zum Thema navigieren
   useEffect(() => {
