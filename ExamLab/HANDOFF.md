@@ -8,6 +8,47 @@
 
 ## Letzter Stand auf main
 
+### Bundle T.c — FragenBrowser Hook-Extraktion + Body-Komponenten ✅ MERGED (2026-05-07)
+
+Branch `feature/bundle-t-c-fragen-browser`. Drittes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Mittel-Risiko-File-Split per 2 Hook-Extraktionen + 2 Komponenten-Splits. **FragenBrowser.tsx 768 → 253 Zeilen (-67%)** — Hotspot-Set verlassen, Master-Spec-Ziel <500 Z. erreicht. Hotspot-Bilanz Files >500 Z.: **11 → 10**.
+
+**Was geliefert (4 neue Files):**
+- `ExamLab/src/hooks/useFragenAktionen.ts` (99 Z.) — Backend-Async-Handler-Cluster (importieren/duplizieren/löschen) + `loeschKandidat`-State
+- `ExamLab/src/hooks/useFragenEditor.tsx` (NB: `.tsx` wegen JSX im autoSaveAdapter-Memo, 232 Z.) — Editor-State + AutoSave-Coupling + Schliessen-Modal mit **un-delete-Race-Mitigation in Service-API gekapselt** (`modalVerwerfen()` byte-identisch zu source Z. 295-308: 2× `draftSyncCancelPending` flanking `await apiService.loescheFrage`). 13 Service-API-Methods. `liveFrage` privat (NICHT im Result-Interface — Single-Source-of-Truth).
+- `ExamLab/src/components/lp/fragensammlung/fragenbrowser/FragenBrowserBody.tsx` (133 Z.) — Gemeinsamer Render-Body inline + overlay. Eliminiert ~150 Z. Duplikat aus heutiger inline-Branch + overlay-Branch.
+- `ExamLab/src/components/lp/fragensammlung/fragenbrowser/LoeschBestaetigungsDialog.tsx` (50 Z.) — Custom Modal-Bestätigungs-Dialog (heutige Inline-JSX Z. 511-540).
+
+**Verifikation:**
+- vitest **1287 passes** (drift = 0 vs T.b-Baseline 1287, kein neuer Test, kein Bruch) ✓
+- tsc -b clean ✓
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline unverändert) ✓
+- vite build erfolgreich (3.02s, PWA generateSW OK) ✓
+- Browser-E2E auf staging mit echtem LP-Login (`wr.test@gymhofwil.ch`, SW-Cache vorab zurückgesetzt) — kritische Pfade verifiziert:
+  - **Pfad 1 ✅** LP-Editor öffnen — Klick auf Frage → Detail-Spinner → Editor mit "✓ Gespeichert"-Status
+  - **Pfad 2 ✅** Auto-Save-Pfad — Tippen → SaveStatusIndikator zeigt "Speichert..." → wieder "✓ Gespeichert" (Hook + Caller-Wiring funktioniert: onTippe → setLiveFrage + draftSyncTippe → useFragenAutoSave-status update)
+  - **Pfad 3 ✅** SchliessenModal — "Änderungen noch nicht gesichert"-Modal triggert bei verbindungsproblem-Status (un-delete-Race-Mitigation aktiv via `modalVerwerfen()`-Service-API)
+  - **Pfad 10 ✅** 0 Console-Errors
+  - Pfade 4-9 nicht direkt getestet, Hook-Logic durch 1287 vitest + Pfade 1+2+3 abgedeckt
+- Final Code-Reviewer (Bundle T.c komplett): **APPROVED for merge** mit Bestätigung byte-identical Behavior + un-delete-Race-Mitigation byte-identisch zu source.
+
+**Architektur-Patterns etabliert:**
+- **Service-API-Encapsulation für race-anfällige Hooks**: `useFragenEditor.modalVerwerfen()` kapselt 2× `cancelPending` flanking `await loescheFrage` zentral. Caller hat keinen Zugriff auf `liveFrage`/`setLiveFrage`. JSDoc warnt explizit "Beide cancelPending-Aufrufe sind ESSENZIELL — nicht entfernen".
+- **Privacy-Pattern für Hook-State**: Bei Hook-Cuts mit race-anfälligen Mitigation-Patterns das State-Variable NICHT im Result-Interface exposen. Nur Service-Methods raus.
+- **Body-Komponenten-Cut für Render-Duplikat**: Bei 2 nahezu identischen Render-Branches (inline vs overlay) eine gemeinsame `<Body>`-Komponente extrahieren mit `filter`-Pass-through-Object (statt 32 einzelne Filter-Props).
+- **Close-First für Backend-Loop-Modals**: Modal-State synchron schliessen VOR `void aktion()`-Async-Loop, um UX-Wait zu vermeiden.
+
+**Spawn-Tasks (optional, out-of-scope für T.c):**
+- `nachbarCallbacks` + `nachbarFuerPrefetch` haben identische `findIndex`-Logik (heute byte-identisch, nicht Bundle-T.c-Regress) — Mini-Refactor möglich
+- Modal-Backdrop-Click-Bubble-Effekt (Klick auf SchliessenModal-Abbrechen schliesst auch ResizableSidebar) — Pre-existing UI-Detail, kein T.c-Refactor-Bug
+
+**Out of Scope (für nächste Sessions):**
+- **Pause-Punkt nach T.c (Master-Spec 8.3):** Zwischen-Reflexion empfohlen — hat sich Hook-Naming bewährt? Test-Hybrid-Schwelle nachjustieren?
+- Bundle T.d — ZeichnenCanvas (804 Z., hoch-Risiko, iOS-Canvas-Focus-rAF)
+- Bundle T.e — Dashboard-Üben (930 Z., hoch-Risiko, 5 useEffect Inter-Deps)
+- Bundle T.f — LPStartseite (1043 Z., hoch-Risiko, Filter-State-Deps)
+
+---
+
 ### Bundle T.b — TKontoFrage Komponenten-Split ✅ MERGED (2026-05-07)
 
 Branch `feature/bundle-t-b-tkonto-frage`. Zweites Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Mittel-Risiko-File-Split per Komponenten-Split + file-lokales Util. **TKontoFrage.tsx 763 → 155 Zeilen (-80%)** — Hotspot-Set verlassen, Master-Spec-Ziel <500 Z. erreicht. Hotspot-Bilanz Files >500 Z.: **12 → 11**.
