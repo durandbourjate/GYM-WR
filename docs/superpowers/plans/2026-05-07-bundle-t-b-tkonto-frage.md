@@ -344,18 +344,47 @@ git commit -m "Bundle T.b Phase 1.2: zuAntwort + 5 Tests, Legacy-Felder als Opti
 - Modify: `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.ts`
 - Modify: `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts`
 
-- [ ] **Step 1: Tests für vonAntwort schreiben**
+- [ ] **Step 1: Tests für vonAntwort schreiben (mit typed Test-Helpers)**
 
-Append to `tkontoUtils.test.ts`:
+**Wichtig:** KEINE `as any`-Casts. Bundle-L.c-CI-Gate `lint:as-any` (`audit-as-any.sh` matcht `as any`/`: any`/`= any`) würde sie fangen. Stattdessen typed Helper-Block oben in `tkontoUtils.test.ts` einfügen:
+
+```typescript
+// Imports + Helpers oben in tkontoUtils.test.ts (vor describe-Blöcken)
+import type { TKontoFrage as TKontoFrageType } from '../../../types/fragen-storage'
+import type { TKontoAntwort } from './tkontoUtils'
+
+/** Typed Stub für ein Konto-Definition. Implementer: Wenn TS Pflicht-Felder reklamiert,
+ *  aus ExamLab/src/types/fragen-storage.ts (Type TKontoFrage.konten[0]) ergänzen. */
+function frageKontoStub(overrides: Partial<TKontoFrageType['konten'][0]> = {}): TKontoFrageType['konten'][0] {
+  const base = {
+    id: 'k1',
+    kontonummer: '1000',
+    eintraege: [],
+  } as TKontoFrageType['konten'][0]
+  return { ...base, ...overrides }
+}
+
+function susKontoStub(overrides: Partial<TKontoAntwort['konten'][0]> = {}): TKontoAntwort['konten'][0] {
+  const base = {
+    id: 'k1',
+    eintraegeLinks: [],
+    eintraegeRechts: [],
+  } as TKontoAntwort['konten'][0]
+  return { ...base, ...overrides }
+}
+```
+
+`as TKontoFrageType['konten'][0]` (Type-Cast auf konkreten Type) wird vom Audit-Skript NICHT gefangen — nur `as any`. Sicher fürs CI-Gate.
+
+Append `vonAntwort`-Tests:
 
 ```typescript
 import { vonAntwort } from './tkontoUtils'
-import type { TKontoFrage as TKontoFrageType } from '../../../types/fragen-storage'
 
 describe('vonAntwort', () => {
   const frageDefs: TKontoFrageType['konten'] = [
-    { id: 'k1', kontonummer: '1000' } as any,  // Test-Stub, nur id wichtig
-    { id: 'k2', kontonummer: '2000' } as any,
+    frageKontoStub({ id: 'k1', kontonummer: '1000' }),
+    frageKontoStub({ id: 'k2', kontonummer: '2000' }),
   ]
 
   it('antwort=undefined → leere Konten', () => {
@@ -403,7 +432,7 @@ describe('vonAntwort', () => {
   it('leere Eintragslisten → [leereZeile()]', () => {
     const ant: TKontoAntwort = {
       typ: 'tkonto',
-      konten: [{ id: 'k1', eintraegeLinks: [], eintraegeRechts: [] } as any]
+      konten: [susKontoStub({ id: 'k1' })]
     }
     const result = vonAntwort(ant, [frageDefs[0]])
     expect(result[0].eintraegeLinks).toHaveLength(1)
@@ -413,13 +442,11 @@ describe('vonAntwort', () => {
   it('Legacy-Felder sollHaben/zunahmeAbnahme* werden gelesen wenn vorhanden, sonst empty', () => {
     const ant: TKontoAntwort = {
       typ: 'tkonto',
-      konten: [{
+      konten: [susKontoStub({
         id: 'k1',
         sollHaben: 'soll',
         zunahmeAbnahmeLinks: '+Zunahme',
-        eintraegeLinks: [],
-        eintraegeRechts: [],
-      } as any]
+      })]
     }
     const result = vonAntwort(ant, [frageDefs[0]])
     expect(result[0].sollHaben).toBe('soll')
@@ -625,30 +652,25 @@ git commit -m "Bundle T.b Phase 1.4: matcheEintraege + 7 Tests (Greedy-Match, De
 - Modify: `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.ts`
 - Modify: `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts`
 
-- [ ] **Step 1: Tests für bewerteKonto schreiben**
+- [ ] **Step 1: Tests für bewerteKonto schreiben (typed Helpers, keine `as any`)**
 
-Append to `tkontoUtils.test.ts`:
+Append to `tkontoUtils.test.ts` (nutzt `frageKontoStub`/`susKontoStub` aus Task 1.3 Step 1):
 
 ```typescript
 import { bewerteKonto } from './tkontoUtils'
 
 describe('bewerteKonto', () => {
-  function frageKonto(eintraege: any[] = [], saldo?: any): TKontoFrageType['konten'][0] {
-    return { id: 'k1', kontonummer: '1000', eintraege, saldo } as any
-  }
-  function susKonto(eintraegeLinks: any[] = [], eintraegeRechts: any[] = [], saldo?: any) {
-    return { id: 'k1', eintraegeLinks, eintraegeRechts, saldo } as any
-  }
-
   it('alle korrekt → kontoKorrekt=true', () => {
-    const konto = frageKonto([
-      { gegenkonto: 'A', betrag: 100, seite: 'soll' },
-      { gegenkonto: 'B', betrag: 50, seite: 'haben' },
-    ])
-    const sus = susKonto(
-      [{ gegenkonto: 'A', betrag: 100 }],
-      [{ gegenkonto: 'B', betrag: 50 }]
-    )
+    const konto = frageKontoStub({
+      eintraege: [
+        { gegenkonto: 'A', betrag: 100, seite: 'soll' },
+        { gegenkonto: 'B', betrag: 50, seite: 'haben' },
+      ],
+    })
+    const sus = susKontoStub({
+      eintraegeLinks: [{ gegenkonto: 'A', betrag: 100 }],
+      eintraegeRechts: [{ gegenkonto: 'B', betrag: 50 }],
+    })
     const result = bewerteKonto(konto, sus)
     expect(result.kontoKorrekt).toBe(true)
     expect(result.alleLinksOk).toBe(true)
@@ -657,30 +679,34 @@ describe('bewerteKonto', () => {
   })
 
   it('fehlend links → kontoKorrekt=false', () => {
-    const konto = frageKonto([{ gegenkonto: 'A', betrag: 100, seite: 'soll' }])
-    const sus = susKonto([], [])  // links leer
+    const konto = frageKontoStub({
+      eintraege: [{ gegenkonto: 'A', betrag: 100, seite: 'soll' }],
+    })
+    const sus = susKontoStub()  // links leer
     const result = bewerteKonto(konto, sus)
     expect(result.kontoKorrekt).toBe(false)
     expect(result.alleLinksOk).toBe(false)
   })
 
   it('Saldo unbalanciert → kontoKorrekt=false', () => {
-    const konto = frageKonto()
-    const sus = susKonto([], [], { betragLinks: 100, betragRechts: 50 })
+    const konto = frageKontoStub()
+    const sus = susKontoStub({ saldo: { betragLinks: 100, betragRechts: 50 } })
     const result = bewerteKonto(konto, sus)
     expect(result.saldoBalanciert).toBe(false)
     expect(result.kontoKorrekt).toBe(false)
   })
 
   it('kein sus.saldo → saldoBalanciert=true (kein Saldo verlangt)', () => {
-    const konto = frageKonto()
-    const sus = susKonto([], [])  // ohne saldo
+    const konto = frageKontoStub()
+    const sus = susKontoStub()  // ohne saldo
     const result = bewerteKonto(konto, sus)
     expect(result.saldoBalanciert).toBe(true)
   })
 
   it('sus=undefined → kontoKorrekt=false (alle fehlend)', () => {
-    const konto = frageKonto([{ gegenkonto: 'A', betrag: 100, seite: 'soll' }])
+    const konto = frageKontoStub({
+      eintraege: [{ gegenkonto: 'A', betrag: 100, seite: 'soll' }],
+    })
     const result = bewerteKonto(konto, undefined)
     expect(result.kontoKorrekt).toBe(false)
     expect(result.alleLinksOk).toBe(false)
@@ -784,10 +810,18 @@ export default function KontoSeite({
   const saldoFeld: keyof KontoEingabe = istLinks ? 'saldoLinks' : 'saldoRechts'
   const defaultBeschriftung = istLinks ? 'Soll' : 'Haben'
 
+  // Cell-Borders: ersetzen die heutigen Row-Container-Borders aus 4 separaten Grids in TKontoFrage.tsx Z. 292/357/397/512
+  // Heute: Kopfzeile-Grid hat `border-b-2 border-slate-800` → migriert auf cell-bottom-border
+  //        AB-Grid hat `border-b border-slate-200` → migriert auf cell-bottom-border
+  //        Buchungen-Grid: keine row-border
+  //        Saldo-Grid hat `border-t-2 border-slate-800 mt-1 pt-2` → migriert auf cell-top-border
+  const seitenBorderRight = istLinks ? 'border-r border-slate-800 dark:border-slate-300' : ''
+  const padX = istLinks ? 'pr-2' : 'pl-2'
+
   return (
     <>
-      {/* Kopfzeile: Beschriftung + Z/A */}
-      <div className={istLinks ? 'pb-1.5 pr-2 border-r border-slate-800 dark:border-slate-300' : 'pb-1.5 pl-2'}>
+      {/* Kopfzeile: Beschriftung + Z/A — bottom-border 2px (war border-b-2 auf Grid-Container) */}
+      <div className={`pb-1.5 ${padX} ${seitenBorderRight} border-b-2 border-b-slate-800 dark:border-b-slate-300`}>
         <div className="flex items-center gap-1.5 flex-wrap">
           {opts.beschriftungSollHaben ? (
             <select
@@ -818,9 +852,9 @@ export default function KontoSeite({
         </div>
       </div>
 
-      {/* Anfangsbestand-Zelle */}
+      {/* Anfangsbestand-Zelle — bottom-border 1px slate-200 (war border-b auf Grid-Container) */}
       {def.anfangsbestand !== undefined && (
-        <div className={istLinks ? 'py-1.5 pr-2 border-r border-slate-800 dark:border-slate-300' : 'py-1.5 pl-2'}>
+        <div className={`py-1.5 ${padX} ${seitenBorderRight} border-b border-b-slate-200 dark:border-b-slate-700`}>
           {istLinks && def.anfangsbestandVorgegeben ? (
             <div className="flex justify-between items-center text-sm text-slate-600 dark:text-slate-300 px-1">
               <span className="text-xs italic">AB</span>
@@ -842,8 +876,8 @@ export default function KontoSeite({
         </div>
       )}
 
-      {/* Buchungszeilen-Map */}
-      <div className={istLinks ? 'pr-2 border-r border-slate-800 dark:border-slate-300 py-2 space-y-1.5' : 'pl-2 py-2 space-y-1.5'}>
+      {/* Buchungszeilen-Map — keine row-border (war Grid-Container ohne border) */}
+      <div className={`${padX} ${seitenBorderRight} py-2 space-y-1.5`}>
         {eintraege.map((z, zIdx) => (
           <div key={z.id} className="flex items-center gap-1">
             {hatGeschaeftsfaelle && (
@@ -898,8 +932,8 @@ export default function KontoSeite({
         )}
       </div>
 
-      {/* Saldo-Zelle */}
-      <div className={istLinks ? 'pr-2 border-r border-slate-800 dark:border-slate-300' : 'pl-2'}>
+      {/* Saldo-Zelle — top-border 2px slate-800 + mt-1 pt-2 (war border-t-2 auf Grid-Container) */}
+      <div className={`${padX} ${seitenBorderRight} border-t-2 border-t-slate-800 dark:border-t-slate-300 mt-1 pt-2`}>
         <div className="flex items-center justify-end gap-2">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Saldo</span>
           <input
@@ -1012,9 +1046,10 @@ export default function KontoEingabeForm({
         </div>
       </div>
 
-      {/* T-Form: 4 Reihen (Kopfzeile, AB, Buchungen, Saldo) × 2 Spalten */}
+      {/* T-Form: Single Grid mit 4 Reihen (Kopfzeile, AB, Buchungen, Saldo) × 2 Spalten.
+          KEINE row-borders auf Container — KontoSeite emittiert pro Cell die korrekten cell-borders. */}
       <div className="px-4 py-3">
-        <div className="grid grid-cols-2 border-b-2 border-slate-800 dark:border-slate-300">
+        <div className="grid grid-cols-2">
           <KontoSeite
             seite="links"
             konto={konto} def={def}
@@ -1036,41 +1071,39 @@ export default function KontoEingabeForm({
             onZeileEntfernen={(zIdx) => onZeileEntfernen('rechts', zIdx)}
           />
         </div>
-        {/* Saldo-Trennlinie kommt aus Saldo-Zelle der KontoSeiten via border-t */}
       </div>
     </div>
   )
 }
 ```
 
-**Hinweis Layout:** Die heutige Struktur (Z. 290-543 in TKontoFrage.tsx) hat **drei** separate `grid grid-cols-2`-Container (Kopfzeile mit `border-b-2`, AB mit `border-b`, Buchungen ohne, Saldo mit `border-t-2 mt-1 pt-2`). Bei der Migration zu Fragments innerhalb **einer** Grid muss die Trennlinie zwischen Buchungen und Saldo (heute `border-t-2 border-slate-800 mt-1 pt-2`) als Stil pro `<KontoSeite>`-Saldo-Zelle stehen. Daher der `border-t-2 ... mt-2 pt-2`-Stil im Saldo-Block in `KontoSeite.tsx` Schritt für Schritt verifizieren.
+**Hinweis Layout (kritisch — Plan-Reviewer Issue 1):** Die heutige Source hat **vier separate `grid grid-cols-2`-Container** in TKontoFrage.tsx mit jeweils eigenen Row-Borders:
+- Z. 292: Kopfzeile-Grid mit `border-b-2 border-slate-800 dark:border-slate-300`
+- Z. 357: AB-Grid mit `border-b border-slate-200 dark:border-slate-700` (conditional)
+- Z. 397: Buchungen-Grid (keine Row-Border)
+- Z. 512: Saldo-Grid mit `border-t-2 border-slate-800 dark:border-slate-300 mt-1 pt-2`
 
-**Korrektur am KontoSeite.tsx-Saldo-Stil:** Statt `<div className={istLinks ? 'pr-2 border-r ...' : 'pl-2'}>` muss der Saldo-Wrapper die Top-Trennlinie haben:
+Bei der Migration zu **einem** flachen `grid grid-cols-2` mit Cells aus `<KontoSeite>` werden die row-spezifischen Border-Container aufgelöst. Damit das Layout byte-identisch bleibt, **müssen die Border-Klassen auf JEDE Cell migriert werden**:
+- Kopfzeile-Cell: `border-b-2 border-b-slate-800 dark:border-b-slate-300` (auf links + rechts)
+- AB-Cell: `border-b border-b-slate-200 dark:border-b-slate-700` (auf links + rechts, nur wenn def.anfangsbestand !== undefined)
+- Buchungen-Cell: keine row-border
+- Saldo-Cell: `border-t-2 border-t-slate-800 dark:border-t-slate-300 mt-1 pt-2` (auf links + rechts)
 
-```typescript
-// In KontoSeite.tsx, Saldo-Block ersetzen:
-<div className={istLinks
-  ? 'pr-2 border-r border-slate-800 dark:border-slate-300 border-t-2 border-t-slate-800 dark:border-t-slate-300 mt-1 pt-2'
-  : 'pl-2 border-t-2 border-slate-800 dark:border-slate-300 mt-1 pt-2'}>
-```
+Das ist im obigen `KontoSeite.tsx`-Code (Task 2.1) bereits eingebaut. Der äußere Grid-Wrapper in `KontoEingabeForm.tsx` darf KEINE Border haben, sonst doppelte Linien.
 
-Diese Änderung in **Task 3.1 Step 2** vor Build-Check anwenden.
-
-- [ ] **Step 2: KontoSeite.tsx Saldo-Stil korrigieren** (siehe Hinweis oben)
-
-- [ ] **Step 3: tsc -b clean**
+- [ ] **Step 2: tsc -b clean**
 
 ```bash
 cd ExamLab && npx tsc -b 2>&1 | tee /tmp/tsc.log
 ```
 Expected: 0 errors
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
 git add ExamLab/src/components/fragetypen/tkonto/
-git commit -m "Bundle T.b Phase 3.1: KontoEingabeForm.tsx + KontoSeite-Saldo-Stil-Adjust"
+git commit -m "Bundle T.b Phase 3.1: KontoEingabeForm.tsx (single-grid + cell-borders aus KontoSeite)"
 ```
 
 ---
@@ -1278,7 +1311,7 @@ import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import KontoEingabeForm from './tkonto/KontoEingabeForm.tsx'
 import TKontoLoesungAnsicht from './tkonto/TKontoLoesungAnsicht.tsx'
-import { vonAntwort, zuAntwort } from './tkonto/tkontoUtils'
+import { vonAntwort, zuAntwort, leereZeile } from './tkonto/tkontoUtils'
 import type { KontoEingabe } from './tkonto/tkontoUtils'
 
 interface Props {
@@ -1338,7 +1371,7 @@ function TKontoAufgabe({ frage }: { frage: TKontoFrageType }) {
   function zeileHinzufuegen(kontoIdx: number, seite: 'links' | 'rechts') {
     const kopie = deepCopy()
     const zeilen = seite === 'links' ? kopie[kontoIdx].eintraegeLinks : kopie[kontoIdx].eintraegeRechts
-    zeilen.push({ id: crypto.randomUUID(), gegenkonto: '', betrag: '', gfNr: '' })
+    zeilen.push(leereZeile())
     aktualisiere(kopie)
   }
 
@@ -1454,6 +1487,40 @@ cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10
 git add ExamLab/src/components/fragetypen/TKontoFrage.tsx
 git commit -m "Bundle T.b Phase 5.1: TKontoFrage.tsx schlank (763 → ~200 Z.) — Wrapper + State-Holder"
 ```
+
+---
+
+## Phase 5b: Lokaler vite-dev-Smoke-Test (Render-Verifikation)
+
+### Task 5b.1: vite dev starten + T-Konto-Frage rendern
+
+Zweck: Layout-Regression VOR staging-Deploy fangen (Lehre Plan-Review: Single-Grid-Migration kann Row-Borders verlieren).
+
+- [ ] **Step 1: vite dev starten**
+
+```bash
+cd ExamLab && npx vite dev
+```
+
+- [ ] **Step 2: Browser öffnen, lokale URL aufrufen** (Standard `http://localhost:5173`)
+
+- [ ] **Step 3: Demo-Modus mit T-Konto-Frage öffnen oder echten LP-Login**
+
+- [ ] **Step 4: Visuell prüfen: Layout byte-identisch zu main**
+
+- ✓ Soll/Haben-Trennlinie zwischen Kopfzeile und AB-Zeile (heute `border-b-2 border-slate-800`) sichtbar
+- ✓ AB→Buchungen-Trennlinie (heute `border-b border-slate-200`) sichtbar
+- ✓ Buchungen→Saldo-Trennlinie (heute `border-t-2 border-slate-800 mt-1 pt-2`) sichtbar
+- ✓ Vertikale Soll/Haben-Trennlinie (`border-r border-slate-800`) durchgehend
+- ✓ Konto-Header mit Kontenkategorie-Badge funktioniert
+- ✓ Buchungszeilen Hinzufügen/Entfernen
+- ✓ Dark-Mode-Variante: alle Borders sichtbar
+
+- [ ] **Step 5: Console prüfen — 0 Errors**
+
+- [ ] **Step 6: vite dev stoppen** (Ctrl+C)
+
+Bei Layout-Regression: Code-Inspektion in `KontoSeite.tsx` Cell-Border-Klassen, fix, repeat. Erst nach grünem Smoke-Test zu Phase 6.
 
 ---
 
