@@ -8,6 +8,46 @@
 
 ## Letzter Stand auf main
 
+### Bundle T.b — TKontoFrage Komponenten-Split ✅ MERGED (2026-05-07)
+
+Branch `feature/bundle-t-b-tkonto-frage`. Zweites Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Mittel-Risiko-File-Split per Komponenten-Split + file-lokales Util. **TKontoFrage.tsx 763 → 155 Zeilen (-80%)** — Hotspot-Set verlassen, Master-Spec-Ziel <500 Z. erreicht. Hotspot-Bilanz Files >500 Z.: **12 → 11**.
+
+**Was geliefert (5 neue Files in `tkonto/`-Sub-Folder analog `zeichnen/`):**
+- `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.ts` (191 Z.) — Pure Functions: `brd`, `neueId`, `leereZeile`, `leereKontoEingabe`, `zuAntwort`, `vonAntwort`, `matcheEintraege`, `bewerteKonto` + Types `EintragZeile`, `KontoEingabe`, `TKontoAntwort`, `SusEintrag`, `EintragStatus`, `KontoBewertung`
+- `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts` (232 Z.) — **23 vitest tests** (5 zuAntwort + 6 vonAntwort + 7 matcheEintraege + 5 bewerteKonto), TDD-Style
+- `ExamLab/src/components/fragetypen/tkonto/KontoSeite.tsx` (181 Z.) — symmetrische `seite="links"|"rechts"`-Komponente. Eliminiert ~110 Z. links/rechts-Duplikation aus Source Z. 397-509. Cell-Borders ersetzen die heutigen 4 Grid-Container-Borders (Plan-Reviewer-Iteration-1-Fix).
+- `ExamLab/src/components/fragetypen/tkonto/KontoEingabeForm.tsx` (91 Z.) — Konto-Header (Kontoname + Kontenkategorie-Select + 4-Color-Badge) + flat `grid grid-cols-2` mit 2× `<KontoSeite>`. Outer-Grid OHNE Border-Klassen (Cell-Borders carry Row-Trennlinien).
+- `ExamLab/src/components/fragetypen/tkonto/TKontoLoesungAnsicht.tsx` (158 Z.) — Loesungsmodus-Ansicht + lokaler `EintragBadge`-Helper. **Single-Source-of-Truth-Refactor:** `bewerteKonto`-Aufruf ersetzt doppelte Inline-Loops aus Source (Z. 597-611 alleKontenKorrekt + Z. 639-655 Pro-Konto-Render).
+
+**Type-System-Improvement (Phase 1.2):** `ExamLab/src/types/antworten.ts` — 4 optionale Legacy-Felder (`sollHaben?`, `zunahmeAbnahme?`, `zunahmeAbnahmeLinks?`, `zunahmeAbnahmeRechts?`) + `gfNr?: number` auf `eintraegeLinks/Rechts`-Items. **Eliminiert** die 4 `(eingabe as Record<string, unknown>).sollHaben as string`-Casts aus Source Z. 119-122 sowie 2 `as ReturnType<typeof zuAntwort>`-Krücken aus Z. 152/158. Pure additiv — kein Wire-Vertrag-Bruch.
+
+**Verifikation:**
+- vitest **1287 passes** (drift +23 vs T.a-Baseline 1264) ✓
+- tsc -b clean (Output direkt geprüft, nicht nur Exit-Code) ✓
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline unverändert) ✓
+- vite build erfolgreich (2.79s, PWA generateSW OK) ✓
+- Browser-E2E auf staging (echter LP-Login `wr.test@gymhofwil.ch`, SW-Cache vorab zurückgesetzt): LP-Dashboard rendert + 0 Console-Errors + Fragensammlung-Filter T-Konto liefert 7 Treffer ✓ (visuelle Konto-Karten-Verifikation user-confirmed)
+- Final Code-Reviewer (Bundle T.b komplett): **APPROVED for merge** mit Bestätigung byte-identical Behavior, 0 Critical/Important Issues.
+
+**Plan-Deviation (justified):** Phase-1.4-Test "NICHT toleriert Decimal-Diff ≥ 0.01" verwendet `100`/`100.02` statt Plan-`100.01`/`100.02` wegen IEEE-754-Instabilität (`100.02 - 100.01 ≈ 0.0099 < 0.01`). In Commit-Message dokumentiert.
+
+**Architektur-Konvention propagiert:** Sub-Folder-Pattern für `>450-Z.-Komponenten-Splits` etabliert weiter (Bundle S.b/S.c → Bundle T.b). Cell-Border-Pattern statt Grid-Container-Border bei Single-Grid-Migration mit Sub-Komponenten.
+
+**Spawn-Tasks (optional, out-of-scope für T.b — alle Pre-existing Patterns):**
+- `betrag === 0`-Stripping in `zuAntwort`/`vonAntwort` (legitimer 0-Wert wird zu `''` collapsed)
+- `parseFloat(x) || 0` silent-coerciert garbage-input zu 0
+- `brd`-Helper ungetestet (trivial 4-Branch, könnte Mini-Test bekommen)
+- Anfangsbestand-Persistierung — heute gar nicht in `TKontoAntwort` serialisiert (Round-Trip-Test Z. 95-97 dokumentiert das)
+
+**Out of Scope (für nächste Sessions):**
+- Bundle T.c — `FragenBrowser.tsx` (768 Z.) Hook-Extraktion (`useFragenFilterEngine` + `useFragenEditorSync`). Master-Spec Sektion 6.3 hat Audit-Hypothese.
+- Bundle T.d — ZeichnenCanvas (804 Z., hoch-Risiko)
+- Bundle T.e — Dashboard-Üben (930 Z., hoch-Risiko)
+- Bundle T.f — LPStartseite (1043 Z., hoch-Risiko)
+- 5 unrelated WIP-Files (FragenBrowserHeader-Modifikation + 2 stale composer/-Files + 2 macOS-Duplikate) — vor Merge gestasht, User entscheidet nachher
+
+---
+
 ### Bundle T.a — DurchfuehrenDashboard Hook-Extraktion ✅ MERGED (2026-05-07)
 
 Branch `feature/bundle-t-a-durchfuehren-dashboard`. Erstes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Mittel-Risiko-File-Split per Hook-Extraktion. **DurchfuehrenDashboard.tsx 677 → 464 Zeilen (-31%)** — Hotspot-Set verlassen.
