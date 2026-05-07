@@ -7,7 +7,7 @@
 
 ## 1. Kontext
 
-Letztes Sub-Bundle aus Bundle T. Master-Spec auf main `1be0f6a`. `LPStartseite.tsx` ist mit **1043 Zeilen, 10 useState, 12 useMemo, 5 useEffect, 6 Stores, 2 Sub-Komponenten (`PruefungsKarte` + `TrackerBadge`) und 1 Demo-Helper im selben File** das grösste verbleibende Hotspot-File und als hoch-Risiko klassifiziert (Master-Spec §3 Inventar).
+Letztes Sub-Bundle aus Bundle T. Master-Spec auf main `1be0f6a`. `LPStartseite.tsx` ist mit **1043 Zeilen, 14 useState (in `LPStartseiteInner`: 6 Daten + 2 UI + 6 Filter), 12 useMemo, 5 useEffect, 6 Stores, 2 Sub-Komponenten (`PruefungsKarte` + `TrackerBadge`) und 1 Demo-Helper im selben File** das grösste verbleibende Hotspot-File und als hoch-Risiko klassifiziert (Master-Spec §3 Inventar).
 
 Hotspot-Bilanz Files >500 Z. nach T.e: **8 Files**. Nach T.f Ziel: **7 Files** (LPStartseite verlässt das Hotspot-Set).
 
@@ -544,7 +544,7 @@ vitest 1324 (T.e-Baseline) → **~1349 passes** nach T.f (Drift +25).
 | **Memo-Deps in `useLPConfigFiltering`** | Implementer-Subagent muss alle 6 Memos byte-identisch übernehmen, **inkl. eslint-disable-Kommentare** bei `gefilterteConfigs`/`gefilterteUebungen` |
 | **5-useEffect-Sequenz in `useLPDashboardData`** | Hook hat nur **1** useEffect (den grossen Lade-useEffect). Die 4 kleinen useEffect's bleiben im Body — **keine Konsolidierung** (Lehre Bundle T.b/T.e) |
 | **`reload()`-Pfad vs. Lade-useEffect** | `handleZurueck` ruft `reload()` aus Hook — Hook intern reuse Lade-useEffect-Logik nicht (separates Code-Pfad, byte-identisch zu Z. 463-475 ohne Sync) |
-| **`useToast`-Hook im `useLPDashboardData`** | Hook ruft `useToast()` selbst — keine Pass-through-Argumente (analog T.e `useDashboardLoad`) |
+| **`useToast`-Hook im `useLPDashboardData`** | Hook ruft `useToast()` selbst — keine Pass-through-Argumente (analog T.e `useDashboardLoad`). `useToast` returniert ein **Modul-Singleton** (static `toastApi` in `src/hooks/useToast.ts`), Identity ist permanent stabil → keine Hook-Deps-Drift-Sorge |
 | **`demoConfigs()` Helper** | Wandert als private Funktion in `useLPDashboardData.ts` — single Konsumer |
 | **Sync-Helpers haben `_backendConfigs`-Parameter (heute ungenutzt)** | In Utility-Refactor entfernt — Tote-Code-Cleanup als Bonus, aber Verhalten byte-identisch (Param wurde nie genutzt) |
 | **`PruefungsKarte` re-rendert bei jedem Parent-Render** (handlers inline) | Pre-existing, byte-identisch erhalten — KEINE `useCallback`-Optimierung als Refactor-Bonus |
