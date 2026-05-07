@@ -1,4 +1,5 @@
 // ExamLab/src/components/fragetypen/tkonto/tkontoUtils.ts
+import type { TKontoFrage as TKontoFrageType } from '../../../types/fragen-storage'
 import type { Antwort } from '../../../types/antworten.ts'
 
 // === Types ===
@@ -112,4 +113,35 @@ export function zuAntwort(konten: KontoEingabe[]): TKontoAntwort {
       } : undefined,
     })),
   }
+}
+
+/** Initialisiert die Konten aus einer bestehenden Antwort (clean, ohne Record<string, unknown>-Casts) */
+export function vonAntwort(
+  antwort: TKontoAntwort | undefined,
+  frageDefs: TKontoFrageType['konten'],
+): KontoEingabe[] {
+  return frageDefs.map((def) => {
+    const eingabe = antwort?.konten.find((k) => k.id === def.id)
+    if (!eingabe) return leereKontoEingabe(def.id)
+    return {
+      id: def.id,
+      beschriftungLinks: eingabe.beschriftungLinks ?? '',
+      beschriftungRechts: eingabe.beschriftungRechts ?? '',
+      kontenkategorie: eingabe.kontenkategorie ?? '',
+      sollHaben: eingabe.sollHaben ?? '',
+      zunahmeAbnahme: eingabe.zunahmeAbnahme ?? '',
+      zunahmeAbnahmeLinks: eingabe.zunahmeAbnahmeLinks ?? '',
+      zunahmeAbnahmeRechts: eingabe.zunahmeAbnahmeRechts ?? '',
+      anfangsbestandLinks: '',
+      anfangsbestandRechts: '',
+      eintraegeLinks: eingabe.eintraegeLinks.length > 0
+        ? eingabe.eintraegeLinks.map((e) => ({ id: neueId(), gegenkonto: e.gegenkonto, betrag: e.betrag ? String(e.betrag) : '', gfNr: e.gfNr ? String(e.gfNr) : '' }))
+        : [leereZeile()],
+      eintraegeRechts: eingabe.eintraegeRechts.length > 0
+        ? eingabe.eintraegeRechts.map((e) => ({ id: neueId(), gegenkonto: e.gegenkonto, betrag: e.betrag ? String(e.betrag) : '', gfNr: e.gfNr ? String(e.gfNr) : '' }))
+        : [leereZeile()],
+      saldoLinks: eingabe.saldo?.betragLinks ? String(eingabe.saldo.betragLinks) : '',
+      saldoRechts: eingabe.saldo?.betragRechts ? String(eingabe.saldo.betragRechts) : '',
+    }
+  })
 }
