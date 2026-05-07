@@ -25,8 +25,8 @@ Der File hat zwei klar getrennte Modi (`aufgabe` / `loesung`), und der `aufgabe`
 | New | `ExamLab/src/components/fragetypen/tkonto/KontoEingabeForm.tsx` | – | ~80–100 Z. | 1 Konto: Konto-Header (Kontoname, Kontenkategorie-Select) + 2× `<KontoSeite>` |
 | New | `ExamLab/src/components/fragetypen/tkonto/KontoSeite.tsx` | – | ~120–140 Z. | 1 Seite (`'links'` oder `'rechts'`): Beschriftung-Select + Z/A-Select + AB-Feld + Buchungszeilen-Map (mit `KontenSelect`) + Saldo-Feld |
 | New | `ExamLab/src/components/fragetypen/tkonto/TKontoLoesungAnsicht.tsx` | – | ~150 Z. | Loesungsmodus-Render inkl. lokalem `EintragBadge`-Helper. Nutzt `bewerteKonto` für Pro-Konto-Bewertung + `alleKontenKorrekt`-Vorab-Berechnung |
-| New | `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.ts` | – | ~120 Z. | Pure Functions: `neueId`, `leereZeile`, `leereKontoEingabe`, `zuAntwort`, `vonAntwort`, `matcheEintraege`, `bewerteKonto` + Types `EintragZeile`, `KontoEingabe`, `SusEintrag`, `EintragStatus`, `KontoBewertung` |
-| New | `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts` | – | ~80 Z. | Vitest, 22 Tests, co-located |
+| New | `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.ts` | – | ~125 Z. | Pure Functions: `neueId`, `leereZeile`, `leereKontoEingabe`, `zuAntwort`, `vonAntwort`, `matcheEintraege`, `bewerteKonto`, `brd` + Types `EintragZeile`, `KontoEingabe`, `SusEintrag`, `EintragStatus`, `KontoBewertung`, `TKontoAntwort` |
+| New | `ExamLab/src/components/fragetypen/tkonto/tkontoUtils.test.ts` | – | ~85 Z. | Vitest, 23 Tests, co-located |
 
 ### Out of Scope
 
@@ -94,13 +94,18 @@ export function bewerteKonto(
   konto: TKontoFrageType['konten'][0],
   sus: TKontoAntwort['konten'][0] | undefined
 ): KontoBewertung
+export function brd(wert: string, readOnly: boolean): string  // Border-Klasse: violett wenn leer + nicht readOnly
 ```
 
 `TKontoAntwort` = `Extract<Antwort, { typ: 'tkonto' }>` (re-exportiert aus `tkontoUtils.ts` als Convenience).
 
 `bewerteKonto` ist neu — extrahiert das doppelte Pro-Konto-Berechnungs-Logic (heute 1× in `alleKontenKorrekt`-Vorab-Loop, 1× im Pro-Konto-Render-Loop in `TKontoLoesung`). Single Source of Truth.
 
+`brd` ist heute Z. 18-21 in `TKontoFrage.tsx`. Da der Helper in `<KontoSeite>`, `<KontoEingabeForm>` und `<TKontoLoesungAnsicht>` (Saldo-Felder im AB-Render) gebraucht wird, wandert er nach `tkontoUtils.ts` statt aus `TKontoFrage.tsx` exportiert oder dupliziert zu werden.
+
 `zuAntwort`/`vonAntwort` byte-identisch zur heutigen Inline-Implementation — keine Logik-Änderung. Round-Trip-Test sichert das ab.
+
+**Legacy-Feld-Typisierung:** Die heutige `vonAntwort` (Z. 119-122 in TKontoFrage.tsx) nutzt `(eingabe as Record<string, unknown>).sollHaben as string` für die Legacy-Felder `sollHaben`, `zunahmeAbnahme`, `zunahmeAbnahmeLinks`, `zunahmeAbnahmeRechts`. Beim Move auf `tkontoUtils.ts` werden diese Felder als Optional-Felder im `TKontoAntwort['konten'][0]`-Type hinzugefügt (`sollHaben?: string`, `zunahmeAbnahme?: string`, etc.), so dass die Casts entfallen können. Damit bleibt das `lint:as-any`-Gate clean ohne neue Defensive-Marker.
 
 ### 4.3 Komponenten-Schnittstellen
 
@@ -204,16 +209,18 @@ Domain (Konto/Saldo/Eintrag/Beschriftung/Buchung/Bewertung/Geschäftsfall) deuts
 
 ## 5. Test-Strategie
 
-### 5.1 `tkontoUtils.test.ts` (22 Tests, Vitest, co-located)
+### 5.1 `tkontoUtils.test.ts` (23 Tests, Vitest, co-located)
 
 | Funktion | Tests |
 |---|---|
 | `zuAntwort` | (1) leere Beträge → 0; (2) Decimal '3.50' → 3.5; (3) gfNr optional ('5'→5, ''→undefined); (4) saldo nur wenn links\|\|rechts gesetzt; (5) leere Beschriftungs-Felder → undefined |
-| `vonAntwort` | (1) antwort=undefined → leere Konten; (2) Round-Trip `vonAntwort(zuAntwort(x)) ≈ x` modulo Eintrag-IDs; (3) Saldo-Werte als String restauriert; (4) Konten matched per `id` (nicht Index); (5) leere Eintragslisten → `[leereZeile()]` |
+| `vonAntwort` | (1) antwort=undefined → leere Konten; (2) Round-Trip `vonAntwort(zuAntwort(x)) ≈ x` modulo Eintrag-IDs UND modulo `anfangsbestandLinks/Rechts` (heute nicht serialisiert in `zuAntwort`, kommen als `''` zurück); (3) Saldo-Werte als String restauriert; (4) Konten matched per `id` (nicht Index); (5) leere Eintragslisten → `[leereZeile()]`; (6) Legacy-Felder `sollHaben`/`zunahmeAbnahme*` werden aus Antwort gelesen wenn vorhanden, sonst `''` |
 | `matcheEintraege` | (1) beide leer → []; (2) Reihenfolge-unabhängig (greedy); (3) sus<korrekt → fehlend-Status; (4) sus>korrekt → falsch (überflüssig); (5) Decimal-Toleranz `<0.01` (100.005≈100.01); (6) NICHT-Toleranz `≥0.01` (100.01≠100.02); (7) genutzt-Set bei Duplikaten in sus |
 | `bewerteKonto` | (1) alle korrekt → kontoKorrekt=true; (2) fehlend links → kontoKorrekt=false; (3) Saldo unbalanciert → kontoKorrekt=false; (4) kein sus.saldo → saldoBalanciert=true; (5) sus=undefined → kontoKorrekt=false |
 
-`leereZeile`/`leereKontoEingabe`/`neueId` ungetestet — triviale Factory-Funktionen, indirekt durch `vonAntwort`-Tests gedeckt. Keine Mocks nötig — alle Functions pure.
+`leereZeile`/`leereKontoEingabe`/`neueId`/`brd` ungetestet — triviale Factory- und Klassen-Helpers, indirekt durch `vonAntwort`-Tests bzw. Browser-E2E (Border-Farbe sichtbar) gedeckt. Keine Mocks nötig — alle Functions pure.
+
+**Insgesamt 23 Tests** (5 + 6 + 7 + 5).
 
 ### 5.2 Browser-E2E (echte Logins, staging)
 
@@ -241,7 +248,7 @@ Service-Worker-Cache-Flush vor E2E (SW-unregister + caches.delete + reload). 0 C
 
 ## 7. Definition of Done (Bundle-S/L-Standard)
 
-- [ ] `npx vitest run` grün — drift +22 Tests dokumentiert
+- [ ] `npx vitest run` grün — drift +23 Tests dokumentiert
 - [ ] `npx tsc -b` clean (Output direkt prüfen, nicht nur Exit-Code — Lehre `feedback_tsc_b_exit_misleading`)
 - [ ] `npm run lint:as-any` clean
 - [ ] `npm run lint:no-alert` clean
