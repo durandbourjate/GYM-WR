@@ -885,9 +885,11 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
       {zeigImport && (
         <FragenImport
-          onImportiert={async (fragen) => {
-            await aktionen.importieren(fragen)
+          onImportiert={(fragen) => {
+            // Modal close-first: heutige Source schliesst Modal SYNCHRON vor Backend-Loop (Z. 329-347).
+            // Plan-Reviewer-Iteration-Lehre: `await aktionen.importieren(...)` würde Modal bis nach allen Backend-Roundtrips offenhalten = UX-Regression.
             setZeigImport(false)
+            void aktionen.importieren(fragen)
           }}
           onSchliessen={() => setZeigImport(false)}
         />
@@ -895,9 +897,9 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
 
       {zeigExcelImport && (
         <ExcelImport
-          onImportiert={async (fragen) => {
-            await aktionen.importieren(fragen)
+          onImportiert={(fragen) => {
             setZeigExcelImport(false)
+            void aktionen.importieren(fragen)
           }}
           onSchliessen={() => setZeigExcelImport(false)}
           bestehendeIds={new Set(alleFragen.map(f => f.id))}
