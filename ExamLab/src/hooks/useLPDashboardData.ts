@@ -148,7 +148,7 @@ export function useLPDashboardData(opts: {
         })
     }
     lade()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- toast ist Modul-Singleton (useToast.ts toastApi), Identity stabil; deps byte-identisch zur Quelle LPStartseite Z. 394
   }, [user, istDemoModus])
 
   const reload = useCallback(async () => {
