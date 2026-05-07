@@ -1,0 +1,184 @@
+import { useCallback, useEffect, useState } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
+import { apiService } from '../services/apiService'
+import { useStammdatenStore } from '../store/stammdatenStore'
+import { useFavoritenStore } from '../store/favoritenStore'
+import { useFragensammlungStore } from '../store/fragensammlungStore'
+import { useToast } from './useToast'
+import { schreibeGespeicherteAnzahl } from '../utils/skeletonAnzahl'
+import { erstelleDemoTrackerDaten } from '../utils/trackerUtils'
+import { syncEinrichtungsPruefung, syncEinrichtungsUebung } from '../utils/lpEinrichtungSync'
+import { einrichtungsPruefung } from '../data/einrichtungsPruefung'
+import { einrichtungsUebung } from '../data/einrichtungsUebung'
+import type { PruefungsConfig } from '../types/pruefung'
+import type { TrackerDaten, TrackerPruefungSummary } from '../types/tracker'
+
+export interface UseLPDashboardDataResult {
+  configs: PruefungsConfig[]
+  setConfigs: Dispatch<SetStateAction<PruefungsConfig[]>>
+  configsLadeStatus: 'laden' | 'fertig'
+  setConfigsLadeStatus: Dispatch<SetStateAction<'laden' | 'fertig'>>
+  trackerLadeStatus: 'laden' | 'fertig'
+  trackerDaten: TrackerDaten | null
+  backendFehler: boolean
+  findeTrackerSummary: (pruefungId: string) => TrackerPruefungSummary | undefined
+  reload: () => Promise<void>
+}
+
+/** Demo-Konfigurationen für den Demo-Modus — Einrichtungsprüfung + Einführungsübung */
+function demoConfigs(): PruefungsConfig[] {
+  return [einrichtungsPruefung, einrichtungsUebung]
+}
+
+/**
+ * Lädt LP-Configs + Tracker-Daten + Sync von Einrichtungsprüfung/-übung.
+ * Vorher: inline in LPStartseite (5 useState + 95-Z-useEffect + handleZurueck-Reload-Pfad).
+ *
+ * Quelle (byte-identisch): `LPStartseite.tsx` Z. 129-132+136 (5 useState),
+ * Z. 300-394 (95-Z-useEffect), Z. 459-475 (`handleZurueck`-Reload-Pfad),
+ * Z. 482-485 (`findeTrackerSummary`), Z. 1041-1043 (`demoConfigs`).
+ *
+ * `reload()` wird von `handleZurueck` aufgerufen — Reload-Pfad OHNE Sync (analog Z. 463-475).
+ */
+export function useLPDashboardData(opts: {
+  user: { email: string } | null
+  istDemoModus: boolean
+}): UseLPDashboardDataResult {
+  const { user, istDemoModus } = opts
+  const toast = useToast()
+
+  const [configs, setConfigs] = useState<PruefungsConfig[]>([])
+  const [configsLadeStatus, setConfigsLadeStatus] = useState<'laden' | 'fertig'>('laden')
+  const [trackerLadeStatus, setTrackerLadeStatus] = useState<'laden' | 'fertig'>('laden')
+  const [backendFehler, setBackendFehler] = useState(false)
+  const [trackerDaten, setTrackerDaten] = useState<TrackerDaten | null>(null)
+
+  // Alle Prüfungs-Configs + Tracker-Daten laden — byte-identisch zu LPStartseite.tsx Z. 300-394
+  useEffect(() => {
+    async function lade(): Promise<void> {
+      if (!user) return
+
+      if (istDemoModus || !apiService.istKonfiguriert()) {
+        // Demo-Daten
+        setConfigs(demoConfigs())
+        setTrackerDaten(erstelleDemoTrackerDaten())
+        setConfigsLadeStatus('fertig')
+        setTrackerLadeStatus('fertig')
+        return
+      }
+
+      // Stammdaten + LP-Profil parallel laden (Fire-and-forget, blockiert nicht)
+      const { ladeStammdaten, ladeLPProfil } = useStammdatenStore.getState()
+      ladeStammdaten(user.email)
+      ladeLPProfil(user.email).then(() => {
+        // Backend-Favoriten in den neuen favoritenStore übernehmen (Legacy-Migration)
+        const profil = useStammdatenStore.getState().lpProfil
+        if (profil?.favoriten && profil.favoriten.length > 0) {
+          const { favoriten: lokal } = useFavoritenStore.getState()
+          if (lokal.length === 0) {
+            // Nur migrieren wenn lokal leer (Erstmigration)
+            const migriert = profil.favoriten.map((f: { id?: string; titel?: string; screen?: string; params?: { configId?: string } }, i: number) => ({
+              typ: (f.params?.configId ? (f.screen === 'uebung' ? 'uebung' : 'pruefung') : 'ort') as 'ort' | 'pruefung' | 'uebung' | 'frage',
+              ziel: f.params?.configId ?? `/${f.screen ?? 'pruefung'}`,
+              label: f.titel || '',
+              sortierung: i,
+            }))
+            useFavoritenStore.setState({ favoriten: migriert })
+          }
+        }
+      })
+
+      // Configs + Fragensammlung-Summaries parallel laden (schnell ~3-5s)
+      // TrackerDaten separat im Hintergrund (langsam ~6-8s, blockiert UI nicht)
+      useFragensammlungStore.getState().lade(user.email)
+      let configResult: PruefungsConfig[] | null = null
+      try {
+        configResult = await apiService.ladeAlleConfigs(user.email)
+      } catch (err) {
+        console.warn('[LP] ladeAlleConfigs Exception:', err)
+        configResult = null
+      }
+
+      if (configResult) {
+        setConfigs(configResult)
+        setBackendFehler(false)
+        // Persist Anzahl summativ/formativ für layout-akkurates Skeleton beim nächsten Login
+        const summativeAnzahl = configResult.filter(c => c.typ !== 'formativ').length
+        const formativeAnzahl = configResult.filter(c => c.typ === 'formativ').length
+        schreibeGespeicherteAnzahl('examlab-lp-letzte-summative-anzahl', summativeAnzahl)
+        schreibeGespeicherteAnzahl('examlab-lp-letzte-formative-anzahl', formativeAnzahl)
+        // Einrichtungsprüfung/-übung: nur einmal pro Browser-Session syncen
+        // WICHTIG: Verzögert + seriell um Backend nicht zu überlasten (Session 91 Fix)
+        // Nicht starten wenn LP gerade eine Durchführung hat (SuS-Saves haben Priorität)
+        const SYNC_DONE_KEY = 'examlab-sync-done'
+        const istDurchfuehrung = window.location.search.includes('id=')
+        if (!sessionStorage.getItem(SYNC_DONE_KEY) && !istDurchfuehrung) {
+          // 10s Verzögerung damit Dashboard-Laden + LP-Monitoring Vorrang haben
+          setTimeout(async () => {
+            try {
+              // Seriell: erst Prüfung, dann Übung (nicht parallel!)
+              await syncEinrichtungsPruefung(user.email, (msg) => toast.warning(msg))
+              await syncEinrichtungsUebung(user.email, (msg) => toast.warning(msg))
+              sessionStorage.setItem(SYNC_DONE_KEY, '1')
+              const neueConfigs = await apiService.ladeAlleConfigs(user.email)
+              if (neueConfigs) setConfigs(neueConfigs)
+            } catch (err) {
+              console.warn('[LP] Sync fehlgeschlagen, wird beim nächsten Mount erneut versucht:', err)
+            }
+          }, 10_000)
+        }
+      } else {
+        console.warn("[LP] Configs nicht ladbar — Composer bleibt nutzbar")
+        setConfigs([])
+        setBackendFehler(true)
+      }
+
+      // Dashboard sofort interaktiv zeigen (Tracker lädt im Hintergrund)
+      setConfigsLadeStatus("fertig")
+
+      // TrackerDaten im Hintergrund nachladen (non-blocking, ~6-8s)
+      apiService.ladeTrackerDaten(user.email)
+        .then(trackerResult => {
+          if (trackerResult) setTrackerDaten(trackerResult)
+          setTrackerLadeStatus('fertig')
+        })
+        .catch(err => {
+          console.warn('[LP] Tracker-Laden fehlgeschlagen:', err)
+          setTrackerLadeStatus('fertig')
+        })
+    }
+    lade()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, istDemoModus])
+
+  const reload = useCallback(async () => {
+    setConfigsLadeStatus('laden')
+    if (user && apiService.istKonfiguriert() && !istDemoModus) {
+      const result = await apiService.ladeAlleConfigs(user.email)
+      if (result) {
+        setConfigs(result)
+        schreibeGespeicherteAnzahl('examlab-lp-letzte-summative-anzahl', result.filter(c => c.typ !== 'formativ').length)
+        schreibeGespeicherteAnzahl('examlab-lp-letzte-formative-anzahl', result.filter(c => c.typ === 'formativ').length)
+      }
+      setConfigsLadeStatus('fertig')
+    } else {
+      setConfigs(demoConfigs())
+      setConfigsLadeStatus('fertig')
+    }
+  }, [user, istDemoModus])
+
+  const findeTrackerSummary = useCallback((pruefungId: string): TrackerPruefungSummary | undefined => {
+    if (!trackerDaten) return undefined
+    return trackerDaten.pruefungen.find((p) => p.pruefungId === pruefungId)
+  }, [trackerDaten])
+
+  return {
+    configs, setConfigs,
+    configsLadeStatus, setConfigsLadeStatus,
+    trackerLadeStatus,
+    trackerDaten,
+    backendFehler,
+    findeTrackerSummary,
+    reload,
+  }
+}
