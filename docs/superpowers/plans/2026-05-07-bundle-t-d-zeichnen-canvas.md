@@ -1501,7 +1501,7 @@ Use `superpowers:code-reviewer` Subagent mit Branch-Diff (`git diff main..featur
 - Verifizieren: byte-identical Behavior für 15 Invarianten aus Spec §5.1
 - Verifizieren: Ref-Spiegel-Pattern korrekt für `onCommit`
 - Verifizieren: keine neuen `as any`-Drifts
-- Verifizieren: `stift.istAktivRef.current`-Guard im Render-Loop bleibt
+- Verifizieren: `stiftIstAktivRef.current`-Guard im Render-Loop bleibt (destrukturiert aus `useStiftRendering`-Result)
 - Verifizieren: Kein dead code (ungenutzte useRef, useState)
 - APPROVED oder ❌ Issues → fix iterativ
 

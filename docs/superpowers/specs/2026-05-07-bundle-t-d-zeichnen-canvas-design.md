@@ -353,9 +353,21 @@ export function useTextOverlay({ onCommit }: UseTextOverlayOptions): UseTextOver
 
 **Migration für ZeichnenCanvas.tsx**:
 
-Hook-Aufruf:
+Hook-Aufruf mit Destrukturierung in stabile Namen (Hook-Result-Object hat sonst Re-Render-Identity → callback deps invalidieren):
+
 ```typescript
-const textOverlay = useTextOverlay({
+const {
+  sichtbar: textOverlaySichtbar,
+  cssLeft: textOverlayCssLeft,
+  cssTop: textOverlayCssTop,
+  text: textOverlayText,
+  setText: textOverlaySetText,
+  oeffnen: textOverlayOeffnen,
+  abschliessen: textOverlayAbschliessen,
+  abschliessenViaBlur: textOverlayAbschliessenViaBlur,
+  inputRef: textOverlayInputRef,
+  sichtbarRef: textOverlaySichtbarRef,
+} = useTextOverlay({
   onCommit: ({ text, logischX, logischY }) => {
     engine.addCommand({
       typ: 'text',
@@ -373,30 +385,30 @@ const textOverlay = useTextOverlay({
 
 (Wichtig: `onCommit` empfängt `text` bereits getrimmt aus dem Hook — `prev.text.trim()` passiert intern.)
 
-handleStart case 'text':
+handleStart case 'text' (mit destrukturiertem Namen):
 ```typescript
 case 'text': {
   const cssLeft = (punkt.x / logischeBreite) * 100
   const cssTop = ((punkt.y - 18) / logischeHoehe) * 100
-  textOverlay.oeffnen({ logischX: punkt.x, logischY: punkt.y, cssLeft, cssTop })
+  textOverlayOeffnen({ logischX: punkt.x, logischY: punkt.y, cssLeft, cssTop })
   break
 }
 ```
 
 JSX:
 ```typescript
-{textOverlay.sichtbar && (
-  <div style={{ position: 'absolute', left: `${textOverlay.cssLeft}%`, top: `${textOverlay.cssTop}%`, zIndex: 20 }} ...>
+{textOverlaySichtbar && (
+  <div style={{ position: 'absolute', left: `${textOverlayCssLeft}%`, top: `${textOverlayCssTop}%`, zIndex: 20 }} ...>
     <input
-      ref={textOverlay.inputRef}
-      value={textOverlay.text}
-      onChange={e => textOverlay.setText(e.target.value)}
+      ref={textOverlayInputRef}
+      value={textOverlayText}
+      onChange={e => textOverlaySetText(e.target.value)}
       onKeyDown={e => {
-        if (e.key === 'Enter') { e.preventDefault(); textOverlay.abschliessen(false) }
-        else if (e.key === 'Escape') { e.preventDefault(); textOverlay.abschliessen(true) }
+        if (e.key === 'Enter') { e.preventDefault(); textOverlayAbschliessen(false) }
+        else if (e.key === 'Escape') { e.preventDefault(); textOverlayAbschliessen(true) }
         e.stopPropagation()
       }}
-      onBlur={textOverlay.abschliessenViaBlur}
+      onBlur={textOverlayAbschliessenViaBlur}
       ...
     />
   </div>
@@ -407,7 +419,7 @@ usePointerEvents-Guard:
 ```typescript
 usePointerEvents({
   ...
-  textOverlaySichtbarRef: textOverlay.sichtbarRef,
+  textOverlaySichtbarRef,  // destrukturierter Ref-Name, stable identity
   ...
 })
 ```
@@ -531,9 +543,16 @@ export function useStiftRendering({
 
 **Migration für ZeichnenCanvas.tsx**:
 
-Hook-Aufruf:
+Hook-Aufruf mit Destrukturierung in stabile Namen (gleiche Begründung wie `useTextOverlay` — Result-Object-Identity wechselt pro Render):
+
 ```typescript
-const stift = useStiftRendering({
+const {
+  stiftBufferRef,
+  stiftMetaRef,
+  istAktivRef: stiftIstAktivRef,
+  starteRendering: starteStiftRendering,
+  stoppeRendering: stoppeStiftRendering,
+} = useStiftRendering({
   canvasRef,
   renderMitPreview: engine.renderMitPreview,
 })
@@ -543,14 +562,14 @@ handleStart case 'stift':
 ```typescript
 case 'stift': {
   const id = generiereCommandId()
-  stift.stiftBufferRef.current = [punkt]
-  stift.stiftMetaRef.current = {
+  stiftBufferRef.current = [punkt]
+  stiftMetaRef.current = {
     id,
     farbe: aktiveFarbe,
     breite: stiftBreite,
     gestrichelt: stiftGestrichelt || undefined,
   }
-  stift.starteRendering()
+  starteStiftRendering()
   break
 }
 ```
@@ -558,7 +577,7 @@ case 'stift': {
 handleMove case 'stift':
 ```typescript
 case 'stift': {
-  stift.stiftBufferRef.current.push(punkt)
+  stiftBufferRef.current.push(punkt)
   break
 }
 ```
@@ -566,20 +585,20 @@ case 'stift': {
 handleEnd case 'stift':
 ```typescript
 case 'stift': {
-  stift.stoppeRendering()
-  stift.stiftBufferRef.current.push(punkt)
-  const meta = stift.stiftMetaRef.current
-  if (meta && stift.stiftBufferRef.current.length > 0) {
+  stoppeStiftRendering()
+  stiftBufferRef.current.push(punkt)
+  const meta = stiftMetaRef.current
+  if (meta && stiftBufferRef.current.length > 0) {
     engine.addCommand({
       typ: 'stift',
-      punkte: stift.stiftBufferRef.current,
+      punkte: stiftBufferRef.current,
       farbe: meta.farbe,
       breite: meta.breite,
       gestrichelt: meta.gestrichelt,
     } as Omit<DrawCommand, 'id'>)
   }
-  stift.stiftBufferRef.current = []
-  stift.stiftMetaRef.current = null
+  stiftBufferRef.current = []
+  stiftMetaRef.current = null
   break
 }
 ```
@@ -587,9 +606,10 @@ case 'stift': {
 Render-Loop-Guard (Z. 282 in source):
 ```typescript
 useEffect(() => {
-  if (stift.istAktivRef.current) return  // ← unverändert, nur via Hook-Property
+  if (stiftIstAktivRef.current) return  // ← byte-identisch zu Source, nur Ref-Name geändert
   ...
-}, [engine.state, engine, hintergrundbild])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [engine.state, engine, hintergrundbild])  // refs (canvasRef, stiftIstAktivRef) NICHT in deps — byte-identisch zu Source
 ```
 
 ## 5. Verhalten
@@ -607,7 +627,7 @@ useEffect(() => {
 | 7 | Pen-Active synchronous-write Race-Prevention | Z. 207-208 | in `useStiftRendering.starteRendering` |
 | 8 | DPR-Skalierung im rAF-Frame | Z. 217, 236 | in `useStiftRendering` |
 | 9 | Weisser fillRect vor jedem rAF-Frame | Z. 230-233 | in `useStiftRendering` |
-| 10 | Render-Loop-Guard (`istAktivRef.current` skip) | Z. 282 | in ZeichnenCanvas, liest `stift.istAktivRef` |
+| 10 | Render-Loop-Guard (`istAktivRef.current` skip) | Z. 282 | in ZeichnenCanvas, liest destrukturierten `stiftIstAktivRef` |
 | 11 | `letzterPunktRef` für Auswahl-Drag | Z. 180 | bleibt in ZeichnenCanvas (eng mit handleStart/Move gekoppelt) |
 | 12 | Engine-Actions-Reporting useEffect | Z. 155-166 | bleibt in ZeichnenCanvas |
 | 13 | Tastatur-Delete-Shortcut | Z. 676-692 | bleibt in ZeichnenCanvas |
@@ -622,14 +642,14 @@ useEffect(() => {
 - `onTextCommitRef`-Spiegel (Z. 125-126)
 - `letzterPunktRef` (Z. 180)
 - `initialDaten`-Load-Effect (Z. 269-274)
-- Render-Loop-Effect (Z. 280-303, mit `stift.istAktivRef`-Guard)
+- Render-Loop-Effect (Z. 280-303, mit `stiftIstAktivRef`-Guard)
 - `useDebounce` für Auto-Save (Z. 324-340)
-- `handleStart` / `handleMove` / `handleEnd` (umgeschrieben für `textOverlay.oeffnen` + `stift.*`)
+- `handleStart` / `handleMove` / `handleEnd` (umgeschrieben für destrukturierte `textOverlayOeffnen` + `starteStiftRendering`/`stoppeStiftRendering`/`stiftBufferRef`/`stiftMetaRef`)
 - `usePointerEvents`-Aufruf
 - `cursorFuerTool`-Helper
 - DPR-Berechnung für Canvas-Attribute
 - Tastatur-Shortcut-Effect (Z. 676-692)
-- JSX (mit Text-Overlay als `{textOverlay.sichtbar && ...}`)
+- JSX (mit Text-Overlay als `{textOverlaySichtbar && ...}` mittels destrukturierter Namen)
 - `exportiereCanvasAlsPNG`-Hilfsfunktion (Z. 801-804, exportiert)
 
 ### 5.3 Was wandert raus
