@@ -31,7 +31,7 @@ Dashboard.tsx von **930 → ~430 Zeilen (-54%)** reduzieren, ohne Verhaltensänd
 | Cut | Ziel | Z. neu | Test |
 |---|---|---:|---|
 | Hook 1: `useDashboardLoad({ aktiveGruppe })` | Daten-Loading (4 Store-Calls) + `alleFragen`/`laden`-State | ~70 | NEIN |
-| Hook 2: `useThemenKomputationen({ ...13 Inputs })` | alle 8 useMemo's byte-identisch | ~150 | JA |
+| Hook 2: `useThemenKomputationen({ ...19 Inputs })` | alle 8 useMemo's byte-identisch | ~150 | JA |
 | Hook 2 Test-File: `useThemenKomputationen.test.ts` | 15-20 Vitest-Tests (renderHook + Mocks) | ~250 | — |
 | Komponenten-Split 1: `dashboard/ThemaDetailView.tsx` | Inline-Funktion (Z. 728-851) → File | ~140 | NEIN (UI) |
 | Komponenten-Split 2: `dashboard/themaDetailHelpers.tsx` | FilterSection + Chip + FortschrittsBalken + MasteryBadges | ~80 | NEIN (UI) |
@@ -107,7 +107,7 @@ useEffect(() => {
 }, [aktiveGruppe, ladeFreischaltungen])
 ```
 
-**Hook-interne Implementation:** Hook holt `ladeFortschritt`/`ladeAuftraege`/`ladeFreischaltungen` selbst über die Store-Selektoren — keine Pass-through-Inputs (hält Caller-Signatur klein, Selektoren sind über Zustand-Stores stabil).
+**Hook-interne Implementation:** Hook holt `ladeFortschritt`/`ladeAuftraege`/`ladeFreischaltungen` selbst über die Store-Selektoren — keine Pass-through-Inputs (hält Caller-Signatur klein). Die 3 Store-Action-Funktionen sind über Zustand-Stores stabil über Renders (Zustand-Convention: Action-Identitäten ändern sich nicht ohne Store-Reset), daher kein Memo-Deps-Drift-Risiko bei direkter Nutzung in `useEffect`-Deps.
 
 **Byte-identisch:** 2 separate useEffect's mit exakt heutigen Deps.
 
@@ -189,12 +189,15 @@ const {
   themenMap,
   verfuegbareFaecher,
   sichtbareThemenListe,
+  letzteUebungProThema,
   themenSektionen,
   themaDetail,
   gefilterteFragen,
   empfehlungen,
-} = useThemenKomputationen({ /* 13 Inputs */ })
+} = useThemenKomputationen({ /* 19 Inputs: 8 Stamm-Daten + 8 UI-State + 3 Funktions-Refs */ })
 ```
+
+`letzteUebungProThema` wird im Caller voraussichtlich nicht direkt konsumiert (es fliesst intern in `themenSektionen`-Sortierung), wird aber im Result-Interface exponiert und destrukturiert — damit Test-Coverage diesen Memo isoliert prüfen kann und kein Linter eine `unused`-Warnung wirft.
 
 **Test-Klassifikation:** **JA** (pure Komputation, Master-Spec §4.2).
 
@@ -230,7 +233,7 @@ const {
 
 ## 5. Test-Plan für `useThemenKomputationen`
 
-Schätzung 15-20 Tests (~250 Z. Test-File). Gruppiert pro Memo:
+Schätzung **~21 Tests** (~250-300 Z. Test-File). Gruppiert pro Memo:
 
 | Memo | Tests |
 |---|---|
@@ -245,7 +248,7 @@ Schätzung 15-20 Tests (~250 Z. Test-File). Gruppiert pro Memo:
 
 **Mocks:** `getThemenFortschritt`/`getStatus`/`getAktiveUnterthemen` als `vi.fn()`-Stubs. `useAuthStore.getState().istDemoModus` via `vi.mock('../../store/authStore')`. `berechneEmpfehlungen` als `vi.fn()`-Mock-Module für `empfehlungen`-Tests.
 
-**Drift:** vitest 1302 (T.d-Baseline) → 1302 + ~17 = **~1319 passes**.
+**Drift:** vitest 1302 (T.d-Baseline) → 1302 + ~21 = **~1323 passes**.
 
 ## 6. Risiken
 
@@ -262,7 +265,7 @@ Schätzung 15-20 Tests (~250 Z. Test-File). Gruppiert pro Memo:
 
 ## 7. Definition of Done
 
-- [ ] `npx vitest run` grün — Drift +~17 vs. T.d-Baseline 1302
+- [ ] `npx vitest run` grün — Drift +~21 vs. T.d-Baseline 1302
 - [ ] `npx tsc -b` clean (Output direkt prüfen, Lehre `feedback_tsc_b_exit_misleading.md`)
 - [ ] `npm run lint:as-any` clean (Total 0/Defensive 0/Undokumentiert 0)
 - [ ] `npm run lint:no-alert` clean
