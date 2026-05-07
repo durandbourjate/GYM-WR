@@ -131,9 +131,8 @@ export function useDrawingEngine(options: UseDrawingEngineOptions): UseDrawingEn
     return canvas.toDataURL('image/png');
   }, []);
 
-  // Öffentliche Hit-Testing-Funktion (für Auswahl-Werkzeug in der Toolbar-Komponente)
-  // Nicht im Interface, aber intern nutzbar → über state + Hilfsfunktion
-  // Hinweis: findeCommandBeiPunkt ist als benannte Export-Funktion verfügbar (s.u.)
+  // Hit-Testing-Funktion `findeCommandBeiPunkt` wird direkt aus
+  // './drawingGeometrie' importiert (z.B. in ZeichnenCanvas.tsx).
 
   return {
     state,
@@ -156,10 +155,3 @@ export function useDrawingEngine(options: UseDrawingEngineOptions): UseDrawingEn
     kannRedo: state.redoStack.length > 0,
   };
 }
-
-// ============================================================
-// Hilfsfunktionen als benannte Exporte (für Komponenten)
-// ============================================================
-
-export { findeCommandBeiPunkt, vereinfachePunkte } from './drawingGeometrie';
-export { zeichneCommand } from './drawingRendering';
