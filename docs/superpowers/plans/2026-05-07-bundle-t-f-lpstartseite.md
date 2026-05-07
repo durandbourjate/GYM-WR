@@ -1711,7 +1711,7 @@ Integriert alle 8 Extraktionen in `LPStartseite.tsx`. Entfernt: 5 useState (Date
 - [ ] **Step 10.1: Alte Imports entfernen, neue hinzufügen**
 
 Entfernen aus Imports (Z. 1-37):
-- `useState`, `useEffect`, `useMemo` aus `'react'` → behalten nur `Suspense`, `useState`, `useEffect`. (`useMemo` weg, weil `aktiverKurs` als einziger Memo bleibt — daher `useMemo` MUSS BLEIBEN. **Korrektur:** `useState`+`useEffect`+`useMemo` alle drei behalten.)
+- `useState, useEffect, useMemo` aus `'react'` **behalten** (alle drei werden weiterhin gebraucht: `useState` für Filter+UI-State, `useEffect` für 4 kleine useEffect's, `useMemo` für `aktiverKurs` Z. 104).
 - `useFragensammlungStore`, `useStammdatenStore` (jetzt im Hook) — entfernen
 - `useToast` (jetzt im Hook) — entfernen, weil Body braucht keinen toast mehr (alle 2 toast-Calls in Body waren in handleNeue/handleZurueck — beide ohne toast). **Verify:** falls Body irgendwo `toast.warning(...)` braucht, behalten.
 - `apiService` (jetzt im Hook) — bleibt für `handleZurueck`-Reload-Pfad. ABER: wenn `reload()` aus Hook benutzt wird, kann `apiService`-Import weg. **Entscheidung:** entfernen, `handleZurueck` ruft `reload()` aus Hook.
@@ -1773,6 +1773,12 @@ const favoriten = useFavoritenStore(s => s.favoriten)
 const { favoritenPruefungen, favoritenUebungen } = useLPFavoriten(configs, favoriten)
 ```
 (`favoritenConfigIds` + `favoritenConfigs` werden nicht mehr im Body referenziert — sie waren intern.)
+
+**Verifikations-Schritt:** Nach Body-Restrukturierung prüfen, dass keine Memo-/Variable-Namen aus den Hooks im Body residual sind:
+```bash
+grep -n "favoritenConfigIds\|favoritenConfigs[^P]\|filtereConfigs" ExamLab/src/components/lp/LPStartseite.tsx
+```
+Erwartet: keine Treffer.
 9. **Entfernen** Sync-Konstanten + `syncFragenSeriell` + `syncEinrichtungsPruefung` + `syncEinrichtungsUebung` (Z. 243-297).
 10. **Entfernen** Lade-useEffect (Z. 300-394). Ist im Hook.
 11. **Behalten** `useLPRouteSync()` (Z. 397).
@@ -2190,7 +2196,7 @@ git commit -m "Bundle T.f Phase 10: LPStartseite.tsx schlank (1043 → ~430 Z.) 
 ```bash
 cd ExamLab && npx vitest run 2>&1 | tail -5
 ```
-Expected: ~1349 passes (1324 + ~25 Drift).
+Expected: ~1349-1351 passes (1324 + ~25-27 Drift, je nach finaler Test-Anzahl in Tasks 1+2+3). Akzeptiere die tatsächlich-passierende Anzahl statt strikter Zahl, solange 0 fails.
 
 - [ ] **Step 11.2: tsc clean** (Output direkt prüfen)
 
