@@ -1,18 +1,9 @@
 // ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx
 import type { Frage } from '../../../types/ueben/fragen'
-import type { ThemenFortschritt } from '../../../types/ueben/fortschritt'
+import type { ThemenInfo } from '../../../hooks/ueben/useThemenKomputationen'
 import { berechneSterne, sterneText } from '../../../utils/ueben/gamification'
 import { getFachFarbe } from '../../../utils/ueben/fachFarben'
 import { FilterSection, Chip, FortschrittsBalken, MasteryBadges } from './themaDetailHelpers'
-
-// TEMPORÄR: wird in Task 4.8 durch Import aus useThemenKomputationen ersetzt
-interface ThemenInfo {
-  fach: string
-  thema: string
-  unterthemen: string[]
-  fragen: Frage[]
-  fortschritt: ThemenFortschritt
-}
 
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
 const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }

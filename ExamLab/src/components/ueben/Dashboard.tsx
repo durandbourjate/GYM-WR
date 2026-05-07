@@ -1,6 +1,5 @@
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
@@ -9,49 +8,23 @@ import { useUebenAuftragStore } from '../../store/ueben/auftragStore'
 import { useUebenNavigationStore } from '../../store/ueben/navigationStore'
 import { useDashboardLoad } from '../../hooks/ueben/useDashboardLoad'
 import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
+import { useThemenKomputationen } from '../../hooks/ueben/useThemenKomputationen'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { preWarmFragen } from '../../services/preWarmApi'
-import { berechneEmpfehlungen } from '../../utils/ueben/empfehlungen'
 import type { Frage } from '../../types/ueben/fragen'
-import type { ThemenFortschritt } from '../../types/ueben/fortschritt'
-import type { Empfehlung } from '../../types/ueben/auftrag'
-import { berechneSterne, sterneText } from '../../utils/ueben/gamification'
 import { useUebenKontext } from '../../hooks/ueben/useUebenKontext'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
-import { poolTitel } from '../../utils/poolTitelMapping'
 import { useThemenSichtbarkeitStore } from '../../store/ueben/themenSichtbarkeitStore'
 import { useUebenSettingsStore } from '../../store/ueben/settingsStore'
 import { ThemaKarteMitPreWarm } from './ThemaKarteMitPreWarm'
 import { EmpfehlungsKarte } from './EmpfehlungsKarte'
 import SuSAnalyse from './SuSAnalyse'
+import { ThemaDetailView } from './dashboard/ThemaDetailView'
 import type { DeepLinkZiel } from '../../hooks/ueben/useDeepLinkAktivierung'
 import type { ThemaQuelle } from '../../types/ueben/uebung'
 import MixSessionDialog from './MixSessionDialog'
 import UebungsEinsicht from './UebungsEinsicht'
 import { LernzieleMiniModal } from './LernzieleAkkordeon'
-
-const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
-const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }
-
-const TYP_LABELS: Record<string, string> = {
-  mc: 'Multiple Choice', multi: 'Multi', tf: 'Richtig/Falsch', fill: 'Lückentext', calc: 'Berechnung',
-  sort: 'Zuordnung', sortierung: 'Sortierung', zuordnung: 'Paare',
-  open: 'Freitext', formel: 'Formel', pdf: 'PDF-Annotation',
-  buchungssatz: 'Buchungssatz', tkonto: 'T-Konto', bilanz: 'Bilanz', kontenbestimmung: 'Kontenbestimmung',
-  hotspot: 'Hotspot', bildbeschriftung: 'Bildbeschriftung', dragdrop_bild: 'Drag & Drop',
-  gruppe: 'Aufgabengruppe', zeichnen: 'Zeichnen', audio: 'Audio', code: 'Code',
-  richtigfalsch: 'Richtig/Falsch', lueckentext: 'Lückentext', berechnung: 'Berechnung',
-  freitext: 'Freitext', visualisierung: 'Zeichnen', bilanzstruktur: 'Bilanz',
-  aufgabengruppe: 'Aufgabengruppe',
-}
-
-interface ThemenInfo {
-  fach: string
-  thema: string
-  unterthemen: string[]
-  fragen: Frage[]
-  fortschritt: ThemenFortschritt
-}
 
 interface DashboardProps {
   deepLinkZiel?: DeepLinkZiel | null
@@ -145,55 +118,33 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     console.log(`[DeepLink] Dashboard navigiert zu: ${deepLinkZiel.fach} / ${deepLinkZiel.thema}${deepLinkZiel.unterthema ? ` / ${deepLinkZiel.unterthema}` : ''}`)
   }, [deepLinkZiel, laden, alleFragen.length])
 
-  // Themen-Infos: Fach → Thema → { unterthemen, fragen, fortschritt }
-  const themenMap = useMemo(() => {
-    const map: Record<string, ThemenInfo[]> = {}
-    const fachThema: Record<string, Record<string, Frage[]>> = {}
-
-    for (const f of alleFragen) {
-      const themaRaw = f.thema || 'Allgemein'
-      const poolId = (f as { poolId?: string }).poolId || ''
-      const hatUnterthema = !!(f as { unterthema?: string }).unterthema
-      const tags = (f.tags || []) as (string | { name: string })[]
-
-      // Einrichtungsfragen komplett ausblenden — ausser im Demo-Modus, wo sie der einzige Inhalt sind
-      const istDemo = useAuthStore.getState().istDemoModus
-      if (!istDemo) {
-        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) continue
-        if (themaRaw === 'Einrichtung' || themaRaw === 'Einrichtungstest') continue
-      }
-
-      const fach = f.fach || 'Andere'
-
-      let thema = themaRaw
-      // Pool-Fragen: Pool-Titel aus fester Mapping-Tabelle, Topic-Label = Unterthema
-      if (!hatUnterthema && poolId) {
-        const poolMetaId = poolId.split(':')[0]
-        const titel = poolTitel(poolMetaId)
-        if (titel) {
-          thema = titel
-          ;(f as { unterthema?: string }).unterthema = themaRaw
-        }
-      }
-
-      if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach)) continue
-      if (!fachThema[fach]) fachThema[fach] = {}
-      if (!fachThema[fach][thema]) fachThema[fach][thema] = []
-      fachThema[fach][thema].push(f)
-    }
-
-    for (const [fach, themen] of Object.entries(fachThema)) {
-      map[fach] = Object.entries(themen).map(([thema, fragen]) => {
-        const unterthemen = [...new Set(
-          fragen.map(f => (f as { unterthema?: string }).unterthema).filter(Boolean)
-        )].sort() as string[]
-        return { fach, thema, unterthemen, fragen, fortschritt: getThemenFortschritt(fragen) }
-      }).sort((a, b) => a.thema.localeCompare(b.thema))
-    }
-    return map
-  }, [alleFragen, getThemenFortschritt, sichtbareFaecher])
-
-  const verfuegbareFaecher = useMemo(() => Object.keys(themenMap).sort(), [themenMap])
+  const {
+    themenMap,
+    verfuegbareFaecher,
+    themenSektionen,
+    themaDetail,
+    gefilterteFragen,
+    empfehlungen,
+  } = useThemenKomputationen({
+    alleFragen,
+    fortschritte,
+    auftraege,
+    user,
+    freischaltungen,
+    einstellungen,
+    sichtbareFaecher,
+    aktiverFach,
+    aktivesThema,
+    alleThemenAnzeigen,
+    suchtext,
+    unterthemaFilter,
+    schwierigkeitFilter,
+    typFilter,
+    sortierung,
+    getThemenFortschritt,
+    getStatus,
+    getAktiveUnterthemen,
+  })
 
   // Lernziele-Deep-Link: Wenn aus LernzieleAkkordeon ein Thema gewählt wurde
   const deepLinkThema = useUebenNavigationStore((s) => s.deepLinkThema)
@@ -206,134 +157,6 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     }
     useUebenNavigationStore.getState().setDeepLinkThema(null)
   }, [deepLinkThema, laden, alleFragen.length, themenMap])
-
-  // Sichtbare Themen (abhängig vom Fach-Filter + Sichtbarkeitsfilter)
-  const sichtbareThemenListe = useMemo(() => {
-    const alleFachThemen = aktiverFach ? (themenMap[aktiverFach] || []) : Object.values(themenMap).flat()
-
-    // Wenn keine Freischaltungen existieren → alle anzeigen (Fallback)
-    if (freischaltungen.length === 0) return alleFachThemen
-
-    // Wenn "Alle Themen anzeigen" aktiv → alles zeigen
-    if (alleThemenAnzeigen) return alleFachThemen
-
-    // Nur aktive + abgeschlossene Themen anzeigen (nicht_freigeschaltet nur bei "Alle Themen")
-    let gefiltert = alleFachThemen
-      .filter(info => {
-        const status = getStatus(info.fach, info.thema)
-        return status === 'aktiv' || status === 'abgeschlossen'
-      })
-      .map(info => {
-        // Unterthemen-Filter: Wenn nur bestimmte Unterthemen aktiv → Fragen filtern
-        const aktiveUT = getAktiveUnterthemen(info.fach, info.thema)
-        if (!aktiveUT || aktiveUT.length === 0) return info // Alle Unterthemen aktiv
-        const gefilterteFragen = info.fragen.filter(f => {
-          const ut = (f as { unterthema?: string }).unterthema
-          return !ut || aktiveUT.includes(ut) // Fragen ohne Unterthema immer zeigen
-        })
-        if (gefilterteFragen.length === 0) return null // Keine Fragen übrig → Thema ausblenden
-        const gefilteterteUnterthemen = info.unterthemen.filter(ut => aktiveUT.includes(ut))
-        return { ...info, fragen: gefilterteFragen, unterthemen: gefilteterteUnterthemen, fortschritt: getThemenFortschritt(gefilterteFragen) }
-      })
-      .filter((info): info is ThemenInfo => info !== null)
-
-    // Suchtext: Themen + Unterthemen + Fachtitel durchsuchen
-    if (suchtext.trim()) {
-      const lower = suchtext.toLowerCase().trim()
-      gefiltert = (alleThemenAnzeigen ? alleFachThemen : gefiltert).filter(info =>
-        info.thema.toLowerCase().includes(lower) ||
-        info.fach.toLowerCase().includes(lower) ||
-        info.unterthemen.some(ut => ut.toLowerCase().includes(lower)) ||
-        info.fragen.some(f => ('fragetext' in f && typeof f.fragetext === 'string') ? f.fragetext.toLowerCase().includes(lower) : false)
-      )
-    }
-
-    return gefiltert
-  }, [themenMap, aktiverFach, freischaltungen, alleThemenAnzeigen, getStatus, suchtext])
-
-  // Letzte Übung pro Thema (für Sortierung "Zuletzt geübt")
-  const letzteUebungProThema = useMemo(() => {
-    const map = new Map<string, string>() // "fach|thema" → ISO-Timestamp
-    for (const f of Object.values(fortschritte)) {
-      if (!f.letzterVersuch) continue
-      for (const thema of sichtbareThemenListe) {
-        const gehoertZuThema = thema.fragen.some(frage => frage.id === f.fragenId)
-        if (gehoertZuThema) {
-          const key = `${thema.fach}|${thema.thema}`
-          const bisheriger = map.get(key)
-          if (!bisheriger || f.letzterVersuch > bisheriger) {
-            map.set(key, f.letzterVersuch)
-          }
-        }
-      }
-    }
-    return map
-  }, [sichtbareThemenListe, fortschritte])
-
-  // Themen in Sektionen aufteilen (aktuelle, freigegebene nach Fach, weitere)
-  const themenSektionen = useMemo(() => {
-    const aktuelle: ThemenInfo[] = []
-    const freigegebeneNachFach = new Map<string, ThemenInfo[]>()
-    const weitere: ThemenInfo[] = []
-
-    for (const t of sichtbareThemenListe) {
-      const status = freischaltungen.length > 0 ? getStatus(t.fach, t.thema) : 'abgeschlossen'
-      if (status === 'aktiv') {
-        aktuelle.push(t)
-      } else if (status === 'abgeschlossen') {
-        const liste = freigegebeneNachFach.get(t.fach) ?? []
-        liste.push(t)
-        freigegebeneNachFach.set(t.fach, liste)
-      } else if (status === 'nicht_freigeschaltet') {
-        weitere.push(t)
-      }
-    }
-
-    const sortiereFn = (a: ThemenInfo, b: ThemenInfo) => {
-      if (sortierung === 'zuletztGeuebt') {
-        const tA = letzteUebungProThema.get(`${a.fach}|${a.thema}`) ?? ''
-        const tB = letzteUebungProThema.get(`${b.fach}|${b.thema}`) ?? ''
-        if (tA !== tB) return tB.localeCompare(tA) // neueste zuerst
-      }
-      return a.thema.localeCompare(b.thema)
-    }
-
-    aktuelle.sort(sortiereFn)
-    for (const [, themen] of freigegebeneNachFach) {
-      themen.sort(sortiereFn)
-    }
-    weitere.sort(sortiereFn)
-
-    const faecherSortiert = [...freigegebeneNachFach.entries()].sort((a, b) => a[0].localeCompare(b[0]))
-
-    return { aktuelle, faecherSortiert, weitere }
-  }, [sichtbareThemenListe, freischaltungen, sortierung, letzteUebungProThema, getStatus])
-
-  // Aktives Thema-Detail
-  const themaDetail = useMemo(() => {
-    if (!aktivesThema) return null
-    return sichtbareThemenListe.find(t => t.thema === aktivesThema) || null
-  }, [sichtbareThemenListe, aktivesThema])
-
-  // Gefilterte Fragen im aktiven Thema
-  const gefilterteFragen = useMemo(() => {
-    if (!themaDetail) return []
-    return themaDetail.fragen.filter(f => {
-      if (unterthemaFilter.size > 0 && !unterthemaFilter.has((f as { unterthema?: string }).unterthema || '')) return false
-      if (schwierigkeitFilter.size > 0 && !schwierigkeitFilter.has(f.schwierigkeit ?? 2)) return false
-      if (typFilter.size > 0 && !typFilter.has(f.typ)) return false
-      return true
-    })
-  }, [themaDetail, unterthemaFilter, schwierigkeitFilter, typFilter])
-
-  // Empfehlungen (erweitert: Freischaltungen + LP-Fokus)
-  const empfehlungen: Empfehlung[] = useMemo(() => {
-    if (!user || alleFragen.length === 0) return []
-    return berechneEmpfehlungen(
-      alleFragen, fortschritte, auftraege, user.email,
-      freischaltungen, einstellungen || undefined,
-    )
-  }, [alleFragen, fortschritte, auftraege, user, freischaltungen, einstellungen])
 
   const handleStarte = (fach: string, thema: string, fragenOverride?: Frage[]) => {
     if (!aktiveGruppe || !user) return
@@ -685,229 +508,6 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
         </>
         )}
       </main>
-    </div>
-  )
-}
-
-// ===================== THEMA-DETAIL VIEW (Pool-Stil) =====================
-
-interface ThemaDetailProps {
-  themaDetail: ThemenInfo
-  gefilterteFragen: Frage[]
-  unterthemaFilter: Set<string>
-  schwierigkeitFilter: Set<number>
-  typFilter: Set<string>
-  onToggleUnterthema: (v: string) => void
-  onToggleSchwierigkeit: (v: number) => void
-  onToggleTyp: (v: string) => void
-  onToggleAlleUnterthemen: () => void
-  onToggleAlleSchwierigkeiten: () => void
-  onToggleAlleTypen: () => void
-  onZurueck: () => void
-  onStarte: () => void
-  fachFarben: Record<string, string>
-}
-
-function ThemaDetailView({
-  themaDetail, gefilterteFragen,
-  unterthemaFilter, schwierigkeitFilter, typFilter,
-  onToggleUnterthema, onToggleSchwierigkeit, onToggleTyp,
-  onToggleAlleUnterthemen, onToggleAlleSchwierigkeiten, onToggleAlleTypen,
-  onZurueck, onStarte, fachFarben,
-}: ThemaDetailProps) {
-  const farbe = getFachFarbe(themaDetail.fach, fachFarben)
-  // Immer alle 3 Schwierigkeitsstufen anzeigen (Pool-Fragen haben diff 1-3)
-  const verfuegbareSchwierigkeiten = [1, 2, 3]
-  const verfuegbareTypen = [...new Set(themaDetail.fragen.map(f => f.typ))].sort()
-  const filterAktiv = unterthemaFilter.size > 0 || schwierigkeitFilter.size > 0 || typFilter.size > 0
-
-  return (
-    <div className="space-y-4">
-      {/* Header mit Zurück */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onZurueck}
-          className="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-        >
-          ←
-        </button>
-        <div>
-          <h3 className="text-lg font-bold dark:text-white">{themaDetail.thema}</h3>
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: farbe }} />
-            <span>{themaDetail.fach}</span>
-            <span>·</span>
-            <span>{themaDetail.fragen.length} Fragen</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Fortschritt */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-        <FortschrittsBalken fortschritt={themaDetail.fortschritt} />
-        <div className="flex justify-between mt-2">
-          <MasteryBadges fortschritt={themaDetail.fortschritt} />
-          <span className="text-sm">{sterneText(berechneSterne(themaDetail.fortschritt.quote))}</span>
-        </div>
-      </div>
-
-      {/* Unterthema-Chips */}
-      {themaDetail.unterthemen.length > 0 && (
-        <FilterSection
-          titel="Unterthemen"
-          emoji="📚"
-          onToggleAlle={onToggleAlleUnterthemen}
-        >
-          {themaDetail.unterthemen.map(ut => {
-            const anzahl = themaDetail.fragen.filter(f => (f as { unterthema?: string }).unterthema === ut).length
-            return (
-              <Chip
-                key={ut}
-                label={ut}
-                count={anzahl}
-                aktiv={unterthemaFilter.has(ut)}
-                farbe={farbe}
-                onClick={() => onToggleUnterthema(ut)}
-              />
-            )
-          })}
-        </FilterSection>
-      )}
-
-      {/* Schwierigkeits-Chips */}
-      <FilterSection titel="Schwierigkeit" emoji="📊" onToggleAlle={onToggleAlleSchwierigkeiten}>
-        {verfuegbareSchwierigkeiten.map(s => {
-          const anzahl = themaDetail.fragen.filter(f => (f.schwierigkeit ?? 2) === s).length
-          return (
-            <Chip
-              key={s}
-              label={`${SCHWIERIGKEIT_STERNE[s] || '⭐'} ${SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}`}
-              count={anzahl}
-              aktiv={schwierigkeitFilter.has(s)}
-              farbe={farbe}
-              onClick={() => onToggleSchwierigkeit(s)}
-            />
-          )
-        })}
-      </FilterSection>
-
-      {/* Fragetyp-Chips */}
-      {verfuegbareTypen.length > 0 && (
-        <FilterSection titel="Fragetyp" emoji="✏️" onToggleAlle={onToggleAlleTypen}>
-          {verfuegbareTypen.map(t => {
-            const anzahl = themaDetail.fragen.filter(f => f.typ === t).length
-            return (
-              <Chip
-                key={t}
-                label={TYP_LABELS[t] || t}
-                count={anzahl}
-                aktiv={typFilter.has(t)}
-                farbe={farbe}
-                onClick={() => onToggleTyp(t)}
-              />
-            )
-          })}
-        </FilterSection>
-      )}
-
-      {/* Info-Balken + Start-Button */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-600 dark:text-slate-400">
-            {filterAktiv
-              ? `${gefilterteFragen.length} von ${themaDetail.fragen.length} Fragen ausgewählt`
-              : `${themaDetail.fragen.length} Fragen verfügbar`
-            }
-          </span>
-          <button
-            onClick={onStarte}
-            disabled={gefilterteFragen.length === 0}
-            className="px-6 py-2.5 rounded-xl font-semibold text-white transition-colors min-h-[44px] disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ backgroundColor: gefilterteFragen.length > 0 ? farbe : undefined }}
-          >
-            Übung starten
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ===================== SHARED COMPONENTS =====================
-
-function FilterSection({ titel, emoji, children, onToggleAlle }: {
-  titel: string; emoji: string; children: React.ReactNode; onToggleAlle: () => void
-}) {
-  return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          {emoji} {titel}
-        </h4>
-        <button
-          onClick={onToggleAlle}
-          className="text-xs font-medium px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-slate-400 transition-colors"
-        >
-          Alle ⇄
-        </button>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function Chip({ label, count, aktiv, farbe, onClick }: {
-  label: string; count?: number; aktiv: boolean; farbe: string; onClick: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      title={label}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-colors cursor-pointer select-none ${
-        !aktiv
-          ? 'text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-          : ''
-      }`}
-      style={aktiv
-        ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
-        : undefined
-      }
-    >
-      {label}
-      {count !== undefined && (
-        <span className={`text-[10px] font-mono ${aktiv ? 'opacity-80' : 'text-slate-400'}`}>
-          {count}
-        </span>
-      )}
-    </button>
-  )
-}
-
-function FortschrittsBalken({ fortschritt }: { fortschritt: ThemenFortschritt }) {
-  if (fortschritt.gesamt === 0) return null
-  const gemeistertPct = (fortschritt.gemeistert / fortschritt.gesamt) * 100
-  const gefestigtPct = (fortschritt.gefestigt / fortschritt.gesamt) * 100
-  const uebenPct = (fortschritt.ueben / fortschritt.gesamt) * 100
-
-  return (
-    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden flex mt-2">
-      {gemeistertPct > 0 && <div className="bg-green-500 h-2" style={{ width: `${gemeistertPct}%` }} />}
-      {gefestigtPct > 0 && <div className="bg-blue-400 h-2" style={{ width: `${gefestigtPct}%` }} />}
-      {uebenPct > 0 && <div className="bg-yellow-400 h-2" style={{ width: `${uebenPct}%` }} />}
-    </div>
-  )
-}
-
-function MasteryBadges({ fortschritt }: { fortschritt: ThemenFortschritt }) {
-  if (fortschritt.gesamt === 0) return null
-  return (
-    <div className="flex items-center gap-1 text-xs">
-      {fortschritt.gemeistert > 0 && <span className="px-1.5 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">{fortschritt.gemeistert}</span>}
-      {fortschritt.gefestigt > 0 && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">{fortschritt.gefestigt}</span>}
-      {fortschritt.ueben > 0 && <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300">{fortschritt.ueben}</span>}
-      {fortschritt.neu > 0 && <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">{fortschritt.neu}</span>}
     </div>
   )
 }
