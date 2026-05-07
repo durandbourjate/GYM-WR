@@ -142,6 +142,12 @@ describe('canvasReducer', () => {
     }
   });
 
+  it('UPDATE_COMMAND mit nicht-existenter ID → no-op', () => {
+    const state = canvasReducer(initialState, { type: 'ADD_COMMAND', command: mkStift('s1') });
+    const next = canvasReducer(state, { type: 'UPDATE_COMMAND', id: 'doesnotexist', updates: {} });
+    expect(next).toBe(state);
+  });
+
   it('LOAD ersetzt commands-Array, redo+aktiver+selektiert reset', () => {
     let state = canvasReducer(initialState, { type: 'ADD_COMMAND', command: mkStift() });
     state = canvasReducer(state, { type: 'SELECT', id: 'foo' });
