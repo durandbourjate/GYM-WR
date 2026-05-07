@@ -8,6 +8,68 @@
 
 ## Letzter Stand auf main
 
+### Bundle T.a — DurchfuehrenDashboard Hook-Extraktion ✅ MERGED (2026-05-07)
+
+Branch `feature/bundle-t-a-durchfuehren-dashboard`. Erstes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Mittel-Risiko-File-Split per Hook-Extraktion. **DurchfuehrenDashboard.tsx 677 → 464 Zeilen (-31%)** — Hotspot-Set verlassen.
+
+**Was geliefert:**
+- 4 neue Files (3 Hooks + 1 Pure-Util):
+  - `ExamLab/src/utils/durchfuehrenMonitoringMapper.ts` (52 Z., pure mapping) + 11 Vitest-Tests (103 Z.)
+  - `ExamLab/src/hooks/useDurchfuehrenMonitoring.ts` (92 Z., daten-polling + auto-refresh + 3-fehler-banner + abortcontroller)
+  - `ExamLab/src/hooks/useDurchfuehrenLoad.ts` (116 Z., once-load abgaben+fragen+config + demo-modus + periodic-config-refresh)
+  - `ExamLab/src/hooks/useDurchfuehrenPhasenTab.ts` (85 Z., activetab + phase-auto-forward + url-sync + prewarmkorrektur-trigger)
+- Phase-useState-Pattern in DurchfuehrenDashboard etabliert (löst Hook-Input-Zirkularität: Hooks brauchen `phase`, aber `phase` kommt aus `bestimmePhase(config, daten.schueler)` = Output von Load+Monitoring → useState + Sync-Effect bricht den Zyklus).
+- Bug-Fix Bonus: 3-Fehler-Verbindungs-Banner war im Original durch stale-closure-Capture (`ladeStatus !== 'laden'` permanent false) **de facto wirkungslos**. Refactor mit Ref-Pattern fixt das ohne Refetch-Bursts (Hotfix-Commit `4c3e51a`).
+- Test-Hybrid umgesetzt: Pure-Util mit 11 Tests, 3 Hooks ohne Unit-Tests (async-store-orchestration, Browser-E2E reicht). Source-Scan-Tests (Hebel A + Trigger 1/2/3) auf `useDurchfuehren*.ts?raw` umgeleitet.
+
+**Verifikation:**
+- vitest **1264 passes** (drift=0 vs Baseline 1253 + 11 neue Mapper-Tests) ✓
+- tsc + build clean ✓
+- lint:as-any 0/0/0 + lint:no-alert 0 ✓
+- Browser-E2E auf staging mit echtem LP-Login: **Pfade 1, 3a, 6, 7 ✓**
+  - Pfad 1: DurchfuehrenDashboard lädt mit Tab-Bar + Live-Indicator + Polling
+  - Pfad 3a: Tab-Klick auf Auswertung triggert `ladeKorrektur` (preWarmKorrektur-Path)
+  - Pfad 6: URL `?tab=lobby` direct → activeTab='lobby' (useState-Initial korrekt)
+  - Pfad 7: 3× Refresh-Klicks → AbortController abgebrochen, 0 Frontend-Crash trotz 503-Apps-Script-Quota-Bursts
+  - Network-Polling verifiziert: monitoring/ladeNachrichten/ladeEinzelConfig/ladeAbgaben/ladeKorrektur
+  - 0 Console-Errors während gesamter Session
+- Final Code-Reviewer (Bundle T.a komplett): **APPROVED**, mit Bonus-Hinweis zum 3-Fehler-Banner-Bugfix.
+
+**Bug-Fix-Disclosure (Browser-Verhaltensänderung):** Der 3-Fehler-Verbindungs-Banner war im Original wirkungslos. Nach T.a feuert er korrekt nach 3 Polling-Misses. User könnte mehr Banner-Sichtungen bei Netzwerk-Schwierigkeiten erleben.
+
+**Nicht im Browser getestet (Continuation-Tests, brauchen echte Pruefung mit SuS-Logins, nicht durchgespielt):**
+- Pfad 2: Vollständige Phasen-Übergänge Vorbereitung→Lobby→Aktiv→Beendet
+- Pfad 3b/3c: preWarmKorrektur bei phase=beendet, Direct-Mount bei beendet+freigeschaltet+!urlTab
+- Pfad 4: 3-Fehler-Verbindungs-Banner via Network-Throttling
+- Pfad 5: "Neue Durchführung"-Button-Reset
+
+Refactor ist semantisch byte-identisch (per Reviewer-Bestätigung + Diff), Continuation-Pfade sollten identisches Verhalten zeigen wie auf main (vor T.a). Hotfix-Cherry-Pick falls Probleme.
+
+**Out of Scope (für nächste Session):**
+- T.a Spawn-Tasks (Memory-TODO):
+  - `setDaten`-Leak in useDurchfuehrenMonitoring (TODO Z.14): durch `resetDaten(pruefungId)` oder `onPruefungReset`-Callback ersetzen, Direct-Setter-Leak vermeiden — relevant ab T.f wenn phase-useState-Pattern propagiert
+  - `_nachrichten` Dead-Code-Verdacht (set, aber nicht gelesen) — separater Spawn-Task post-merge
+- Untracked-Files-Drift im Repo (nicht von T.a verursacht):
+  - `ExamLab/src/components/lp/fragensammlung/fragenbrowser/FragenBrowserHeader.tsx` (modified-not-staged auf main bestätigt)
+  - `ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx`, `VorschauTab.tsx` (untracked — vermutlich Bundle-S-Reste)
+  - 2× `* 2.tsx`-macOS-Duplikate (Memory-Workflow-Regel: aufräumen)
+
+**Spec/Plan:**
+- Master-Spec: `docs/superpowers/specs/2026-05-06-bundle-t-hooks-splits-design.md` (auf main, Bundle T Sektion 3 + 6.1)
+- T.a Plan: `docs/superpowers/plans/2026-05-06-bundle-t-a-durchfuehren-dashboard.md` (rev2 commit `abe8b54`, jetzt auf main)
+
+**Nächste Schritte:**
+- T.b (TKontoFrage 763 Z. → `<KontoEingabeForm>` + `tkontoUtils.ts`)
+- T.c (FragenBrowser 768 Z. → `useFragenFilterEngine` + `useFragenEditorSync`)
+- Pause-Punkt nach T.c laut Master-Spec Sektion 8.3 für Zwischen-Reflexion.
+
+**3 neue Lehren für Memory:**
+1. **`tsc -b 2>&1 | grep "error TS"`** statt `tail -5` — Implementer-Subagent übersah TS2352-Plan-Code-Bug, weil tail nur Footer zeigte.
+2. **Naming-Vermeidung via thematisches Prefix**: `useMonitoringData` würde mit existierendem `usePruefungsMonitoring` (SuS-Auto-Save in völlig anderem Bereich) kollidieren. `useDurchfuehren*`-Prefix passt zur Domain.
+3. **phase-useState-Pattern für Hook-Input-Zirkularität**: Wenn alle 3+ Hooks `phase` als Input brauchen, aber `phase` aus Hook-Outputs (config+daten) kommt — `useState<Phase>('default')` + Sync-Effect statt phaseRef-Bridge.
+
+---
+
 ### Bundle T — Master-Spec für Hook-Extraktion (6 mittel-Risiko-Files) ✅ MERGED (2026-05-06)
 
 Branch `spec/bundle-t-master`. Reine Brainstorming + Spec-Phase, kein Code-Change. Phase-3-Tiefen-Refactor aus Audit-Roadmap (2026-05-05). Bundle T zerlegt 6 Mittel-Risiko-File-Hotspots per Hook-Extraktion in 6 Sub-Bundles T.a–T.f, je 1 File, Risiko-aufsteigend.

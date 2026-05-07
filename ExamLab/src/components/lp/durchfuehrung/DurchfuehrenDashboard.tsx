@@ -4,27 +4,12 @@ import DurchfuehrenVorbereitungSkeleton from '../skeletons/DurchfuehrenVorbereit
 import DurchfuehrenSusReihenSkeleton from '../skeletons/DurchfuehrenSusReihenSkeleton'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
-import { preWarmKorrektur } from '../../../services/preWarmApi'
 import { schreibeGespeicherteAnzahl } from '../../../utils/skeletonAnzahl'
-import { erstelleDemoMonitoring } from '../../../data/demoMonitoring.ts'
-import { demoFragen } from '../../../data/demoFragen.ts'
-import { einrichtungsPruefung } from '../../../data/einrichtungsPruefung.ts'
-import { einrichtungsUebung } from '../../../data/einrichtungsUebung.ts'
-import { einrichtungsUebungFragen } from '../../../data/einrichtungsUebungFragen.ts'
-
-// Eingebaute Versionen für Einrichtungsprüfung/-übung (Fallback wenn Backend-Config veraltet)
-const eingebauteVersionen: Record<string, { config: PruefungsConfig; fragen: Frage[] }> = {
-  'einrichtung-uebung': { config: einrichtungsUebung, fragen: einrichtungsUebungFragen },
-  [einrichtungsPruefung.id]: { config: einrichtungsPruefung, fragen: demoFragen },
-}
-import type { MonitoringDaten, PruefungsNachricht } from '../../../types/monitoring.ts'
-import type { SchuelerAbgabe } from '../../../types/korrektur.ts'
-import type { Frage } from '../../../types/fragen-storage'
+import type { PruefungsNachricht } from '../../../types/monitoring.ts'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import EinstellungenPanel from '../../settings/EinstellungenPanel.tsx'
 import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
-import type { PruefungsConfig } from '../../../types/pruefung'
 import type { PruefungsPhase } from '../../../types/monitoring'
 import { bestimmePhase } from '../../../utils/phase'
 import { exportiereTeilnahmeCSV, downloadCSV } from '../../../utils/exportUtils'
@@ -33,8 +18,15 @@ import LobbyPhase from './LobbyPhase'
 import AktivPhase from './AktivPhase'
 import BeendetPhase from './BeendetPhase'
 import KorrekturDashboard from '../korrektur/KorrekturDashboard'
-
-type DurchfuehrenTab = 'vorbereitung' | 'lobby' | 'live' | 'auswertung'
+import { useDurchfuehrenMonitoring } from '../../../hooks/useDurchfuehrenMonitoring'
+import { useDurchfuehrenLoad } from '../../../hooks/useDurchfuehrenLoad'
+import {
+  useDurchfuehrenPhasenTab,
+  phaseZuTab,
+  istTabVerfuegbar,
+  normalisiereUrlTab,
+  type DurchfuehrenTab,
+} from '../../../hooks/useDurchfuehrenPhasenTab'
 
 const TAB_CONFIG: { key: DurchfuehrenTab; label: string; icon: string }[] = [
   { key: 'vorbereitung', label: 'Vorbereitung', icon: '⚙️' },
@@ -42,40 +34,6 @@ const TAB_CONFIG: { key: DurchfuehrenTab; label: string; icon: string }[] = [
   { key: 'live', label: 'Live', icon: '🟢' },
   { key: 'auswertung', label: 'Auswertung', icon: '✏️' },
 ]
-
-// Phase → Tab Mapping
-function phaseZuTab(phase: PruefungsPhase): DurchfuehrenTab {
-  switch (phase) {
-    case 'vorbereitung': return 'vorbereitung'
-    case 'lobby': return 'lobby'
-    case 'aktiv': return 'live'
-    case 'beendet': return 'auswertung'
-  }
-}
-
-// Tab-Reihenfolge für Vergleich
-const TAB_REIHENFOLGE: DurchfuehrenTab[] = ['vorbereitung', 'lobby', 'live', 'auswertung']
-
-function tabIndex(tab: DurchfuehrenTab): number {
-  return TAB_REIHENFOLGE.indexOf(tab)
-}
-
-// Prüft ob ein Tab basierend auf der aktuellen Phase verfügbar ist
-function istTabVerfuegbar(tab: DurchfuehrenTab, phase: PruefungsPhase): boolean {
-  const aktuellerTabIndex = tabIndex(phaseZuTab(phase))
-  const zielIndex = tabIndex(tab)
-  // Auswertung immer verfügbar (LP muss jederzeit korrigieren können)
-  if (tab === 'auswertung') return true
-  return zielIndex <= aktuellerTabIndex
-}
-
-// URL-Fallback: Alte Tab-Namen auf neuen Namen mappen
-function normalisiereUrlTab(raw: string | null): DurchfuehrenTab | null {
-  if (!raw) return null
-  if (raw === 'ergebnisse' || raw === 'korrektur') return 'auswertung'
-  if (TAB_REIHENFOLGE.includes(raw as DurchfuehrenTab)) return raw as DurchfuehrenTab
-  return null
-}
 
 function formatDauer(ms: number): string {
   const totalSekunden = Math.floor(ms / 1000)
@@ -92,37 +50,38 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const user = useAuthStore((s) => s.user)
   const istDemoModus = useAuthStore((s) => s.istDemoModus)
 
-  // Tab-State (mit Fallback für alte URL-Parameter ?tab=ergebnisse / ?tab=korrektur)
+  // urlTab: synchron aus location lesen (kein State, einmal pro Render OK)
   const urlTab = normalisiereUrlTab(new URLSearchParams(window.location.search).get('tab'))
-  const [activeTab, setActiveTab] = useState<DurchfuehrenTab>(urlTab ?? 'vorbereitung')
-  const letztePhaseRef = useRef<PruefungsPhase>('vorbereitung')
+
+  // Phase als useState statt per-render-Computation, damit alle Hook-Inputs reaktiv sind.
+  // Ohne das gibt es Hook-Input-Zirkularität: phase aus config+daten (Load+Monitoring),
+  // aber die brauchen phase selbst. useState + Sync-Effect löst das sauber.
+  const [phase, setPhase] = useState<PruefungsPhase>('vorbereitung')
+
+  // Hook-Reihenfolge: PhasenTab → Load → Monitoring
+  //   PhasenTab muss vor Load kommen, weil Load setActiveTab als Argument braucht.
+  const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({ phase, urlTab, user, pruefungId })
+  const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
+    useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase, urlTab, setActiveTab })
+  const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten } =
+    useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase })
+
+  // Phase-Sync: ersetzt die alte per-render-Computation.
+  useEffect(() => {
+    const neuePhase: PruefungsPhase = config && daten ? bestimmePhase(config, daten.schueler) : 'vorbereitung'
+    setPhase(neuePhase)
+  }, [config, daten])
 
   // Data-State (aus MonitoringDashboard)
-  const [daten, setDaten] = useState<MonitoringDaten | null>(null)
   const [zeigFragenbank, setZeigFragenbank] = useState(false)
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
-  const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig' | 'fehler'>('laden')
-  const [autoRefresh, setAutoRefresh] = useState(true)
-
-  // Abgaben + Fragen (einmalig geladen)
-  const [abgaben, setAbgaben] = useState<Record<string, SchuelerAbgabe>>({})
-  const [fragen, setFragen] = useState<Frage[]>([])
-  const abgabenGeladen = useRef(false)
 
   // Nachrichten (LP → SuS)
   const [_nachrichten, setNachrichten] = useState<PruefungsNachricht[]>([])
 
   // Auswertung: Ergebnis-Übersicht Accordion (offen wenn keine Korrektur gestartet)
   const [ergebnisOffen, setErgebnisOffen] = useState(true)
-
-  // Config der Prüfung
-  const [config, setConfig] = useState<PruefungsConfig | null>(null)
-
-  // Phase früh ableiten (wird in Polling-Effekten als Dependency gebraucht)
-  const phase: PruefungsPhase = config && daten
-    ? bestimmePhase(config, daten.schueler)
-    : 'vorbereitung'
 
   // Zentral: Nur Teilnehmer aus dem Monitoring anzeigen (nicht-eingeladene SuS ausfiltern)
   const teilnehmerEmails = useMemo(() => {
@@ -138,15 +97,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   // Loading-State für Freischalten-Button
   const [freischaltenLaedt, setFreischaltenLaedt] = useState(false)
 
-  // AbortController für Monitoring-Polling (Overlap-Schutz)
-  const monitoringAbortRef = useRef<AbortController | null>(null)
-
   // G.f.2 — letzter geschriebener Wert für localStorage-Persist (verhindert redundante Writes)
   const letzteGeschriebeneAnzahlRef = useRef<number | null>(null)
-
-  // Verbindungsfehler-Tracking (Ref statt State → kein useCallback-Rebuild)
-  const fehlerCountRef = useRef(0)
-  const [zeigeVerbindungsBanner, setZeigeVerbindungsBanner] = useState(false)
 
   // Timer für aktive Phase
   const [startTimestamp] = useState(() => Date.now())
@@ -165,81 +117,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     return () => clearInterval(interval)
   }, [ladeNachrichten])
 
-  // Daten laden (mit Overlap-Schutz: vorherigen Request abbrechen)
-  const ladeDaten = useCallback(async () => {
-    if (!user) return
-    if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
-      setDaten(erstelleDemoMonitoring())
-      setLadeStatus('fertig')
-      return
-    }
-    // Vorherigen laufenden Request abbrechen
-    monitoringAbortRef.current?.abort()
-    const controller = new AbortController()
-    monitoringAbortRef.current = controller
-    const result = await apiService.ladeMonitoring(pruefungId, user.email, { signal: controller.signal })
-    // Abgebrochene Requests ignorieren (nicht als Fehler werten)
-    if (controller.signal.aborted) return
-    // Verbindungsfehler erkennen: result ist null bei Timeout/Netzwerkfehler
-    // ABER: Beim ersten Laden ist null normal (kein Antworten-Sheet in Vorbereitungsphase)
-    if (!result && !istDemoModus && ladeStatus !== 'laden') {
-      fehlerCountRef.current++
-      if (fehlerCountRef.current >= 3) {
-        setZeigeVerbindungsBanner(true)
-      }
-      return // Bestehende Daten sichtbar lassen, nicht mit leeren überschreiben
-    }
-    // Erfolg → Fehlerzähler zurücksetzen
-    if (result) {
-      fehlerCountRef.current = 0
-      if (zeigeVerbindungsBanner) setZeigeVerbindungsBanner(false)
-    }
-    // result kann null sein wenn noch kein Antworten-Sheet existiert (Vorbereitungsphase)
-    // → Leere Monitoring-Daten statt Fehler, damit die LP normal weiterarbeiten kann
-    const effectiveResult = result || { pruefungTitel: '', schueler: [], gesamtSus: 0 }
-    const mappedResult = {
-      ...effectiveResult,
-      gesamtSus: effectiveResult.gesamtSus ?? (effectiveResult.schueler as unknown[])?.length ?? 0,
-      schueler: (((effectiveResult.schueler || []) as unknown as Record<string, unknown>[]).map((s) => ({
-        email: s.email || '',
-        name: s.name || s.email || '',
-        status: (s.abgabezeit || s.istAbgabe === 'true' || s.istAbgegeben === 'true' || s.istAbgegeben === true) ? 'abgegeben' : (s.status || 'nicht-gestartet'),
-        letzterHeartbeat: s.letzterHeartbeat || null,
-        letzterSave: s.letzterSave || null,
-        beantworteteFragen: Number(s.beantworteteFragen) || 0,
-        gesamtFragen: Number(s.gesamtFragen) || 0,
-        abgabezeit: s.abgabezeit || null,
-        startzeit: s.startzeit || null,
-        heartbeats: Number(s.heartbeats) || 0,
-        netzwerkFehler: Number(s.netzwerkFehler) || 0,
-        autoSaveCount: Number(s.autoSaveCount) || 0,
-        unterbrechungen: Array.isArray(s.unterbrechungen) ? s.unterbrechungen : [],
-        sebVersion: s.sebVersion || undefined,
-        browserInfo: s.browserInfo || undefined,
-        aktuelleFrage: typeof s.aktuelleFrage === 'number' ? s.aktuelleFrage : (s.aktuelleFrage != null && s.aktuelleFrage !== '' ? Number(s.aktuelleFrage) : null),
-        // Lockdown-Felder (B19-Fix: fehlten im Mapping)
-        geraet: (s.geraet as 'laptop' | 'tablet' | 'unbekannt') || undefined,
-        vollbild: s.vollbild === true || s.vollbild === 'true',
-        kontrollStufe: (s.kontrollStufe as 'keine' | 'locker' | 'standard' | 'streng') || undefined,
-        verstossZaehler: Number(s.verstossZaehler) || 0,
-        gesperrt: s.gesperrt === true || s.gesperrt === 'true',
-        verstoesse: Array.isArray(s.verstoesse) ? s.verstoesse : (typeof s.verstoesse === 'string' ? (() => { try { return JSON.parse(s.verstoesse as string) } catch { return [] } })() : []),
-      }))),
-    }
-    setDaten(mappedResult as MonitoringDaten)
-    setLadeStatus('fertig')
-  }, [user, istDemoModus, pruefungId])
-
-  useEffect(() => { ladeDaten() }, [ladeDaten])
-
-  // Auto-Refresh: 5s in Live-Phase (kritisch), 15s sonst (spart Connections für Button-Clicks)
-  useEffect(() => {
-    if (!autoRefresh || ladeStatus === 'fehler') return
-    const intervallMs = (phase === 'aktiv' || phase === 'lobby') ? 5000 : 15000
-    const interval = setInterval(ladeDaten, intervallMs)
-    return () => clearInterval(interval)
-  }, [autoRefresh, ladeStatus, ladeDaten, phase])
-
   // G.f.2 — SuS-Anzahl pro pruefungId persistieren für layout-akkurates Skeleton
   useEffect(() => {
     if (ladeStatus !== 'fertig' || !pruefungId) return
@@ -250,86 +127,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     letzteGeschriebeneAnzahlRef.current = anzahl
   }, [ladeStatus, daten?.schueler?.length, pruefungId])
 
-  // Abgaben + Fragen + Config einmalig laden (ladePruefung gibt beides zurück)
-  useEffect(() => {
-    if (abgabenGeladen.current || !user) return
-    async function ladeAbgabenUndFragen() {
-      if (istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') {
-        setFragen(demoFragen)
-        abgabenGeladen.current = true
-        return
-      }
-      const [abgabenResult, pruefungResult] = await Promise.all([
-        apiService.ladeAbgaben(pruefungId, user!.email),
-        apiService.ladePruefung(pruefungId, user!.email),
-      ])
-      if (abgabenResult) setAbgaben(abgabenResult)
-
-      // Einrichtungsprüfung/-übung: Eingebaute Config + Fragen verwenden
-      if (pruefungResult && eingebauteVersionen[pruefungId]) {
-        const eingebaut = eingebauteVersionen[pruefungId]
-        pruefungResult.config = { ...eingebaut.config, freigeschaltet: pruefungResult.config.freigeschaltet, durchfuehrungId: pruefungResult.config.durchfuehrungId, beendetUm: pruefungResult.config.beendetUm, teilnehmer: pruefungResult.config.teilnehmer }
-        pruefungResult.fragen = eingebaut.fragen
-      }
-
-      if (pruefungResult?.fragen) setFragen(pruefungResult.fragen)
-      // Config aus ladePruefung übernehmen (spart separaten ladeAlleConfigs-Call)
-      if (pruefungResult?.config) {
-        setConfig(pruefungResult.config)
-        // Beendete Prüfung → direkt Auswertung-Tab anzeigen (statt Vorbereitung)
-        // Nur wenn beendetUm gesetzt UND freigeschaltet (= nicht zurueckgesetzt fuer neue Durchfuehrung)
-        if (pruefungResult.config.beendetUm && pruefungResult.config.freigeschaltet && !urlTab) {
-          setActiveTab('auswertung')
-          // G.d.1 Trigger Direct-Mount — Pre-Warm Korrektur bei beendet-URL
-          if (user?.email && pruefungId) {
-            void preWarmKorrektur(pruefungId, user.email)
-          }
-        }
-      }
-      abgabenGeladen.current = true
-    }
-    ladeAbgabenUndFragen()
-  }, [user, istDemoModus, pruefungId])
-
-  // Config: Demo-Modus — Einrichtungsprüfung verwenden (kein hardcodiertes Demo-Config)
-  useEffect(() => {
-    if (!user || !pruefungId) return
-    if (istDemoModus || pruefungId === 'demo') {
-      setConfig({ ...einrichtungsPruefung, freigeschaltet: true })
-    }
-  }, [user, pruefungId, istDemoModus])
-
-  // Config periodisch aktualisieren (leichtgewichtig via ladeEinzelConfig)
-  // Nur in Vorbereitung/Lobby — dort ändert sich Config (Freischaltung, Teilnehmer)
-  // Lobby: 5s damit neue SuS schnell in Teilnehmerliste erscheinen; Vorbereitung: 30s
-  useEffect(() => {
-    if (!user || !pruefungId || istDemoModus || pruefungId === 'demo') return
-    if (phase !== 'vorbereitung' && phase !== 'lobby') return
-    const ladeConfig = async () => {
-      try {
-        const found = await apiService.ladeEinzelConfig(pruefungId, user.email)
-        if (found) setConfig(found)
-      } catch { /* ignore */ }
-    }
-    // Nicht sofort laden — initialer Load kommt aus ladePruefung (oben)
-    const intervallMs = phase === 'lobby' ? 5000 : 30000
-    const interval = setInterval(ladeConfig, intervallMs)
-    return () => clearInterval(interval)
-  }, [user, pruefungId, istDemoModus, phase])
-
-  // Phase-Wechsel → Tab automatisch vorwärts setzen
-  useEffect(() => {
-    const neuerTab = phaseZuTab(phase)
-    if (tabIndex(neuerTab) > tabIndex(phaseZuTab(letztePhaseRef.current))) {
-      setActiveTab(neuerTab)
-      // G.d.1 Trigger Phase-beendet — Pre-Warm Korrektur bei Auto-Wechsel
-      if (phase === 'beendet' && user?.email && pruefungId) {
-        void preWarmKorrektur(pruefungId, user.email)
-      }
-    }
-    letztePhaseRef.current = phase
-  }, [phase, user, pruefungId])
-
   // Timer für aktive Phase
   useEffect(() => {
     if (phase !== 'aktiv') { setDauer(''); return }
@@ -338,19 +135,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
     const interval = setInterval(updateDauer, 1000)
     return () => clearInterval(interval)
   }, [phase, startTimestamp])
-
-  // Tab wechseln + URL aktualisieren
-  function wechsleTab(tab: DurchfuehrenTab) {
-    if (!istTabVerfuegbar(tab, phase)) return
-    setActiveTab(tab)
-    // G.d.1 Trigger Tab-Wechsel — Pre-Warm Korrektur wenn auswertung
-    if (tab === 'auswertung' && user?.email && pruefungId) {
-      void preWarmKorrektur(pruefungId, user.email)
-    }
-    const url = new URL(window.location.href)
-    url.searchParams.set('tab', tab)
-    window.history.replaceState({}, '', url.toString())
-  }
 
   // Zurück zur Startseite
   const zurueck = () => {
@@ -602,9 +386,12 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                           if (!user) return
                           const erfolg = await apiService.resetPruefung(config!.id, user.email)
                           if (erfolg) {
-                            // Alles zurücksetzen: Phase-Tracking, Daten, Config
-                            letztePhaseRef.current = 'vorbereitung'
-                            abgabenGeladen.current = false
+                            // Alles zurücksetzen: Daten, Config
+                            // (Phase-Tracking-Reset entfällt — letztePhaseRef ist jetzt im
+                            // useDurchfuehrenPhasenTab-Hook gekapselt; der hook-interne
+                            // Phase-Watch-Effect verarbeitet den 'beendet'→'vorbereitung'-Wechsel
+                            // automatisch ohne Auto-Forward, weil idx 0 ≤ idx 3.)
+                            abgabenGeladenRef.current = false
                             setDaten({ pruefungId: config!.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
                             setAbgaben({})
                             setFragen([])

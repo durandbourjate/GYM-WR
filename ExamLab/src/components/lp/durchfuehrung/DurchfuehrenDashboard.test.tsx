@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import DurchfuehrenDashboardSource from './DurchfuehrenDashboard.tsx?raw'
+import UseDurchfuehrenMonitoringSource from '../../../hooks/useDurchfuehrenMonitoring.ts?raw'
+import UseDurchfuehrenLoadSource from '../../../hooks/useDurchfuehrenLoad.ts?raw'
+import UseDurchfuehrenPhasenTabSource from '../../../hooks/useDurchfuehrenPhasenTab.ts?raw'
 
 // =============================================================================
 // G.f.2 Rendering-Tests: Mocks müssen VOR allen Komponenten-Imports stehen
@@ -95,8 +97,9 @@ async function ladeDurchfuehrenDashboard() {
 
 describe('DurchfuehrenDashboard — Polling-Logik', () => {
   it('Hebel A: Lobby-Phase soll 5s-Polling ausloesen (nicht 15s)', () => {
+    // Polling-Logik wurde in Bundle T.a Phase 2 in useDurchfuehrenMonitoring extrahiert.
     const hasLobbyPolling = /\(phase\s*===\s*['"]aktiv['"]\s*\|\|\s*phase\s*===\s*['"]lobby['"]\)/.test(
-      DurchfuehrenDashboardSource
+      UseDurchfuehrenMonitoringSource
     )
     expect(
       hasLobbyPolling,
@@ -106,30 +109,34 @@ describe('DurchfuehrenDashboard — Polling-Logik', () => {
 })
 
 describe('DurchfuehrenDashboard — Pre-Warm-Trigger Hebel C', () => {
-  const code = DurchfuehrenDashboardSource
-
-  it('importiert preWarmKorrektur', () => {
-    expect(code).toMatch(/import\s*\{[^}]*preWarmKorrektur[^}]*\}\s*from\s*['"][^'"]*preWarmApi['"]/)
+  it('importiert preWarmKorrektur (im PhasenTab-Hook)', () => {
+    // Trigger 1+2 wurden in Bundle T.a Phase 4 in useDurchfuehrenPhasenTab extrahiert.
+    expect(UseDurchfuehrenPhasenTabSource).toMatch(/import\s*\{[^}]*preWarmKorrektur[^}]*\}\s*from\s*['"][^'"]*preWarmApi['"]/)
   })
 
-  it('Trigger 1 — Tab-Wechsel via wechsleTab', () => {
-    expect(code).toMatch(/G\.d\.1 Trigger Tab-Wechsel/)
-    const idx = code.indexOf('G.d.1 Trigger Tab-Wechsel')
+  it('Trigger 1 — Tab-Wechsel via wechsleTab (im PhasenTab-Hook)', () => {
+    // wechsleTab wurde in Bundle T.a Phase 4 in useDurchfuehrenPhasenTab extrahiert.
+    const code = UseDurchfuehrenPhasenTabSource
+    expect(code).toMatch(/wechsleTab/)
+    const idx = code.indexOf('wechsleTab = (tab')
+    expect(idx).toBeGreaterThanOrEqual(0)
     expect(code.substring(idx, idx + 500)).toMatch(/preWarmKorrektur/)
   })
 
-  it('Trigger 2 — Phase-Wechsel zu beendet im Phase-useEffect', () => {
-    expect(code).toMatch(/G\.d\.1 Trigger Phase-beendet/)
-    const idx = code.indexOf('G.d.1 Trigger Phase-beendet')
+  it('Trigger 2 — Phase-Wechsel zu beendet im Phase-useEffect (im PhasenTab-Hook)', () => {
+    // Phase-Wechsel-Effect wurde in Bundle T.a Phase 4 in useDurchfuehrenPhasenTab extrahiert.
+    const code = UseDurchfuehrenPhasenTabSource
+    expect(code).toMatch(/E8: Phase-Wechsel/)
+    const idx = code.indexOf('E8: Phase-Wechsel')
     const block = code.substring(idx, idx + 500)
     expect(block).toMatch(/preWarmKorrektur/)
     expect(block).toMatch(/beendet/)
   })
 
   it('Trigger 3 — Direct-Mount-Edge-Case bei beendet-URL', () => {
-    expect(code).toMatch(/G\.d\.1 Trigger Direct-Mount/)
-    const idx = code.indexOf('G.d.1 Trigger Direct-Mount')
-    expect(code.substring(idx, idx + 500)).toMatch(/preWarmKorrektur/)
+    // Direct-Mount-Trigger wurde in Bundle T.a Phase 3 in useDurchfuehrenLoad extrahiert.
+    expect(UseDurchfuehrenLoadSource).toMatch(/preWarmKorrektur/)
+    expect(UseDurchfuehrenLoadSource).toMatch(/beendetUm.*freigeschaltet.*urlTab|setActiveTab\(['"]auswertung['"]\)/s)
   })
 })
 
