@@ -2,7 +2,8 @@ import { useReducer, useCallback, useRef } from 'react';
 import type { DrawCommand, CanvasState, Point, CommandId } from './ZeichnenTypes';
 import { generiereCommandId } from './ZeichnenTypes';
 import { canvasReducer, initialState } from './drawingReducer';
-import { berechneBoundingBox, vereinfachePunkte } from './drawingGeometrie';
+import { berechneBoundingBox } from './drawingGeometrie';
+import { serializiereCommand } from './drawingSerialisierung';
 
 // ============================================================
 // Optionen und Rückgabe-Interface
@@ -238,40 +239,6 @@ function renderCanvas(
         ctx.restore();
       }
     }
-  }
-}
-
-// ============================================================
-// Punkte runden (für Serialisierung)
-// ============================================================
-
-function rundePoint(p: Point): Point {
-  const gerundet: Point = {
-    x: Math.round(p.x * 10) / 10,
-    y: Math.round(p.y * 10) / 10,
-  };
-  if (p.druck !== undefined) {
-    gerundet.druck = Math.round(p.druck * 100) / 100;
-  }
-  return gerundet;
-}
-
-function serializiereCommand(cmd: DrawCommand): DrawCommand {
-  switch (cmd.typ) {
-    case 'stift': {
-      const vereinfacht = vereinfachePunkte(cmd.punkte);
-      return { ...cmd, punkte: vereinfacht.map(rundePoint) };
-    }
-    case 'radierer':
-      return { ...cmd, punkte: cmd.punkte.map(rundePoint) };
-    case 'linie':
-    case 'pfeil':
-      return { ...cmd, von: rundePoint(cmd.von), bis: rundePoint(cmd.bis) };
-    case 'rechteck':
-    case 'ellipse':
-      return { ...cmd, von: rundePoint(cmd.von), bis: rundePoint(cmd.bis) };
-    case 'text':
-      return { ...cmd, position: rundePoint(cmd.position) };
   }
 }
 
