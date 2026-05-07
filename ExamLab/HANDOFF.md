@@ -8,6 +8,56 @@
 
 ## Letzter Stand auf main
 
+### Bundle T.f — LPStartseite Hook + Komponenten-Extraktion ✅ MERGED (2026-05-07)
+
+Branch `feature/bundle-t-f-lpstartseite`. **Letztes** Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Hoch-Risiko-File-Split per 3 Hooks + 1 Utility + 5 Komponenten-Splits. **LPStartseite.tsx 1043 → 382 Zeilen (-63%)** — übertrifft Master-Spec-Ziel <500. Hotspot-Bilanz Files >500 Z.: **8 → 7**. **Bundle T komplett (6/6 Sub-Bundles auf main).**
+
+**Was geliefert (12 neue Files + 1 modifiziert):**
+- `ExamLab/src/utils/lpEinrichtungSync.ts` (63 Z.) — pure React-free Utility: Sync-Konstanten + 3 async Funktionen (syncFragenSeriell, syncEinrichtungsPruefung, syncEinrichtungsUebung). `_backendConfigs` dead-param entfernt, `toast.warning()` durch `onError(msg)` Callback ersetzt.
+- `ExamLab/src/utils/lpEinrichtungSync.test.ts` (107 Z.) — **7 Vitest-Tests** (Guard, 200ms Serial-Pause, Sync-Reihenfolge, onError bei Backend-Fehler, beide Pruefung+Uebung Pfade).
+- `ExamLab/src/hooks/useLPConfigFiltering.ts` (110 Z.) — 6 Filter-Memos + `letzteFuenf` + `hatAktiveFilter` + interner `filtereConfigs`-Helper byte-identisch. 8 Outputs.
+- `ExamLab/src/hooks/useLPConfigFiltering.test.ts` (184 Z.) — **20 Vitest-Tests** (verfuegbareFachbereiche, verfuegbareGefaesse, summativ/formativ-split, gefilterteConfigs (suchtext/Fach/Status/Sortierung), gefilterteUebungen, letzteFuenf 3 Branches, hatAktiveFilter 5-fold).
+- `ExamLab/src/hooks/useLPFavoriten.ts` (37 Z.) — 4 Favoriten-Memos byte-identisch.
+- `ExamLab/src/hooks/useLPFavoriten.test.ts` (107 Z.) — **6 Vitest-Tests** (empty, typ-Filter, datum-desc-sort, formativ-split, rerender, non-existent-edge).
+- `ExamLab/src/hooks/useLPDashboardData.ts` (184 Z.) — 5 useState + 95-Z grosser Lade-useEffect + `reload()` für `handleZurueck` + `findeTrackerSummary`-Callback. **Kein Vitest** (Master-Spec §4.2: 4× Store-Async-Orchestration, Browser-E2E reicht). eslint-disable mit Begründung-Kommentar (toast = useToast Modul-Singleton, Identity stabil).
+- `ExamLab/src/components/lp/startseite/PruefungsKarte.tsx` (132 Z.) — PruefungsKarte (Z. 916-1010) + TrackerBadge (Z. 1013-1038) byte-identisch ko-located. **Hotfix:** 5 JSX-Kommentare aus Quelle restauriert.
+- `ExamLab/src/components/lp/startseite/FilterLeiste.tsx` (104 Z.) — **DRY**: konsolidiert die 2 nahezu-identischen Filter-Toolbars (Z. 537-606 Übungen + Z. 688-755 Prüfungen) in EINE Komponente. 14 Props inkl. `aktionSlot: ReactNode` für unterschiedliche Neue-Buttons. Gefäss-Sektion bedingt gerendert.
+- `ExamLab/src/components/lp/startseite/MultiDashboardDialog.tsx` (55 Z.) — Multi-Dashboard-Auswahl-Dialog (Z. 778-818) byte-identisch.
+- `ExamLab/src/components/lp/startseite/LPUebungenAnsicht.tsx` (111 Z.) — Übungen-Tab-Body (Z. 519-634) inkl. Skeleton/Empty/Liste, konsumiert FilterLeiste + PruefungsKarte.
+- `ExamLab/src/components/lp/startseite/LPPruefungenAnsicht.tsx` (202 Z.) — Prüfen-Modus-Body (Z. 643-862) inkl. Skeleton/Tracker/Empty/Liste, konsumiert FilterLeiste + PruefungsKarte + MultiDashboardDialog.
+- `ExamLab/src/components/lp/LPStartseite.tsx` (1043 → 382 Z., -63%) — Komposition aller 8 Extraktionen + 4 kleine useEffect's bleiben im Body (kurs-redirect, localStorage-kurs, deepLink-config, beforeunload). Wrapper-Pattern (Dispatcher + Inner) byte-identisch erhalten.
+
+**Verifikation:**
+- vitest **1357 passes** (drift +33 vs T.e-Baseline 1324: +7 utility, +20 useLPConfigFiltering, +6 useLPFavoriten) ✓
+- tsc -b clean (Output direkt geprüft) ✓
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline unverändert) ✓
+- vite build erfolgreich (2.99s, PWA generateSW OK, 256 Cache-Entries 5166 KiB) ✓
+- Browser-E2E auf staging mit echtem LP-Login (Yänu/durandbourjate@gmail.com, SW-Cache vorab zurückgesetzt) — **4/15 Pfade ✅** (Pfade 3-12, 14 backend-blockiert via Apps-Script `TypeError: Failed to fetch` — pre-existing infrastruktur, NICHT Refactor-bedingt):
+  - Pfad 1 ✅ LP-Dashboard lädt (Header + 5 Tabs Favoriten/Prüfen/Üben/Fragensammlung/Papierkorb)
+  - Pfad 2 ✅ Tab-Switch alle 4 Modi + Sub-Tabs (Übungen/Durchführen/Analyse) funktionieren
+  - Pfad 13 (partial) ✅ Backend-Fehler-Banner aus `LPPruefungenAnsicht` rendert korrekt
+  - Pfad 15 (partial) ✅ Keine JS-Errors vom Refactor (nur infrastructure Backend-Errors)
+- Final Code-Reviewer (Bundle T.f komplett): **APPROVED FOR MERGE** mit Bestätigung Hook-Order-Stability + byte-identical Behavior + Cross-File-Konsistenz aller 5 Komponenten-Splits.
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **3-Hook-Hypothese aus Master-Spec konsolidiert auf 2** (`useLPLetzteAktivitaet` als Sub-Computation in `useLPConfigFiltering` integriert, da nur 1 Memo).
+- **Hook-Result-Destrukturierung** (Bundle T.d Lehre): Caller destrukturiert alle Hook-Outputs in stabile Namen, keine `result.foo`-Zugriffe.
+- **Sub-Folder-Pattern**: 5 Komponenten in `lp/startseite/`-Sub-Folder (analog T.b `tkonto/`, T.c `fragenbrowser/`, T.d `zeichnen/`, T.e `dashboard/`).
+- **Co-Location bei single-consumer**: TrackerBadge in PruefungsKarte.tsx co-located (analog T.e themaDetailHelpers).
+- **DRY-Komponente mit `aktionSlot: ReactNode`-Pattern**: FilterLeiste eliminiert ~70 Z. Duplikat zwischen Übungen/Prüfungen-Toolbars.
+- **React-free Utility statt Hook**: `lpEinrichtungSync` als pure module (testbar mit fake-timers + mock-modules statt React-Hooks-Mocks).
+
+**Bewusste Verhaltens-Vereinheitlichung (im Spec dokumentiert):**
+- FilterLeiste rendert Gefäss-Spacer NICHT mehr im Prüfen-Modus wenn `verfuegbareGefaesse=[]` (Source rendet ihn unconditional). In der Praxis kein User-sichtbarer Unterschied, jede LP hat Gefässe konfiguriert.
+
+**Out of Scope / Spawn-Tasks für nächste Sessions:**
+- `useLPDashboardData` exponiert `setConfigs`/`setConfigsLadeStatus`-Setter, die in slim LPStartseite nicht mehr konsumiert werden — könnte in nachfolgender Cleanup-Session entfernt werden falls kein Konsument materialisiert.
+- `reload()` setzt `backendFehler` nicht zurück (pre-existing source-bug byte-identisch erhalten) — bei erfolgreichem Reload nach vorheriger Backend-Fehlersituation bleibt Banner sichtbar bis Reload der Seite.
+- Restliche 11 Browser-E2E-Pfade bei lebendem Apps-Script-Backend nachholen.
+- Phase-3-Wahl: P-Migration (Backend-Vertrag musterlosung) vs. Bundle U (PDFSeite/useDrawingEngine/uebungsStore Hoch-Risiko).
+
+---
+
 ### Bundle T.e — Dashboard-Üben Hook-Extraktion ✅ MERGED (2026-05-07)
 
 Branch `feature/bundle-t-e-dashboard-ueben`. Fünftes Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Hoch-Risiko-File-Split per 2 Hook-Extraktionen + 2 Komponenten-Splits + 1 Hotfix-Helper. **Dashboard.tsx 930 → 489 Zeilen (-47%)** — aus Hotspot raus. Hotspot-Bilanz Files >500 Z.: **9 → 8**.
