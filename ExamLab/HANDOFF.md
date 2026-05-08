@@ -8,6 +8,61 @@
 
 ## Letzter Stand auf main
 
+### Bundle X — BatchExportDialog Pure-Logic-Cut ✅ MERGED (2026-05-08)
+
+Branch `bundle-x/batchexport-logic`. **Erstes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Phase-4-Audit-Abschluss durch Bundle U+V+W+W.b). **BatchExportDialog.tsx 535 → 436 Zeilen (-18.5%)** via Pure-Logic-Cut nach `utils/batchExportLogic.ts`. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 9 → 8** — BatchExportDialog aus dem Set raus. +8 neue Vitest-Tests (1472 → 1480).
+
+**Was geliefert (1 Helper-File + 1 Test-File + Component-Edit, 0 Caller-Edits):**
+- `ExamLab/src/utils/batchExportLogic.ts` (~169 Z.) — exportiert:
+  - `erstelleAutoZuweisungen({gewaehlteIds, exportierbar, pools}) → { zuweisungen, benoetigteTopicPools }` — pure Auto-Zuweisung-Map-Bau aus Fachbereich-Match. `benoetigteTopicPools: string[]` als Result-Field damit Component die `ladeTopicsFuerPool`-State-Mutation ausserhalb fahren kann.
+  - `async fuehreBatchExportAus({zuweisungen, fragen, pools, email, onFortschritt}) → Promise<{ ergebnisse, erfolgreiche }>` — Pool-Gruppierung + per-Pool-API-Aufruf + Result-Mapping byte-identisch von BatchExportDialog Z. 170-256. `onFortschritt`-Callback (DI) statt direkt setState.
+  - 3 Type-Exports: `PoolEintrag`, `FrageZuweisung`, `SendeErgebnis` (Move von Component-lokal zu Helper-Owner).
+- `ExamLab/src/utils/batchExportLogic.test.ts` (~193 Z.) — **8 Vitest-Tests** mit `vi.mock('../services/apiService')` + `vi.mock('./poolExporter')`:
+  - `erstelleAutoZuweisungen`: matching fachbereich → poolId+benoetigteTopicPools; no-match → empty poolId; ghost-id → übersprungen ohne Crash.
+  - `fuehreBatchExportAus`: empty zuweisungen → leere Result + onFortschritt(0,0); 1-Frage-success → korrekt zugeordnete poolId/hash; 2-Fragen-same-pool → 1 API-Aufruf + onFortschritt-Reihenfolge `[[0,2], [2,2]]` (Spec-rev2-Mandat); api-erfolg-false → fehler-Text fan-out; api-throws → catch-Pfad mit Netzwerkfehler-Default.
+  - `mkFrage(overrides: Record<string, unknown>) → Frage` Bundle-T-Doppel-Cast-Pattern wegen `Frage.fachbereich` strict-Union vs. Test-String-Daten.
+- `ExamLab/src/components/lp/korrektur/BatchExportDialog.tsx` (535 → 436 Z., -99 Z., -18.5%):
+  - Imports: 1 multi-line Block neu (5 Z. für 2 Funktionen + 3 type-only-Imports via `verbatimModuleSyntax`-konformer `type`-Prefix), 2 Imports raus (`konvertiereZuPoolFormat`, `apiService`).
+  - 3 Type-Defs entfernt (Z. 18-39 alt). `Phase`-Type bleibt lokal.
+  - `weiterZuZuweisung`-Body: 18 → 9 Z. via `erstelleAutoZuweisungen`-Aufruf + for-loop `ladeTopicsFuerPool` über `benoetigteTopicPools`.
+  - `handleExport`-Body: 85 → 13 Z. via `fuehreBatchExportAus`-Aufruf mit `onFortschritt`-Callback. `erfolgreiche` direkt durchgereicht (Helper-Result-Shape matcht `onErfolg`-Props-Shape).
+  - JSX (~280 Z.) byte-identisch — nur Imports + Type-Defs + 2 Funktion-Bodies geändert.
+  - `useAuthStore`-Hook für `email`-Read bleibt. Public-Props `{fragen, onSchliessen, onErfolg}` unverändert.
+
+**Verifikation:**
+- vitest **1480 passed | 4 todo | 1 skipped** (drift +8 vs Bundle-W.b-Baseline 1472, exakt wie Plan).
+- tsc -b clean.
+- 4 Lint-Gates clean: `lint:as-any` (Total 0), `lint:no-alert`, `lint:no-tests-dir`, `lint:musterloesung`.
+- vite build erfolgreich (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Bestehende `FragenBrowser.test.tsx` (mockt BatchExportDialog als Komponente) **unverändert grün** — props-Surface byte-identisch.
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 9 → 8** ✅. Verbleibend: HilfeSeite (906), ConfigTab (747), EinstellungenPanel (607), BilanzERFrage (589), AktivPhase (573), Layout (570), PruefungsComposer (526), ZeichnenCanvas (518).
+
+**Browser-E2E SKIPPED** (low-risk Pure-Logic-Cut). Sicherungsnetz: vitest 1480 inkl. consumer-Mock-Test, Code-Quality-Reviewer hat byte-equivalence am Source-Byte-Level verifiziert. Spawn-Task „Browser-E2E post-merge falls Bug-Reports" als Notiz, falls UI-Issue auftaucht.
+
+**Reviewer:** Spec-Reviewer ✅ (1. Pass + 4 advisory rev2-Empfehlungen integriert). Plan-Reviewer ✅ (1. Pass + 1 actionable rev2 Mock-Shape-Completeness). Per-Phase Spec+Code-Quality-Reviewer ✅ ✅ — Code-Quality-Reviewer Phase 2 explizit „APPROVED FOR MERGE" für Bundle X cumulative.
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **Topic-Vorlade-Side-Effect getrennt via Result-Field** — `erstelleAutoZuweisungen` liefert `benoetigteTopicPools: string[]` damit Component die State-Mutation `ladeTopicsFuerPool` ausserhalb fahren kann. Bonus: Set-basierte Dedup im Helper macht den Call-Count gleich der unique-Pool-Anzahl (vorher 1× pro Frage, no-op-guarded). Pattern-Erweiterung für Bundle-W.b Side-Effect-Aufteilung.
+- **`onFortschritt`-Callback statt setState-Closure** — Helper bekommt `(gesendet, gesamt) => void` injiziert, Component verbindet im Aufruf mit `setFortschritt({gesendet, gesamt})`. Funktional äquivalent zu `setFortschritt(prev => ...)` weil per-Pool-Loop sequenziell `await`. Test #6 verifiziert die exakte Aufruf-Reihenfolge `[[0,2], [2,2]]`.
+- **Type-Move ohne Re-Export-Bridge** wenn Pre-Cut-Grep zeigt: nur Source-File hat die Type-Definition. Bundle-U/W-Pattern.
+
+**Lehren neu (Bundle X):**
+- **Test-Mock-Shape-Completeness antizipieren** — Plan-Reviewer fand dass `apiService.schreibePoolAenderung` 7 Properties zurückgibt aber Test-Mocks nur 4 lieferten. Mit strict TS würde tsc auf fehlende Properties anspringen. Plan-rev2 ergänzte `aktualisiert/exportiert/commitSha`. **Pre-Plan-Verify-Schritt:** bei API-Mock-Tests den vollen Return-Type aus dem Service-File abkopieren, nicht aus Test-Vorbild raten.
+- **Type-Move grep als Pre-Cut-Step** im Plan Phase 0 etabliert (analog Bundle-W.b semantischer Pre-Cut-grep gegen Twin-Module).
+
+**Spawn-Tasks (post-Bundle-X cleanup):**
+- **Bundle Y: Layout.tsx (570 Z.)** — niedrig-mittel Risiko, Cross-Cutting Layout-Component, Browser-E2E nötig.
+- **Bundle Z+: AktivPhase / BilanzERFrage / EinstellungenPanel** — mittel-Risiko (Live-State / Fibu-Logik / Settings-Panel).
+- **Bundle Mega: HilfeSeite (906) + ConfigTab (747)** — hoch-Risiko, grösste Files, eigene Cuts pro File nötig.
+- **Knapp-drin: PruefungsComposer (526) + ZeichnenCanvas (518)** — kleiner Cut reicht.
+- **Browser-E2E post-merge falls Bug-Reports zu Bundle X**.
+
+**Out of Scope (Phase 5+ Roadmap):**
+- 8 verbleibende Hotspot-Files in eigenen Bundles. Phase 5+ ist offene Roadmap, Reihenfolge nach Risiko-Profil + User-Priorität.
+
+---
+
 ### Bundle W.b — uebungsStore State-Refactor ✅ MERGED (2026-05-08)
 
 Branch `bundle-w-b/uebungsstore-state-refactor`. Folge-Cut nach Bundle W (uebungsStore.ts endete dort bei 540 Z. — knapp über <500-Schwelle Master-Spec). **uebungsStore.ts 540 → 498 Zeilen (-7.8%)** via 4 Pure-Logic-Cuts in `utils/ueben/`. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 10 → 9** — uebungsStore endlich aus dem Set raus, Phase-4-Audit-Hotspot-Cut realisiert. +18 neue Vitest-Tests.
