@@ -9,6 +9,7 @@ import { istDauerbaustelle } from '../../utils/ueben/mastery'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 import { mergeLoesungen } from '../../utils/ueben/loesungsMerge'
+import { istSelbstbewertbar } from '../../utils/ueben/fragetypGruppen'
 import { ladeHistorie, speichereHistorie, MAX_HISTORIE, type GespeichertesErgebnis } from '../../utils/ueben/historie'
 import { berechneErgebnis as berechneErgebnisPure } from '../../utils/ueben/ergebnisBerechnung'
 import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
@@ -260,8 +261,7 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     // Selbstbewertungstypen (freitext/audio/visualisierung/pdf/code) haben zwar
     // musterlosung im Slice, aber pruefeAntwort() liefert für sie kein sinnvolles
     // Boolean — für die muss der Server-Pfad laufen (liefert selbstbewertung:true).
-    const istSelbstbewertbar = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'].includes(frage.typ)
-    if (state.loesungenPreloaded[frageId] === true && !istSelbstbewertbar) {
+    if (state.loesungenPreloaded[frageId] === true && !istSelbstbewertbar(frage.typ)) {
       const korrekt = pruefeAntwort(frage, normalized)
       if (!session.freiwillig) {
         useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
@@ -379,8 +379,7 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
 
     // Selbstbewertung in die Antwort schreiben — nur sinnvoll bei selbstbewerteten Typen.
     // Bei anderen Typen (Sicherheitsnetz): bewertung wird nur in ergebnisse gespeichert.
-    const istSelbstbewertbar = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'].includes(basis.typ)
-    const antwort = istSelbstbewertbar
+    const antwort = istSelbstbewertbar(basis.typ)
       ? ({ ...basis, selbstbewertung: bewertung } as Antwort)
       : basis
 
