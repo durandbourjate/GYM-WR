@@ -294,7 +294,7 @@ Byte-equivalence-Beweis pro Recovery-Pfad:
 
 | Risiko | Wahrscheinlichkeit | Mitigation |
 |---|---|---|
-| **`lint:no-alert` umfasst `window.confirm`** und blockt Komponente | mittel | Plan-Phase prüft `eslint-config`-Regel-Pattern. Wenn ja: nutze custom Bestätigungs-Dialog (BaseDialog) oder behalte mit eslint-disable-Kommentar mit Begründung. |
+| ~~`lint:no-alert` umfasst `window.confirm`~~ | **entfällt** | Vorab verifiziert: `scripts/audit-no-alert.sh` matched nur `\balert\(` + `window\.alert\(` — `window.confirm` ist nicht erfasst. Original Layout.tsx Z. 243 nutzt `window.confirm` heute schon, current main grün. Kein Plan-Phase-Aufwand nötig. |
 | **Recovery-Hook resolveFragenFuerPruefung-Aufruf nicht 1:1** | niedrig | Plan-Phase: Pre-Cut-Diff zeigt: Hook ruft `resolveFragenFuerPruefung(result.config, result.fragen)` byte-identisch auf. Test #4 verifiziert via Mock-Spy. |
 | **Migration-Block-Löschung (M3) bricht User-Sidebar** | niedrig | Komfort-Reset (224px Default), keine Funktions-Bruch. User zieht Breite einmal neu. Akzeptiert. |
 | **Forecast 570 → 483 Z. zu optimistisch (Bundle-W.b-Lehre)** | mittel | Plan-Phase macht detaillierte Inline-Variable-Removal-Math (Subtract-Add-Net per Bundle-W.b-Methodik). Selbst bei realistisch 495 Z. → trotzdem unter Schwelle. |
