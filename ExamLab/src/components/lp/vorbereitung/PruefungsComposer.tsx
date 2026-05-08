@@ -8,12 +8,10 @@ import { useLPNavigationStore } from '../../../store/lpUIStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { preWarmFragen } from '../../../services/preWarmApi'
 import { demoFragen } from '../../../data/demoFragen.ts'
-import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../utils/trackerUtils.ts'
+import { useFragenStats } from '../../../hooks/useFragenStats'
 import type { Frage } from '../../../types/fragen-storage'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefung.ts'
-import type { FragenPerformance } from '../../../types/tracker.ts'
 
-import BaseDialog from '../../ui/BaseDialog'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
 import HilfeSeite from '../HilfeSeite.tsx'
@@ -22,6 +20,8 @@ import ConfigTab from './composer/ConfigTab.tsx'
 import AbschnitteTab from './composer/AbschnitteTab.tsx'
 import VorschauTab from './composer/VorschauTab'
 import AnalyseTab from './composer/AnalyseTab.tsx'
+import { LoeschDialoge } from './composer/LoeschDialoge'
+import { generiereId } from './composer/composerHelpers'
 
 interface Props {
   config: PruefungsConfig | null
@@ -84,21 +84,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
   }, [istDemoModus, user, storeStatus])
 
   // Tracker-Daten laden für Fragen-Statistiken
-  const [fragenStats, setFragenStats] = useState<Map<string, FragenPerformance>>(new Map())
-  useEffect(() => {
-    async function ladeStats(): Promise<void> {
-      if (istDemoModus || !apiService.istKonfiguriert()) {
-        setFragenStats(aggregiereFragenPerformance(erstelleDemoTrackerDaten()))
-        return
-      }
-      if (!user) return
-      const tracker = await apiService.ladeTrackerDaten(user.email)
-      if (tracker) {
-        setFragenStats(aggregiereFragenPerformance(tracker))
-      }
-    }
-    ladeStats()
-  }, [user, istDemoModus])
+  const fragenStats = useFragenStats()
 
   // Autosave-Effekt: 3 Sekunden Debounce
   useEffect(() => {
@@ -451,76 +437,18 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
         <HilfeSeite onSchliessen={() => setZeigHilfe(false)} />
       )}
 
-      {/* Abschnitt-Lösch-Bestätigungsdialog */}
-      <BaseDialog
-        open={!!loeschDialog}
-        onClose={() => setLoeschDialog(null)}
-        title="Abschnitt löschen?"
-        maxWidth="sm"
-        footer={
-          <>
-            <button
-              onClick={() => setLoeschDialog(null)}
-              className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm"
-            >
-              Abbrechen
-            </button>
-            <button
-              onClick={bestaetigeLoeschen}
-              className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm"
-            >
-              Löschen
-            </button>
-          </>
-        }
-      >
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          Abschnitt &laquo;{loeschDialog?.titel}&raquo; wirklich löschen? Die enthaltenen Fragen werden entfernt.
-        </p>
-      </BaseDialog>
-
-      {/* Prüfung-Lösch-Bestätigungsdialog */}
-      <BaseDialog
-        open={zeigLoeschPruefung}
-        onClose={() => setZeigLoeschPruefung(false)}
-        title={pruefung.typ === 'formativ' ? 'Übung löschen?' : 'Prüfung löschen?'}
-        maxWidth="sm"
-        footer={
-          <>
-            <button
-              onClick={() => setZeigLoeschPruefung(false)}
-              disabled={loescht}
-              className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm disabled:opacity-40"
-            >
-              Abbrechen
-            </button>
-            <button
-              onClick={handleLoeschePruefung}
-              disabled={loescht}
-              className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm disabled:opacity-60 flex items-center justify-center gap-2"
-            >
-              {loescht && (
-                <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              )}
-              {loescht ? 'Wird gelöscht...' : 'Endgültig löschen'}
-            </button>
-          </>
-        }
-      >
-        <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-          &laquo;{pruefung.titel || (pruefung.typ === 'formativ' ? 'Unbenannte Übung' : 'Unbenannte Prüfung')}&raquo; unwiderruflich löschen?
-        </p>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Die Konfiguration wird aus dem System entfernt. Bereits abgegebene Antworten bleiben in Google Drive erhalten.
-        </p>
-      </BaseDialog>
+      <LoeschDialoge
+        loeschDialog={loeschDialog}
+        onAbschnittAbbrechen={() => setLoeschDialog(null)}
+        onAbschnittBestaetigen={bestaetigeLoeschen}
+        zeigLoeschPruefung={zeigLoeschPruefung}
+        pruefungTyp={pruefung.typ}
+        pruefungTitel={pruefung.titel}
+        loescht={loescht}
+        onPruefungAbbrechen={() => setZeigLoeschPruefung(false)}
+        onPruefungLoeschen={handleLoeschePruefung}
+      />
     </div>
   )
 }
 
-function generiereId(config: PruefungsConfig): string {
-  const klasse = config.klasse.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 10)
-  const datum = config.datum.replace(/-/g, '')
-  const rand = Math.random().toString(36).slice(2, 6)
-  return `${klasse}-${datum}-${rand}`
-}

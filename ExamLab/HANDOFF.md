@@ -8,6 +8,70 @@
 
 ## Letzter Stand auf main
 
+### Bundle Z — PruefungsComposer + ZeichnenCanvas Knapp-drin Cuts ✅ MERGED (2026-05-08)
+
+Branch `bundle-z/knappdrin`. **Drittes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X BatchExportDialog + Bundle Y Layout). **Doppel-Cut der zwei „Knapp-drin"-Files** aus HANDOFF Spawn-Tasks: PruefungsComposer **526 → 454 Z. (-13.7%)** + ZeichnenCanvas **518 → 466 Z. (-10%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 7 → 5** ✅ — beide Files raus aus dem Set. +10 neue Vitest-Tests (1488 → 1498).
+
+**Was geliefert (Phase A — PruefungsComposer):**
+- `ExamLab/src/hooks/useFragenStats.ts` (~35 Z.) — Self-contained Hook (Bundle-Y-Pattern). Liest `user`+`istDemoModus` aus authStore selectors. Demo-Mode-Fallback inline, sonst `apiService.ladeTrackerDaten` + `aggregiereFragenPerformance`. Returns `Map<string, FragenPerformance>`.
+- `ExamLab/src/hooks/useFragenStats.test.ts` (~89 Z.) — **5 Vitest** mit Closure-Ref-Mock-Pattern: demo-mode → demo-tracker, api-not-configured → demo, no-user → leer, success → aggregiert, tracker-null → leer.
+- `ExamLab/src/components/lp/vorbereitung/composer/LoeschDialoge.tsx` (~94 Z.) — Render-Sub-Komponente (Bundle-T.b-Pattern). Bündelt beide Lösch-Dialoge (Abschnitt + Pruefung) in 1 Komponente mit 9-Property-Props-Interface. JSX byte-identisch zu Original.
+- `ExamLab/src/components/lp/vorbereitung/composer/composerHelpers.ts` (~12 Z.) — Pure-Helper `generiereId(config)`. Move ohne Re-Export-Bridge (kein anderer Caller bekannt).
+- `ExamLab/src/components/lp/vorbereitung/composer/composerHelpers.test.ts` (~41 Z.) — **3 Vitest**: special-chars-strip + slice(10), datum-stripping, base36-suffix-länge.
+- `ExamLab/src/components/lp/vorbereitung/PruefungsComposer.tsx` (526 → 454 Z., -72 Z., -13.7%):
+  - 16 Z. Tracker-State+useEffect → 1 `useFragenStats()` Hook-Call.
+  - 62 Z. zwei BaseDialog-Blöcke → 1 `<LoeschDialoge>` JSX-Aufruf.
+  - 6 Z. `generiereId`-Helper-Removal (Move).
+  - 2 Imports raus (`BaseDialog`, `erstelleDemoTrackerDaten`/`aggregiereFragenPerformance`/`FragenPerformance`-type), 2 rein (`useFragenStats`, `LoeschDialoge`/`generiereId`).
+
+**Was geliefert (Phase B — ZeichnenCanvas):**
+- `ExamLab/src/components/fragetypen/zeichnen/cursorFuerTool.ts` (~18 Z.) — Pure-Helper-Move. Switch über `Tool`-Union liefert CSS-Cursor-String.
+- `ExamLab/src/components/fragetypen/zeichnen/cursorFuerTool.test.ts` (~25 Z.) — **2 Vitest**: alle 8 Tools verifizieren + Fallback-Default für unbekannte.
+- `ExamLab/src/components/fragetypen/zeichnen/TextOverlayInput.tsx` (~79 Z.) — Render-Sub-Komponente (Bundle-T.b-Pattern). 8-Property-Props-Interface. JSX/Inline-Styles/Event-Handlers byte-identisch zu Original. KEIN Vitest (reines JSX, durch Browser-E2E gedeckt).
+- `ExamLab/src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx` (518 → 466 Z., -52 Z., -10%):
+  - 13 Z. lokale `cursorFuerTool`-Funktion → import + Helper-Aufruf.
+  - 50 Z. Text-Overlay-JSX → 10 Z. `<TextOverlayInput>` JSX.
+  - 2 Imports rein (`cursorFuerTool`, `TextOverlayInput`).
+
+**Verifikation:**
+- vitest **1498 passed | 4 todo | 1 skipped** (drift +10 vs Bundle-Y-Baseline 1488: +5 useFragenStats, +3 generiereId, +2 cursorFuerTool).
+- tsc -b clean.
+- 4 Lint-Gates clean: `lint:as-any` (Total 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir`, `lint:musterloesung` (Baseline-Drift = 0).
+- vite build grün (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Bestehende Tests grün — keine Regression.
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 7 → 5** ✅. Verbleibend: HilfeSeite (906), ConfigTab (747), EinstellungenPanel (607), BilanzERFrage (589), AktivPhase (573).
+
+**Browser-E2E:** Mit echten LP+SuS-Logins auf `staging` durchgeführt:
+- LP-Pfade ✅: Pruefung-Composer öffnen / Titel+Klasse Eingabe / Auto-Save speichert (Pruefung erscheint in Liste) / Edit-Mode mit existierender Prüfung (Lösch-Link sichtbar) / Lösch-Dialog erscheint mit korrektem Titel+Body+Buttons / Abbrechen schliesst Dialog ohne Action / Endgültig löschen löscht + navigiert via onZurueck zurück zur Liste.
+- SuS-Pfade ✅: Übung mit Zeichnen-Frage (Bedürfnisse VWL, Zeichnen-Filter) öffnet Canvas mit Toolbar / Stift-Tool zeichnet Diagonal-Strich / Text-Tool öffnet TextOverlayInput mit blauer Border / Enter speichert „Test Z" auf Canvas / Escape verwirft Eingabe (Text NICHT gespeichert).
+- 0 Console-Errors auf beiden Tabs.
+
+**Reviewer:** Self-Review-Modus (analog Bundle W) — kompakte Spec, kein 2-Iter-Reviewer-Loop bei Low-Risk-Knapp-drin-Cuts. Pre-Cut-Verifikation: Pre-Cut-Greps gegen Doppel-Caller bestätigt (kein Re-Export-Bridge nötig).
+
+**Architektur-Patterns (etabliert/wieder-verwendet):**
+- **Render-Sub-Komponente mit Props-Bündel** (Bundle-T.b/Y) — `<LoeschDialoge>` mit 9-Props internalisiert beide Dialog-Branches; `<TextOverlayInput>` mit 8-Props internalisiert Overlay+Input.
+- **Self-contained Hook mit authStore-Selectors** (Bundle-Y) — `useFragenStats` liest user/demoMode via Selectors, kein Argument-passing.
+- **Pure-Helper-Move ohne Re-Export-Bridge** (Bundle-U/W) — `generiereId` und `cursorFuerTool` sind isoliert, kein zweiter Caller.
+- **Doppel-Cut in 1 Bundle** — 2 unabhängige Files in derselben Phase-Bundle-Kapsel zusammengefasst (Knapp-drin-Bucket-Pattern, neue Bundle-Z-Konvention).
+
+**Lehren neu (Bundle Z):**
+- **Knapp-drin-Bucket-Bundle-Pattern bewährt** — Wenn 2 Files <30 Z. über Hotspot-Schwelle sind, lohnt 1 kombiniertes Bundle mit 2 Phasen statt 2 separate Bundles. Spec/Plan/Reviewer-Overhead 1× statt 2×, beide Files in einem E2E-Run getestet.
+- **Pure-Helper-Move mit Mock-spread Edge-Case** — `mkConfig`-Test-Helper: bei `as unknown as Type`-Cast leicht zu vergessen, `...overrides` ins Object-Literal zu spreaden. Symptom: Test schlägt fehl weil Default-Klasse statt Override-Klasse benutzt wird. 30s-Fix; aber zeigt: Test-Helper sollte spreaden + cast separat halten.
+
+**Spawn-Tasks (post-Bundle-Z):**
+- **Bundle AA+: AktivPhase (573) / BilanzERFrage (589) / EinstellungenPanel (607)** — mittel-Risiko-Bucket.
+- **Bundle Mega: HilfeSeite (906) + ConfigTab (747)** — hoch-Risiko, grösste Files.
+- Auto-Save-Hook in PruefungsComposer (handleSpeichernIntern + Auto-Save-Effect, ~75 Z.) — eigenes Bundle bei nächster Gelegenheit.
+
+**Out of Scope:**
+- handleSpeichernIntern Auto-Save in PruefungsComposer (zu viel Closure/Ref-State).
+- handleStart/Move/End Pointer-State-Machine in ZeichnenCanvas (Bundle T.d hat bereits Pointer-Events ausgelagert, Switch bleibt).
+
+**Merge:** _(Hash nach Merge eintragen)_
+
+---
+
 ### Bundle Y — Layout Pruefungs-Recovery Hook-Cut ✅ MERGED (2026-05-08)
 
 Branch `bundle-y/layout-recovery-cut`. **Zweites Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X BatchExportDialog). **Layout.tsx 570 → 482 Zeilen (-15.4%)** via Hook-Cut nach `hooks/usePruefungsRecovery.ts` + Render-Sub-Komponente `components/PruefungsRecoveryStatus.tsx` + Bonus-Removal der 2 Wochen alten localStorage-Migration-IIFE. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 8 → 7** — Layout.tsx aus dem Set raus. +8 neue Vitest-Tests (1480 → 1488).
