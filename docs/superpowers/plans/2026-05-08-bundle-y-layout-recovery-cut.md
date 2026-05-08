@@ -40,7 +40,7 @@
 
 | Datei | Heute | Nachher | Änderung |
 |---|---:|---:|---|
-| `ExamLab/src/components/Layout.tsx` | 570 Z. | ≤ 500 Z. (Ziel ~483) | 5 Imports raus (`useRef` if unused/nope `useEffect` if unused/nope `useMemo` if unused, `apiService`, `resolveFragenFuerPruefung`), 2 Imports rein (`usePruefungsRecovery`, `PruefungsRecoveryStatus`). Z. 32-43 (localStorage-Migration) gelöscht. Z. 176-220 (Recovery-State+Effect, ~45 Z.) → 1 Hook-Aufruf-Zeile. Z. 222-255 (Recovery-Render, ~34 Z.) → 3 Zeilen `<PruefungsRecoveryStatus />`-Block. |
+| `ExamLab/src/components/Layout.tsx` | 570 Z. | ≤ 500 Z. (Ziel ~483) | 2 Imports raus (`apiService`, `resolveFragenFuerPruefung`), 2 Imports rein (`usePruefungsRecovery`, `PruefungsRecoveryStatus`). React-Hook-Imports `useEffect`/`useRef`/`useMemo` bleiben (s. Phase 0 Step 6). Z. 32-43 (localStorage-Migration) gelöscht. Z. 176-220 (Recovery-State+Effect, ~45 Z.) → 1 Hook-Aufruf-Zeile. Z. 222-255 (Recovery-Render, ~34 Z.) → 3 Zeilen `<PruefungsRecoveryStatus />`-Block. |
 
 ### Reihenfolge (Risiko-aufsteigend)
 
