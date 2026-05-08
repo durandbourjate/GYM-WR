@@ -36,7 +36,7 @@ PDFSeite.tsx wird ausschliesslich von `PDFViewer.tsx:115` konsumiert (1 Caller) 
 | New | `ExamLab/src/components/fragetypen/pdf/seite/pdfSelection.test.ts` | – | ~180 Z. | Vitest mit jsdom-DOM-Fixture (~10 Tests) |
 | New | `ExamLab/src/components/fragetypen/pdf/seite/pdfAnnotationenSVG.tsx` | – | ~220 Z. | `renderSVGOverlay` + `renderHighlight` + `renderLabel` + `renderKommentarMarker` + `renderFreihand` + `renderTextAnnotation` |
 | New | `ExamLab/src/components/fragetypen/pdf/seite/pdfAnnotationenSVG.test.tsx` | – | ~150 Z. | Vitest via `@testing-library/react` `render` (~8 Tests) |
-| New | `ExamLab/src/components/fragetypen/pdf/seite/usePDFTextEdit.ts` | – | ~70 Z. | Hook: `editierendeAnnotation` State + `handleDoubleClick` + `handleTextEditSave` + `EditInput`-JSX (als ReactNode-Return-Property oder Sub-Komponente — siehe §4.4) |
+| New | `ExamLab/src/components/fragetypen/pdf/seite/usePDFTextEdit.tsx` | – | ~70 Z. | Hook: `editierendeAnnotation` State + `handleDoubleClick` + `handleTextEditSave` + `EditInput`-JSX als ReactNode-Return-Property (siehe §4.4). Endung `.tsx`, weil der Hook JSX konstruiert. |
 | New | `ExamLab/src/components/fragetypen/pdf/seite/usePDFTextEdit.test.tsx` | – | ~120 Z. | Vitest via `renderHook` + Mock-Annotation (~5 Tests) |
 | New | `ExamLab/src/components/fragetypen/pdf/seite/usePDFDrawing.ts` | – | ~155 Z. | Hook: `dragRef` + `istZeichnung` + `zeichnungsPfad` + `handleDrawStart` + `handleDrawMove` + `handleDrawEnd` (Drag-Text + Drag-Freihand + Freihand-Draw vereint) |
 | New | `ExamLab/src/components/fragetypen/pdf/seite/usePDFDrawing.test.ts` | – | ~120 Z. | Vitest für Drag-Math + State-Transitions (~5 Tests, Canvas-2D-Aufrufe via Browser-E2E abgedeckt) |
@@ -71,7 +71,7 @@ ExamLab/src/components/fragetypen/pdf/                       # existing
     ├── pdfSelection.test.ts                                 ← New
     ├── pdfAnnotationenSVG.tsx                               ← New
     ├── pdfAnnotationenSVG.test.tsx                          ← New
-    ├── usePDFTextEdit.ts                                    ← New
+    ├── usePDFTextEdit.tsx                                   ← New
     ├── usePDFTextEdit.test.tsx                              ← New
     ├── usePDFDrawing.ts                                     ← New
     └── usePDFDrawing.test.ts                                ← New
@@ -164,6 +164,8 @@ export function usePDFTextEdit(params: UsePDFTextEditParams): UsePDFTextEditResu
 **`editOverlay`-Pattern**: Hook gibt fertige JSX als ReactNode zurück, statt Sub-Komponente zu sein. Das vermeidet zusätzliche React-Tree-Tiefe und ist Bundle-T.d-Pattern (`useTextOverlay` aus Bundle T.d). PDFSeite.tsx rendert `{editOverlay}` an Stelle des bisherigen `{editierendeAnnotation && (...)}`-IIFE.
 
 **`istEditierend`** wird von PDFSeite.tsx in `handleClick` (Z. 244) konsumiert (Auswahl-Branch beendet Edit). `beendeEdit` ist die Bridge dafür.
+
+**`textEditInputRef`** ist Hook-internal (im Hook-Body via `useRef<HTMLInputElement>(null)` deklariert, nur im Edit-Input-JSX als `ref={textEditInputRef}` referenziert). PDFSeite.tsx hält keine Referenz auf das Input-Element mehr. Auto-Focus via `setTimeout(() => textEditInputRef.current?.focus(), 30)` bleibt im Hook (byte-identisch).
 
 ### 4.5 `usePDFDrawing.ts` API
 
@@ -299,7 +301,7 @@ Pro Phase: atomic Commit. Reviewer-Iterationen können Re-Commits auf gleicher P
 | # | Risiko | Mitigation |
 |---|---|---|
 | 1 | **Hook-Result-Destrukturierung** (Bundle T.d-Lehre): `const drawing = usePDFDrawing(...)` invalidiert pro Render | PDFSeite.tsx **destrukturiert** in stabile Namen. Per-Phase-Reviewer prüft. |
-| 2 | **Closure-Capture-Bugs** beim Hook-Move (Drawing 9 Deps, TextEdit 4 Deps) | Byte-identische Dep-Array-Übernahme. Per-Phase Reviewer 1:1-Mapping-Check. |
+| 2 | **Closure-Capture-Bugs** beim Hook-Move (Drawing-Hook 11 Dep-Slots über 3 useCallbacks: handleDrawStart=6, handleDrawMove=2, handleDrawEnd=3; TextEdit-Hook 6 Dep-Slots über 2 useCallbacks: handleDoubleClick=4, handleTextEditSave=2) | Byte-identische Dep-Array-Übernahme. Per-Phase Reviewer 1:1-Mapping-Check. |
 | 3 | **`containerRef`-Sharing** über Hook-Grenze (für `data-drag-orig-punkte`-Mutation in Drag-Move) | Hook-Param `containerRef: RefObject<HTMLDivElement>`. Mutation byte-identisch im Hook. |
 | 4 | **Drag-State + Freihand-State** in einer State-Maschine — Aufspaltung würde Race auslösen | Zusammen in `usePDFDrawing` lassen, kein Sub-Cut. |
 | 5 | **Service-Worker-Cache** (Bundle N-Lehre) | E2E-Vorlauf: SW-unregister + caches.delete + reload, dokumentiert in Phase 5. |
