@@ -57,14 +57,27 @@
 
 ### Task 0.1: Worktree erstellen + Baseline verifizieren
 
-- [ ] **Step 1: Worktree vom existierenden Branch erstellen**
+- [ ] **Step 0: Voraussetzung — main im main-Repo auschecken**
+
+Der Branch `bundle-y/layout-recovery-cut` ist aktuell im main-Repo ausgecheckt (Spec+Plan wurden direkt dort committed). `git worktree add` würde sonst mit `fatal: branch is already checked out` fehlschlagen.
+
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git status  # Working tree clean prüfen
+git checkout main
+git log --oneline -1
+```
+
+Expected: `Switched to branch 'main'` + HEAD `10c1b91 Merge Bundle X` (oder neuer falls Drift). Falls `git status` Untracked/Modified zeigt: STOP, vorher abklären.
+
+- [ ] **Step 1: Worktree vom Bundle-Y-Branch erstellen**
 
 ```bash
 cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
 git worktree add .worktrees/bundle-y-layout-recovery bundle-y/layout-recovery-cut
 ```
 
-Expected: `Preparing worktree (checking out 'bundle-y/layout-recovery-cut')` + HEAD: `6b14271 Bundle Y Spec rev2`.
+Expected: `Preparing worktree (checking out 'bundle-y/layout-recovery-cut')` + HEAD: `fcdb570 Bundle Y Plan` (Plan-Commit) bzw. `6b14271 Bundle Y Spec rev2`.
 
 - [ ] **Step 2: cd in Worktree und Status prüfen**
 
@@ -189,16 +202,22 @@ Expected: Plan-Commit auf Branch (rein-Doku-Commit).
 
 - [ ] **Step 1: Test-Datei schreiben**
 
+**Pattern: Closure-Ref-Pattern** (analog `useFragenAutoSave.test.tsx`). Module-Level mutable Refs (`configRef`, `fragenRef`, `userRef`) werden im `beforeEach` zurückgesetzt, der Mock-Factory schliesst über sie. **Kein** `vi.resetModules()` + dynamic-import (fragil). API + fragenResolver bleiben simple `vi.fn`-Mocks.
+
 ```typescript
 // ExamLab/src/hooks/usePruefungsRecovery.test.ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 
-// === Mocks ===
+// === Module-Level mutable State (geschlossen in vi.mock-Factories) ===
 const ladePruefungMock = vi.fn()
 const setConfigUndFragenMock = vi.fn()
 const setDurchfuehrungIdMock = vi.fn()
 const resolveFragenMock = vi.fn()
+
+const configRef: { current: unknown } = { current: null }
+const fragenRef: { current: unknown[] } = { current: [] }
+const userRef: { current: { email: string } | null } = { current: { email: 'sus@test' } }
 
 vi.mock('../services/apiService', () => ({
   apiService: {
@@ -209,8 +228,8 @@ vi.mock('../services/apiService', () => ({
 vi.mock('../store/pruefungStore', () => ({
   usePruefungStore: Object.assign(
     (selector: (s: unknown) => unknown) => selector({
-      config: null,
-      fragen: [],
+      config: configRef.current,
+      fragen: fragenRef.current,
     }),
     {
       getState: () => ({
@@ -221,14 +240,15 @@ vi.mock('../store/pruefungStore', () => ({
   ),
 }))
 
-const userMockRef: { current: { email: string } | null } = { current: { email: 'sus@test' } }
 vi.mock('../store/authStore', () => ({
-  useAuthStore: (selector: (s: unknown) => unknown) => selector({ user: userMockRef.current }),
+  useAuthStore: (selector: (s: unknown) => unknown) => selector({ user: userRef.current }),
 }))
 
 vi.mock('../utils/fragenResolver', () => ({
   resolveFragenFuerPruefung: (...args: unknown[]) => resolveFragenMock(...args),
 }))
+
+import { usePruefungsRecovery } from './usePruefungsRecovery'
 
 // Helper to set window.location.search per test
 const setUrl = (search: string) => {
@@ -239,22 +259,6 @@ const setUrl = (search: string) => {
   })
 }
 
-// Helper to override store-state per test (re-import-pattern)
-const setStoreState = (config: unknown, fragen: unknown[]) => {
-  // re-mock pruefungStore selector with new state for this test
-  vi.doMock('../store/pruefungStore', () => ({
-    usePruefungStore: Object.assign(
-      (selector: (s: unknown) => unknown) => selector({ config, fragen }),
-      {
-        getState: () => ({
-          setConfigUndFragen: setConfigUndFragenMock,
-          setDurchfuehrungId: setDurchfuehrungIdMock,
-        }),
-      },
-    ),
-  }))
-}
-
 beforeEach(() => {
   ladePruefungMock.mockReset()
   setConfigUndFragenMock.mockReset()
@@ -263,7 +267,9 @@ beforeEach(() => {
     navigationsFragen: [{ id: 'q1' }],
     alleFragen: [{ id: 'q1' }],
   })
-  userMockRef.current = { email: 'sus@test' }
+  configRef.current = null
+  fragenRef.current = []
+  userRef.current = { email: 'sus@test' }
   setUrl('?id=p1')
 })
 
@@ -272,10 +278,9 @@ afterEach(() => {
 })
 
 describe('usePruefungsRecovery', () => {
-  it('idle: config + fragen vorhanden → kein API-Call, kein status-Wechsel', async () => {
-    setStoreState({ id: 'p1' }, [{ id: 'q1' }])
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
+  it('idle: config + fragen vorhanden → kein API-Call, kein status-Wechsel', () => {
+    configRef.current = { id: 'p1' }
+    fragenRef.current = [{ id: 'q1' }]
     const { result } = renderHook(() => usePruefungsRecovery())
     expect(result.current.status).toBe('idle')
     expect(ladePruefungMock).not.toHaveBeenCalled()
@@ -283,17 +288,13 @@ describe('usePruefungsRecovery', () => {
 
   it('failed direkt: kein url-id', async () => {
     setUrl('')  // kein ?id=
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
     const { result } = renderHook(() => usePruefungsRecovery())
     await waitFor(() => expect(result.current.status).toBe('failed'))
     expect(ladePruefungMock).not.toHaveBeenCalled()
   })
 
   it('failed direkt: kein user', async () => {
-    userMockRef.current = null
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
+    userRef.current = null
     const { result } = renderHook(() => usePruefungsRecovery())
     await waitFor(() => expect(result.current.status).toBe('failed'))
     expect(ladePruefungMock).not.toHaveBeenCalled()
@@ -304,8 +305,6 @@ describe('usePruefungsRecovery', () => {
       config: { id: 'p1', durchfuehrungId: 'd1' },
       fragen: [{ id: 'q1' }],
     })
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
     renderHook(() => usePruefungsRecovery())
     await waitFor(() => expect(setConfigUndFragenMock).toHaveBeenCalled())
     expect(setConfigUndFragenMock).toHaveBeenCalledWith(
@@ -325,8 +324,6 @@ describe('usePruefungsRecovery', () => {
       config: { id: 'p1' },  // keine durchfuehrungId
       fragen: [{ id: 'q1' }],
     })
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
     renderHook(() => usePruefungsRecovery())
     await waitFor(() => expect(setConfigUndFragenMock).toHaveBeenCalled())
     expect(setDurchfuehrungIdMock).not.toHaveBeenCalled()
@@ -334,8 +331,6 @@ describe('usePruefungsRecovery', () => {
 
   it('failed: api-result null → status failed', async () => {
     ladePruefungMock.mockResolvedValue(null)
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
     const { result } = renderHook(() => usePruefungsRecovery())
     await waitFor(() => expect(result.current.status).toBe('failed'))
     expect(setConfigUndFragenMock).not.toHaveBeenCalled()
@@ -344,8 +339,6 @@ describe('usePruefungsRecovery', () => {
   it('failed: api-throws → status failed + console.error', async () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     ladePruefungMock.mockRejectedValue(new Error('netzwerk'))
-    vi.resetModules()
-    const { usePruefungsRecovery } = await import('./usePruefungsRecovery')
     const { result } = renderHook(() => usePruefungsRecovery())
     await waitFor(() => expect(result.current.status).toBe('failed'))
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -1102,6 +1095,18 @@ EOF
 git push origin main
 ```
 
+- [ ] **Step 5: Merge-Commit-Hash für HANDOFF + Memory festhalten**
+
+Merge-Hash erfassen, der im HANDOFF-Eintrag (Task 5.1) und im Memory-File (Task 5.3) als `<commit-hash>`/`<hash>` substituiert werden muss. Hash IMMER per `git rev-parse` verifizieren (Memory-Regel `feedback_hash_verification`).
+
+```bash
+MERGE_HASH=$(git rev-parse HEAD)
+echo "Merge-Commit: $MERGE_HASH"
+git log --format='%h %s' -1  # short-hash + subject zur Bestätigung
+```
+
+Expected: 40-Zeichen-SHA + Commit-Subject `Merge Bundle Y: Layout.tsx Recovery-Cut ...`. Diesen Hash (kurz: erste 7 Zeichen) in Task 5.1 + Task 5.3 einsetzen — falls HANDOFF-Eintrag schon vor dem Merge geschrieben wurde, nachträglich aktualisieren mit `git commit --amend` ODER kleinem Folge-Commit "HANDOFF: Bundle Y Merge-Hash nachgetragen".
+
 ### Task 5.3: Memory-Update
 
 - [ ] **Step 1: Bundle-Y-Memory-File schreiben**
@@ -1175,8 +1180,8 @@ git push origin --delete bundle-y/layout-recovery-cut 2>/dev/null || echo "Branc
 
 ## Failure-Modes-Recovery
 
-**Falls Phase 1 Hook-Tests rot bleiben (vi.mock + dynamic-import-Pattern fragil):**
-- Alternative: Real-Store-`setState`-Pattern wie `useDirtyTracker.test.tsx`. `usePruefungStore.setState({ config: null, fragen: [] })` direkt. **Trade-off:** weniger isoliert, aber stabil; Memory-Lehre nach Bundle Y schreiben.
+**Falls Phase 1 Hook-Tests rot bleiben (Closure-Ref-Pattern wider Erwarten fragil):**
+- Alternative: Real-Store-`setState`-Pattern wie `useDirtyTracker.test.tsx`. `usePruefungStore.setState({ config: null, fragen: [] })` und `useAuthStore.setState({ user: ... })` direkt — kein `vi.mock` für die beiden Stores. Mocks bleiben nur für `apiService` + `fragenResolver`. **Trade-off:** weniger Isolation (Real-Store hat ggf. Side-Effects bei subscribe), aber bewährter im Repo. Memory-Lehre nach Bundle Y schreiben.
 
 **Falls Layout.tsx > 500 Z. nach Phase 3:**
 - Verifiziere `wc -l` und prüfe ob alle 3 Cut-Bereiche entfernt sind.
