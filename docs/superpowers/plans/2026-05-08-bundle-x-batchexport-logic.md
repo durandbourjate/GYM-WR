@@ -256,6 +256,9 @@ describe('fuehreBatchExportAus', () => {
   it('1 Frage success → 1 erfolgreich, korrekt zugeordnete poolId/hash', async () => {
     vi.mocked(apiService.schreibePoolAenderung).mockResolvedValue({
       erfolg: true,
+      aktualisiert: 0,
+      exportiert: 1,
+      commitSha: 'sha-abc',
       exportierteIds: { '0': 'wr-001' },
       neueHashes: { '0': 'hash-abc' },
       fehler: [],
@@ -283,6 +286,9 @@ describe('fuehreBatchExportAus', () => {
   it('2 Fragen same pool → 1 API-Aufruf mit 2 änderungen, 2 erfolgreiche, onFortschritt-Reihenfolge [[0,2], [2,2]]', async () => {
     vi.mocked(apiService.schreibePoolAenderung).mockResolvedValue({
       erfolg: true,
+      aktualisiert: 0,
+      exportiert: 2,
+      commitSha: 'sha-xy',
       exportierteIds: { '0': 'wr-001', '1': 'wr-002' },
       neueHashes: { '0': 'hash-1', '1': 'hash-2' },
       fehler: [],
@@ -307,6 +313,9 @@ describe('fuehreBatchExportAus', () => {
   it('API result.erfolg=false → alle markiert fehlgeschlagen mit fehler-Text', async () => {
     vi.mocked(apiService.schreibePoolAenderung).mockResolvedValue({
       erfolg: false,
+      aktualisiert: 0,
+      exportiert: 0,
+      commitSha: '',
       exportierteIds: {},
       neueHashes: {},
       fehler: ['Pool gesperrt'],
