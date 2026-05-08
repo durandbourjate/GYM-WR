@@ -2,11 +2,16 @@ import type { Frage } from '../../types/ueben/fragen'
 import type { LoesungsMap } from '../../types/ueben/loesung'
 import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
 
+interface PreloadUser {
+  email: string
+  sessionToken?: string
+}
+
 interface LadeLoesungenViaPreloadArgs {
   block: Frage[]
   gruppeId: string
   fachbereich: string
-  user: { email: string; sessionToken: string } | null
+  user: PreloadUser | null | undefined
 }
 
 /**

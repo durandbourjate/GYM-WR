@@ -5,14 +5,13 @@ import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from 
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { erstelleSessionBlock } from '../../utils/ueben/sessionBlockBau'
 import { pruefeClientseitig } from '../../utils/ueben/pruefeClientseitig'
+import { ladeLoesungenViaPreload } from '../../utils/ueben/loesungsPreloadFetch'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 import { mergeLoesungen } from '../../utils/ueben/loesungsMerge'
 import { istSelbstbewertbar } from '../../utils/ueben/fragetypGruppen'
 import { ladeHistorie, speichereHistorie, MAX_HISTORIE, type GespeichertesErgebnis } from '../../utils/ueben/historie'
 import { berechneErgebnis as berechneErgebnisPure } from '../../utils/ueben/ergebnisBerechnung'
-import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
-import type { LoesungsMap } from '../../types/ueben/loesung'
 import type { PruefResultat } from '../../types/ueben/pruefResultat'
 import { normalizeAntwort } from '../../utils/normalizeAntwort'
 import { useUebenFortschrittStore } from './fortschrittStore'
@@ -100,27 +99,10 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       // Lösungs-Preload via separatem Endpoint (Bundle Ü).
       // Bei Erfolg: Lösungen in Frage-Objekte mergen, clientseitige Korrektur möglich.
       // Bei Fehler oder Lücken: pro-Frage-Fallback auf pruefeAntwortJetzt().
-      let loesungen: LoesungsMap = {}
-      try {
-        const { useUebenAuthStore } = await import('./authStore')
-        const user = useUebenAuthStore.getState().user
-        if (user?.sessionToken) {
-          const fragenIds = block.map((f) => f.id)
-          for (const f of block) {
-            const ta = (f as Frage & { teilaufgaben?: Frage[] }).teilaufgaben
-            if (Array.isArray(ta)) for (const t of ta) fragenIds.push(t.id)
-          }
-          loesungen = await ladeLoesungenApi({
-            gruppeId,
-            fragenIds,
-            email: user.email,
-            token: user.sessionToken,
-            fachbereich: fach,
-          })
-        }
-      } catch (e) {
-        console.warn('[uebungsStore] Lösungs-Preload fehlgeschlagen:', e)
-      }
+      const { useUebenAuthStore } = await import('./authStore')
+      const loesungen = await ladeLoesungenViaPreload({
+        block, gruppeId, fachbereich: fach, user: useUebenAuthStore.getState().user,
+      })
 
       const { fragen: blockMitLoesung, preloaded } = mergeLoesungen(block, loesungen)
 

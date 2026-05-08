@@ -39,7 +39,7 @@ describe('ladeLoesungenViaPreload', () => {
   })
 
   it('user.sessionToken gesetzt + API-Erfolg → returns LoesungsMap', async () => {
-    const apiResult = { q1: { musterlosung: 'A' } } as unknown as LoesungsMap
+    const apiResult = { q1: {} } as unknown as LoesungsMap
     vi.mocked(ladeLoesungenApi).mockResolvedValue(apiResult)
     const result = await ladeLoesungenViaPreload({
       block: [mkFrage('q1')],
