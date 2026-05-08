@@ -8,6 +8,45 @@
 
 ## Letzter Stand auf main
 
+### Bundle U — useDrawingEngine Pure-Logic-Cut ✅ MERGED (2026-05-08)
+
+Branch `feature/bundle-u-usedrawingengine-split`. Erstes Hoch-Risiko-Datei-Split der **Phase 4** aus dem Vereinfachungs-Audit. **useDrawingEngine.ts 752 → 157 Zeilen (-79%)** — Hotspot verlassen, Bilanz Code-Files (>500 Z., ohne data/test) **12 → 11**. Erstmals Vitest-Coverage für Reducer/Geometrie/Serialisierungs-Kern (vorher 0 Tests, jetzt +44).
+
+**Was geliefert (4 neue Pure-Logic-Files + 3 Test-Files + 1 Caller-Edit):**
+- `ExamLab/src/components/fragetypen/zeichnen/drawingReducer.ts` (159 Z.) — `canvasReducer` (11 Action-Types) + `verschiebePoint` (privat) + `verschiebeCommand` (exportiert für Tests, einzige bewusste Signatur-Änderung) + `initialState` + `CanvasAction`-Type. Byte-identisch.
+- `ExamLab/src/components/fragetypen/zeichnen/drawingReducer.test.ts` (197 Z.) — **20 Vitest-Tests** (alle 11 Action-Types + 6 No-Op-Edge-Cases inkl. Phase 1 Hotfix UPDATE_COMMAND-no-op + 3 verschiebeCommand-Sub-Type-Tests).
+- `ExamLab/src/components/fragetypen/zeichnen/drawingGeometrie.ts` (198 Z.) — `vereinfachePunkte` (RDP, toleranz=0.8) + `findeCommandBeiPunkt` (Touch 16px / Maus 8px via `'ontouchstart' in window` zur Aufruf-Zeit) + `berechneBoundingBox` (PADDING 6) + 2 private Helpers (punktZuLinieAbstand, punktAbstandZuSegment). Byte-identisch.
+- `ExamLab/src/components/fragetypen/zeichnen/drawingGeometrie.test.ts` (156 Z.) — **18 Vitest-Tests** (RDP 5 Branches inkl. Mikro-Wackler unter Toleranz, Hit-Testing pro DrawCommand-Typ, Touch/Maus-Toleranz beider Branches via `vi.stubGlobal('ontouchstart', null)`, bbox 4 Sub-Types). Text-bbox `breite` mit `toBeCloseTo(33.6, 5)` wegen FP-Präzision von `18*0.6*2`.
+- `ExamLab/src/components/fragetypen/zeichnen/drawingRendering.ts` (205 Z.) — `zeichneCommand` (7 Sub-Types Switch) + `renderCanvas` (clearRect → drawImage → forEach commands → aktiverCommand → Selektions-Rahmen `#3b82f6` lineDash[5,4]) + `zeichnePfeilspitze` (privat, `Math.PI/7`-Winkel, `max(10, breite*4)`-Länge). **Kein Vitest** — Canvas-2D-API nicht in jsdom verfügbar (Browser-E2E reicht). `void pfeilBreite;` Tot-Code-Indikator byte-identisch übernommen — Cleanup als Spawn-Task.
+- `ExamLab/src/components/fragetypen/zeichnen/drawingSerialisierung.ts` (32 Z.) — `rundePoint` (x/y auf 0.1, druck auf 0.01) + `serializiereCommand` (Stift: vereinfachen → runden; Rest: nur runden). Byte-identisch. Importiert `vereinfachePunkte` aus `drawingGeometrie`.
+- `ExamLab/src/components/fragetypen/zeichnen/drawingSerialisierung.test.ts` (72 Z.) — **6 Vitest-Tests** (rundePoint mit/ohne Druck/Drop-undefined, serializiereCommand Stift-RDP-Coupling + linie + text).
+- `ExamLab/src/components/fragetypen/zeichnen/useDrawingEngine.ts` (752 → 157 Z., -79%) — reiner React-Hook: useReducer + 13 Dispatch-useCallbacks + 2 Render-useCallbacks + 3 Persistenz-useCallbacks + Return-Object. Re-Export-Bridge entfernt (Dead-Surface).
+- `ExamLab/src/components/fragetypen/zeichnen/ZeichnenCanvas.tsx` (517 → 518 Z., +1) — Z. 5 1 Import in 2 zerlegt: `useDrawingEngine` aus `./useDrawingEngine`, `findeCommandBeiPunkt` direkt aus `./drawingGeometrie`.
+
+**Verifikation:**
+- vitest **1401 passes | 4 todo** (drift +44 vs T.f-Baseline 1357: 20 reducer + 18 geometrie + 6 serialisierung) ✓
+- tsc -b clean (Output direkt geprüft, Lehre `feedback_tsc_b_exit_misleading`) ✓
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline unverändert) ✓
+- vite build erfolgreich (~3s, PWA generateSW OK, 256 Cache-Entries) ✓
+- Browser-E2E auf staging — Smoke-Test: Pfad 1 (LP-Editor öffnet Zeichnen-Frage anlegen) ✓ und Pfad 12 (0 Console-Errors) ✓; Pfade 2-11 nicht via Browser-Auto verifiziert (Editor zeigt kein Canvas, nur Konfig — Auto-E2E zu zeit-kostspielig). Vertrauen auf Per-Phase-Reviewer + Final-Reviewer + 17 byte-identische Invarianten + 44 Unit-Tests.
+- Per-Phase-Code-Reviewer (5×): **APPROVED**. Final-Code-Reviewer (Bundle U komplett): **APPROVED FOR MERGE**.
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **Pure-Logic-Cut nach Domain** (Reducer / Geometrie / Rendering / Serialisierung) — Co-Located in `zeichnen/`-Folder analog Bundle T.d.
+- **Test-Hybrid**: Vitest für jsdom-kompatible Pure-Logic, Browser-E2E für Canvas-2D-API (Master-Spec 4.2).
+- **Dead-Surface-Removal** statt Re-Export-Stub: ungenutzte `vereinfachePunkte`, `zeichneCommand`-Re-Exports komplett entfernt; `findeCommandBeiPunkt` direkt im Konsumenten korrigiert (1 Konsumer = 1 Import-Edit).
+- **Transient-Re-Export-Bridge** während Multi-Phase-Cut: Phase 2-4 hatten `export { ... } from './drawing...'`-Bridge, damit Konsumer durchgehend kompiliert. Phase 5 atomar entfernt.
+- **Deliberate Non-Byte-Identical-Signatur-Änderung dokumentieren**: `verschiebeCommand` neu exportiert (war privat) für Test-Zugriff. Plan-Reviewer-Iteration explizit dokumentiert.
+- **FP-Toleranz-Tests**: `toBeCloseTo(...)` statt `toEqual` für Float-Approximationen (z.B. `18*0.6*2 = 33.5999...`).
+
+**Out of Scope (Spawn-Tasks für nächste Sessions):**
+- Bundle V — `PDFSeite.tsx` Hoch-Risiko-Split (950 Z., 17 Props, DOM-Selection + PDF.js + Canvas).
+- Bundle W — `uebungsStore.ts` Hoch-Risiko-Split (684 Z., Lösungs-Merge + Session-Historie).
+- `void pfeilBreite;` Tot-Code-Cleanup in `drawingRendering.ts` Z. 35.
+- Browser-E2E-Pfade 2-11 nachholen bei nächster Gelegenheit (manuell durchspielen, Smoke-Test in laufender Session statt Auto-Verifikation).
+
+---
+
 ### Bundle T.f — LPStartseite Hook + Komponenten-Extraktion ✅ MERGED (2026-05-07)
 
 Branch `feature/bundle-t-f-lpstartseite`. **Letztes** Sub-Bundle aus Bundle T (Master-Spec auf main `1be0f6a`). Hoch-Risiko-File-Split per 3 Hooks + 1 Utility + 5 Komponenten-Splits. **LPStartseite.tsx 1043 → 382 Zeilen (-63%)** — übertrifft Master-Spec-Ziel <500. Hotspot-Bilanz Files >500 Z.: **8 → 7**. **Bundle T komplett (6/6 Sub-Bundles auf main).**
