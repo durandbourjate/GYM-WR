@@ -139,4 +139,16 @@ describe('usePruefungsRecovery', () => {
     )
     consoleSpy.mockRestore()
   })
+
+  it('recoveryAttempted-guard: rerender mit denselben deps → 1× API-Call', async () => {
+    ladePruefungMock.mockResolvedValue({
+      config: { id: 'p1' },
+      fragen: [{ id: 'q1' }],
+    })
+    const { rerender } = renderHook(() => usePruefungsRecovery())
+    await waitFor(() => expect(ladePruefungMock).toHaveBeenCalledTimes(1))
+    rerender()
+    rerender()
+    expect(ladePruefungMock).toHaveBeenCalledTimes(1)
+  })
 })
