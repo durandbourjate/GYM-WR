@@ -4,8 +4,13 @@
 import { useState, useEffect, useMemo } from 'react'
 import type { Frage } from '../../../types/fragen-storage'
 import { ladePoolIndex, ladePoolConfig } from '../../../services/poolSync'
-import { konvertiereZuPoolFormat } from '../../../utils/poolExporter'
-import { apiService } from '../../../services/apiService'
+import {
+  erstelleAutoZuweisungen,
+  fuehreBatchExportAus,
+  type PoolEintrag,
+  type FrageZuweisung,
+  type SendeErgebnis,
+} from '../../../utils/batchExportLogic'
 import { useAuthStore } from '../../../store/authStore'
 import { fachbereichFarbe, typLabel } from '../../../utils/fachUtils'
 
@@ -15,28 +20,7 @@ interface Props {
   onErfolg: (updates: Array<{ frageId: string; poolId: string; poolContentHash: string }>) => void
 }
 
-interface PoolEintrag {
-  id: string
-  file: string
-  fach: string
-  title: string
-}
-
 type Phase = 'auswahl' | 'zuweisung' | 'senden' | 'fertig' | 'fehler'
-
-interface FrageZuweisung {
-  frageId: string
-  poolId: string
-  topic: string
-}
-
-interface SendeErgebnis {
-  frageId: string
-  erfolg: boolean
-  poolId?: string
-  poolContentHash?: string
-  fehler?: string
-}
 
 export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Props) {
   const email = useAuthStore(s => s.user?.email) || ''
@@ -110,20 +94,10 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
 
   // Zur Zuweisungs-Phase wechseln
   function weiterZuZuweisung(): void {
-    // Auto-Zuweisungen basierend auf Fachbereich
-    const neueZuweisungen = new Map<string, FrageZuweisung>()
-    for (const id of gewaehlteIds) {
-      const frage = exportierbar.find(f => f.id === id)
-      if (!frage) continue
-      const passenderPool = pools.find(p => p.fach?.toLowerCase() === frage.fachbereich?.toLowerCase())
-      neueZuweisungen.set(id, {
-        frageId: id,
-        poolId: passenderPool?.id || '',
-        topic: '',
-      })
-      // Topics vorladen
-      if (passenderPool) ladeTopicsFuerPool(passenderPool.id)
-    }
+    const { zuweisungen: neueZuweisungen, benoetigteTopicPools } = erstelleAutoZuweisungen({
+      gewaehlteIds, exportierbar, pools,
+    })
+    for (const poolId of benoetigteTopicPools) ladeTopicsFuerPool(poolId)
     setZuweisungen(neueZuweisungen)
     setPhase('zuweisung')
   }
@@ -170,89 +144,16 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
   // Batch-Export durchführen
   async function handleExport(): Promise<void> {
     setPhase('senden')
-    const gesamt = zuweisungen.size
-    setFortschritt({ gesendet: 0, gesamt })
-    const alleErgebnisse: SendeErgebnis[] = []
-
-    // Gruppiere nach Pool-Datei
-    const nachPool = new Map<string, Array<{ frage: Frage; zuweisung: FrageZuweisung }>>()
-    for (const [frageId, zuw] of zuweisungen) {
-      const frage = exportierbar.find(f => f.id === frageId)
-      if (!frage) continue
-      const pool = pools.find(p => p.id === zuw.poolId)
-      if (!pool) continue
-      const datei = pool.file || pool.id + '.js'
-      if (!nachPool.has(datei)) nachPool.set(datei, [])
-      nachPool.get(datei)!.push({ frage, zuweisung: zuw })
-    }
-
-    // Pro Pool-Datei eine API-Anfrage
-    for (const [poolDatei, eintraege] of nachPool) {
-      try {
-        const aenderungen = eintraege.map(({ frage, zuweisung }) => {
-          const exported = konvertiereZuPoolFormat(frage, zuweisung.topic)
-          exported.reviewed = false
-          return {
-            poolFrageId: null as string | null,
-            typ: 'export' as const,
-            felder: exported as unknown as Record<string, unknown>,
-            _frageId: frage.id, // Hilfsfeld für Zuordnung
-          }
-        })
-
-        const result = await apiService.schreibePoolAenderung(
-          email,
-          poolDatei,
-          aenderungen.map(({ _frageId: _, ...rest }) => rest),
-        )
-
-        if (result?.erfolg) {
-          // Ergebnisse zuordnen
-          const exportierteIdValues = Object.values(result.exportierteIds)
-          const hashValues = Object.values(result.neueHashes)
-          const poolName = poolDatei.replace('.js', '')
-
-          for (let i = 0; i < eintraege.length; i++) {
-            alleErgebnisse.push({
-              frageId: eintraege[i].frage.id,
-              erfolg: true,
-              poolId: poolName + ':' + (exportierteIdValues[i] || ''),
-              poolContentHash: hashValues[i] || '',
-            })
-          }
-        } else {
-          // Alle Fragen dieser Pool-Datei als fehlgeschlagen markieren
-          for (const { frage } of eintraege) {
-            alleErgebnisse.push({
-              frageId: frage.id,
-              erfolg: false,
-              fehler: result?.fehler?.join(', ') || 'Unbekannter Fehler',
-            })
-          }
-        }
-      } catch (e) {
-        for (const { frage } of eintraege) {
-          alleErgebnisse.push({
-            frageId: frage.id,
-            erfolg: false,
-            fehler: e instanceof Error ? e.message : 'Netzwerkfehler',
-          })
-        }
-      }
-
-      setFortschritt(prev => ({ ...prev, gesendet: prev.gesendet + eintraege.length }))
-    }
-
-    setErgebnisse(alleErgebnisse)
-    const erfolgreiche = alleErgebnisse.filter(e => e.erfolg)
-    if (erfolgreiche.length > 0) {
-      onErfolg(erfolgreiche.map(e => ({
-        frageId: e.frageId,
-        poolId: e.poolId!,
-        poolContentHash: e.poolContentHash!,
-      })))
-    }
-    setPhase(alleErgebnisse.some(e => !e.erfolg) ? 'fehler' : 'fertig')
+    const { ergebnisse, erfolgreiche } = await fuehreBatchExportAus({
+      zuweisungen,
+      fragen: exportierbar,
+      pools,
+      email,
+      onFortschritt: (gesendet, gesamt) => setFortschritt({ gesendet, gesamt }),
+    })
+    setErgebnisse(ergebnisse)
+    if (erfolgreiche.length > 0) onErfolg(erfolgreiche)
+    setPhase(ergebnisse.some(e => !e.erfolg) ? 'fehler' : 'fertig')
   }
 
   return (
