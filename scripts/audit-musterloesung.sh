@@ -36,7 +36,7 @@ TOKENS=(
   "musterLoesung"
   "MusterLoesung"
 )
-BASELINES=(307 0 70 14 12 0)
+BASELINES=(310 0 70 14 12 0)
 
 # Counts werden parallel zu TOKENS in COUNTS[] geschrieben.
 COUNTS=()

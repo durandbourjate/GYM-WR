@@ -4,6 +4,7 @@ import type { Antwort, Selbstbewertung } from '../../types/antworten'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { erstelleSessionBlock } from '../../utils/ueben/sessionBlockBau'
+import { pruefeClientseitig } from '../../utils/ueben/pruefeClientseitig'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 import { mergeLoesungen } from '../../utils/ueben/loesungsMerge'
@@ -244,23 +245,17 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     // musterlosung im Slice, aber pruefeAntwort() liefert für sie kein sinnvolles
     // Boolean — für die muss der Server-Pfad laufen (liefert selbstbewertung:true).
     if (state.loesungenPreloaded[frageId] === true && !istSelbstbewertbar(frage.typ)) {
-      const korrekt = pruefeAntwort(frage, normalized)
+      const result = pruefeClientseitig({ session, frage, normalized })
       if (!session.freiwillig) {
-        useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
+        useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, result.korrekt, session.id)
       }
       set({
-        session: {
-          ...session,
-          antworten: { ...session.antworten, [frageId]: normalized },
-          ergebnisse: { ...session.ergebnisse, [frageId]: korrekt },
-          score: session.score + (korrekt ? 1 : 0),
-        },
+        session: { ...session, ...result.sessionUpdates },
         speichertPruefung: false,
         pruefFehler: null,
         feedbackSichtbar: true,
-        letzteAntwortKorrekt: korrekt,
-        // musterlosung ist bereits in frage.musterlosung gemerged (mergeLoesungInFrage)
-        letzteMusterloesung: frage.musterlosung ?? null,
+        letzteAntwortKorrekt: result.korrekt,
+        letzteMusterloesung: result.letzteMusterloesung,
       })
       return
     }
