@@ -6,7 +6,8 @@ import { useSuSNavigation } from '../../hooks/ueben/useSuSNavigation'
 import FrageRenderer from '../FrageRenderer'
 import { normalisiereFrageDaten } from '../../utils/ueben/fragetypNormalizer'
 import type { Frage } from '../../types/fragen-storage'
-import { bewerteAntwortDetails, istSelbstbewertungstyp } from '../../utils/ueben/korrektur'
+import { bewerteAntwortDetails } from '../../utils/ueben/korrektur'
+import { istSelbstbewertbar } from '../../utils/ueben/fragetypGruppen'
 import { alleLueckenGefuellt, anzahlOffeneLuecken } from '../../utils/ueben/lueckentextChecks'
 import type { Selbstbewertung } from '../../types/antworten'
 import QuizHeader from './uebung/QuizHeader'
@@ -72,7 +73,7 @@ export default function UebungsScreen() {
   // Phase 2: Server liefert für Selbstbewertungstypen letzteMusterloesung —
   // Dialog dann öffnen. Auto-korrigierbare Typen setzen stattdessen feedbackSichtbar.
   useEffect(() => {
-    if (frage && istSelbstbewertungstyp(frage.typ) && letzteMusterloesung && !feedbackSichtbar) {
+    if (frage && istSelbstbewertbar(frage.typ) && letzteMusterloesung && !feedbackSichtbar) {
       setSelbstbewertungOffen(true)
     }
   }, [frage, letzteMusterloesung, feedbackSichtbar])

@@ -2,27 +2,11 @@
  * Korrektur-Logik für ExamLab Üben.
  * Arbeitet mit dem shared Frage-Format (kanonisch, discriminated union).
  */
-import type { Frage, FrageTyp } from '../../types/ueben/fragen'
+import type { Frage } from '../../types/ueben/fragen'
 import type { Antwort } from '../../types/antworten'
 import { normalizeAntwort } from '../normalizeAntwort'
 import { istPunktInPolygon } from '../zonen/polygon'
 import { normalisiereDragDropBild, normalisiereDragDropAntwort } from './fragetypNormalizer'
-
-/**
- * Fragetypen, die nicht automatisch korrigiert werden können
- * und stattdessen durch SuS selbstbewertet werden müssen.
- */
-const SELBSTBEWERTUNGS_TYPEN: ReadonlyArray<FrageTyp> = [
-  'freitext',
-  'visualisierung',
-  'pdf',
-  'audio',
-  'code',
-]
-
-export function istSelbstbewertungstyp(typ: FrageTyp): boolean {
-  return SELBSTBEWERTUNGS_TYPEN.includes(typ)
-}
 
 /**
  * S137 Ticket 8 Anpassung 1: Text-Antwort normalisieren — trim + Mehrfach-Leerzeichen kollabieren.
