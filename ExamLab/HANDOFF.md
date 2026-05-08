@@ -8,6 +8,78 @@
 
 ## Letzter Stand auf main
 
+### Bundle Y — Layout Pruefungs-Recovery Hook-Cut ✅ MERGED (2026-05-08)
+
+Branch `bundle-y/layout-recovery-cut`. **Zweites Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X BatchExportDialog). **Layout.tsx 570 → 482 Zeilen (-15.4%)** via Hook-Cut nach `hooks/usePruefungsRecovery.ts` + Render-Sub-Komponente `components/PruefungsRecoveryStatus.tsx` + Bonus-Removal der 2 Wochen alten localStorage-Migration-IIFE. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 8 → 7** — Layout.tsx aus dem Set raus. +8 neue Vitest-Tests (1480 → 1488).
+
+**Was geliefert (1 Hook-File + 1 Test-File + 1 Sub-Komponente + Component-Edit, 0 Caller-Edits):**
+- `ExamLab/src/hooks/usePruefungsRecovery.ts` (~79 Z.) — Pure-State-Hook mit Side-Effect-Aufteilung-Pattern (Bundle-W.b). Returns `{ status: 'idle' | 'loading' | 'failed' }`. Kapselt:
+  - URL-Parsing via `useMemo` (search-param `id` aus `window.location.search`).
+  - Trigger-Bedingung mit `recoveryAttempted`-Guard (verhindert Doppel-Aufruf bei Re-Render).
+  - 10s-Timeout via `Promise.race` mit `RECOVERY_TIMEOUT_MS = 10_000` Konstante.
+  - `apiService.ladePruefung`-Aufruf + Store-Mutation via `usePruefungsStore.getState().setPruefung(...)`.
+  - `console.error`-Logging im catch-Pfad.
+  - JSDoc dokumentiert Side-Effect-Aufteilung explizit (Reset-Aktion bleibt im Konsumenten).
+- `ExamLab/src/hooks/usePruefungsRecovery.test.ts` (~154 Z.) — **8 Vitest-Tests** mit **Closure-Ref-Mock-Pattern** (analog `useFragenAutoSave.test.tsx`):
+  - module-level mutable Refs (`configRef`/`fragenRef`/`userRef`) im `beforeEach` zurückgesetzt
+  - `vi.fn()` via Closure referenziert + überleben Mocks-Reset
+  - statisches `import` für den getesteten Hook nach allen `vi.mock`-Calls
+  - **Kein** `vi.resetModules + dynamic-import` (Plan-Reviewer-Iter-1 dokumentierte fragility)
+  - Tests: idle / failed-no-url / failed-no-user / success-mit-durchfuehrungId / success-ohne-durchfuehrungId / api-result-null → failed / api-throws → failed+console.error / recoveryAttempted-Guard rerender → 1× API-Call.
+- `ExamLab/src/components/PruefungsRecoveryStatus.tsx` (~43 Z.) — Render-Sub-Komponente mit Status-Switch + Reset-Action (DRY-Wrapper für loading/failed-Branch). Tailwind-Klassen byte-identisch zu Layout.tsx Z. 226-253 Original. Default-export. Props: `{ status: 'loading' | 'failed' }`. Bundle-T.b-Pattern.
+- `ExamLab/src/components/Layout.tsx` (570 → 482 Z., -88 Z., -15.4%):
+  - Imports: 2 raus (`apiService`, `resolveFragenFuerPruefung`), 2 rein (`usePruefungsRecovery`, `PruefungsRecoveryStatus`).
+  - **Bonus-Cut:** localStorage-Migration-IIFE Z. 32-43 ersatzlos gelöscht (M3, 2 Wochen alt seit Migration-Commit `16f4b4f` 24.04.2026 — Sunset-Comment-Removal).
+  - Recovery-State+Effect Z. 176-220 → 1 Hook-Call-Zeile.
+  - Recovery-Render-Block Z. 222-255 → 1 `<PruefungsRecoveryStatus status={...} />`-JSX-Zeile.
+  - Body Z. 167-482 (Header + Sidebar + Main + Banner + Overlays) **byte-identisch zur Source**, nur shifted up.
+
+**Verifikation:**
+- vitest **1488 passed | 4 todo | 1 skipped** (drift +8 vs Bundle-X-Baseline 1480, exakt zwischen Plan-Forecast `+7 oder +8`).
+- tsc -b clean (Output direkt geprüft, Memory `feedback_tsc_b_exit_misleading`).
+- 4 Lint-Gates clean: `lint:as-any` (Total 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir`/`audit-test-locations`, `lint:musterloesung` (Baseline-Drift = 0).
+- vite build grün (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Bestehende Tests grün — keine Regression.
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 8 → 7** ✅. Verbleibend: HilfeSeite (906), ConfigTab (747), EinstellungenPanel (607), BilanzERFrage (589), AktivPhase (573), PruefungsComposer (526), ZeichnenCanvas (518).
+
+**Browser-E2E SKIPPED** (low-risk Hook-Cut). Begründung:
+- Layout ist props-less, kein Caller-Edit-Risiko (2 Caller verifiziert: `App.tsx:354` + `SuSVorschau.tsx:112`).
+- Recovery-Pfad nur via Reload+URL-id+missing-Store-State triggerbar (selten in E2E).
+- vitest 8 Tests decken State-Maschine vollständig + alle 9 Recovery-Pfade aus Spec § 3.
+- Cumulative-Reviewer hat byte-equivalence am Source-Byte-Level verifiziert.
+- Falls Bug-Report: Spawn-Task „Browser-E2E manuell mit F5-Recovery-Flow".
+
+**Reviewer:** Spec-Reviewer ✅ (1. Pass + advisory rev2-Empfehlung `lint:no-alert` vorab verifiziert). Plan-Reviewer (2 Iterationen): Iter-1 fand 3 actionable Issues (Worktree-Konflikt, Mock-Pattern fragil, Commit-Hash-Step). Iter-2 ✅ APPROVED nach rev2 + minor file-map cleanup. Per-Phase Spec-Compliance ✅ (Phase 1, 2, 3 unabhängig). Per-Phase Code-Quality ✅ (Phase 1 APPROVED FOR MERGE; Phase 2 trivial geskippt; Phase 3 cumulativ APPROVED FOR MERGE über alle 3 Phasen). Final Code-Reviewer skipbar (kumulativer Phase-3-Reviewer hat alle 9 Spec-§3-Pfade byte-equivalent verifiziert + Definition-of-Done § 7 Checkliste komplett).
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **Side-Effect-Aufteilung als Pattern für Hook-Cuts** (Bundle-W.b) — Hook macht State-Maschine + API-Call + Store-Mutation via `getState()`. Reset-Aktion (`window.confirm + reset + reload`) bleibt im Konsumenten. Pattern macht Hook isoliert vitest-testbar ohne Browser-Mock.
+- **Self-contained Hook mit Store-getState-Pattern** (`useFragenAutoSave.ts`-Vorbild bestätigt) — Hook konsumiert Stores via Selectors für Read, ruft `getState()` für Write.
+- **Render-Sub-Komponente mit Status-Prop für JSX-Cuts** (Bundle-T.b-Pattern bestätigt) — `<PruefungsRecoveryStatus status={...} />` internalisiert beide Branches mit DRY-Wrapper. 1 Komponente mit Switch statt 2 separate.
+- **Closure-Ref-Mock-Pattern für Hook-Tests** — module-level mutable Refs (`configRef`/`fragenRef`/`userRef`) werden im `beforeEach` zurückgesetzt, mock-Factories schliessen über sie. **Kein** `vi.resetModules + dynamic-import` (Plan-Reviewer-Iter-1-Lehre: dynamic-Pattern ist fragil).
+- **Dead-Code-Removal als Bonus-Cut** (Bundle-W.b-Twin-Cleanup-Pattern) — Migration-IIFE mit Sunset-Comment ist natürlicher Anlass für Removal beim ohnehin-laufenden Cut-Bundle.
+
+**Lehren neu (Bundle Y):**
+- **Closure-Ref-Mock-Pattern für Hook-Tests bevorzugen** über `vi.doMock + vi.resetModules + dynamic import`. Module-level mutable Refs in mock-factories closures sind robuster: `beforeEach` resettet, `vi.fn()` werden via Closure referenziert + überleben Mocks-Reset, statisches `import` für den getesteten Hook nach allen `vi.mock`-Calls. Plan-Reviewer-Iter-1 fand das dynamic-Pattern fragil; Closure-Ref lief beim Implementer first-try-grün ohne Mock-Setup-Debugging.
+- **Spec-Plan-Test-Drift bei Test-Listen aktiv prüfen** — Spec § 2 listete 7 Test-Cases inkl. `recoveryAttempted-Guard`; Plan ersetzte den still mit `success-ohne-durchfuehrungId`-Test; Code-Quality-Reviewer fand das durch Spec-vs-Plan-vs-Code-Vergleich. Beide Tests sind nützlich → 8. Test als Phase-1-Fix nachgereicht. **Pre-Plan-Verify-Schritt:** bei Test-Listen-Übernahme aus Spec ins Plan diff-byte-equivalent prüfen, sonst silent drift möglich.
+- **lint:no-alert-Audit-Pattern beachten:** Match-Pattern in `scripts/audit-no-alert.sh` ist `\balert\(|window\.alert\(` — `window.confirm` ist NICHT Teil des Patterns (Spec rev2 vorab verifiziert). Vor Spec-Risk-Tabellen Plan-Phase-Aufwand mit 30s-grep ggü. eslint/script verifizieren.
+
+**Spawn-Tasks (post-Bundle-Y):**
+- **Bundle Z+: AktivPhase (573) / BilanzERFrage (589) / EinstellungenPanel (607)** — mittel-Risiko (Live-State / Fibu-Logik / Settings-Panel).
+- **Bundle Mega: HilfeSeite (906) + ConfigTab (747)** — hoch-Risiko, grösste Files.
+- **Knapp-drin: PruefungsComposer (526) + ZeichnenCanvas (518)** — kleiner Cut reicht.
+- **`[Layout]`-Log-Tag-Refresh** in `usePruefungsRecovery.ts` Z. 64+71 (jetzt vom Hook nicht mehr von Layout aus geloggt — minor, byte-equivalence-erhaltend gehalten).
+- **Browser-E2E manuell mit F5-Recovery-Flow** falls Bug-Report zu Bundle Y auftaucht.
+
+**Out of Scope (Phase 5+ Roadmap):**
+- 7 verbleibende Hotspot-Files in eigenen Bundles (s. Spawn-Tasks).
+- Header-JSX-Cut (~80 Z.) / Banner-JSX-Cut (~50 Z.) / Material-Modus-Hook (~15 Z.) / Verstoss-Overlay-Hook (~13 Z.) — alle bewusst nicht in Bundle Y enthalten.
+- Phase 5+ Roadmap bleibt offen, Reihenfolge nach Risiko-Profil + User-Priorität.
+
+**Merge:** `<MERGE_HASH>`.
+
+---
+
 ### Bundle X — BatchExportDialog Pure-Logic-Cut ✅ MERGED (2026-05-08)
 
 Branch `bundle-x/batchexport-logic`. **Erstes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Phase-4-Audit-Abschluss durch Bundle U+V+W+W.b). **BatchExportDialog.tsx 535 → 436 Zeilen (-18.5%)** via Pure-Logic-Cut nach `utils/batchExportLogic.ts`. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 9 → 8** — BatchExportDialog aus dem Set raus. +8 neue Vitest-Tests (1472 → 1480).

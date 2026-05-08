@@ -2,13 +2,12 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useResizableHandle } from '@shared/ui/useResizableHandle'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { useAuthStore } from '../store/authStore.ts'
-import { apiService } from '../services/apiService.ts'
-import { resolveFragenFuerPruefung } from '../utils/fragenResolver.ts'
 import { usePruefungsMonitoring } from '../hooks/usePruefungsMonitoring.ts'
 import { usePruefungsUX } from '../hooks/usePruefungsUX.ts'
 import { useTabKonflikt } from '../hooks/useTabKonflikt.ts'
 import { useLockdown } from '../hooks/useLockdown.ts'
 import { useLPNachrichten } from '../hooks/useLPNachrichten.ts'
+import { usePruefungsRecovery } from '../hooks/usePruefungsRecovery.ts'
 import { usePrefetchAssets } from '../hooks/usePrefetchAssets'
 import { pdfPrefetchUrls } from '../utils/anhaengePrefetch'
 import { VerstossOverlay } from './VerstossOverlay.tsx'
@@ -25,22 +24,10 @@ import ThemeToggle from './ThemeToggle.tsx'
 import SuSHilfeButton from './SuSHilfeButton.tsx'
 import MaterialPanel, { type MaterialModus } from './MaterialPanel.tsx'
 import FrageRenderer from './FrageRenderer.tsx'
+import PruefungsRecoveryStatus from './PruefungsRecoveryStatus.tsx'
 import { findeAbschnitt } from '../utils/abschnitte.ts'
 import { istVollstaendigBeantwortet } from '../utils/antwortStatus.ts'
 import FrageAnhaenge from './FrageAnhaenge.tsx'
-
-// Einmalige Migration bei Modul-Import: alter Sidebar-Breite-Key (vor Hook-Refactor)
-// → neuer Hook-Key mit Präfix. Nach einigen Wochen kann dieser Block entfernt werden.
-if (typeof window !== 'undefined') {
-  try {
-    const alt = localStorage.getItem('pruefung-sidebar-breite')
-    const neu = localStorage.getItem('sidebar-pruefung-sidebar-breite')
-    if (alt !== null && neu === null) {
-      localStorage.setItem('sidebar-pruefung-sidebar-breite', alt)
-      localStorage.removeItem('pruefung-sidebar-breite')
-    }
-  } catch { /* ignore */ }
-}
 
 export default function Layout() {
   const user = useAuthStore((s) => s.user)
@@ -173,85 +160,10 @@ export default function Layout() {
     setMaterialModus(neuerModus)
   }, [])
 
-  // Prüfungs-ID aus URL für Recovery
-  const pruefungIdAusUrl = useMemo(() => new URLSearchParams(window.location.search).get('id'), [])
-
-  // Recovery: config/fragen fehlen nach Reload (werden nicht persistiert)
-  const [recoveryStatus, setRecoveryStatus] = useState<'idle' | 'loading' | 'failed'>('idle')
-  const recoveryAttempted = useRef(false)
-
-  useEffect(() => {
-    if (config && fragen.length > 0) return // Alles vorhanden
-    if (recoveryAttempted.current) return // Schon versucht
-    if (!pruefungIdAusUrl || !user?.email) {
-      setRecoveryStatus('failed')
-      return
-    }
-
-    recoveryAttempted.current = true
-    setRecoveryStatus('loading')
-
-    const timeout = setTimeout(() => {
-      setRecoveryStatus('failed')
-    }, 10000)
-
-    apiService.ladePruefung(pruefungIdAusUrl, user.email)
-      .then((result) => {
-        clearTimeout(timeout)
-        if (result) {
-          const { navigationsFragen, alleFragen: resolvedAlle } = resolveFragenFuerPruefung(result.config, result.fragen)
-          usePruefungStore.getState().setConfigUndFragen(result.config, navigationsFragen, resolvedAlle)
-          // durchfuehrungId aktualisieren falls nötig
-          if (result.config.durchfuehrungId) {
-            usePruefungStore.getState().setDurchfuehrungId(result.config.durchfuehrungId)
-          }
-          console.log('[Layout] Recovery erfolgreich — config+fragen wiederhergestellt')
-        } else {
-          setRecoveryStatus('failed')
-        }
-      })
-      .catch((err) => {
-        clearTimeout(timeout)
-        console.error('[Layout] Recovery fehlgeschlagen:', err)
-        setRecoveryStatus('failed')
-      })
-
-    return () => clearTimeout(timeout)
-  }, [config, fragen, pruefungIdAusUrl, user])
+  const { status: recoveryStatus } = usePruefungsRecovery()
 
   if (!config || fragen.length === 0) {
-    // Recovery läuft oder noch nicht gestartet
-    if (recoveryStatus !== 'failed') {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-          <div className="text-center">
-            <div className="w-8 h-8 mx-auto mb-4 border-2 border-slate-300 dark:border-slate-600 border-t-slate-700 dark:border-t-slate-300 rounded-full animate-spin" />
-            <p className="text-slate-500 dark:text-slate-400">Sitzung wird wiederhergestellt...</p>
-          </div>
-        </div>
-      )
-    }
-
-    // Recovery fehlgeschlagen
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-        <div className="text-center">
-          <p className="text-slate-500 dark:text-slate-400 mb-2">Prüfungsdaten konnten nicht wiederhergestellt werden.</p>
-          <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">Ihre bisherigen Antworten gehen beim Zurücksetzen verloren.</p>
-          <button
-            onClick={() => {
-              if (window.confirm('Alle bisherigen Antworten gehen verloren. Fortfahren?')) {
-                usePruefungStore.getState().reset()
-                window.location.reload()
-              }
-            }}
-            className="px-4 py-2 text-sm bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer"
-          >
-            Zurück zum Start
-          </button>
-        </div>
-      </div>
-    )
+    return <PruefungsRecoveryStatus status={recoveryStatus !== 'failed' ? 'loading' : 'failed'} />
   }
 
   const aktuelleFrage = fragen[aktuelleFrageIndex]
