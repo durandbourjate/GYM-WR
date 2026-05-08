@@ -118,16 +118,23 @@ Im Action-Body Z. 608 wird `ladeHistorie()` durch JavaScript-Scoping als die **T
 
 #### `berechneErgebnis` (Top-Level vs. Store-Action)
 
-Hier wäre Shadow-Konflikt destruktiv: Wenn die pure Function unter Namen `berechneErgebnis` importiert würde, bliebe der Store-Action-Body `() => berechneErgebnis(get().session)` ambig. **Aliased-Import zwingend:**
+Technisch wäre — analog zu `ladeHistorie` — kein Aliased-Import nötig: Auch hier löst JavaScript-Module-Scope den Aufruf auf den Import auf, nicht auf die Store-Action-Property (Object-Properties sind nicht im Scope ihrer eigenen Value-Expression). **Aliased-Import dennoch dringend empfohlen für Lesbarkeit:**
 
 ```ts
 import { berechneErgebnis as berechneErgebnisPure } from '../../utils/ueben/ergebnisBerechnung'
 ```
 
+Begründung:
+- Macht die Delegator-Pattern explizit sichtbar (Reviewer erkennt sofort: Store-Action ruft pure Helper).
+- Eliminiert kognitive Last beim Lesen (`berechneErgebnis: () => berechneErgebnis(...)` würde aussehen wie eine Endlos-Rekursion, auch wenn es technisch nicht eine ist).
+- Konvention für zukünftige ähnliche Cuts.
+
 Store-Action-Body delegiert klar:
 ```ts
 berechneErgebnis: () => berechneErgebnisPure(get().session),
 ```
+
+(Plan-Reviewer Iteration 2026-05-08 Lehre: ursprüngliche Spec-Wording „zwingend" technisch ungenau — JS-Module-Scope-Regel macht Alias optional, aber die Lesbarkeits-Begründung trägt allein.)
 
 ### Kontrollfluss `berechneErgebnis` (vorher → nachher)
 
