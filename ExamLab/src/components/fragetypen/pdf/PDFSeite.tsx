@@ -1,13 +1,17 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import type {
   PDFAnnotation, PDFHighlightAnnotation, PDFKommentarAnnotation,
-  PDFFreihandAnnotation, PDFLabelAnnotation, PDFTextAnnotation, PDFKategorie,
+  PDFLabelAnnotation, PDFTextAnnotation, PDFKategorie,
   PDFToolbarWerkzeug, PDFTextRange,
 } from './PDFTypes.ts'
 import type { PDFSeitenInfo, ZoomStufe } from './PDFTypes.ts'
 import type { usePDFRenderer } from './usePDFRenderer.ts'
 import { PDFKommentarPopover } from './PDFKommentarPopover.tsx'
 import { PDFKategorieChooser } from './PDFKategorieChooser.tsx'
+import { erzeugeId, leseTextauswahl } from './seite/pdfSelection.ts'
+import { renderSVGOverlay } from './seite/pdfAnnotationenSVG.tsx'
+import { usePDFTextEdit } from './seite/usePDFTextEdit.tsx'
+import { usePDFDrawing } from './seite/usePDFDrawing.ts'
 
 interface Props {
   seitenNr: number
@@ -28,73 +32,6 @@ interface Props {
   onSelectedAnnotationChange?: (id: string | null) => void
   readOnly?: boolean
 }
-
-// --- Helpers ---
-
-function erzeugeId(): string {
-  return crypto.randomUUID()
-}
-
-/** Get bounding rects of text-layer spans that overlap an offset range */
-function findeSpanRects(
-  container: HTMLDivElement,
-  startOffset: number,
-  endOffset: number,
-): DOMRect[] {
-  const spans = container.querySelectorAll<HTMLSpanElement>('span[data-offset]')
-  const rects: DOMRect[] = []
-  for (const span of spans) {
-    const so = Number(span.dataset.offset)
-    const eo = so + (span.textContent?.length ?? 0)
-    if (eo <= startOffset || so >= endOffset) continue
-    rects.push(span.getBoundingClientRect())
-  }
-  return rects
-}
-
-/** Read selection offsets from text-layer spans */
-function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null {
-  const sel = window.getSelection()
-  if (!sel || sel.isCollapsed || !sel.rangeCount) return null
-
-  const range = sel.getRangeAt(0)
-  // Walk through the range to find start/end offsets
-  const spans = container.querySelectorAll<HTMLSpanElement>('span[data-offset]')
-  let startOffset = -1
-  let endOffset = -1
-  let text = ''
-
-  for (const span of spans) {
-    const so = Number(span.dataset.offset)
-    const content = span.textContent ?? ''
-    if (!range.intersectsNode(span)) continue
-
-    // Compute overlap within this span
-    let localStart = 0
-    let localEnd = content.length
-    if (span.contains(range.startContainer) || range.startContainer === span) {
-      localStart = range.startContainer === span
-        ? range.startOffset
-        : range.startOffset
-    }
-    if (span.contains(range.endContainer) || range.endContainer === span) {
-      localEnd = range.endContainer === span
-        ? range.endOffset
-        : range.endOffset
-    }
-
-    const spanStart = so + localStart
-    const spanEnd = so + localEnd
-    if (startOffset === -1) startOffset = spanStart
-    endOffset = spanEnd
-    text += content.slice(localStart, localEnd)
-  }
-
-  if (startOffset === -1 || endOffset === -1 || startOffset >= endOffset) return null
-  return { startOffset, endOffset, text }
-}
-
-// --- Component ---
 
 export function PDFSeite({
   seitenNr, zoom, renderer, annotationen, aktivesWerkzeug, aktiveFarbe,
@@ -118,20 +55,26 @@ export function PDFSeite({
   // Auswahl: vom Parent gesteuert
   const selectedAnnotation = selectedAnnotationProp ?? null
   const setSelectedAnnotation = onSelectedAnnotationChange ?? (() => {})
-  // Drag-State für Verschieben von Text-Annotationen
-  const dragRef = useRef<{ annotId: string; startRelX: number; startRelY: number; origX: number; origY: number } | null>(null)
-  // Edit state for existing text annotations (double-click to edit)
-  const [editierendeAnnotation, setEditierendeAnnotation] = useState<{
-    id: string; text: string; cssX: number; cssY: number; farbe: string; groesse: number
-  } | null>(null)
-  const textEditInputRef = useRef<HTMLInputElement>(null)
   const [kategorieChooser, setKategorieChooser] = useState<{
     x: number; y: number; textRange: PDFTextRange
   } | null>(null)
 
-  // Freehand drawing state
-  const istZeichnung = useRef(false)
-  const zeichnungsPfad = useRef<{ x: number; y: number }[]>([])
+  // --- Text-Edit-Hook (Doppelklick auf Text-Annotation) ---
+  const {
+    istEditierend,
+    handleDoubleClick,
+    beendeEdit,
+    editOverlay,
+  } = usePDFTextEdit({
+    readOnly, seitenInfo, annotationen, containerRef, onAnnotationEditieren,
+  })
+
+  // --- Drawing-Hook (Drag-Text + Drag-Freihand + Freihand-Draw) ---
+  const { handleDrawStart, handleDrawMove, handleDrawEnd } = usePDFDrawing({
+    readOnly, aktivesWerkzeug, seitenNr, aktiveFarbe, seitenInfo,
+    annotationen, selectedAnnotation, containerRef, zeichenCanvasRef,
+    onAnnotationHinzufuegen, onAnnotationEditieren,
+  })
 
   // --- PDF rendering ---
   useEffect(() => {
@@ -241,8 +184,8 @@ export function PDFSeite({
     // Auswahl: Text-Annotation anklicken → selektieren/deselektieren
     if (aktivesWerkzeug === 'auswahl') {
       // Bearbeitungsmodus beenden bei Klick ausserhalb
-      if (editierendeAnnotation) {
-        setEditierendeAnnotation(null)
+      if (istEditierend) {
+        beendeEdit()
       }
       let node: Element | null = e.target as Element
       let annotId: string | null = null
@@ -291,7 +234,7 @@ export function PDFSeite({
 
     // Store relative position in a data attribute for later use
     containerRef.current?.setAttribute('data-kommentar-rel', JSON.stringify({ x: relX, y: relY }))
-  }, [readOnly, aktivesWerkzeug, seitenInfo, onAnnotationLoeschen, editierendeAnnotation, selectedAnnotation])
+  }, [readOnly, aktivesWerkzeug, seitenInfo, onAnnotationLoeschen, istEditierend, beendeEdit, selectedAnnotation])
 
   const handleKommentarSave = useCallback((text: string) => {
     const relStr = containerRef.current?.getAttribute('data-kommentar-rel')
@@ -328,192 +271,6 @@ export function PDFSeite({
     onAnnotationHinzufuegen(annotation)
     setTextOverlay({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
   }, [textOverlay, seitenNr, aktiveFarbe, textRotation, textGroesse, textFett, onAnnotationHinzufuegen])
-
-  // --- Doppelklick: Text-Annotation editieren ---
-  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
-    if (readOnly || !onAnnotationEditieren || !seitenInfo) return
-    // closest() kann bei SVG-Elementen browserübergreifend unzuverlässig sein,
-    // daher manuell das DOM hoch traversieren (SVG → HTML Grenze beachten)
-    let node: Element | null = e.target as Element
-    let annotId: string | null = null
-    while (node && node !== e.currentTarget) {
-      annotId = node.getAttribute('data-annotation-id')
-      if (annotId) break
-      node = node.parentElement
-    }
-    if (!annotId) return
-
-    const ann = annotationen.find(a => a.id === annotId)
-    if (!ann || ann.werkzeug !== 'text') return
-
-    e.stopPropagation()
-    const containerRect = containerRef.current?.getBoundingClientRect()
-    if (!containerRect) return
-
-    const cssX = ann.position.x * seitenInfo.breite
-    const cssY = ann.position.y * seitenInfo.hoehe
-
-    setEditierendeAnnotation({
-      id: ann.id,
-      text: ann.text,
-      cssX,
-      cssY,
-      farbe: ann.farbe,
-      groesse: ann.groesse || 18,
-    })
-    setTimeout(() => textEditInputRef.current?.focus(), 30)
-  }, [readOnly, onAnnotationEditieren, seitenInfo, annotationen])
-
-  const handleTextEditSave = useCallback(() => {
-    if (!editierendeAnnotation || !onAnnotationEditieren) return
-    const text = editierendeAnnotation.text.trim()
-    if (text) {
-      onAnnotationEditieren(editierendeAnnotation.id, { text })
-    }
-    setEditierendeAnnotation(null)
-  }, [editierendeAnnotation, onAnnotationEditieren])
-
-  // --- Freehand drawing ---
-  const handleDrawStart = useCallback((e: React.PointerEvent) => {
-    // Drag: Selektierte Text-Annotation verschieben
-    if (!readOnly && aktivesWerkzeug === 'auswahl' && selectedAnnotation && seitenInfo) {
-      let node: Element | null = e.target as Element
-      let annotId: string | null = null
-      while (node && node !== e.currentTarget) {
-        annotId = node.getAttribute('data-annotation-id')
-        if (annotId) break
-        node = node.parentElement
-      }
-      if (annotId === selectedAnnotation) {
-        const ann = annotationen.find(a => a.id === selectedAnnotation)
-        if (ann?.werkzeug === 'text' || ann?.werkzeug === 'freihand') {
-          const containerRect = containerRef.current?.getBoundingClientRect()
-          if (containerRect) {
-            const startRelX = (e.clientX - containerRect.left) / seitenInfo.breite
-            const startRelY = (e.clientY - containerRect.top) / seitenInfo.hoehe
-            if (ann.werkzeug === 'text') {
-              dragRef.current = {
-                annotId: selectedAnnotation,
-                startRelX,
-                startRelY,
-                origX: (ann as PDFTextAnnotation).position.x,
-                origY: (ann as PDFTextAnnotation).position.y,
-              }
-            } else {
-              // Freihand: Startpunkt merken, Punkte werden beim Drop verschoben
-              dragRef.current = {
-                annotId: selectedAnnotation,
-                startRelX,
-                startRelY,
-                origX: 0,
-                origY: 0,
-              }
-            }
-            e.preventDefault()
-            return
-          }
-        }
-      }
-    }
-    if (readOnly || aktivesWerkzeug !== 'freihand' || !seitenInfo) return
-    istZeichnung.current = true
-    const rect = zeichenCanvasRef.current?.getBoundingClientRect()
-    if (!rect) return
-
-    const x = (e.clientX - rect.left) / seitenInfo.breite
-    const y = (e.clientY - rect.top) / seitenInfo.hoehe
-    zeichnungsPfad.current = [{ x, y }]
-
-    const ctx = zeichenCanvasRef.current?.getContext('2d')
-    if (!ctx) return
-    const dpr = window.devicePixelRatio
-    ctx.beginPath()
-    ctx.strokeStyle = aktiveFarbe
-    ctx.lineWidth = 2 * dpr
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
-    ctx.moveTo((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr)
-  }, [readOnly, aktivesWerkzeug, seitenInfo, aktiveFarbe, selectedAnnotation, annotationen])
-
-  const handleDrawMove = useCallback((e: React.PointerEvent) => {
-    // Drag: Annotation verschieben (Text oder Freihand)
-    if (dragRef.current && seitenInfo) {
-      const containerRect = containerRef.current?.getBoundingClientRect()
-      if (!containerRect) return
-      const relX = (e.clientX - containerRect.left) / seitenInfo.breite
-      const relY = (e.clientY - containerRect.top) / seitenInfo.hoehe
-      const dx = relX - dragRef.current.startRelX
-      const dy = relY - dragRef.current.startRelY
-      const ann = annotationen.find(a => a.id === dragRef.current!.annotId)
-      if (ann?.werkzeug === 'freihand') {
-        // Freihand: alle Punkte verschieben
-        try {
-          const punkte = JSON.parse((ann as PDFFreihandAnnotation).zeichnungsDaten) as { x: number; y: number }[]
-          // Beim ersten Move die Originalpunkte merken
-          if (dragRef.current.origX === 0 && dragRef.current.origY === 0) {
-            dragRef.current.origX = punkte[0]?.x ?? 0
-            dragRef.current.origY = punkte[0]?.y ?? 0
-            // Original-Punkte in einem data-Attribut zwischenspeichern
-            containerRef.current?.setAttribute('data-drag-orig-punkte', (ann as PDFFreihandAnnotation).zeichnungsDaten)
-          }
-          const origPunkteStr = containerRef.current?.getAttribute('data-drag-orig-punkte')
-          if (origPunkteStr) {
-            const origPunkte = JSON.parse(origPunkteStr) as { x: number; y: number }[]
-            const verschoben = origPunkte.map(p => ({ x: p.x + dx, y: p.y + dy }))
-            onAnnotationEditieren?.(dragRef.current.annotId, {
-              zeichnungsDaten: JSON.stringify(verschoben),
-            } as Partial<PDFAnnotation>)
-          }
-        } catch { /* JSON-Parse-Fehler ignorieren */ }
-      } else {
-        // Text: Position verschieben
-        onAnnotationEditieren?.(dragRef.current.annotId, {
-          position: { x: dragRef.current.origX + dx, y: dragRef.current.origY + dy },
-        } as Partial<PDFAnnotation>)
-      }
-      return
-    }
-    if (!istZeichnung.current || !seitenInfo) return
-    const rect = zeichenCanvasRef.current?.getBoundingClientRect()
-    if (!rect) return
-
-    const x = (e.clientX - rect.left) / seitenInfo.breite
-    const y = (e.clientY - rect.top) / seitenInfo.hoehe
-    zeichnungsPfad.current.push({ x, y })
-
-    const ctx = zeichenCanvasRef.current?.getContext('2d')
-    if (!ctx) return
-    const dpr = window.devicePixelRatio
-    ctx.lineTo((e.clientX - rect.left) * dpr, (e.clientY - rect.top) * dpr)
-    ctx.stroke()
-  }, [seitenInfo, onAnnotationEditieren])
-
-  const handleDrawEnd = useCallback(() => {
-    // Drag-Ende
-    if (dragRef.current) {
-      containerRef.current?.removeAttribute('data-drag-orig-punkte')
-      dragRef.current = null
-      return
-    }
-    if (!istZeichnung.current || zeichnungsPfad.current.length < 2) {
-      istZeichnung.current = false
-      return
-    }
-    istZeichnung.current = false
-
-    const annotation: PDFFreihandAnnotation = {
-      id: erzeugeId(), seite: seitenNr, zeitstempel: new Date().toISOString(),
-      werkzeug: 'freihand', zeichnungsDaten: JSON.stringify(zeichnungsPfad.current),
-      farbe: aktiveFarbe,
-    }
-    onAnnotationHinzufuegen(annotation)
-
-    // Clear temp drawing canvas
-    const ctx = zeichenCanvasRef.current?.getContext('2d')
-    if (ctx && zeichenCanvasRef.current) {
-      ctx.clearRect(0, 0, zeichenCanvasRef.current.width, zeichenCanvasRef.current.height)
-    }
-  }, [seitenNr, aktiveFarbe, onAnnotationHinzufuegen])
 
   // --- Render SVG overlay content ---
   const svgContent = seitenInfo ? renderSVGOverlay(
@@ -612,40 +369,7 @@ export function PDFSeite({
       )}
 
       {/* Text-Annotation bearbeiten (Doppelklick) */}
-      {editierendeAnnotation && (
-        <input
-          ref={textEditInputRef}
-          type="text"
-          inputMode="text"
-          autoComplete="off"
-          value={editierendeAnnotation.text}
-          onChange={(e) => setEditierendeAnnotation(prev => prev ? { ...prev, text: e.target.value } : null)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextEditSave() }
-            if (e.key === 'Escape') { e.preventDefault(); setEditierendeAnnotation(null) }
-            e.stopPropagation()
-          }}
-          onBlur={() => setTimeout(handleTextEditSave, 150)}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            position: 'absolute',
-            left: editierendeAnnotation.cssX,
-            top: editierendeAnnotation.cssY - editierendeAnnotation.groesse,
-            fontSize: `${editierendeAnnotation.groesse}px`,
-            fontFamily: 'sans-serif',
-            color: editierendeAnnotation.farbe,
-            background: 'rgba(255,255,255,0.9)',
-            border: '2px solid #f59e0b',
-            borderRadius: '4px',
-            padding: '2px 6px',
-            minWidth: '120px',
-            outline: 'none',
-            zIndex: 20,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}
-        />
-      )}
+      {editOverlay}
 
       {/* Löschen-Button für selektierte Text-Annotation */}
       {selectedAnnotation && (() => {
@@ -692,259 +416,4 @@ export function PDFSeite({
       )}
     </div>
   )
-}
-
-// --- SVG overlay rendering ---
-
-function renderSVGOverlay(
-  annotationen: PDFAnnotation[],
-  seitenInfo: PDFSeitenInfo,
-  textLayer: HTMLDivElement | null,
-  zoom: ZoomStufe,
-  selectedAnnotationId?: string | null,
-): React.ReactNode[] {
-  const elements: React.ReactNode[] = []
-
-  for (const ann of annotationen) {
-    switch (ann.werkzeug) {
-      case 'highlighter':
-        elements.push(...renderHighlight(ann, seitenInfo, textLayer, zoom))
-        break
-      case 'label':
-        elements.push(...renderLabel(ann, seitenInfo, textLayer, zoom))
-        break
-      case 'kommentar':
-        elements.push(renderKommentarMarker(ann, seitenInfo))
-        break
-      case 'freihand':
-        elements.push(renderFreihand(ann, seitenInfo, ann.id === selectedAnnotationId))
-        break
-      case 'text':
-        elements.push(renderTextAnnotation(ann, seitenInfo, ann.id === selectedAnnotationId))
-        break
-    }
-  }
-
-  return elements
-}
-
-function renderHighlight(
-  ann: PDFHighlightAnnotation,
-  seitenInfo: PDFSeitenInfo,
-  textLayer: HTMLDivElement | null,
-  _zoom: ZoomStufe,
-): React.ReactNode[] {
-  // Use text items to compute approximate rects if no DOM available
-  const rects = textLayer
-    ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset,
-        seitenInfo.breite, seitenInfo.hoehe)
-    : berechneFallbackRects(ann.textRange, seitenInfo)
-
-  return rects.map((r, i) => (
-    <rect
-      key={`hl-${ann.id}-${i}`}
-      data-annotation-id={ann.id}
-      x={r.x} y={r.y} width={r.w} height={r.h}
-      fill={ann.farbe} fillOpacity={0.35}
-      className="pointer-events-auto cursor-pointer"
-    />
-  ))
-}
-
-function renderLabel(
-  ann: PDFLabelAnnotation,
-  seitenInfo: PDFSeitenInfo,
-  textLayer: HTMLDivElement | null,
-  _zoom: ZoomStufe,
-): React.ReactNode[] {
-  const rects = textLayer
-    ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset,
-        seitenInfo.breite, seitenInfo.hoehe)
-    : berechneFallbackRects(ann.textRange, seitenInfo)
-
-  const nodes: React.ReactNode[] = rects.map((r, i) => (
-    <rect
-      key={`lbl-${ann.id}-${i}`}
-      data-annotation-id={ann.id}
-      x={r.x} y={r.y} width={r.w} height={r.h}
-      fill={ann.farbe} fillOpacity={0.25}
-      stroke={ann.farbe} strokeWidth={1}
-      className="pointer-events-auto cursor-pointer"
-    />
-  ))
-
-  // Add a small badge at the start of the first rect
-  if (rects.length > 0) {
-    const first = rects[0]
-    nodes.push(
-      <g key={`lbl-badge-${ann.id}`} data-annotation-id={ann.id}
-        className="pointer-events-auto cursor-pointer">
-        <rect x={first.x} y={first.y - 14} width={50} height={14}
-          rx={3} fill={ann.farbe} />
-        <text x={first.x + 4} y={first.y - 3}
-          fontSize={9} fill="white" fontWeight="bold">
-          {ann.kategorieId.slice(0, 8)}
-        </text>
-      </g>
-    )
-  }
-
-  return nodes
-}
-
-function renderKommentarMarker(
-  ann: PDFKommentarAnnotation,
-  seitenInfo: PDFSeitenInfo,
-): React.ReactNode {
-  const cx = ann.position.x * seitenInfo.breite
-  const cy = ann.position.y * seitenInfo.hoehe
-  return (
-    <g key={`kom-${ann.id}`} data-annotation-id={ann.id}
-      className="pointer-events-auto cursor-pointer">
-      <circle cx={cx} cy={cy} r={8} fill="#3b82f6" fillOpacity={0.8} />
-      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={10} fill="white">
-        💬
-      </text>
-    </g>
-  )
-}
-
-function renderFreihand(
-  ann: PDFFreihandAnnotation,
-  seitenInfo: PDFSeitenInfo,
-  selected = false,
-): React.ReactNode {
-  let punkte: { x: number; y: number }[]
-  try {
-    punkte = JSON.parse(ann.zeichnungsDaten)
-  } catch {
-    return null
-  }
-  if (punkte.length < 2) return null
-
-  const d = punkte
-    .map((p, i) => {
-      const px = p.x * seitenInfo.breite
-      const py = p.y * seitenInfo.hoehe
-      return i === 0 ? `M${px},${py}` : `L${px},${py}`
-    })
-    .join(' ')
-
-  // Bounding Box für Selection-Rahmen
-  const nodes: React.ReactNode[] = []
-
-  if (selected) {
-    const xs = punkte.map(p => p.x * seitenInfo.breite)
-    const ys = punkte.map(p => p.y * seitenInfo.hoehe)
-    const minX = Math.min(...xs) - 4
-    const minY = Math.min(...ys) - 4
-    const maxX = Math.max(...xs) + 4
-    const maxY = Math.max(...ys) + 4
-    nodes.push(
-      <rect
-        key={`fh-sel-${ann.id}`}
-        x={minX} y={minY} width={maxX - minX} height={maxY - minY}
-        fill="none" stroke="#3b82f6" strokeWidth={2} strokeDasharray="4,2" rx={3}
-        className="pointer-events-none"
-      />
-    )
-  }
-
-  nodes.push(
-    <path
-      key={`fh-${ann.id}`}
-      data-annotation-id={ann.id}
-      d={d}
-      fill="none"
-      stroke={ann.farbe}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="pointer-events-auto cursor-pointer"
-    />
-  )
-
-  return <g key={`fh-g-${ann.id}`}>{nodes}</g>
-}
-
-function renderTextAnnotation(
-  ann: PDFTextAnnotation,
-  seitenInfo: PDFSeitenInfo,
-  selected = false,
-): React.ReactNode {
-  const px = ann.position.x * seitenInfo.breite
-  const py = ann.position.y * seitenInfo.hoehe
-  const fontSize = ann.groesse || 18
-
-  return (
-    <g key={`txt-${ann.id}`} data-annotation-id={ann.id}>
-      {/* Selektions-Rahmen */}
-      {selected && (
-        <rect
-          x={px - 4}
-          y={py - fontSize - 2}
-          width={fontSize * 0.6 * ann.text.length + 8}
-          height={fontSize + 6}
-          fill="none"
-          stroke="#3b82f6"
-          strokeWidth={2}
-          strokeDasharray="4,2"
-          rx={3}
-          transform={ann.rotation ? `rotate(${ann.rotation}, ${px}, ${py})` : undefined}
-        />
-      )}
-      <text
-        data-annotation-id={ann.id}
-        x={px}
-        y={py}
-        fill={ann.farbe}
-        fontSize={fontSize}
-        fontFamily="sans-serif"
-        fontWeight={ann.fett ? 'bold' : 'normal'}
-        className="pointer-events-auto cursor-pointer"
-        style={{ userSelect: 'none' }}
-        transform={ann.rotation ? `rotate(${ann.rotation}, ${px}, ${py})` : undefined}
-      >
-        {ann.text}
-      </text>
-    </g>
-  )
-}
-
-// --- Rect helpers ---
-
-interface SimpleRect { x: number; y: number; w: number; h: number }
-
-/** Get span rects relative to container, using DOM measurements */
-function findeSpanRectsRelativ(
-  container: HTMLDivElement,
-  startOffset: number,
-  endOffset: number,
-  _containerBreite: number,
-  _containerHoehe: number,
-): SimpleRect[] {
-  const containerRect = container.getBoundingClientRect()
-  const domRects = findeSpanRects(container, startOffset, endOffset)
-  return domRects.map(r => ({
-    x: r.left - containerRect.left,
-    y: r.top - containerRect.top,
-    w: r.width,
-    h: r.height,
-  }))
-}
-
-/** Fallback: approximate rects from text item transforms when DOM not available */
-function berechneFallbackRects(
-  textRange: PDFTextRange,
-  seitenInfo: PDFSeitenInfo,
-): SimpleRect[] {
-  const rects: SimpleRect[] = []
-  for (const item of seitenInfo.textItems) {
-    if (item.endOffset <= textRange.startOffset || item.startOffset >= textRange.endOffset) continue
-    const fontSize = Math.abs(item.transform[3])
-    const x = item.transform[4]
-    const y = seitenInfo.hoehe - item.transform[5]
-    rects.push({ x, y: y - fontSize, w: item.str.length * fontSize * 0.6, h: fontSize })
-  }
-  return rects
 }

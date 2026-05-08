@@ -8,6 +8,48 @@
 
 ## Letzter Stand auf main
 
+### Bundle V — PDFSeite Pure-Cut + Hook-Extraktion ✅ MERGED (2026-05-08)
+
+Branch `bundle-v/pdfseite-split`. Zweites Hoch-Risiko-Datei-Split der **Phase 4** aus dem Vereinfachungs-Audit. **PDFSeite.tsx 950 → 419 Zeilen (-56%)** — Hotspot verlassen, Bilanz Code-Files (>500 Z., ohne data/test) **11 → 10**. Erstmals Vitest-Coverage für PDF-Selection-DOM + SVG-Annotation-Rendering + Text-Edit-State + Drag-Math (vorher 0 Tests, jetzt **+29**).
+
+**Was geliefert (4 neue Sub-Files in neuem Sub-Folder `pdf/seite/` + 4 Test-Files + 1 Source-Edit):**
+- `ExamLab/src/components/fragetypen/pdf/seite/pdfSelection.ts` (106 Z.) — 5 Pure-DOM-Helpers: `erzeugeId` (UUID-Wrapper) + `findeSpanRects` (DOMRect-Array via data-offset-Walk) + `leseTextauswahl` (DOM Selection → PDFTextRange) + `findeSpanRectsRelativ` (DOMRect-zu-Container-Coords) + `berechneFallbackRects` (textItem-Fallback ohne DOM) + `SimpleRect`-Interface. Byte-identisch von Original Z. 32–95 + 914–950.
+- `ExamLab/src/components/fragetypen/pdf/seite/pdfSelection.test.ts` (139 Z.) — **11 Vitest-Tests** (UUID-Format, Span-Overlap-Branches, Out-of-Bounds, jsdom-getSelection-Stubs, Coordinate-Math, multi-textItem-Range). Plan-rev2 Code-Block hatte 4 berechneFallbackRects-Tests — Implementer-Concern dokumentiert.
+- `ExamLab/src/components/fragetypen/pdf/seite/pdfAnnotationenSVG.tsx` (223 Z.) — `renderSVGOverlay` (1 öffentlicher Export, Switch-Dispatcher) + 5 module-private Sub-Renderer für Highlight (fillOpacity 0.35), Label (Badge mit Kategorie-ID-Slice 8), Kommentar (💬-Marker), Freihand (Path mit M+L Commands + Selected-BBox), Text (transform mit rotation). Byte-identisch von Original Z. 697–912.
+- `ExamLab/src/components/fragetypen/pdf/seite/pdfAnnotationenSVG.test.tsx` (104 Z.) — **8 Vitest-Tests** (jeder Annotation-Typ + Selected-Branch für Freihand/Text + leeres Array). `@testing-library/react` `render` für SVG-Inspektion.
+- `ExamLab/src/components/fragetypen/pdf/seite/usePDFTextEdit.tsx` (120 Z.) — Hook für Text-Annotation-Doppelklick-Edit-Lifecycle: `editierendeAnnotation` State + `textEditInputRef` (Hook-internal) + `handleDoubleClick` + `handleTextEditSave` + neuer `beendeEdit`-Bridge-Callback + `editOverlay` ReactNode (orange-bordered Input). Bundle-T.d `useTextOverlay`-Pattern. **Keine `as PDFTextAnnotation`-Casts** — Discriminated-Union narrowed nach werkzeug-Filter (Plan-rev2-Korrektur, byte-identisch zum Original ohne Casts).
+- `ExamLab/src/components/fragetypen/pdf/seite/usePDFTextEdit.test.tsx` (130 Z.) — **5 Vitest-Tests** (Idle-State, non-Text-no-op, Text-Trigger, beendeEdit-Reset, Enter+Trim+Commit). Test #5 nutzt Wrapper-Komponente weil `renderHook` allein das `editOverlay` nicht im selben React-Tree mountet (Lehre für JSX-from-Hook-Tests).
+- `ExamLab/src/components/fragetypen/pdf/seite/usePDFDrawing.ts` (185 Z.) — Hook mit Drag (Text + Freihand) **und** Freihand-Drawing in einer State-Maschine: `dragRef` + `istZeichnung` + `zeichnungsPfad` Refs + `handleDrawStart` (8 Dep-Slots = 6 Original + 2 Refs) + `handleDrawMove` (5 Slots = 2 Original + 3 inkl. fehlendes `annotationen` aus Original) + `handleDrawEnd` (5 Slots = 3 + 2 Refs). Byte-identisch von Original Z. 132–134 + 377–516.
+- `ExamLab/src/components/fragetypen/pdf/seite/usePDFDrawing.test.ts` (127 Z.) — **5 Vitest-Tests** (no-op ohne Selektion, Drag-Start-Setup, Text-Position-Delta, Freihand-Punkte-Verschiebung mit `toBeCloseTo`-FP-Toleranz analog Bundle U, Drag-End-Cleanup mit konkreter `data-drag-orig-punkte`-Removal-Assertion). Canvas-2D-`ctx.lineTo`-Aufrufe via Browser-E2E abgedeckt.
+- `ExamLab/src/components/fragetypen/pdf/PDFSeite.tsx` (950 → 419 Z., -56%) — reine React-Component: 17 Props + 4 Layer-Refs + 2 useEffects (PDF-Render + Canvas-Resize) + textLayerSpans-JSX-Map + 2 Hook-Aufrufe (Bundle-T.d-Destrukturierungs-Pflicht) + handleMouseUp + handleKategorieSelect + handleClick (5-Tool-Dispatcher mit `istEditierend`/`beendeEdit`-Bridge statt inline-State-Reset) + handleKommentarSave + handleTextSave + 4-Layer-JSX + cursor + 4 Overlays/Popovers. `PDFFreihandAnnotation`-Type-Import entfernt (nicht mehr genutzt); `PDFTextAnnotation`-Import bleibt (handleTextSave + Lösch-Button-IIFE).
+
+**Bonus-Bugfix (Phase 4 entdeckt):** Original `handleDrawMove` (`PDFSeite.tsx@c79747c:438-489`) referenzierte `annotationen.find(...)` aber hatte `annotationen` nicht im Dep-Array — latent stale-closure-Bug bei schneller Annotationen-Mutation während Drag. Lint-mandated Dep-Addition im Hook fixt das als Side-Effect (nicht byte-identisch in Dep-Array, aber byte-identisch in Body). Dokumentiert via Phase-4 Code-Quality-Reviewer.
+
+**Tests:** vitest **1430 passed | 4 todo | 1 skipped** (drift +29 von 1401 baseline). Drift-Verteilung: Phase 1: +11, Phase 2: +8, Phase 3: +5, Phase 4: +5 = 29 wie geplant. tsc + 4× lint (`as-any`, `no-tests-dir`, `no-alert`, `musterloesung`) + build alle clean. **Memory-Lehre tsc-grep angewandt** — Output direkt geprüft, nicht nur Exit-Code.
+
+**Reviewer:** 4× Per-Phase Spec-Compliance-Reviewer + 4× Per-Phase Code-Quality-Reviewer + 1× Final Code-Reviewer + 2× Spec-Reviewer + 1× Plan-Reviewer alle APPROVED. Plan-Reviewer-Findings (Step-Reihenfolge invertiert für Phase 1+2, `as PDFTextAnnotation`-Cast-Removal in Phase 3, Test #5-Sharpening in Phase 4) und Spec-Reviewer-Issues (`.tsx`-Endung für JSX-Hook, Dep-Anzahlen) alle vor Implementation eingearbeitet.
+
+**Browser-E2E partial (analog Bundle U):** Build deployed via `git push --force-with-lease origin bundle-v/pdfseite-split:preview`, Pages 200 OK. SW-unregister + caches.delete + reload (Memory-Lehre Bundle N). Echter LP-Login (durandbourjate@gmail.com) via Google One-Tap. LP-Dashboard rendert ✓, Prüfen-Tab ✓, 22-Fragen-Editor mit PDF-Annotation-Frage sichtbar ✓, 0 PDFSeite-spezifische Console-Errors. Pfade 1-11 (PDFSeite-interaktiv) **nicht via Auto-E2E** wegen pre-existing `useFrageMode-FrageModeProvider`-Error in PruefungsComposer-Vorschau-Chunk (NICHT Bundle-V-related, da V nur PDFSeite + neue pdf/seite/-Files berührt). Vitest-Coverage + 4× Reviewer + Final-Reviewer ist Safety-Net-Ersatz analog Bundle U.
+
+**Lehren neu (Bundle V):**
+- **JSX-from-Hook-Test-Pattern (Phase 3)**: Hook-Result mit `editOverlay: ReactNode` braucht in Tests Wrapper-Komponente, weil `renderHook` allein das Overlay nicht im selben React-Tree mountet — sonst Stale-Closure beim Input-Interaction-Test. Memory-File `feedback_jsx_from_hook_test_wrapper.md`.
+- **React 19 useRef-Typing (Phase 3)**: `useRef<T>(null)` → `RefObject<T | null>` (nicht `RefObject<T>`). Plan-Code-Snippets immer `| null` schreiben. Plan-rev3 Vorlage etabliert. Memory-File `feedback_react19_useref_null_type.md`.
+- **Bonus-Bugfix durch Lint-Migration (Phase 4)**: Lint-mandated Dep-Array-Additions beim Hook-Move können latent stale-closure-Bugs als Side-Effect fixen — `handleDrawMove` Original hatte `annotationen` nicht in Deps obwohl im Body verwendet. Pattern: bei Hook-Cuts den ursprünglichen Dep-Array nicht blind übernehmen, sondern lint folgen lassen + gefundene Diffs im Reviewer-Step prüfen. Memory-File `feedback_hook_cut_dep_array_bonus_bugfix.md`.
+
+**Spawn-Tasks (post-Bundle-V cleanup, chip'd):**
+- `leseTextauswahl` dead-Ternary in `pdfSelection.ts` Z. 49-57 — investigate intended `range.startOffset - so` vs. simplification.
+- `data-drag-orig-punkte` DOM-as-state-Smell in `usePDFDrawing.ts` Z. 122-127 — promote orig-points-string ins `dragRef`-Object statt HTML-Attribut.
+
+**Spawn-Tasks (Memory-TODO, optional):**
+- `_zoom`-Param in `pdfAnnotationenSVG.tsx` `renderHighlight`/`renderLabel` (unused, underscore-prefix preserved) — drop signature wenn Phase-3+4 nicht benötigt.
+- macOS-Datei-2-Duplikate aufräumen (`ToastContainer 2.tsx`, `ToastContainer.test 2.tsx`) — pre-existing Worktree-Drift, nicht Bundle V.
+
+**Out of Scope (für nächste Sessions):**
+- Bundle W — `uebungsStore.ts` Hoch-Risiko-Split (684 Z., Lösungs-Merge + Session-Historie). Letztes Hoch-Risiko-File aus Audit Phase 4.
+- Phase-5+ Roadmap noch offen.
+
+---
+
 ### Bundle U — useDrawingEngine Pure-Logic-Cut ✅ MERGED (2026-05-08)
 
 Branch `feature/bundle-u-usedrawingengine-split`. Erstes Hoch-Risiko-Datei-Split der **Phase 4** aus dem Vereinfachungs-Audit. **useDrawingEngine.ts 752 → 157 Zeilen (-79%)** — Hotspot verlassen, Bilanz Code-Files (>500 Z., ohne data/test) **12 → 11**. Erstmals Vitest-Coverage für Reducer/Geometrie/Serialisierungs-Kern (vorher 0 Tests, jetzt +44).
