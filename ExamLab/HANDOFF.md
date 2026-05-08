@@ -76,7 +76,7 @@ Branch `bundle-y/layout-recovery-cut`. **Zweites Sub-Bundle der Phase-5+ Hotspot
 - Header-JSX-Cut (~80 Z.) / Banner-JSX-Cut (~50 Z.) / Material-Modus-Hook (~15 Z.) / Verstoss-Overlay-Hook (~13 Z.) — alle bewusst nicht in Bundle Y enthalten.
 - Phase 5+ Roadmap bleibt offen, Reihenfolge nach Risiko-Profil + User-Priorität.
 
-**Merge:** `<MERGE_HASH>`.
+**Merge:** `6479448`.
 
 ---
 
