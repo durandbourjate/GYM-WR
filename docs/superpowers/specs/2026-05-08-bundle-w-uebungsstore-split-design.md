@@ -88,9 +88,9 @@ Begründung: Der Type wandert mit dem Owner (`historie.ts`). Konsument importier
 
 **Aus uebungsStore.ts ENTFERNT (Imports oben):**
 ```ts
-import { getFragetext } from '../../utils/ueben/fragetext'    // wandert nach ergebnisBerechnung.ts
+import { getFragetext } from '../../utils/ueben/fragetext'    // wandert nach ergebnisBerechnung.ts (entfernt in Phase 3 nach grep-Verifikation)
 ```
-(Andere oben aufgeführten Imports bleiben, da der Store-Body weiter z.B. `Frage`, `Antwort`, `LoesungsMap`, `UebungsSession` braucht.)
+(Andere oben aufgeführten Imports bleiben, da der Store-Body weiter z.B. `Frage`, `Antwort`, `LoesungsMap`, `UebungsSession` braucht. `getFragetext`-Removal erfolgt in Phase 3 Step 3 nach `grep getFragetext uebungsStore.ts` post-edit-Check, um sicherzugehen dass kein anderer Konsument im Store-Body übrig ist.)
 
 **Aus uebungsStore.ts NEU IMPORTIERT (oben):**
 ```ts
@@ -201,7 +201,7 @@ Aktueller Store-Body Z. 184 (`historie: ladeHistorie()`) und Z. 673–675 (`spei
 | 4 | `speichereHistorie([…51 items])` → trimt auf 50 (`MAX_HISTORIE`) | Z. 133 + MAX_HISTORIE |
 | 5 | `speichereHistorie` mit localStorage-Quota-Error → silent (catch) | Z. 133 catch |
 
-**Setup:** jsdom liefert `localStorage`. Test #5 nutzt `vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('QuotaExceededError') })`. `beforeEach`: `localStorage.clear()`.
+**Setup:** jsdom liefert `localStorage`. Test #5 nutzt `vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('QuotaExceededError') })`. `beforeEach`: `localStorage.clear()`. **`afterEach`: `vi.restoreAllMocks()`** — verhindert Mock-Leakage zwischen Tests (Pattern aus Bundle T-Tests, Spec-Reviewer-Recommendation).
 
 ### `ergebnisBerechnung.test.ts` — 7 Vitest-Cases
 
@@ -291,7 +291,7 @@ Pro Phase grün: tsc -b, vite build, 4 Lint-Gates (`lint:as-any`, `lint:no-alert
 | 3 | MC-Frage instant-beantworten (preload-Pfad) | `mergeLoesungInFrage` Top-Level + `optionen`-Listen-Merge (P1) |
 | 4 | DragDrop-Bild-Frage beantworten | `mergeLoesungInFrage` `zielzonen` + Normalisierung (P1) |
 | 5 | Lückentext-Frage beantworten | `mergeLoesungInFrage` `luecken` + `ergebnisse` (P1) |
-| 6 | Selbstbewertung Freitext (server-Pfad ohne preload) | `pruefeAntwortJetzt` Server-Branch — kein direkter Cut, Smoke gegen Naming-Konflikt |
+| 6 | Selbstbewertung Freitext (server-Pfad ohne preload) | `pruefeAntwortJetzt` Server-Branch — **Smoke-Test gegen den Naming-Konflikt (`ladeHistorie`-Scope) und gegen Cross-Effekt zwischen `mergeLoesungInFrage`-Aufruf und Server-Branch-Wechsel.** Kein direkter Cut, aber kritischer Integrations-Pfad. |
 | 7 | Übung beenden + Zusammenfassung sichtbar | `berechneErgebnis` Delegator (P3) |
 | 8 | Übungs-Einsicht-Tab → letzte Session sichtbar | `GespeichertesErgebnis`-Type-Import + `ladeHistorie` (P2) |
 | 9 | Mehrere Sessions abschliessen → DevTools `localStorage.getItem('ueben-session-historie')` zeigt korrekten Trim auf 50 | `speichereHistorie` (P2) |
