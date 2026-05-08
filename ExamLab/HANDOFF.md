@@ -8,6 +8,65 @@
 
 ## Letzter Stand auf main
 
+### Bundle W.b — uebungsStore State-Refactor ✅ MERGED (2026-05-08)
+
+Branch `bundle-w-b/uebungsstore-state-refactor`. Folge-Cut nach Bundle W (uebungsStore.ts endete dort bei 540 Z. — knapp über <500-Schwelle Master-Spec). **uebungsStore.ts 540 → 498 Zeilen (-7.8%)** via 4 Pure-Logic-Cuts in `utils/ueben/`. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 10 → 9** — uebungsStore endlich aus dem Set raus, Phase-4-Audit-Hotspot-Cut realisiert. +18 neue Vitest-Tests.
+
+**Was geliefert (4 neue Pure-Helper-Files + 4 Test-Files + 1 Bonus-Twin-Cleanup):**
+- `ExamLab/src/utils/ueben/fragetypGruppen.ts` (~18 Z.) — `SELBSTBEWERTBARE_TYPEN: readonly Frage['typ'][]` + `istSelbstbewertbar(typ): boolean`. Single-Source-of-Truth für die 5 selbstbewertbaren Typen (`freitext`/`visualisierung`/`pdf`/`audio`/`code`).
+- `ExamLab/src/utils/ueben/fragetypGruppen.test.ts` (~30 Z.) — **3 Vitest-Tests** (Array-Content-Equality, alle 5 selbst-Typen → true, alle 15 nicht-selbst-Typen → false: vollständige Discriminated-Union-Coverage 5+15=20).
+- `ExamLab/src/utils/ueben/sessionBlockBau.ts` (~45 Z.) — `erstelleSessionBlock({alleFragen, fach, thema, modus, quellen, fortschritte}) → { block, mastery }`. Mastery-Loop + 3-modus-Switch (standard/mix/repetition) byte-identisch von uebungsStore.ts Z. 90–109.
+- `ExamLab/src/utils/ueben/sessionBlockBau.test.ts` (~140 Z.) — **6 Vitest-Tests** (modus=standard / mix mit quellen / repetition mit Dauerbaustelle / repetition leer / mastery-Default `'neu'` / leere Fragen). Mocks `./blockBuilder` + `./mastery` für Isolation.
+- `ExamLab/src/utils/ueben/pruefeClientseitig.ts` (~35 Z.) — pure `pruefeClientseitig({session, frage, normalized}) → { korrekt, sessionUpdates: Pick<UebungsSession, 'antworten' \| 'ergebnisse' \| 'score'>, letzteMusterloesung: string \| null }`. **Side-Effect-Aufteilung explizit:** `useUebenFortschrittStore.getState().antwortVerarbeiten` bleibt im Store-Action (NICHT im Helper).
+- `ExamLab/src/utils/ueben/pruefeClientseitig.test.ts` (~100 Z.) — **5 Vitest-Tests** (korrekt-true → score+1, korrekt-false → score unverändert, musterloesung-pass-through, undefined-musterloesung → `null`-Fallback, immutable-spread Original-`session.antworten` unverändert).
+- `ExamLab/src/utils/ueben/loesungsPreloadFetch.ts` (~49 Z.) — `async ladeLoesungenViaPreload({block, gruppeId, fachbereich, user}) → Promise<LoesungsMap>`. Helper-Type widened auf `PreloadUser` (akzeptiert `UebenAuthUser | null | undefined` direkt, eliminiert 4 Type-Narrowing-Zeilen am Call-Site). **Side-Effect-Aufteilung explizit:** `await import('./authStore')` bleibt im Store-Action (NICHT im Helper).
+- `ExamLab/src/utils/ueben/loesungsPreloadFetch.test.ts` (~87 Z.) — **4 Vitest-Tests** (user=null → leere Map ohne API-Call, success-Pfad mit `fragenIds.map(f.id)`, teilaufgaben-IDs propagiert in fragenIds, API-Error → leere Map + `console.warn`).
+- `ExamLab/src/utils/ueben/korrektur.ts` Z. 11–25 — **Bonus-Twin-Cleanup** durch Code-Reviewer-Finding: pre-existing `SELBSTBEWERTUNGS_TYPEN` + `istSelbstbewertungstyp(typ)` Twin-Modul (anderer Naming als geplante Cut 1) entfernt. Memory-Lehre `feedback_audit_lager_disambiguierung`: Token-Audits sind syntaktisch, nicht semantisch — Twin mit anderem Naming wurde durch initiales `grep` nicht erfasst. Caller `UebungsScreen.tsx:9, 75` umgeleitet auf `istSelbstbewertbar` aus `fragetypGruppen.ts`. Single-Source-of-Truth wirklich erreicht.
+- `ExamLab/src/components/ueben/UebungsScreen.tsx` Z. 9-10 + Z. 75 — Caller-Edit für Twin-Cleanup: Split-Import (`bewerteAntwortDetails` aus `korrektur` + `istSelbstbewertbar` aus `fragetypGruppen`). Use-Site auf neuen Helper-Namen.
+- `ExamLab/src/store/ueben/uebungsStore.ts` (540 → 498 Z., -7.8%) — Imports oben: 4 neue (`istSelbstbewertbar`, `erstelleSessionBlock`, `pruefeClientseitig`, `ladeLoesungenViaPreload`), 4 entfernt (`erstelleBlock`/`erstelleMixBlock`/`erstelleRepetitionsBlock`/`istDauerbaustelle`/`MasteryStufe`/`ladeLoesungenApi`/`LoesungsMap`). Body: 4 Cut-Bereiche raus (Z. 90–109 mastery+block-switch, Z. 116–139 lösungs-preload, Z. 264–284 fast-path-body, Z. 263+382 inline-konstanten). Public-Surface unverändert.
+- `scripts/audit-musterloesung.sh` Baseline `musterlosung` 307 → 310 — Backend-Vertrag-Identifier in Cut 3 Helper + Test (alles Lager-1 lowercase, kein Lager-Mixing).
+
+**Verifikation:**
+- vitest **1472 passed | 4 todo | 1 skipped** (drift +18 vs Bundle W Baseline 1454). Drift-Verteilung exakt: P1+3, P2+6, P3+5, P4+4.
+- tsc -b clean (Output direkt geprüft, Memory `feedback_tsc_b_exit_misleading`).
+- 4 Lint-Gates clean: `lint:as-any` (Total 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir`, `lint:musterloesung` (Baseline-Update +3 dokumentiert).
+- vite build erfolgreich (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Existierende Store-Tests `uebungsStoreLoesungsPreload.test.ts` + `uebungsStorePruefen.test.ts` (11 Tests) **unverändert grün** — Korrektheits-Backup für Side-Effect-Aufteilung intakt.
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 10 → 9** ✅ — `uebungsStore.ts` aus dem Set raus mit 498 Z. Verbleibende: HilfeSeite (906), ConfigTab (747), EinstellungenPanel (607), BilanzERFrage (589), AktivPhase (573), Layout (570), BatchExportDialog (535), PruefungsComposer (526), ZeichnenCanvas (518).
+
+**Browser-E2E auf staging mit echtem SuS-Login (Account `wr.test@stud.gymhofwil.ch`):** SW-Cache vor E2E zurückgesetzt (2 SW unregistered + 2 caches deleted). Alle 5 Pflicht-Pfade ✅:
+- Pfad 1 ✅: SuS-Login + Üben-Dashboard rendert mit 6-Tab-Header (Prüfen/Üben/Themen/Kurs/Fortschritt/Ergebnisse) + Empfehlung VWL + 3 Aktuelle Themen + BWL/Recht/VWL-Sektionen.
+- Pfad 2 ✅: Sachenrecht-Thema-Detail öffnet → Filter MC (48 Fragen) → Übung starten → MC-Frage 1/10 rendert mit 4 Optionen ABCD (= `erstelleSessionBlock` Cut 2 + `ladeLoesungenViaPreload` Cut 4 funktionieren; sonst kein options-Layout möglich).
+- Pfad 5 ✅: Antwort C gewählt → Antwort prüfen → Score springt 0/10 → 1/10, Option C grün ✓-markiert, 4 Hint-Texte, MUSTERLÖSUNG-Banner mit Art. 647d ZGB-Erklärung (= `pruefeClientseitig` Cut 3 funktioniert: `sessionUpdates.score+1`, `ergebnisse[id]=true`, `letzteMusterloesung` propagiert; `istSelbstbewertbar(MC)=false` Cut 1 branch-decision korrekt → fast-path betreten).
+- Pfad 7 ✅: Übung beenden → "1 von 10 richtig" + Stars + 1-richtig/9-falsch + Sachenrecht-Label (= `berechneErgebnis` Bundle W weiter funktioniert; übersprungen-zählt-falsch-Logik bei früher Abgabe preserved).
+- Pfad 10 ✅: Console 10 Messages, **0 Errors / 0 Warnings**. Highlight: `[Fortschritt] 1 Antworten zum Backend gesynced` bestätigt explizit dass Cut 3's Side-Effect-Aufteilung (fortschritt-store-Call bleibt im Store-Action) tatsächlich fired. Build-Timestamp `2026-05-08T09:58:23.508Z` bestätigt staging serviert Bundle-W.b-Build.
+
+Pfad 6 (Selbstbewertung Freitext server-Pfad) skipped weil Sachenrecht-Set keinen Freitext-Typ enthielt; Cut 1 branch-decision implizit durch Pfad 5 validated.
+
+**Reviewer:** Pro Cut Spec-Compliance + Code-Quality-Reviewer ✅. Cut 1 hatte Code-Reviewer-iteration mit Twin-Finding (siehe Bonus-Twin-Cleanup). Cut 4 + Final-Bundle-Reviewer **APPROVED FOR MERGE**.
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **Side-Effect-Aufteilung als Pattern für State-Refactor-Cuts** — bei Pure-Logic-Cut von async-stateful Methoden bleiben `set()`-Calls + Store-Cross-Calls (`useUebenFortschrittStore.getState().*`) + Dynamic-Imports (`await import('./authStore')`) **explizit im Store-Action**. Helper sind 100% pure compute, liefern `{ result, sessionUpdates, ... }` als plain Result-Object. Store-Action wendet via `set({ session: { ...session, ...result.sessionUpdates } })` an. Pattern macht Helper isoliert vitest-tetbar ohne Store-Mock-Setup, hält Side-Effect-Topologie sichtbar. Memory: `feedback_side_effect_aufteilung_pattern.md` (zu schreiben).
+- **Type-Widening am Helper-Boundary statt Type-Narrowing am Call-Site** — Cut 4 widened `user`-Param-Type auf `PreloadUser` (mit optional `sessionToken?`) statt strict `{ email; sessionToken } | null`. Akzeptiert die echte `UebenAuthUser`-Source-Type-Shape, eliminiert 4 Narrowing-Zeilen am Call-Site, Early-Return-Guard `if (!user?.sessionToken)` deckt alle 4 Cases (null/undefined/empty-token/valid). Idiomatisch über Spec-Strict-Vorgabe.
+- **Audit-Empfehlungen kritisch hinterfragen — Token-Audits finden NICHT semantische Twins mit anderem Naming** — Cut 1 plante `istSelbstbewertbar` als "Single-Source-of-Truth" — Code-Reviewer fand pre-existing `istSelbstbewertungstyp` (gleiche 5-Element-Array, anderer Naming) in `korrektur.ts`. Initial `grep istSelbstbewertbar` matchte den Twin nicht. **Pre-Cut-Audit-Schritt:** Wenn neuer Helper extrahiert wird, mit semantischen Begriffen suchen (`grep -rn 'freitext.*visualisierung.*pdf'`-Style) statt nur mit dem geplanten Identifier-Namen.
+- **Bestehende Tests als Sicherungsnetz für Side-Effect-Aufteilung** — `uebungsStorePruefen.test.ts` (Real-Store-Integration mit echtem `pruefeAntwort` + echtem fortschritt-Store) blieb durch alle 4 Cuts grün. Stärkstes Behavioral-Parity-Signal beim State-Refactor — wichtiger als isolierte Helper-Tests.
+
+**Lehren neu (Bundle W.b):**
+- **Pure-Logic-Cut Saving-Forecast bei async-stateful Methoden ist konservativ schätzen** — Cut 3 Plan -8 Z., tatsächlich -5 Z. (4-Zeiler-Domain-Comment behalten als load-bearing). Cut 1 Plan -2 Z., tatsächlich -1 Z. (Import-Add offset). Cumulativ stimmte trotzdem (Cut 2 + Cut 4 unterboten Forecast). **Lesson:** Bundle-W.b-Forecast-Methodik mit Inline-Variable-Removal-Math (Subtract-Add-Net) statt Black-Box-Schätzung.
+- **Twin-Modul-Discovery vor Cut planen** — Pre-Cut-Audit-Schritt etabliert: bei jedem neuen Pure-Helper, semantischen `grep` ausführen mit fragment der Konstante (z.B. `'freitext'.*'visualisierung'.*'pdf'`) statt nur Identifier-Name. Findet Twins mit Naming-Drift wie `SELBSTBEWERTUNGS_TYPEN` vs. `SELBSTBEWERTBARE_TYPEN`. Im Plan als Discovery-Phase einbauen.
+
+**Spawn-Tasks (post-Bundle-W.b):**
+- **Test-Migration:** `src/tests/uebungsStorePruefen.test.ts` + `uebungsStoreLoesungsPreload.test.ts` zu co-located (`store/ueben/uebungsStore*.test.ts`) verschieben — analog Bundle Q-Heuristik B. Bundle W + Bundle W.b haben beide notiert; bleibt offen.
+- **Final-Code-Reviewer-Pass für Bundle W:** Wenn Org-Usage-Limit zurückgesetzt ist. Bundle W endete im Self-Review-Modus, Bundle W.b hat alle Per-Cut-Reviewer durchgelaufen ✅.
+- **Cut 5 Server-Response-Verarbeitung** (optional, ~10 Z. Saving) — `pruefeAntwortJetzt` Z. 326–363. Reserve-Spawn-Task aus Bundle-W.b-Spec § 9, **nicht aktiviert** weil Cut 4 alleine -18 Z. spart und Final-wc-l 498 unter Schwelle landet.
+- **Future-Hotspot-Roadmap:** Phase 4 Audit komplett abgeschlossen. Hotspot-Bilanz von ursprünglich 17 (vor Bundle S) auf 9 reduziert. Phase 5+ Scoping (z.B. weitere Komponenten-Cuts oder andere Dimensionen aus Vereinfachungs-Audit) offen.
+
+**Out of Scope (Phase 5+ Roadmap):**
+- Phase 4 Audit komplett abgeschlossen mit Bundle W.b. Phase 5+ Scoping offen.
+
+---
+
 ### Bundle W — uebungsStore Pure-Logic-Cut ✅ MERGED (2026-05-08)
 
 Branch `bundle-w/uebungsstore-cuts`. **Drittes** Hoch-Risiko-Datei-Split der **Phase 4** aus dem Vereinfachungs-Audit (nach Bundle U useDrawingEngine, Bundle V PDFSeite). **uebungsStore.ts 684 → 540 Zeilen (-22%)** via 3 Pure-Logic-Cuts in `utils/ueben/`. **Phase-4-Audit komplett — letztes Hoch-Risiko-File abgearbeitet.** Erstmals Vitest-Coverage für Lösungs-Merge / Historien-Persistenz / Ergebnis-Berechnung (vorher 0 Tests, jetzt **+24**).
