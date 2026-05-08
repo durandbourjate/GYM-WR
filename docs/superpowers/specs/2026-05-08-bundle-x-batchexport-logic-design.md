@@ -29,7 +29,7 @@ Aktuell 9 Files >500 Z. nach Bundle W.b (HilfeSeite 906, ConfigTab 747, Einstell
 | 258-534 | JSX-Render (5 Phasen + Footer) | UI (bleibt) |
 
 ### Konsumenten-Surface
-1 React-Konsument: `LPKorrekturView.tsx` (oder analog) öffnet Dialog mit `<BatchExportDialog fragen={...} onSchliessen={...} onErfolg={...} />`. Public-Props **unverändert** durch Cut. Kein Caller-Edit nötig.
+1 React-Konsument verifiziert via grep: `FragenBrowser.tsx` Z. 21 (import) + Z. 211 (usage) öffnet Dialog mit `<BatchExportDialog fragen={...} onSchliessen={...} onErfolg={...} />`. Plus Re-Export in `lp/korrektur/index.ts` Z. 10 + 1 Test-Mock in `FragenBrowser.test.tsx` Z. 77. Public-Props **unverändert** durch Cut. Kein Caller-Edit nötig.
 
 ### Bestehende Test-Coverage
 **Keine Tests** für `handleExport` oder Auto-Zuweisung. Cut bringt erstmals isolierte Vitest-Coverage.
@@ -231,7 +231,7 @@ export async function fuehreBatchExportAus(args: FuehreBatchExportArgs): Promise
 | 3 | `erstelleAutoZuweisungen`: gewaehlteIds nicht in exportierbar → übersprungen (kein crash) | Z. 47 |
 | 4 | `fuehreBatchExportAus`: empty zuweisungen → leere `ergebnisse` + leere `erfolgreiche`, onFortschritt(0,0) aufgerufen | early-return-equivalent |
 | 5 | `fuehreBatchExportAus`: 1 Frage success → 1 erfolgreich, korrekt zugeordnete poolId/hash | success-Pfad |
-| 6 | `fuehreBatchExportAus`: 2 Fragen same pool → 1 API-Aufruf mit 2 änderungen, 2 erfolgreiche | Pool-Gruppierung |
+| 6 | `fuehreBatchExportAus`: 2 Fragen same pool → 1 API-Aufruf mit 2 änderungen, 2 erfolgreiche, **`onFortschritt.mock.calls === [[0,2], [2,2]]`** (Reihenfolge + Anzahl) | Pool-Gruppierung + Progress-Callback |
 | 7 | `fuehreBatchExportAus`: API result.erfolg=false → alle markiert fehlgeschlagen mit `fehler`-Text | Z. 80-85 |
 | 8 | `fuehreBatchExportAus`: API throws → catch-Pfad, alle als 'Netzwerkfehler' fehlgeschlagen | Z. 90-95 |
 
@@ -357,9 +357,10 @@ Keine bestehenden Tests betroffen — `BatchExportDialog`-Component hatte bisher
 ### Phase 1 — `batchExportLogic.ts` extrahieren + Tests
 
 1. Erstelle `ExamLab/src/utils/batchExportLogic.ts` mit `erstelleAutoZuweisungen` + `fuehreBatchExportAus` + 3 Type-Exports byte-identisch.
-2. Erstelle `ExamLab/src/utils/batchExportLogic.test.ts` — 8 Vitest.
+2. Erstelle `ExamLab/src/utils/batchExportLogic.test.ts` — 8 Vitest (Test #6 inkl. `onFortschritt.mock.calls === [[0,2], [2,2]]`-Assertion).
 3. **Verify:** tsc clean, +8 vitest, 4 Lint-Gates clean, build clean.
-4. **Per-Phase-Reviewer** APPROVED.
+4. **DoD-Note:** Type-Imports in Component (Phase 2) verwenden `type`-only-Syntax: `import { erstelleAutoZuweisungen, fuehreBatchExportAus, type PoolEintrag, type FrageZuweisung, type SendeErgebnis } from '...'` — `verbatimModuleSyntax`-konform.
+5. **Per-Phase-Reviewer** APPROVED.
 
 ### Phase 2 — `BatchExportDialog.tsx` umstellen
 
