@@ -212,7 +212,7 @@ export default function FragenBrowserHeader({
             onChange={(e) => { setFilterFachbereich(e.target.value as Fachbereich | '') }}
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
           >
-            <option value="">Fach</option>
+            <option value="">Alle Fächer</option>
             {Array.from(dropdownStats.fachbereiche.entries())
               .map(([fb, count]) => (
                 <option key={fb} value={fb}>{fb} ({count})</option>
@@ -225,7 +225,7 @@ export default function FragenBrowserHeader({
             onChange={(e) => { setFilterThema(e.target.value); setFilterUnterthema('') }}
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer max-w-[180px]"
           >
-            <option value="">Thema</option>
+            <option value="">Alle Themen</option>
             {verfuegbareThemen.map(([thema, anzahl]) => (
               <option key={thema} value={thema}>{thema} ({anzahl})</option>
             ))}
@@ -237,7 +237,7 @@ export default function FragenBrowserHeader({
             onChange={(e) => { setFilterUnterthema(e.target.value) }}
             className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer max-w-[180px]"
           >
-            <option value="">Unterthema</option>
+            <option value="">Alle Unterthemen</option>
             {verfuegbareUnterthemen.map(([ut, anzahl]) => (
               <option key={ut} value={ut}>{ut} ({anzahl})</option>
             ))}
@@ -249,7 +249,7 @@ export default function FragenBrowserHeader({
           onChange={(e) => { setFilterTyp(e.target.value) }}
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
-          <option value="">Typ</option>
+          <option value="">Alle Typen</option>
           {Array.from(dropdownStats.typen.entries())
             .sort((a, b) => b[1] - a[1])
             .map(([typ, anzahl]) => (
@@ -263,7 +263,7 @@ export default function FragenBrowserHeader({
           onChange={(e) => { setFilterBloom(e.target.value as BloomStufe | '') }}
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
-          <option value="">Bloom</option>
+          <option value="">Alle Bloom</option>
           {['K1', 'K2', 'K3', 'K4', 'K5', 'K6'].map((k) => (
             <option key={k} value={k}>{k}</option>
           ))}
@@ -275,7 +275,7 @@ export default function FragenBrowserHeader({
           onChange={(e) => { setFilterPoolStatus(e.target.value as FilterPoolStatus) }}
           className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
         >
-          <option value="alle">Status</option>
+          <option value="alle">Alle Status</option>
           <option value="ungeprueft">Ungeprüft</option>
           <option value="pool_geprueft">Pool geprüft</option>
           <option value="pruefungstauglich">Prüfungstauglich</option>
