@@ -10,6 +10,7 @@ import { PDFKommentarPopover } from './PDFKommentarPopover.tsx'
 import { PDFKategorieChooser } from './PDFKategorieChooser.tsx'
 import { erzeugeId, leseTextauswahl } from './seite/pdfSelection.ts'
 import { renderSVGOverlay } from './seite/pdfAnnotationenSVG.tsx'
+import { usePDFTextEdit } from './seite/usePDFTextEdit.tsx'
 
 interface Props {
   seitenNr: number
@@ -55,11 +56,6 @@ export function PDFSeite({
   const setSelectedAnnotation = onSelectedAnnotationChange ?? (() => {})
   // Drag-State für Verschieben von Text-Annotationen
   const dragRef = useRef<{ annotId: string; startRelX: number; startRelY: number; origX: number; origY: number } | null>(null)
-  // Edit state for existing text annotations (double-click to edit)
-  const [editierendeAnnotation, setEditierendeAnnotation] = useState<{
-    id: string; text: string; cssX: number; cssY: number; farbe: string; groesse: number
-  } | null>(null)
-  const textEditInputRef = useRef<HTMLInputElement>(null)
   const [kategorieChooser, setKategorieChooser] = useState<{
     x: number; y: number; textRange: PDFTextRange
   } | null>(null)
@@ -67,6 +63,16 @@ export function PDFSeite({
   // Freehand drawing state
   const istZeichnung = useRef(false)
   const zeichnungsPfad = useRef<{ x: number; y: number }[]>([])
+
+  // --- Text-Edit-Hook (Doppelklick auf Text-Annotation) ---
+  const {
+    istEditierend,
+    handleDoubleClick,
+    beendeEdit,
+    editOverlay,
+  } = usePDFTextEdit({
+    readOnly, seitenInfo, annotationen, containerRef, onAnnotationEditieren,
+  })
 
   // --- PDF rendering ---
   useEffect(() => {
@@ -176,8 +182,8 @@ export function PDFSeite({
     // Auswahl: Text-Annotation anklicken → selektieren/deselektieren
     if (aktivesWerkzeug === 'auswahl') {
       // Bearbeitungsmodus beenden bei Klick ausserhalb
-      if (editierendeAnnotation) {
-        setEditierendeAnnotation(null)
+      if (istEditierend) {
+        beendeEdit()
       }
       let node: Element | null = e.target as Element
       let annotId: string | null = null
@@ -226,7 +232,7 @@ export function PDFSeite({
 
     // Store relative position in a data attribute for later use
     containerRef.current?.setAttribute('data-kommentar-rel', JSON.stringify({ x: relX, y: relY }))
-  }, [readOnly, aktivesWerkzeug, seitenInfo, onAnnotationLoeschen, editierendeAnnotation, selectedAnnotation])
+  }, [readOnly, aktivesWerkzeug, seitenInfo, onAnnotationLoeschen, istEditierend, beendeEdit, selectedAnnotation])
 
   const handleKommentarSave = useCallback((text: string) => {
     const relStr = containerRef.current?.getAttribute('data-kommentar-rel')
@@ -263,50 +269,6 @@ export function PDFSeite({
     onAnnotationHinzufuegen(annotation)
     setTextOverlay({ sichtbar: false, relX: 0, relY: 0, cssX: 0, cssY: 0, text: '' })
   }, [textOverlay, seitenNr, aktiveFarbe, textRotation, textGroesse, textFett, onAnnotationHinzufuegen])
-
-  // --- Doppelklick: Text-Annotation editieren ---
-  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
-    if (readOnly || !onAnnotationEditieren || !seitenInfo) return
-    // closest() kann bei SVG-Elementen browserübergreifend unzuverlässig sein,
-    // daher manuell das DOM hoch traversieren (SVG → HTML Grenze beachten)
-    let node: Element | null = e.target as Element
-    let annotId: string | null = null
-    while (node && node !== e.currentTarget) {
-      annotId = node.getAttribute('data-annotation-id')
-      if (annotId) break
-      node = node.parentElement
-    }
-    if (!annotId) return
-
-    const ann = annotationen.find(a => a.id === annotId)
-    if (!ann || ann.werkzeug !== 'text') return
-
-    e.stopPropagation()
-    const containerRect = containerRef.current?.getBoundingClientRect()
-    if (!containerRect) return
-
-    const cssX = ann.position.x * seitenInfo.breite
-    const cssY = ann.position.y * seitenInfo.hoehe
-
-    setEditierendeAnnotation({
-      id: ann.id,
-      text: ann.text,
-      cssX,
-      cssY,
-      farbe: ann.farbe,
-      groesse: ann.groesse || 18,
-    })
-    setTimeout(() => textEditInputRef.current?.focus(), 30)
-  }, [readOnly, onAnnotationEditieren, seitenInfo, annotationen])
-
-  const handleTextEditSave = useCallback(() => {
-    if (!editierendeAnnotation || !onAnnotationEditieren) return
-    const text = editierendeAnnotation.text.trim()
-    if (text) {
-      onAnnotationEditieren(editierendeAnnotation.id, { text })
-    }
-    setEditierendeAnnotation(null)
-  }, [editierendeAnnotation, onAnnotationEditieren])
 
   // --- Freehand drawing ---
   const handleDrawStart = useCallback((e: React.PointerEvent) => {
@@ -547,40 +509,7 @@ export function PDFSeite({
       )}
 
       {/* Text-Annotation bearbeiten (Doppelklick) */}
-      {editierendeAnnotation && (
-        <input
-          ref={textEditInputRef}
-          type="text"
-          inputMode="text"
-          autoComplete="off"
-          value={editierendeAnnotation.text}
-          onChange={(e) => setEditierendeAnnotation(prev => prev ? { ...prev, text: e.target.value } : null)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleTextEditSave() }
-            if (e.key === 'Escape') { e.preventDefault(); setEditierendeAnnotation(null) }
-            e.stopPropagation()
-          }}
-          onBlur={() => setTimeout(handleTextEditSave, 150)}
-          onPointerDown={(e) => e.stopPropagation()}
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            position: 'absolute',
-            left: editierendeAnnotation.cssX,
-            top: editierendeAnnotation.cssY - editierendeAnnotation.groesse,
-            fontSize: `${editierendeAnnotation.groesse}px`,
-            fontFamily: 'sans-serif',
-            color: editierendeAnnotation.farbe,
-            background: 'rgba(255,255,255,0.9)',
-            border: '2px solid #f59e0b',
-            borderRadius: '4px',
-            padding: '2px 6px',
-            minWidth: '120px',
-            outline: 'none',
-            zIndex: 20,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}
-        />
-      )}
+      {editOverlay}
 
       {/* Löschen-Button für selektierte Text-Annotation */}
       {selectedAnnotation && (() => {
