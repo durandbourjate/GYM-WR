@@ -66,7 +66,7 @@ Branch `bundle-aa/mittelrisiko`. **Viertes Sub-Bundle der Phase-5+ Hotspot-Reduc
 - Bilanz/ER-Editor-Komponenten in BilanzERFrage (Aufgabe-Modus ~250 Z.) — eng verzahnt mit useFrageAdapter-State, eigenes Bundle wert.
 - Tabellen-Body in AktivPhase (Tabellenzeilen-JSX, ~140 Z.) — eng verzahnt mit Sortierung+Filter+Konfig-Updates, eigenes Bundle wert.
 
-**Merge:** _(Hash nach Merge eintragen)_
+**Merge:** `fc8f191`.
 
 ---
 
