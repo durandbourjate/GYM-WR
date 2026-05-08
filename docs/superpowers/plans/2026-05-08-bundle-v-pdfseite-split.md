@@ -1059,8 +1059,8 @@ interface UsePDFDrawingParams {
   seitenInfo: PDFSeitenInfo | null
   annotationen: PDFAnnotation[]
   selectedAnnotation: string | null
-  containerRef: RefObject<HTMLDivElement>
-  zeichenCanvasRef: RefObject<HTMLCanvasElement>
+  containerRef: RefObject<HTMLDivElement | null>
+  zeichenCanvasRef: RefObject<HTMLCanvasElement | null>
   onAnnotationHinzufuegen: (a: PDFAnnotation) => void
   onAnnotationEditieren: ((id: string, updates: Partial<PDFAnnotation>) => void) | undefined
 }
