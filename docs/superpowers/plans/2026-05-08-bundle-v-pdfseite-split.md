@@ -193,17 +193,19 @@ export function berechneFallbackRects(
 
 ### Task 1.2: PDFSeite.tsx Imports + Code-Removal
 
-- [ ] **Step 1.2.1: PDFSeite.tsx Z. 32–95 entfernen** (`erzeugeId`, `findeSpanRects`, `leseTextauswahl`)
+**Reihenfolge-WICHTIG (Plan-Reviewer-Fix):** Erst Import hinzufügen, dann Code entfernen. Sonst hat PDFSeite.tsx zwischen 1.2.1 und 1.2.3 keinen `erzeugeId`/`leseTextauswahl` definiert (Z. 185, 190, 215, 302, 317, 505 würden brechen).
 
-- [ ] **Step 1.2.2: PDFSeite.tsx Z. 914–950 entfernen** (`SimpleRect`-Interface, `findeSpanRectsRelativ`, `berechneFallbackRects`)
-
-- [ ] **Step 1.2.3: Import in PDFSeite.tsx hinzufügen** (gleich nach den Type-Imports)
+- [ ] **Step 1.2.1: Import in PDFSeite.tsx hinzufügen** (gleich nach den Type-Imports, **vor** Code-Removal)
 
 ```typescript
 import { erzeugeId, leseTextauswahl } from './seite/pdfSelection.ts'
 ```
 
-`findeSpanRectsRelativ` + `berechneFallbackRects` werden NUR von SVG-Render-Funktionen genutzt → in Phase 2 in `pdfAnnotationenSVG.tsx` importiert. In PDFSeite.tsx sind `findeSpanRects` selbst nicht direkt benötigt (nur indirekt via `leseTextauswahl`).
+`findeSpanRectsRelativ` + `berechneFallbackRects` werden NUR von SVG-Render-Funktionen genutzt → in Phase 2 in `pdfAnnotationenSVG.tsx` importiert. `findeSpanRects` selbst wird in PDFSeite.tsx nicht direkt benötigt (nur indirekt via `leseTextauswahl`).
+
+- [ ] **Step 1.2.2: PDFSeite.tsx Z. 32–95 entfernen** (`erzeugeId`, `findeSpanRects`, `leseTextauswahl` + `// --- Helpers ---`-Banner)
+
+- [ ] **Step 1.2.3: PDFSeite.tsx Z. 914–950 entfernen** (`SimpleRect`-Interface, `findeSpanRectsRelativ`, `berechneFallbackRects` + `// --- Rect helpers ---`-Banner)
 
 - [ ] **Step 1.2.4: tsc + lint clean prüfen**
 
@@ -474,13 +476,15 @@ function renderTextAnnotation(/* ... byte-identisch von Z. 870–912 ... */): Re
 
 ### Task 2.2: PDFSeite.tsx Code-Removal + Import
 
-- [ ] **Step 2.2.1: PDFSeite.tsx Z. 697–912 entfernen** (`renderSVGOverlay` + 5 Sub-Render-Funktionen + `// --- SVG overlay rendering ---` Banner)
+**Reihenfolge-WICHTIG (Plan-Reviewer-Fix):** Erst Import hinzufügen, dann Code entfernen. Sonst bricht Z. 519 (`renderSVGOverlay`-Aufruf) zwischen den Steps.
 
-- [ ] **Step 2.2.2: Import in PDFSeite.tsx hinzufügen**
+- [ ] **Step 2.2.1: Import in PDFSeite.tsx hinzufügen**
 
 ```typescript
 import { renderSVGOverlay } from './seite/pdfAnnotationenSVG.tsx'
 ```
+
+- [ ] **Step 2.2.2: PDFSeite.tsx Z. 697–912 entfernen** (`renderSVGOverlay` + 5 Sub-Render-Funktionen + `// --- SVG overlay rendering ---` Banner)
 
 - [ ] **Step 2.2.3: tsc + lint + build clean prüfen**
 
@@ -664,7 +668,8 @@ git commit -m "Bundle V Phase 2: pdfAnnotationenSVG.tsx extrahiert (8 Vitest)
 // ExamLab/src/components/fragetypen/pdf/seite/usePDFTextEdit.tsx
 import { useState, useCallback, useRef } from 'react'
 import type { ReactNode, RefObject } from 'react'
-import type { PDFAnnotation, PDFTextAnnotation, PDFSeitenInfo } from '../PDFTypes.ts'
+import type { PDFAnnotation, PDFSeitenInfo } from '../PDFTypes.ts'
+// PDFTextAnnotation-Import nicht nötig — Discriminated-Union narrow nach werkzeug-Filter.
 
 interface UsePDFTextEditParams {
   readOnly: boolean | undefined
@@ -707,16 +712,18 @@ export function usePDFTextEdit(params: UsePDFTextEditParams): UsePDFTextEditResu
     const containerRect = containerRef.current?.getBoundingClientRect()
     if (!containerRect) return
 
-    const cssX = (ann as PDFTextAnnotation).position.x * seitenInfo.breite
-    const cssY = (ann as PDFTextAnnotation).position.y * seitenInfo.hoehe
+    // Nach `ann.werkzeug !== 'text'`-Filter narrowed TypeScript zu PDFTextAnnotation (Discriminated-Union).
+    // Byte-identisch zu Original Z. 353-362 — keine Casts.
+    const cssX = ann.position.x * seitenInfo.breite
+    const cssY = ann.position.y * seitenInfo.hoehe
 
     setEditierendeAnnotation({
       id: ann.id,
-      text: (ann as PDFTextAnnotation).text,
+      text: ann.text,
       cssX,
       cssY,
-      farbe: (ann as PDFTextAnnotation).farbe,
-      groesse: (ann as PDFTextAnnotation).groesse || 18,
+      farbe: ann.farbe,
+      groesse: ann.groesse || 18,
     })
     setTimeout(() => textEditInputRef.current?.focus(), 30)
   }, [readOnly, onAnnotationEditieren, seitenInfo, annotationen, containerRef])
@@ -780,7 +787,7 @@ export function usePDFTextEdit(params: UsePDFTextEditParams): UsePDFTextEditResu
 }
 ```
 
-**Hinweis Type-Casts:** Im Original sind `ann.position`, `ann.text` etc. nach dem `ann.werkzeug !== 'text'`-Filter narrowed verfügbar. Nach Hook-Move bleibt der Filter erhalten — TypeScript-Discriminated-Union sollte das narrow capturen. Falls TypeScript unzufrieden ist, `(ann as PDFTextAnnotation)` byte-identisch nutzen wie hier gezeigt.
+**Hinweis Type-Casts:** Original Z. 353–362 nutzt **keine** Casts — Discriminated-Union narrowed nach `ann.werkzeug !== 'text'`-Filter. Hook bleibt byte-identisch. Sollte TypeScript wider Erwarten unzufrieden sein (z. B. wegen `find`-Inferenz-Verlust), `(ann as PDFTextAnnotation)` als Fallback nachtragen — Plan-Reviewer-Confirmation: nicht nötig.
 
 ### Task 3.2: PDFSeite.tsx Hook-Aufruf + Code-Removal
 
@@ -828,7 +835,8 @@ if (istEditierend) {
 - [ ] **Step 3.2.5: PDFSeite.tsx `editOverlay` rendern**
 
 ```tsx
-// Im Return-JSX, am Ende der Layer-Liste (vor Popovers, nach editierendeAnnotation && (...) Position):
+// Genau dort, wo der gelöschte editierendeAnnotation && (...) Block stand:
+// Zwischen Text-Eingabe-Overlay (Z. ~577-612 im Original) und Lösch-Button-IIFE (Z. ~651):
 {editOverlay}
 ```
 
@@ -1241,7 +1249,9 @@ const { handleDrawStart, handleDrawMove, handleDrawEnd } = usePDFDrawing({
 
 `erzeugeId`-Import bleibt (wird in `handleMouseUp`, `handleKategorieSelect`, `handleKommentarSave`, `handleTextSave` weiter benutzt).
 
-`PDFFreihandAnnotation`-Type-Import in PDFSeite.tsx **kann entfernt werden**, weil `handleDrawStart/Move/End` jetzt im Hook leben. Verifikation: `grep PDFFreihandAnnotation PDFSeite.tsx` nach Phase 4 sollte 0 Treffer zeigen.
+`PDFFreihandAnnotation`-Type-Import in PDFSeite.tsx **kann entfernt werden**, weil `handleDrawStart/Move/End` jetzt im Hook leben. Verifikation: `grep PDFFreihandAnnotation ExamLab/src/components/fragetypen/pdf/PDFSeite.tsx` nach Phase 4 sollte 0 Treffer zeigen.
+
+`PDFTextAnnotation`-Type-Import in PDFSeite.tsx **bleibt erhalten** — wird weiterhin in `handleTextSave` (Z. 316 im Original) und im Lösch-Button-IIFE (Z. 652) genutzt. Plan-Reviewer-Confirmation. Verifikation: `grep PDFTextAnnotation ExamLab/src/components/fragetypen/pdf/PDFSeite.tsx` muss ≥2 Treffer zeigen.
 
 - [ ] **Step 4.2.4: tsc + lint + build clean prüfen**
 
@@ -1352,13 +1362,26 @@ describe('usePDFDrawing', () => {
   })
 
   it('Drag-End räumt dragRef + data-drag-orig-punkte auf', () => {
-    const { result } = setupHook({ selectedAnnotation: 'f1' })
+    // setupHook gibt containerRef nicht zurück — wir greifen via document zu, weil
+    // setupHook das DIV in den Hook-Scope hängt. Alternativ: setupHook-Return erweitern.
+    const { result, onEdit } = setupHook({ selectedAnnotation: 'f1' })
     act(() => { result.current.handleDrawStart(fakePointerEvent(60, 80, 'f1')) })
     act(() => { result.current.handleDrawMove(fakePointerEvent(120, 160, null)) })
+
+    // Während Drag aktiv: data-drag-orig-punkte gesetzt
+    const dragDivVorEnd = document.querySelector('[data-drag-orig-punkte]')
+    expect(dragDivVorEnd).not.toBeNull()
+
+    onEdit.mockClear()
     act(() => { result.current.handleDrawEnd() })
-    // Nach End sollte ein weiterer Move kein Edit mehr triggern
-    // (Indirekter Test, weil dragRef hook-internal ist)
-    expect(true).toBe(true) // Hauptsache: kein Crash
+
+    // Nach End: data-drag-orig-punkte entfernt
+    const dragDivNachEnd = document.querySelector('[data-drag-orig-punkte]')
+    expect(dragDivNachEnd).toBeNull()
+
+    // Folge-Move darf onEdit nicht mehr triggern (dragRef = null)
+    act(() => { result.current.handleDrawMove(fakePointerEvent(180, 240, null)) })
+    expect(onEdit).not.toHaveBeenCalled()
   })
 })
 ```
@@ -1580,12 +1603,24 @@ git worktree remove .worktrees/bundle-v-pdfseite-split
 
 ---
 
-## Anhang: Plan-Reviewer-Anweisungen
+## Anhang: Plan-Reviewer-Findings (eingearbeitet)
 
-**Beim Plan-Reviewer-Run** (Phase 0) gezielt prüfen lassen:
+**Status:** Plan-Reviewer-Run 1 — APPROVED mit 4 substantiellen Findings, alle eingearbeitet.
 
-- §Phase-1-1.1.2: Source-Z. 32–95 + 914–950 Snippet im Plan = byte-identisch zu Original?
-- §Phase-2-2.1.1: Code-Snippet zeigt nur Public-Surface; volle 5 Sub-Renderer-Bodies werden byte-identisch übernommen — soll der Plan die vollen Bodies expanded oder elided zeigen? (Aktuell: elided wegen Plan-Länge.)
-- §Phase-3-3.1.1: `usePDFTextEdit` Type-Casts (`as PDFTextAnnotation` x4) — sind alle nötig oder narrowed TypeScript bereits?
-- §Phase-4-4.1.1: Refs in Dep-Arrays — 11 Original-Dep-Slots vs. 13 Hook-Dep-Slots (mit Refs). React-Best-Practice oder Bundle-V-Konvention etablieren?
-- §Phase-4: usePDFDrawing 11 Params — Group-Params evaluieren (Spec-Reviewer-Empfehlung): `werkzeugContext: { aktivesWerkzeug, aktiveFarbe, seitenNr }`, `refs: { containerRef, zeichenCanvasRef }`. **Empfehlung:** flat lassen (byte-identisch zu Bundle U), Plan-Reviewer-Diskussionspunkt offen lassen.
+**Findings (alle in Plan rev2 gefixt):**
+1. **Step-Reihenfolge Phase 1+2** — Erst Import, dann Code-Removal (sonst kaputter Zwischenzustand). Fix in Task 1.2 + Task 2.2.
+2. **`as PDFTextAnnotation`-Casts in usePDFTextEdit** — Original hat keine Casts, Discriminated-Union narrowed bereits. Casts entfernt + Import-Cleanup im Hook.
+3. **Test #5 in usePDFDrawing.test.ts** — `expect(true).toBe(true)` durch konkrete `data-drag-orig-punkte`-Cleanup-Assertion ersetzt + Folge-Move-no-op-Check.
+4. **Step 3.2.5 Position-Beschreibung** — präzisiert auf "zwischen Text-Eingabe-Overlay Z. ~577-612 und Lösch-Button-IIFE Z. ~651".
+5. **PDFTextAnnotation-Import in PDFSeite.tsx** — Erhaltungs-Hinweis ergänzt (≥2 Treffer in handleTextSave + Lösch-Button-IIFE).
+
+**Reviewer-Antworten zu den 5 Anhang-Fragen:**
+- Q1 byte-identity Z. 32–95 + 914–950: ✅ verifiziert.
+- Q2 Phase-2 Sub-Renderer elided: ✅ behalten, byte-Identity-Check via `git diff` in Per-Phase-Reviewer.
+- Q3 Casts: ❌ entfernt — Original hat keine, Discriminated-Union genügt.
+- Q4 Refs in Dep-Arrays: ✅ Bundle-V-Konvention akzeptiert (React 19 + ESLint best-practice, Ref-Identity stabil → 0 Re-Render-Impact). Keine neue Memory-Lehre nötig (Bundle T.d-Pattern deckt es).
+- Q5 11-Param flat vs. grouped: ✅ flat — Bundle-U-Präzedenz, Konsistenz mit Bundle T.a–T.f.
+
+**Per-Phase-Reviewer-Pflicht-Checks (zusätzlich zu phasenspezifischen):**
+- Phase 4: handleDrawStart Dep-Array hat 8 Slots (6 Original + 2 Refs), handleDrawMove 5 Slots (2 Original + 3 Refs), handleDrawEnd 5 Slots (3 Original + 2 Refs). Verify gegen tatsächliche Hook-Implementation.
+- Per-Phase-Commits sollen `wc -l ExamLab/src/components/fragetypen/pdf/PDFSeite.tsx` als Snippet enthalten (für Drift-Tracking).
