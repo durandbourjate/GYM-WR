@@ -9,6 +9,8 @@ import { useDebounce } from '../../../hooks/useDebounce'
 import { useCanvasSetup } from './useCanvasSetup'
 import { useTextOverlay } from './useTextOverlay'
 import { useStiftRendering } from './useStiftRendering'
+import { cursorFuerTool } from './cursorFuerTool'
+import { TextOverlayInput } from './TextOverlayInput'
 
 interface ZeichnenCanvasProps {
   canvasConfig: CanvasConfig
@@ -396,21 +398,6 @@ export function ZeichnenCanvas({
     onEnd: handleEnd,
   })
 
-  // Cursor je nach Werkzeug
-  function cursorFuerTool(tool: Tool): string {
-    switch (tool) {
-      case 'auswahl':   return 'default'
-      case 'stift':     return 'crosshair'
-      case 'linie':     return 'crosshair'
-      case 'pfeil':     return 'crosshair'
-      case 'rechteck':  return 'crosshair'
-      case 'ellipse':   return 'crosshair'
-      case 'text':      return 'text'
-      case 'radierer':  return 'cell'
-      default:          return 'default'
-    }
-  }
-
   // Canvas-Attribute (DPR-aware)
   const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1
   const canvasBreite = Math.round(logischeBreite * dpr)
@@ -457,55 +444,16 @@ export function ZeichnenCanvas({
       />
 
       {textOverlaySichtbar && (
-        <div
-          style={{
-            position: 'absolute',
-            left: `${textOverlayCssLeft}%`,
-            top: `${textOverlayCssTop}%`,
-            zIndex: 20,
-          }}
-          onPointerDown={e => e.stopPropagation()}
-          onMouseDown={e => e.stopPropagation()}
-          onTouchStart={e => e.stopPropagation()}
-          onClick={e => e.stopPropagation()}
-        >
-          <input
-            ref={textOverlayInputRef}
-            type="text"
-            inputMode="text"
-            autoComplete="off"
-            autoCapitalize="sentences"
-            value={textOverlayText}
-            onChange={e => textOverlaySetText(e.target.value)}
-            onPointerDown={e => e.stopPropagation()}
-            onMouseDown={e => e.stopPropagation()}
-            onTouchStart={e => e.stopPropagation()}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                textOverlayAbschliessen(false)
-              } else if (e.key === 'Escape') {
-                e.preventDefault()
-                textOverlayAbschliessen(true)
-              }
-              e.stopPropagation()
-            }}
-            onBlur={textOverlayAbschliessenViaBlur}
-            style={{
-              fontSize: '18px',
-              fontFamily: 'sans-serif',
-              color: aktiveFarbe,
-              background: 'rgba(255,255,255,0.95)',
-              border: '2px solid #3b82f6',
-              borderRadius: '4px',
-              padding: '4px 8px',
-              minWidth: '140px',
-              outline: 'none',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            }}
-            placeholder="Text eingeben..."
-          />
-        </div>
+        <TextOverlayInput
+          cssLeft={textOverlayCssLeft}
+          cssTop={textOverlayCssTop}
+          text={textOverlayText}
+          setText={textOverlaySetText}
+          abschliessen={textOverlayAbschliessen}
+          abschliessenViaBlur={textOverlayAbschliessenViaBlur}
+          inputRef={textOverlayInputRef}
+          aktiveFarbe={aktiveFarbe}
+        />
       )}
     </div>
   )
