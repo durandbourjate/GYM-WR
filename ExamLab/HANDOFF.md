@@ -8,6 +8,68 @@
 
 ## Letzter Stand auf main
 
+### Bundle AA — AktivPhase + BilanzERFrage Mittel-Risiko-Cuts ✅ MERGED (2026-05-09)
+
+Branch `bundle-aa/mittelrisiko`. **Viertes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X/Y/Z). **Doppel-Cut der zwei mittel-Risiko Files**: AktivPhase **573 → 420 Z. (-26.7%)** + BilanzERFrage **589 → 376 Z. (-36.2%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 5 → 3** ✅ — beide Files raus aus dem Set. +14 neue Vitest-Tests (1498 → 1512).
+
+**Was geliefert (Phase A — AktivPhase):**
+- `ExamLab/src/components/lp/durchfuehrung/ZeitzuschlagInline.tsx` (~125 Z.) — Sub-Komponente mit 4 Render-Branches (kein-Zuschlag/Editor/Overtime/Zuschlag-gesetzt). 6-Property Props-Interface. JSX byte-identisch zum Original.
+- `ExamLab/src/components/lp/durchfuehrung/ZeitzuschlagInline.test.tsx` (~70 Z.) — **5 Vitest** mit @testing-library/react: kein-Zuschlag → +5, Editor öffnen, Enter speichert, Escape verwirft, Overtime-Countdown.
+- `ExamLab/src/components/lp/durchfuehrung/aktivPhaseHelpers.tsx` (~57 Z.) — 5 Pure-Helper (`statusReihenfolge`, `filterLabel`, `verstossTooltip`, `stufeIcon`, `statusBadge`) + 2 Type-Re-Exports (`Sortierung`, `QuickFilter`).
+- `ExamLab/src/components/lp/durchfuehrung/aktivPhaseHelpers.test.ts` (~67 Z.) — **9 Vitest**: 4 Helper × 1-3 Cases (statusBadge JSX-Render-only ohne Test).
+- `ExamLab/src/components/lp/durchfuehrung/AktivPhase.tsx` (573 → 420 Z., -153 Z., -26.7%):
+  - 110 Z. ZeitzuschlagInline-Block raus → 1 Import.
+  - 50 Z. Helper-Block raus → Multi-Import.
+
+**Was geliefert (Phase B — BilanzERFrage):**
+- `ExamLab/src/components/fragetypen/BilanzERLoesung.tsx` (~218 Z.) — kompletter Lösungs-Modus inkl. Sub-Helper:
+  - `BilanzERLoesung` (Hauptkomponente) — Lösungsmodus mit Korrekt-Vergleich (Bilanz + ER).
+  - `BilanzSeiteRender` (Sub-Helper) — Aktiv/Passiv-Seite mit Konten.
+  - `KontoZeileAnzeige` (Sub-Helper) — Konto-Zeile mit Saldo.
+  - `erwarteterGewinnVerlust` (Pure-Funktion) — Gewinn/Verlust aus letzter Stufe.
+- `ExamLab/src/components/fragetypen/BilanzERFrage.tsx` (589 → 376 Z., -213 Z., -36.2%):
+  - Komplette LOESUNGSMODUS-Sektion (Z. 379-589) raus → 1 Import.
+  - Bestehende `BilanzERFrageLoesung.test.tsx` (134 Z.) ohne Edit grün geblieben (verwendet Default-Export `BilanzERFrage` mit `modus="loesung"`-Prop).
+
+**Verifikation:**
+- vitest **1512 passed | 4 todo | 1 skipped** (drift +14 vs Bundle-Z-Baseline 1498: +5 ZeitzuschlagInline + 9 aktivPhaseHelpers).
+- tsc -b clean.
+- 4 Lint-Gates clean: `lint:as-any` (Total 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir`, `lint:musterloesung` (Baseline-Drift = 0).
+- vite build grün (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Bestehende Tests grün — keine Regression.
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 5 → 3** ✅. Verbleibend: HilfeSeite (906), ConfigTab (747), EinstellungenPanel (607).
+
+**Browser-E2E:** Mit echten LP+SuS-Logins auf `staging` durchgeführt _(siehe Test-Sektion)_.
+
+**Reviewer:** Self-Review-Modus (analog Bundle Z) — kompakte Spec, kein 2-Iter-Reviewer-Loop. Mittel-Risiko-Status nicht durch zusätzliche Reviewer-Iterationen abgedeckt, sondern durch:
+- Vitest-Coverage für ZeitzuschlagInline (5 Tests, 4 Render-Branches)
+- Vitest-Coverage für aktivPhaseHelpers (9 Tests, 4/5 Funktionen)
+- Bestehende BilanzERFrageLoesung-Test-Suite (134 Z.) als Regression-Sicherheitsnetz für Lösungsmodus-Cut.
+
+**Architektur-Patterns (etabliert/wieder-verwendet):**
+- **Render-Sub-Komponente in eigene Datei** (Bundle-T.b/Y/Z) — `<ZeitzuschlagInline>` mit 6-Props isoliert state-rich Editor-Sub-Komponente.
+- **Pure-Helper-Move ohne Re-Export-Bridge** (Bundle-U/W/Z) — 5 Helper sind isoliert, kein zweiter Caller.
+- **Modus-Branch-Cut bei polymorpher Komponente** (neu Bundle-AA) — `BilanzERFrage` mit `modus`-Prop hat 2 Top-Level-Branches; Lösungs-Branch + zugehörige Sub-Helper in eigene Datei. Aufgabe-Branch + zugehörige Editor-Sub-Komponenten bleiben in Source.
+- **Co-Location von Sub-Helpern bei Modus-Cut** — `BilanzSeiteRender` + `KontoZeileAnzeige` + `erwarteterGewinnVerlust` sind nur in Lösungs-Modus verwendet → Move zusammen mit `BilanzERLoesung` in dieselbe neue Datei (kein eigenes Helper-Modul nötig).
+
+**Lehren neu (Bundle AA):**
+- **Mittel-Risiko Doppel-Cut bewährt sich** — wie Bundle Z (Knapp-drin Doppel-Cut), funktioniert Doppel-Cut auch für mittel-Risiko-Files wenn die Cuts unabhängig sind. Test-Coverage pro Cut macht das Risiko handhabbar.
+- **Modus-Branch-Cut ist sicherster Cut bei polymorphen Komponenten** — wenn Komponente einen `modus`-Prop hat und beide Branches komplett unabhängige State-Welten haben, ist die Modus-Branch-Auslagerung byte-identisch ohne State-Sharing-Risiko. Bestehende Tests bleiben grün ohne Edit (sie testen die Default-Export-Wrapper, der intern an die Sub-Komponente delegiert).
+
+**Spawn-Tasks (post-Bundle-AA):**
+- **Bundle BB+: EinstellungenPanel (607)** — letztes mittel-Risiko File, dann nur noch hoch-Risiko übrig.
+- **Bundle Mega: HilfeSeite (906) + ConfigTab (747)** — hoch-Risiko, grösste Files.
+- BilanzUI/ERUI/KontoRow/KontenTabelle (Aufgabe-Pfad ~250 Z.) in BilanzERFrage könnten in eigenes File ausgelagert werden — eigenes Bundle bei nächster Gelegenheit, BilanzERFrage ist aktuell schon unter 500 ✅.
+
+**Out of Scope:**
+- Bilanz/ER-Editor-Komponenten in BilanzERFrage (Aufgabe-Modus ~250 Z.) — eng verzahnt mit useFrageAdapter-State, eigenes Bundle wert.
+- Tabellen-Body in AktivPhase (Tabellenzeilen-JSX, ~140 Z.) — eng verzahnt mit Sortierung+Filter+Konfig-Updates, eigenes Bundle wert.
+
+**Merge:** _(Hash nach Merge eintragen)_
+
+---
+
 ### Bundle Z — PruefungsComposer + ZeichnenCanvas Knapp-drin Cuts ✅ MERGED (2026-05-08)
 
 Branch `bundle-z/knappdrin`. **Drittes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X BatchExportDialog + Bundle Y Layout). **Doppel-Cut der zwei „Knapp-drin"-Files** aus HANDOFF Spawn-Tasks: PruefungsComposer **526 → 454 Z. (-13.7%)** + ZeichnenCanvas **518 → 466 Z. (-10%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 7 → 5** ✅ — beide Files raus aus dem Set. +10 neue Vitest-Tests (1488 → 1498).
