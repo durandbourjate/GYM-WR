@@ -1279,7 +1279,7 @@ Falls APPROVED → Phase 5. Falls Issues → fix + re-dispatch (max 3 Iteratione
 - [ ] **Step 1: Files >500 Z. zählen (ohne data/+test/)**
 
 ```bash
-cd ExamLab && find src -name "*.ts" -o -name "*.tsx" | grep -v "/data/" | grep -v "/__tests__/" | grep -v ".test." | xargs wc -l 2>/dev/null | awk '$1 > 500 {print}' | sort -rn
+cd ExamLab && find src \( -name "*.ts" -o -name "*.tsx" \) | grep -v "/data/" | grep -v "/__tests__/" | grep -v ".test." | xargs wc -l 2>/dev/null | awk '$1 > 500 {print}' | sort -rn
 ```
 
 Expected: 9 Files (Bundle W endete bei 10 — nach W.b sollte uebungsStore.ts ≤ 500 raus sein).
