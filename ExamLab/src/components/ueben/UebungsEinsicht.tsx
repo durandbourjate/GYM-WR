@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { useUebenUebungsStore, type GespeichertesErgebnis } from '../../store/ueben/uebungsStore'
+import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
+import { type GespeichertesErgebnis } from '../../utils/ueben/historie'
 
 /**
  * Übungs-Einsicht: Zeigt vergangene Session-Ergebnisse.

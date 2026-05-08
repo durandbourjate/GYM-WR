@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
 import type { Antwort, Selbstbewertung } from '../../types/antworten'
-import { getFragetext } from '../../utils/ueben/fragetext'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
 import type { MasteryStufe } from '../../types/ueben/fortschritt'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
@@ -9,129 +8,14 @@ import { erstelleBlock, erstelleMixBlock, erstelleRepetitionsBlock } from '../..
 import { istDauerbaustelle } from '../../utils/ueben/mastery'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
+import { mergeLoesungen } from '../../utils/ueben/loesungsMerge'
+import { ladeHistorie, speichereHistorie, MAX_HISTORIE, type GespeichertesErgebnis } from '../../utils/ueben/historie'
+import { berechneErgebnis as berechneErgebnisPure } from '../../utils/ueben/ergebnisBerechnung'
 import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
-import type { LoesungsMap, LoesungsSlice } from '../../types/ueben/loesung'
+import type { LoesungsMap } from '../../types/ueben/loesung'
 import type { PruefResultat } from '../../types/ueben/pruefResultat'
 import { normalizeAntwort } from '../../utils/normalizeAntwort'
 import { useUebenFortschrittStore } from './fortschrittStore'
-
-/**
- * Merged einen LoesungsSlice in eine Frage-Kopie. Mutiert NICHT die
- * Original-Frage; liefert ein neues Objekt mit kombinierten Feldern.
- *
- * Listen-Felder (optionen[], luecken[], etc.): Merge per id — der
- * gemischte Client-Array wird um die Lösungs-Attribute ergänzt.
- * Reihenfolgen-kritische Felder (elemente[], paare[]) werden aus
- * dem Slice übernommen (überschreibt gemischte Client-Version).
- */
-function mergeLoesungInFrage(frage: Frage, slice: LoesungsSlice | undefined): Frage {
-  if (!slice) return frage
-  const merged: Record<string, unknown> = { ...frage }
-
-  // Top-level einfache Felder (gemeinsam + typSpezifisch)
-  if (slice.musterlosung !== undefined) merged.musterlosung = slice.musterlosung
-  if (slice.bewertungsraster !== undefined) merged.bewertungsraster = slice.bewertungsraster
-  if (slice.korrekteFormel !== undefined) merged.korrekteFormel = slice.korrekteFormel
-  if (slice.korrekt !== undefined) merged.korrekt = slice.korrekt
-  if (slice.buchungen !== undefined) merged.buchungen = slice.buchungen
-  if (slice.korrektBuchung !== undefined) merged.korrektBuchung = slice.korrektBuchung
-  if (slice.sollEintraege !== undefined) merged.sollEintraege = slice.sollEintraege
-  if (slice.habenEintraege !== undefined) merged.habenEintraege = slice.habenEintraege
-  if (slice.loesung !== undefined) merged.loesung = slice.loesung
-
-  // Reihenfolgen-kritisch: Lösung überschreibt Mischung
-  if (slice.elemente !== undefined) merged.elemente = slice.elemente
-  if (slice.paare !== undefined) merged.paare = slice.paare
-
-  // Listen-Felder per id mergen
-  type IdItem = { id?: string }
-  const mergeById = (base: unknown, patches: IdItem[] | undefined): unknown => {
-    if (!Array.isArray(base) || !patches) return base
-    const patchMap = new Map<string, IdItem>()
-    for (const p of patches) if (p && p.id) patchMap.set(p.id, p)
-    return base.map((item: unknown) => {
-      if (typeof item !== 'object' || item === null) return item
-      const withId = item as IdItem
-      const patch = withId.id ? patchMap.get(withId.id) : undefined
-      return patch ? { ...withId, ...patch } : item
-    })
-  }
-
-  if (slice.optionen) merged.optionen = mergeById(merged.optionen, slice.optionen)
-  if (slice.aussagen) merged.aussagen = mergeById(merged.aussagen, slice.aussagen)
-  if (slice.luecken) merged.luecken = mergeById(merged.luecken, slice.luecken)
-  if (slice.ergebnisse) merged.ergebnisse = mergeById(merged.ergebnisse, slice.ergebnisse)
-  if (slice.konten) merged.konten = mergeById(merged.konten, slice.konten)
-  if (slice.bilanzEintraege) merged.bilanzEintraege = mergeById(merged.bilanzEintraege, slice.bilanzEintraege)
-  if (slice.aufgaben) merged.aufgaben = mergeById(merged.aufgaben, slice.aufgaben)
-  if (slice.labels) merged.labels = mergeById(merged.labels, slice.labels)
-  if (slice.beschriftungen) merged.beschriftungen = mergeById(merged.beschriftungen, slice.beschriftungen)
-  if (slice.zielzonen) merged.zielzonen = mergeById(merged.zielzonen, slice.zielzonen)
-  if (slice.bereiche) merged.bereiche = mergeById(merged.bereiche, slice.bereiche)
-  if (slice.hotspots) merged.hotspots = mergeById(merged.hotspots, slice.hotspots)
-
-  return merged as unknown as Frage
-}
-
-/**
- * Merged die Lösungs-Map in die Frage-Liste. Aufgabengruppen erhalten
- * sowohl ihren eigenen Slice als auch die Slices ihrer Teilaufgaben
- * (flache Map-Lookup).
- */
-function mergeLoesungen(
-  fragen: Frage[],
-  loesungen: LoesungsMap,
-): { fragen: Frage[]; preloaded: Record<string, boolean> } {
-  const preloaded: Record<string, boolean> = {}
-  const merged = fragen.map((f) => {
-    const frageSlice = loesungen[f.id]
-    preloaded[f.id] = frageSlice !== undefined
-    let out = mergeLoesungInFrage(f, frageSlice)
-    const outWithTa = out as Frage & { teilaufgaben?: Frage[] }
-    if (Array.isArray(outWithTa.teilaufgaben)) {
-      outWithTa.teilaufgaben = outWithTa.teilaufgaben.map((ta: Frage) => {
-        const taSlice = loesungen[ta.id]
-        preloaded[ta.id] = taSlice !== undefined
-        return mergeLoesungInFrage(ta, taSlice)
-      })
-      out = outWithTa
-    }
-    return out
-  })
-  return { fragen: merged, preloaded }
-}
-
-/** Persistiertes Session-Ergebnis für die Übungs-Einsicht */
-export interface GespeichertesErgebnis {
-  sessionId: string
-  fach: string
-  thema: string
-  datum: string
-  anzahlFragen: number
-  richtig: number
-  quote: number
-  dauer: number
-  details: SessionErgebnis['details']
-}
-
-const HISTORIE_KEY = 'ueben-session-historie'
-const MAX_HISTORIE = 50
-
-function ladeHistorie(): GespeichertesErgebnis[] {
-  try {
-    const raw = localStorage.getItem(HISTORIE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as GespeichertesErgebnis[]
-    // Migration: Antworten in gespeicherten Details auf einheitliches Format normalisieren.
-    // GespeichertesErgebnis enthält keine rohen Antwort-Objekte, aber zukünftige Formate
-    // könnten sie enthalten — hier als Sicherheitsnetz für ältere localStorage-Einträge.
-    return parsed
-  } catch { return [] }
-}
-
-function speichereHistorie(historie: GespeichertesErgebnis[]) {
-  try { localStorage.setItem(HISTORIE_KEY, JSON.stringify(historie.slice(0, MAX_HISTORIE))) } catch { /* quota */ }
-}
 
 interface UebungsState {
   session: UebungsSession | null
@@ -622,35 +506,7 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     return allBeantwortet && aufLetzterFrage
   },
 
-  berechneErgebnis: () => {
-    const session = get().session
-    if (!session) return { sessionId: '', anzahlFragen: 0, richtig: 0, falsch: 0, quote: 0, dauer: 0, details: [] }
-
-    const details = session.fragen.map(f => ({
-      frageId: f.id,
-      frage: getFragetext(f),
-      typ: f.typ,
-      korrekt: session.ergebnisse[f.id] ?? false,
-      erklaerung: f.musterlosung,
-      unsicher: session.unsicher.has(f.id),
-      uebersprungen: session.uebersprungen.has(f.id),
-    }))
-
-    const richtig = details.filter(d => d.korrekt).length
-    const falsch = details.filter(d => !d.korrekt && !d.uebersprungen).length
-    const dauer = session.beendet
-      ? new Date(session.beendet).getTime() - new Date(session.gestartet).getTime()
-      : Date.now() - new Date(session.gestartet).getTime()
-
-    return {
-      sessionId: session.id,
-      anzahlFragen: session.fragen.length,
-      richtig, falsch,
-      quote: session.fragen.length > 0 ? (richtig / session.fragen.length) * 100 : 0,
-      dauer,
-      details,
-    }
-  },
+  berechneErgebnis: () => berechneErgebnisPure(get().session),
 
   beendeSession: () => {
     const session = get().session

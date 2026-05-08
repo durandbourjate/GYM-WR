@@ -8,6 +8,62 @@
 
 ## Letzter Stand auf main
 
+### Bundle W — uebungsStore Pure-Logic-Cut ✅ MERGED (2026-05-08)
+
+Branch `bundle-w/uebungsstore-cuts`. **Drittes** Hoch-Risiko-Datei-Split der **Phase 4** aus dem Vereinfachungs-Audit (nach Bundle U useDrawingEngine, Bundle V PDFSeite). **uebungsStore.ts 684 → 540 Zeilen (-22%)** via 3 Pure-Logic-Cuts in `utils/ueben/`. **Phase-4-Audit komplett — letztes Hoch-Risiko-File abgearbeitet.** Erstmals Vitest-Coverage für Lösungs-Merge / Historien-Persistenz / Ergebnis-Berechnung (vorher 0 Tests, jetzt **+24**).
+
+**Was geliefert (3 neue Pure-Logic-Files + 3 Test-Files + 1 Caller-Edit + 1 Audit-Baseline-Update):**
+- `ExamLab/src/utils/ueben/loesungsMerge.ts` (~85 Z.) — `mergeLoesungInFrage(frage, slice) → Frage` + `mergeLoesungen(fragen, loesungen) → { fragen, preloaded }` byte-identisch von uebungsStore.ts Z. 18–102. Type-Imports: `Frage`, `LoesungsMap`, `LoesungsSlice`.
+- `ExamLab/src/utils/ueben/loesungsMerge.test.ts` (~210 Z.) — **12 Vitest-Tests**: undefined-Slice Early-Return, 9 Top-Level-Felder Sammel-Test, Reihenfolgen-kritisch (`elemente`+`paare` überschreiben), `optionen`-Listen-Merge per id, alle 11 weiteren Listen-Felder Sammel-Test, mergeById-Edge-Cases (Item ohne id, null-Item, Patch ohne id), Immutability, leere LoesungsMap, teilaufgaben-Pfad mit TA-Slice-Tracking, Mix-Pfad. Nutzt `mkFrage(partial: Record<string, unknown>) → Frage` Doppel-Cast-Helper für Discriminated-Union-Constraint-Umgehung.
+- `ExamLab/src/utils/ueben/historie.ts` (~33 Z.) — Type `GespeichertesErgebnis` + `HISTORIE_KEY` + `MAX_HISTORIE = 50` + `ladeHistorie()` + `speichereHistorie(historie)` byte-identisch von uebungsStore.ts Z. 104–134.
+- `ExamLab/src/utils/ueben/historie.test.ts` (~70 Z.) — **5 Vitest-Tests** (load: leer/corrupt/parsed; save: 51-Items-Trim auf MAX_HISTORIE/Quota-silent). `beforeEach: localStorage.clear()` + `afterEach: vi.restoreAllMocks()` gegen Mock-Leakage.
+- `ExamLab/src/utils/ueben/ergebnisBerechnung.ts` (~38 Z.) — pure `berechneErgebnis(session: UebungsSession | null) → SessionErgebnis` byte-identisch von uebungsStore.ts Z. 625–653-Body. Type-Imports + `getFragetext`.
+- `ExamLab/src/utils/ueben/ergebnisBerechnung.test.ts` (~110 Z.) — **7 Vitest-Tests** (null-Session, leere fragen Div-by-zero, alle korrekt, Mix `toBeCloseTo(33.33, 1)`, übersprungen-zählt-nicht-falsch, unsicher+uebersprungen propagation, dauer-Berechnung beendet-vs-nicht-beendet mit `vi.useFakeTimers`).
+- `ExamLab/src/store/ueben/uebungsStore.ts` (684 → 540 Z., -22%) — Imports oben: 3 neue (`mergeLoesungen`, `historie`-Bündel, `berechneErgebnis as berechneErgebnisPure`), 1 entfernt (`getFragetext`), 1 reduziert (`LoesungsMap, LoesungsSlice` → nur `LoesungsMap`). Body: 3 Code-Blöcke entfernt. `berechneErgebnis`-Store-Action wird zum 1-Zeiler-Delegator: `() => berechneErgebnisPure(get().session)`. Public-Surface unverändert.
+- `ExamLab/src/components/ueben/UebungsEinsicht.tsx` Z. 2 — Caller-Edit: `GespeichertesErgebnis`-Type-Import auf `utils/ueben/historie` umgestellt (Domain-Owner-Prinzip, kein Re-Export-Smell).
+- `scripts/audit-musterloesung.sh` Baseline `musterlosung` 295 → 307 — Backend-Vertrag-Identifier in Test-Code (+11 für loesungsMerge.test.ts + +1 für ergebnisBerechnung.test.ts mkFrage-Helper).
+
+**Verifikation:**
+- vitest **1454 passed | 4 todo | 1 skipped** (drift +24 vs Bundle V Baseline 1430). Drift-Verteilung: P1+12, P2+5, P3+7 wie geplant.
+- tsc -b clean (Output direkt geprüft, Lehre `feedback_tsc_b_exit_misleading`).
+- 4 Lint-Gates clean: `lint:as-any` (Total 0/Defensive 0/Undokumentiert 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` (keine `__tests__/`), `lint:musterloesung` (Baseline +12).
+- vite build erfolgreich (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Existierende Store-Tests `uebungsStoreLoesungsPreload.test.ts` + `uebungsStorePruefen.test.ts` (11 Tests) unverändert grün — Korrektheits-Backup für byte-identical Cuts intakt.
+
+**Hotspot-Bilanz Reality-Check:** Files >500 Z. (ohne data/test) **10 → 10** (uebungsStore.ts bleibt mit 540 Z. knapp im Set). Plan-DoD-Ziel „Hotspot verlassen" wäre <500 erforderlich; mit reinem Pure-Logic-Cut ohne State-Refactor nicht erreichbar (`starteSession` ~110 Z. async + `pruefeAntwortJetzt` ~120 Z. async waren explizit out-of-scope, weil State-coupled). Plan war optimistisch in der Schätzung 535. **Tatsächlicher Gewinn:** -144 Z. (-22%) + 24 isolierte Vitest-Cases + Pure-Logic-Owner-Trennung etabliert. Spawn-Task „Bundle W.b: State-Refactor für <500" für später.
+
+**Browser-E2E auf staging mit echtem SuS-Login (Account `wr`):** Pfade 1+2+7+8+10 ✅. Force-Push `5263c63..dac7583 → preview`, Pages-Deploy 200 OK. SW-Cache nicht zurückgesetzt vor E2E (Bundle W ist kein Wire-Vertrag-Cut, alter SW lieferte aber sofort Bundle-W-Version — verifiziert via funktionsfähiger MC-Pfad).
+- Pfad 1 ✅: SuS-Login + Üben-Dashboard rendert (Empfehlung VWL + 3 Aktuelle Themen + BWL/RECHT/VWL-Sektionen).
+- Pfad 2 ✅: Sachenrecht-Thema-Detail öffnet → Filter MC → Übung starten → MC-Frage 1/10 rendert mit 4 Optionen (= `mergeLoesungen` Phase 1 funktioniert, sonst kein options-Layout).
+- Pfad 7 ✅: Antwort B gewählt → Antwort prüfen klickt → Instant-Feedback mit korrekt-rot-Markierung + Musterlösung-Banner + 4 Hint-Texte (= `pruefeAntwortJetzt` Preload-Pfad → `mergeLoesungInFrage` hat options + musterlosung gemerged). Übung beenden → Zusammenfassung „0 von 10 richtig, 10 falsch" + „Recht — Sachenrecht..." (= `berechneErgebnisPure` Delegator funktioniert; übersprungen-Logik korrekt: 9 unbeantwortet zählen als falsch).
+- Pfad 8 ✅: „Ergebnisse"-Tab zeigt persistierte Session (= `GespeichertesErgebnis`-Caller-Edit + `ladeHistorie` funktionieren).
+- Pfad 9 ✅ (Bonus): `localStorage.getItem('ueben-session-historie')` zeigt vollständiges `GespeichertesErgebnis`-Schema mit `details: [10 Einträge]`, `dauer: 124751`, `quote: 0` (= `speichereHistorie` Phase 2 + `berechneErgebnis` Phase 3 in der Realität bestätigt).
+- Pfad 10 ✅: Console-Pattern `error|Error|failed|Failed|Uncaught|TypeError` 0 Treffer.
+
+**Reviewer:** Subagent-Dispatch durch Org-Usage-Limit blockiert. Self-Review-Modus durchgehend (Zeilen-Drift wc-l-Tracking + tsc/lint/build/vitest pro Phase + existierende Store-Tests grün als Korrektheits-Sicherung). Final-Reviewer-Spawn-Task chip'd für nachgelagerte Iteration.
+
+**Architektur-Patterns (etabliert/bestätigt):**
+- **Hybrid-Layout** `utils/ueben/` (statt `store/ueben/<sub>/`-Sub-Folder wie Bundle U/V) — semantisch konsistent zu existierenden Pure-Modulen `korrektur.ts`/`mastery.ts`/`fragetext.ts`/`blockBuilder.ts`. Sibling-Stores blieben flach in `store/ueben/`, Pure-Logic geht in passendes Domain-Verzeichnis.
+- **Aliased-Import bei Store-Action-Naming-Konflikt** (`berechneErgebnis as berechneErgebnisPure`) — technisch optional (JS-Module-Scope löst auch ohne Alias auf, analog `ladeHistorie`), stilistisch dringend empfohlen für Lesbarkeit (Delegator-Pattern explizit machen). Spec rev3 dokumentiert.
+- **Domain-Owner-Type-Migration mit Caller-Edit** statt Re-Export-Bridge im Store (`UebungsEinsicht.tsx` importiert `GespeichertesErgebnis` direkt aus neuem Owner `historie.ts`). Konsistent zu Bundle U Dead-Surface-Removal.
+- **Top-Level-Funktion mit gleichnamiger Store-Action OK** ohne Alias (`ladeHistorie` 2× — Top-Level-Import + Action). Property-Key ist nicht im Scope der eigenen Value-Expression (JS-Object-Literal-Scoping).
+- **`mkFrage(partial: Record<string, unknown>) → Frage` Doppel-Cast-Helper** für Test-Code, der Discriminated-Union-Constraint-Umgehung braucht (z.B. Frage mit `elemente` UND `paare` für Branch-Coverage).
+
+**Lehren neu (Bundle W):**
+- **Plan-Hotspot-Schätzung kalibrieren bei Pure-Logic-Cut auf grossen Stores** — Reality-Check: 684 → 540 Z. ist die natürliche Untergrenze für reine Helper-Extraktion bei einem 18-Action-Zustand-Store. State-Coupled-Pfade (`starteSession`, `pruefeAntwortJetzt`) brauchen separates Bundle. Spawn-Task „W.b" für State-Refactor.
+- **Audit-Baseline für Field-Drift bei Test-Hinzufügung antizipieren** — Tests, die domain-typed Backend-Vertrag-Identifier (`musterlosung` no-`e`) verwenden, erhöhen die `audit-musterloesung.sh`-Baseline. Bundle W: +12 Token (11 in loesungsMerge.test.ts + 1 in ergebnisBerechnung.test.ts mkFrage). Baseline-Update gehört zum Bundle-Commit.
+
+**Spawn-Tasks (post-Bundle-W cleanup, chip'd):**
+- **Bundle W.b: State-Refactor für Hotspot-Verlassen** — `starteSession`-Block-Builder + `pruefeAntwortJetzt`-Async-Logic in extra Helper. Schätzung: -40+ Z. → ~500 Z. uebungsStore.ts. Höher-Risiko, separates Bundle.
+- **`istSelbstbewertbar`-Konstante DRY** (Duplikat in `pruefeAntwortJetzt` Z. 263 + `selbstbewertenById` Z. 382) → `utils/ueben/fragetypGruppen.ts` mit `SELBSTBEWERTBARE_TYPEN: readonly Frage['typ'][]`.
+- **Test-Migration**: `src/tests/uebungsStore*.test.ts` zu co-located in `store/ueben/` verschieben (analog Bundle Q Heuristik B).
+- **Final-Code-Reviewer-Pass** für Bundle-W-Branch (war durch Org-Usage-Limit blockiert) — kann post-merge auf `main` als Code-Review-Task laufen.
+
+**Out of Scope (Phase 5+ Roadmap):**
+- Phase 4 Audit komplett abgeschlossen mit Bundle W. Phase 5+ Scoping offen.
+
+---
+
 ### Bundle V — PDFSeite Pure-Cut + Hook-Extraktion ✅ MERGED (2026-05-08)
 
 Branch `bundle-v/pdfseite-split`. Zweites Hoch-Risiko-Datei-Split der **Phase 4** aus dem Vereinfachungs-Audit. **PDFSeite.tsx 950 → 419 Zeilen (-56%)** — Hotspot verlassen, Bilanz Code-Files (>500 Z., ohne data/test) **11 → 10**. Erstmals Vitest-Coverage für PDF-Selection-DOM + SVG-Annotation-Rendering + Text-Edit-State + Drag-Math (vorher 0 Tests, jetzt **+29**).
