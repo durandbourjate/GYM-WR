@@ -34,9 +34,9 @@ export function usePDFDrawing(params: UsePDFDrawingParams): UsePDFDrawingResult 
     onAnnotationHinzufuegen, onAnnotationEditieren,
   } = params
 
-  // Drag-State (Bundle-V byte-identisch von PDFSeite.tsx Z. 58)
+  // Drag-State
   const dragRef = useRef<{ annotId: string; startRelX: number; startRelY: number; origX: number; origY: number } | null>(null)
-  // Freehand drawing state (Bundle-V byte-identisch von PDFSeite.tsx Z. 64-65)
+  // Freehand drawing state
   const istZeichnung = useRef(false)
   const zeichnungsPfad = useRef<{ x: number; y: number }[]>([])
 
