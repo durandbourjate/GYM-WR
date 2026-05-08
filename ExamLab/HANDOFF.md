@@ -68,7 +68,7 @@ Branch `bundle-z/knappdrin`. **Drittes Sub-Bundle der Phase-5+ Hotspot-Reduction
 - handleSpeichernIntern Auto-Save in PruefungsComposer (zu viel Closure/Ref-State).
 - handleStart/Move/End Pointer-State-Machine in ZeichnenCanvas (Bundle T.d hat bereits Pointer-Events ausgelagert, Switch bleibt).
 
-**Merge:** _(Hash nach Merge eintragen)_
+**Merge:** `888c4ff`.
 
 ---
 
