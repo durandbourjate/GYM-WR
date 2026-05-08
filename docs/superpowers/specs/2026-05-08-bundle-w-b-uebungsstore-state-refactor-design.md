@@ -217,9 +217,11 @@ const { block } = erstelleSessionBlock({
 })
 ```
 
-**Hinweis zum `fach`-Argument:** Der Parameter wird vom aktuellen Code nicht direkt genutzt (nur `thema`/`modus`/`quellen`). Er wird als Args-Eingabe mitgeführt, weil das Aufruf-Site `erstelleSessionBlock` semantisch ein "Session-Konfig"-Helper ist und `fach` zum Begriff "Session-Block-Bau" gehört (Future-Proofing für allfällige modus-Erweiterungen, ohne API-Break). **Reviewer-Hinweis:** Wenn dieser Future-Proofing-Argument nicht überzeugt, kann `fach` aus dem Args-Object entfernt werden — neutral für Korrektheit.
+**Default-Entscheidung Args-Shape:** Sowohl `fach`-Parameter (aktuell intern nicht genutzt — nur `thema`/`modus`/`quellen`) als auch `mastery`-Result-Field (Store-Body verwendet die Map aktuell nicht weiter) werden in Helper-Signature **standardmässig beibehalten**. Begründung:
+1. **Args:** `fach` gehört semantisch zur "Session-Konfig" und macht Test-Cases lesbar (`erstelleSessionBlock({fach: 'wr', thema: 'Doppelte-Buchhaltung', modus: 'standard', ...})` ist klarer als ohne).
+2. **Result:** `mastery`-Mit-Rückgabe macht Helper-Output-Shape vollständig + testbar (Test #5 prüft die mastery-Map direkt) — kostet 1 Zeile im Helper.
 
-**Mastery-Map** wird vom Helper zurückgegeben, aktuell aber **nicht** im Store-Body weiterverwendet (nur intern an `erstelleBlock`/`erstelleMixBlock`/`erstelleRepetitionsBlock` weitergereicht). Das `mastery`-Result-Field ist daher **dead** für den aktuellen Store-Body. **Begründung für Mit-Rückgabe:** klar testable Output-Shape, future-Proof falls Store das jemals braucht, kostet 1 Zeile im Helper.
+**Plan-Reviewer-Override:** Falls der Plan-Reviewer YAGNI flaggt (`fach` ist tot oder `mastery`-Field unbenutzt), können beide entfernt werden — neutral für Korrektheit, Tests müssen dann angepasst werden. Default in Plan = Beibehalten.
 
 **Saving:** Z. 91–109 entfallen (~19 Z.) → ersetzt durch 4 Z. Helper-Aufruf. Netto: **-15 Z.** + 1 Import = **-14 Z.**
 
