@@ -7,9 +7,16 @@ import { apiService } from '../../../services/apiService'
 import ZusammenfassungsLeiste from './ZusammenfassungsLeiste'
 import SusDetailPanel from './SusDetailPanel'
 import BeendenDialog from './BeendenDialog'
-
-type Sortierung = 'name' | 'klasse' | 'fortschritt' | 'status'
-type QuickFilter = 'alle' | 'aktiv' | 'abgegeben' | 'nicht-erschienen'
+import { ZeitzuschlagInline } from './ZeitzuschlagInline'
+import {
+  type Sortierung,
+  type QuickFilter,
+  statusReihenfolge,
+  filterLabel,
+  verstossTooltip,
+  stufeIcon,
+  statusBadge,
+} from './aktivPhaseHelpers'
 
 interface Props {
   config: PruefungsConfig
@@ -411,163 +418,3 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
   )
 }
 
-// --- Inline-Zeitzuschlag-Komponente ---
-
-interface ZeitzuschlagInlineProps {
-  email: string
-  zuschlagMin: number
-  basisEndeMs: number
-  jetzt: number
-  istAktiv: boolean
-  onAendern: (email: string, minuten: number) => void
-}
-
-function ZeitzuschlagInline({ email, zuschlagMin, basisEndeMs, jetzt, istAktiv, onAendern }: ZeitzuschlagInlineProps) {
-  const [zeigEditor, setZeigEditor] = useState(false)
-  const [editWert, setEditWert] = useState(zuschlagMin)
-
-  // Sync wenn von aussen geaendert
-  useEffect(() => {
-    setEditWert(zuschlagMin)
-  }, [zuschlagMin])
-
-  // Kein Zuschlag: Kleiner "+5" Button
-  if (zuschlagMin === 0) {
-    return (
-      <button
-        type="button"
-        onClick={() => onAendern(email, 5)}
-        className="text-xs px-1.5 py-0.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-900/20 rounded cursor-pointer transition-colors"
-      >
-        +5
-      </button>
-    )
-  }
-
-  // Berechne ob dieser SuS in Overtime ist (Basis-Ende überschritten, aber persoenliches Ende noch nicht)
-  const persoenlichesEndeMs = basisEndeMs + zuschlagMin * 60 * 1000
-  const istInOvertime = istAktiv && jetzt >= basisEndeMs && jetzt < persoenlichesEndeMs
-  const restSekunden = istInOvertime ? Math.ceil((persoenlichesEndeMs - jetzt) / 1000) : 0
-
-  // Mini-Editor (Popup)
-  if (zeigEditor) {
-    return (
-      <div className="flex items-center gap-1">
-        <input
-          type="number"
-          value={editWert}
-          onChange={(e) => setEditWert(parseInt(e.target.value) || 0)}
-          min={0}
-          max={120}
-          className="w-12 px-1 py-0.5 text-xs text-center border border-blue-300 dark:border-blue-600 rounded bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
-          autoFocus
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onAendern(email, editWert)
-              setZeigEditor(false)
-            } else if (e.key === 'Escape') {
-              setEditWert(zuschlagMin)
-              setZeigEditor(false)
-            }
-          }}
-          onBlur={() => {
-            onAendern(email, editWert)
-            setZeigEditor(false)
-          }}
-        />
-        <span className="text-xs text-slate-400">′</span>
-      </div>
-    )
-  }
-
-  // Overtime-Countdown
-  if (istInOvertime) {
-    const min = Math.floor(restSekunden / 60)
-    const sek = restSekunden % 60
-    return (
-      <div className="flex items-center gap-1">
-        <span className="text-xs font-mono text-amber-600 dark:text-amber-400" title={`+${zuschlagMin} Min. Zuschlag — Restzeit`}>
-          ⏱ {min}:{sek.toString().padStart(2, '0')}
-        </span>
-        <button
-          type="button"
-          onClick={() => onAendern(email, zuschlagMin + 5)}
-          className="text-[10px] px-1 py-0.5 border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400 rounded cursor-pointer transition-colors"
-        >
-          +5
-        </button>
-      </div>
-    )
-  }
-
-  // Zuschlag gesetzt, aber noch nicht in Overtime
-  return (
-    <div className="flex items-center gap-1">
-      <button
-        type="button"
-        onClick={() => setZeigEditor(true)}
-        className="text-xs px-2 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
-        title={`+${zuschlagMin} Min. Zeitzuschlag — klicken zum Bearbeiten`}
-      >
-        ⏱ +{zuschlagMin}′
-      </button>
-      <button
-        type="button"
-        onClick={() => onAendern(email, zuschlagMin + 5)}
-        className="text-[10px] px-1 py-0.5 border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400 rounded cursor-pointer transition-colors"
-      >
-        +5
-      </button>
-    </div>
-  )
-}
-
-// --- Hilfsfunktionen ---
-
-function statusReihenfolge(status: SchuelerStatus['status']): number {
-  switch (status) {
-    case 'aktiv': return 0
-    case 'inaktiv': return 1
-    case 'nicht-gestartet': return 2
-    case 'abgegeben': return 3
-    case 'beendet-lp': return 4
-    default: return 5
-  }
-}
-
-function filterLabel(f: QuickFilter): string {
-  switch (f) {
-    case 'alle': return 'Alle'
-    case 'aktiv': return 'Aktiv'
-    case 'abgegeben': return 'Abgegeben'
-    case 'nicht-erschienen': return 'Nicht erschienen'
-  }
-}
-
-function verstossTooltip(s: SchuelerStatus): string {
-  if (!s.verstoesse?.length) return 'Keine Verstösse'
-  return s.verstoesse.map(v =>
-    `${new Date(v.zeitpunkt).toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' })} — ${v.typ}${v.dauer_sekunden ? ` (${v.dauer_sekunden}s)` : ''}`
-  ).join('\n')
-}
-
-function stufeIcon(stufe?: string): string {
-  return stufe === 'locker' ? '🟢' : stufe === 'streng' ? '🔴' : '🟡'
-}
-
-function statusBadge(status: SchuelerStatus['status']): React.JSX.Element {
-  switch (status) {
-    case 'aktiv':
-      return <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">Aktiv</span>
-    case 'abgegeben':
-      return <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Abgegeben</span>
-    case 'nicht-gestartet':
-      return <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-full">Nicht da</span>
-    case 'beendet-lp':
-      return <span className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full">Beendet</span>
-    case 'inaktiv':
-      return <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full">Inaktiv</span>
-    default:
-      return <span>{status}</span>
-  }
-}
