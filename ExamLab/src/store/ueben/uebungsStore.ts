@@ -2,17 +2,16 @@ import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
 import type { Antwort, Selbstbewertung } from '../../types/antworten'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
-import type { MasteryStufe } from '../../types/ueben/fortschritt'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
-import { erstelleBlock, erstelleMixBlock, erstelleRepetitionsBlock } from '../../utils/ueben/blockBuilder'
-import { istDauerbaustelle } from '../../utils/ueben/mastery'
+import { erstelleSessionBlock } from '../../utils/ueben/sessionBlockBau'
+import { pruefeClientseitig } from '../../utils/ueben/pruefeClientseitig'
+import { ladeLoesungenViaPreload } from '../../utils/ueben/loesungsPreloadFetch'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 import { mergeLoesungen } from '../../utils/ueben/loesungsMerge'
+import { istSelbstbewertbar } from '../../utils/ueben/fragetypGruppen'
 import { ladeHistorie, speichereHistorie, MAX_HISTORIE, type GespeichertesErgebnis } from '../../utils/ueben/historie'
 import { berechneErgebnis as berechneErgebnisPure } from '../../utils/ueben/ergebnisBerechnung'
-import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
-import type { LoesungsMap } from '../../types/ueben/loesung'
 import type { PruefResultat } from '../../types/ueben/pruefResultat'
 import { normalizeAntwort } from '../../utils/normalizeAntwort'
 import { useUebenFortschrittStore } from './fortschrittStore'
@@ -88,25 +87,9 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       )
 
       const fortschritte = useUebenFortschrittStore.getState().fortschritte
-      const mastery: Record<string, MasteryStufe> = {}
-      for (const f of alleFragen) {
-        mastery[f.id] = fortschritte[f.id]?.mastery || 'neu'
-      }
-
-      // Block erstellen je nach Modus
-      let block: Frage[]
-      if (modus === 'mix' && quellen) {
-        block = erstelleMixBlock(alleFragen, quellen, { mastery })
-      } else if (modus === 'repetition') {
-        // Dauerbaustellen ermitteln
-        const dauerBau = new Set<string>()
-        for (const [id, fp] of Object.entries(fortschritte)) {
-          if (istDauerbaustelle(fp.versuche, fp.richtig)) dauerBau.add(id)
-        }
-        block = erstelleRepetitionsBlock(alleFragen, mastery, dauerBau)
-      } else {
-        block = erstelleBlock(alleFragen, thema, { mastery })
-      }
+      const { block } = erstelleSessionBlock({
+        alleFragen, fach, thema, modus, quellen, fortschritte,
+      })
 
       if (block.length === 0) {
         set({ ladeStatus: 'fehler' })
@@ -116,27 +99,10 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       // Lösungs-Preload via separatem Endpoint (Bundle Ü).
       // Bei Erfolg: Lösungen in Frage-Objekte mergen, clientseitige Korrektur möglich.
       // Bei Fehler oder Lücken: pro-Frage-Fallback auf pruefeAntwortJetzt().
-      let loesungen: LoesungsMap = {}
-      try {
-        const { useUebenAuthStore } = await import('./authStore')
-        const user = useUebenAuthStore.getState().user
-        if (user?.sessionToken) {
-          const fragenIds = block.map((f) => f.id)
-          for (const f of block) {
-            const ta = (f as Frage & { teilaufgaben?: Frage[] }).teilaufgaben
-            if (Array.isArray(ta)) for (const t of ta) fragenIds.push(t.id)
-          }
-          loesungen = await ladeLoesungenApi({
-            gruppeId,
-            fragenIds,
-            email: user.email,
-            token: user.sessionToken,
-            fachbereich: fach,
-          })
-        }
-      } catch (e) {
-        console.warn('[uebungsStore] Lösungs-Preload fehlgeschlagen:', e)
-      }
+      const { useUebenAuthStore } = await import('./authStore')
+      const loesungen = await ladeLoesungenViaPreload({
+        block, gruppeId, fachbereich: fach, user: useUebenAuthStore.getState().user,
+      })
 
       const { fragen: blockMitLoesung, preloaded } = mergeLoesungen(block, loesungen)
 
@@ -260,25 +226,18 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     // Selbstbewertungstypen (freitext/audio/visualisierung/pdf/code) haben zwar
     // musterlosung im Slice, aber pruefeAntwort() liefert für sie kein sinnvolles
     // Boolean — für die muss der Server-Pfad laufen (liefert selbstbewertung:true).
-    const istSelbstbewertbar = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'].includes(frage.typ)
-    if (state.loesungenPreloaded[frageId] === true && !istSelbstbewertbar) {
-      const korrekt = pruefeAntwort(frage, normalized)
+    if (state.loesungenPreloaded[frageId] === true && !istSelbstbewertbar(frage.typ)) {
+      const result = pruefeClientseitig({ session, frage, normalized })
       if (!session.freiwillig) {
-        useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, korrekt, session.id)
+        useUebenFortschrittStore.getState().antwortVerarbeiten(frageId, session.email, result.korrekt, session.id)
       }
       set({
-        session: {
-          ...session,
-          antworten: { ...session.antworten, [frageId]: normalized },
-          ergebnisse: { ...session.ergebnisse, [frageId]: korrekt },
-          score: session.score + (korrekt ? 1 : 0),
-        },
+        session: { ...session, ...result.sessionUpdates },
         speichertPruefung: false,
         pruefFehler: null,
         feedbackSichtbar: true,
-        letzteAntwortKorrekt: korrekt,
-        // musterlosung ist bereits in frage.musterlosung gemerged (mergeLoesungInFrage)
-        letzteMusterloesung: frage.musterlosung ?? null,
+        letzteAntwortKorrekt: result.korrekt,
+        letzteMusterloesung: result.letzteMusterloesung,
       })
       return
     }
@@ -379,8 +338,7 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
 
     // Selbstbewertung in die Antwort schreiben — nur sinnvoll bei selbstbewerteten Typen.
     // Bei anderen Typen (Sicherheitsnetz): bewertung wird nur in ergebnisse gespeichert.
-    const istSelbstbewertbar = ['freitext', 'visualisierung', 'pdf', 'audio', 'code'].includes(basis.typ)
-    const antwort = istSelbstbewertbar
+    const antwort = istSelbstbewertbar(basis.typ)
       ? ({ ...basis, selbstbewertung: bewertung } as Antwort)
       : basis
 
