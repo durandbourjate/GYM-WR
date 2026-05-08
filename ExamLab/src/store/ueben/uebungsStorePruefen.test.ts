@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { useUebenUebungsStore } from '../store/ueben/uebungsStore'
-import { useUebenAuthStore } from '../store/ueben/authStore'
-import { useUebenFortschrittStore } from '../store/ueben/fortschrittStore'
-import { uebenApiClient } from '../services/ueben/apiClient'
-import type { UebungsSession } from '../types/ueben/uebung'
-import type { Frage } from '../types/ueben/fragen'
-import type { Antwort } from '../types/antworten'
+import { useUebenUebungsStore } from './uebungsStore'
+import { useUebenAuthStore } from './authStore'
+import { useUebenFortschrittStore } from './fortschrittStore'
+import { uebenApiClient } from '../../services/ueben/apiClient'
+import type { UebungsSession } from '../../types/ueben/uebung'
+import type { Frage } from '../../types/ueben/fragen'
+import type { Antwort } from '../../types/antworten'
 
 function baseSession(overrides: Partial<UebungsSession> = {}): UebungsSession {
   const frage: Frage = {

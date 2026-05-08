@@ -1,23 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useUebenUebungsStore } from '../store/ueben/uebungsStore'
-import type { Frage } from '../types/ueben/fragen'
+import { useUebenUebungsStore } from './uebungsStore'
+import type { Frage } from '../../types/ueben/fragen'
 
-vi.mock('../adapters/ueben/appsScriptAdapter', () => ({
+vi.mock('../../adapters/ueben/appsScriptAdapter', () => ({
   uebenFragenAdapter: {
     ladeFragen: vi.fn(),
   },
 }))
-vi.mock('../services/uebenLoesungsApi', () => ({
+vi.mock('../../services/uebenLoesungsApi', () => ({
   ladeLoesungenApi: vi.fn(),
 }))
-vi.mock('../store/ueben/authStore', () => ({
+vi.mock('./authStore', () => ({
   useUebenAuthStore: {
     getState: () => ({ user: { email: 'sus@stud.test', sessionToken: 'tok' } }),
   },
 }))
 
-import { uebenFragenAdapter } from '../adapters/ueben/appsScriptAdapter'
-import { ladeLoesungenApi } from '../services/uebenLoesungsApi'
+import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
+import { ladeLoesungenApi } from '../../services/uebenLoesungsApi'
 
 const mcFrage: Frage = {
   id: 'f1',
