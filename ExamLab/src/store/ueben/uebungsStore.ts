@@ -2,10 +2,8 @@ import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
 import type { Antwort, Selbstbewertung } from '../../types/antworten'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
-import type { MasteryStufe } from '../../types/ueben/fortschritt'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
-import { erstelleBlock, erstelleMixBlock, erstelleRepetitionsBlock } from '../../utils/ueben/blockBuilder'
-import { istDauerbaustelle } from '../../utils/ueben/mastery'
+import { erstelleSessionBlock } from '../../utils/ueben/sessionBlockBau'
 import { pruefeAntwort } from '../../utils/ueben/korrektur'
 import { normalisiereDragDropBild } from '../../utils/ueben/fragetypNormalizer'
 import { mergeLoesungen } from '../../utils/ueben/loesungsMerge'
@@ -89,25 +87,9 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
       )
 
       const fortschritte = useUebenFortschrittStore.getState().fortschritte
-      const mastery: Record<string, MasteryStufe> = {}
-      for (const f of alleFragen) {
-        mastery[f.id] = fortschritte[f.id]?.mastery || 'neu'
-      }
-
-      // Block erstellen je nach Modus
-      let block: Frage[]
-      if (modus === 'mix' && quellen) {
-        block = erstelleMixBlock(alleFragen, quellen, { mastery })
-      } else if (modus === 'repetition') {
-        // Dauerbaustellen ermitteln
-        const dauerBau = new Set<string>()
-        for (const [id, fp] of Object.entries(fortschritte)) {
-          if (istDauerbaustelle(fp.versuche, fp.richtig)) dauerBau.add(id)
-        }
-        block = erstelleRepetitionsBlock(alleFragen, mastery, dauerBau)
-      } else {
-        block = erstelleBlock(alleFragen, thema, { mastery })
-      }
+      const { block } = erstelleSessionBlock({
+        alleFragen, fach, thema, modus, quellen, fortschritte,
+      })
 
       if (block.length === 0) {
         set({ ladeStatus: 'fehler' })
