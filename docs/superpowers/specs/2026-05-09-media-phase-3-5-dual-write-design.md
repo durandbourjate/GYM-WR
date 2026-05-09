@@ -1,9 +1,36 @@
 # Media-Phase 3-5 Dual-Write — Design Spec
 
 **Datum:** 2026-05-09
-**Branches:** `media-phase-3/apps-script-pdf-save`, `media-phase-4a/bild-stack`, `media-phase-4b/pdf-stack`, `media-phase-5/renderer-cleanup`
-**Phase:** Media-Migration Phasen 3-5 (Phase 1+2 done auf main, Phase 6 separates Bundle danach)
-**Strategie:** Sequenzielle Sub-Bundles, Clean-Break-Editor-Writes, Voller State-Refactor
+**Branches:** ~~`media-phase-3/...`~~ ✅ done · ~~`media-phase-4a/...`~~ optional · ~~`media-phase-4b/...`~~ optional · `media-phase-5/renderer-cleanup` (= einzige verbleibende Phase mit funktionalem Effekt)
+**Phase:** Media-Migration (Phase 1+2 done, Phase 3 done, Phase 4 als optionale Code-Hygiene umgestuft, Phase 5 noch zu tun, Phase 6 separates Bundle danach)
+**Strategie:** Spec-Audit-Pass-Resultat — siehe Section 0 STATUS-UPDATE.
+
+---
+
+## 0 · STATUS-UPDATE 2026-05-09 (Post-Audit)
+
+**Befund nach gründlichem Code-Audit der Phase-4.a-Files:** Der ursprüngliche Spec-Approach war an mehreren Stellen unpräzise weil der initiale Audit zu eng war (Memory-Lehre `feedback_grep_anwesenheit_nicht_abwesenheit`).
+
+**Tatsächlicher Code-Stand:**
+- ✅ Apps-Script SAVE schreibt `frage.pdf` MIT (seit `82dcb4db` Bundle N, 19.04.2026) — Phase 3 obsolet
+- ✅ Apps-Script SAVE schreibt `frage.bild` MIT (seit Phase 1+2)
+- ✅ Apps-Script READ ergänzt `frage.bild`/`frage.pdf` aus Alt-Feldern via `mq_ergaenzeMediaQuelle_` (Phase 1+2)
+- ✅ `fragenFactory.ts` macht **bereits Dual-Write**: schreibt `bildUrl` + `bild: bildQuelleAus(...)` (3 Bild-Typen Z. 253/266/286), und `pdf: pdfQuelleAus(...)` (Z. 229) — **Phase 4 ist im Save-Pfad bereits live**
+- ✅ Renderer in `ExamLab/src/` für Bild-Typen (Hotspot/Bildbeschriftung/DragDrop) nutzen schon `ermittleBildQuelle` (13+ Stellen)
+- 🟡 Editor-State bleibt URL-string-basiert (BildUpload/PDFEditor/3 Editor-Komponenten) — funktional folgenlos weil Factory dual-write macht
+- 🟡 `buildFragePreview.ts` schreibt nur Alt-Felder — **kein Bug** weil es synthetische Frage für `pflichtfeldValidation` baut, der wiederum Alt-Felder checkt (intern konsistent)
+- ❌ Renderer in `ExamLab/src/` für PDF (4 Files: PDFKorrektur/PDFAnnotationAnzeige/VorschauTab/PDFFrage) lesen direkt Alt-Felder statt via `ermittlePdfQuelle` — **echter Inkonsistenz-Punkt, Phase 5 adressiert**
+
+**Konsequenz für die Spec:**
+- **Phase 3 entfällt** (siehe Section 3 STATUS-UPDATE)
+- **Phase 4.a (Bild-Editor-State-Refactor) wird zu optionalem Code-Hygiene-Bundle** — kein funktionaler Effekt auf User oder Sheet-Daten weil Factory + Apps-Script + Renderer alle schon dual-aware sind. Editor-State-URL-string-basiert bleibt funktional korrekt.
+- **Phase 4.b (PDF-Editor-State-Refactor) wird zu optionalem Code-Hygiene-Bundle** — gleiches Argument. Hauptnutzen: 4 separate State-Setter im PDFEditor zu 1 MediaQuelle-State kollabieren (Type-Safety im Editor).
+- **Phase 5 (Renderer-Cleanup ExamLab/src/) ist die einzige verbleibende funktional relevante Phase** — 4 PDF-Renderer-Files auf `ermittlePdfQuelle`-Resolver umstellen.
+- **Phase 6 (Type-Cleanup + Sheet-Daten-Migration)** wie geplant nach Phase 5.
+
+**Empfohlener Pfad:** Direkt zu **Phase 5** (eigener Plan via `superpowers:writing-plans`). Phase 4.a/4.b als „Future Code-Hygiene-Bundles" markiert, bei Bedarf nach Phase 6 oder beim nächsten grösseren Editor-Refactor mitnehmen.
+
+**Folgende Sub-Sections beschreiben den ursprünglich geplanten Scope** (Phase 3/4.a/4.b zur Dokumentation der getätigten Annahmen, Phase 5 zur Implementation).
 
 ---
 
@@ -52,14 +79,14 @@
 
 ### 2.1 Phasen-Granularität — Sequenzielle Sub-Bundles
 
-| Sub-Bundle | Branch | Ziel | Apps-Script-Deploy | Schätzung |
-|------------|--------|------|--------------------|-----------|
-| ~~Phase 3~~ | — | ~~Apps-Script SAVE für PDF~~ | — | ✅ Bereits erledigt seit `82dcb4db` (2026-04-19) |
-| Phase 4.a | `media-phase-4a/bild-stack` | Bild-Editor-State auf MediaQuelle | Nein | 1-2 Sessions, 8 Files |
-| Phase 4.b | `media-phase-4b/pdf-stack` | PDF-Editor-State auf MediaQuelle | Nein | 1 Session, 4 Files |
-| Phase 5 | `media-phase-5/renderer-cleanup` | Renderer-Cleanup ExamLab/src | Nein | 1 Session, 4 Files |
+| Sub-Bundle | Branch | Ziel | Funktionaler Effekt | Schätzung |
+|------------|--------|------|---------------------|-----------|
+| ~~Phase 3~~ | — | ~~Apps-Script SAVE für PDF~~ | ✅ Bereits erledigt seit `82dcb4db` (2026-04-19) | 0 (entfällt) |
+| ~~Phase 4.a~~ | `media-phase-4a/bild-stack` (optional) | Bild-Editor-State auf MediaQuelle | **Code-Hygiene only** (Factory macht schon Dual-Write) | 1-2 Sessions wenn gemacht |
+| ~~Phase 4.b~~ | `media-phase-4b/pdf-stack` (optional) | PDF-Editor-State auf MediaQuelle | **Code-Hygiene only** (8 Setter → 1 MediaQuelle-State) | 1 Session wenn gemacht |
+| **Phase 5** | `media-phase-5/renderer-cleanup` | Renderer-Cleanup ExamLab/src/ | **Echter Renderer-Konsistenz-Fix** (4 PDF-Files auf Resolver) | 1 Session, 4 Files |
 
-**Reihenfolge zwingend:** Phase 4.a → 4.b → 5. Phase-3-Deploy entfällt (ist live seit Bundle N im April).
+**Reihenfolge:** Direkt **Phase 5** als nächstes (einzige verbleibende funktional relevante Phase). Phase 4.a/4.b sind „Future Code-Hygiene-Bundles" — Save-Pfad funktioniert heute schon dual-write, Editoren sind nur intern URL-string-basiert ohne User-Effekt.
 
 ### 2.2 Editor-Write-Strategie — Clean Break (Option A)
 
@@ -159,7 +186,9 @@ Apps-Script Re-Deploy alter Version (User-Aufgabe). Frontend-Code ist Wire-Vertr
 
 ---
 
-## 4 · Phase 4.a — Bild-Stack Editor-State-Refactor
+## 4 · Phase 4.a — Bild-Stack Editor-State-Refactor 🟡 OPTIONAL (Code-Hygiene)
+
+> **STATUS-UPDATE 2026-05-09:** Phase-4.a-Audit zeigte: Editor-State ist heute URL-string-basiert (BildUpload/3 Editor-Komponenten/SharedFragenEditor), aber **`fragenFactory.ts` macht bereits Dual-Write** (Z. 253/266/286: `bild: bildQuelleAus({ bildUrl }) ?? undefined` parallel zu `bildUrl`). Apps-Script-Save persistiert beide Felder. Renderer in `ExamLab/src/` für Bild-Typen lesen schon via `ermittleBildQuelle`-Resolver mit Migrator-Fallback. **Editor-State-Refactor hat keinen funktionalen Effekt**, ist reine Code-Hygiene (Type-Safety im Editor-Code, Konsistenz mit MediaQuelle-Architektur). Phase 4.a wird daher als optionales „Future Bundle" markiert. Folgende Sub-Sections beschreiben den ursprünglichen Scope.
 
 ### 4.1 Was geliefert (8 Files)
 
@@ -210,7 +239,9 @@ Mittel. Touchiert State-Management von 6 Komponenten + 2 Orchestrator-Files. Mit
 
 ---
 
-## 5 · Phase 4.b — PDF-Stack Editor-State-Refactor
+## 5 · Phase 4.b — PDF-Stack Editor-State-Refactor 🟡 OPTIONAL (Code-Hygiene)
+
+> **STATUS-UPDATE 2026-05-09:** Analog Phase 4.a — Apps-Script-Save schreibt `pdf: frage.pdf` (seit Bundle N). Factory schreibt `pdf: pdfQuelleAus(...)` (Z. 229) parallel zu Alt-Feldern. Renderer in `ExamLab/src/` greifen noch auf Alt-Felder direkt zu, das ist Phase 5. **PDFEditor-State-Refactor (8 Setter → 1) hat keinen funktionalen Effekt**, ist reine Code-Hygiene + Type-Safety. Phase 4.b wird daher als optionales „Future Bundle" markiert. Folgende Sub-Sections beschreiben den ursprünglichen Scope.
 
 ### 5.1 Was geliefert (4 Files)
 
