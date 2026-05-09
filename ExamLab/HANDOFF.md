@@ -8,6 +8,66 @@
 
 ## Letzter Stand auf main
 
+### Bundle BB — HilfeSeite + EinstellungenPanel Doppel-Cut ✅ MERGED (2026-05-09)
+
+Branch `bundle-bb/hilfeseite-einstellungen`. **Fünftes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X/Y/Z/AA). **Doppel-Cut Mittel-Risiko + Hoch-Risiko-Static**: HilfeSeite **906 → 102 Z. (-89%)** + EinstellungenPanel **607 → 123 Z. (-80%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 3 → 1** ✅ — beide Files raus aus dem Set. Verbleibend: ConfigTab (747) als Bundle CC reserviert.
+
+**Was geliefert (Phase A — HilfeSeite):**
+- `ExamLab/src/components/lp/hilfe/layoutHelpers.tsx` (~35 Z.) — 5 Named Exports `Titel`/`Untertitel`/`Text`/`Schritt`/`Hinweis`. JSX byte-identisch.
+- 10 Tab-Sektion-Files (jeweils Default-Export, Tab-Inhalt byte-identisch):
+  - `HilfeEinstieg.tsx` (~52 Z.), `HilfeUeben.tsx` (~49 Z.), `HilfePruefung.tsx` (~34 Z.)
+  - `HilfeFragen.tsx` (~130 Z.), `HilfeZusammenarbeit.tsx` (~46 Z.), `HilfeKI.tsx` (~90 Z.)
+  - `HilfeDurchfuehrung.tsx` (~63 Z.), `HilfeKorrektur.tsx` (~54 Z.)
+  - `HilfeBloom.tsx` (~129 Z., enthält Default + lokale `BloomStufe`-Sub-Komponente mit `useState`-Toggle)
+  - `HilfeFAQ.tsx` (~133 Z., enthält Default + lokale `FAQItem`-Sub-Komponente mit `useState`-Toggle)
+- `ExamLab/src/components/lp/HilfeSeite.tsx` (906 → 102 Z., -804 Z., -89%): Wrapper + Tab-Switch + ResizableSidebar bleibt; alle Tab-Sektionen + Layout-Helper raus.
+
+**Was geliefert (Phase B — EinstellungenPanel):**
+- `ExamLab/src/components/settings/einstellungen/sharedFelder.tsx` (~53 Z.) — Named Exports `CheckboxChip` + `SettingsField`. JSX/Logik byte-identisch.
+- `ExamLab/src/components/settings/einstellungen/InlineEditoren.tsx` (~77 Z.) — Named Exports `InlineKursEditor` + `InlineTextEditor` (Inline-CRUD-Forms). Type-Imports aus `../../../types/stammdaten`.
+- `ExamLab/src/components/settings/einstellungen/ProfilTab.tsx` (~117 Z.) — Default-Export. LP-Profil mit 3 CheckboxChip-Listen (Fachschaften/Kurse/Gefässe) + `speichereLPProfil`-Action. `useStammdatenStore.getState().fehler` Zugriff erhalten.
+- `ExamLab/src/components/settings/einstellungen/AdminTab.tsx` (~242 Z.) — Default-Export. 4 CRUD-Sektionen für Gefässe/Kurse/Fachschaften/Fächer mit Inline-Editoren + `useCallback`-`speichern` + `bearbeitungsModus`-State.
+- `ExamLab/src/components/settings/EinstellungenPanel.tsx` (607 → 123 Z., -484 Z., -80%): Tab-Bar + Tab-Switch + ResizableSidebar bleibt; ProfilTab+AdminTab+Inline-Editoren+Shared-Felder raus.
+
+**Verifikation:**
+- vitest **1523 passed | 4 todo | 1 skipped** (drift =0 vs Pre-BB-Baseline 1523, +11 vs Bundle-AA-Baseline 1512 stammt aus 2 untracked Test-Files vor Bundle BB).
+- tsc -b clean.
+- 4 Lint-Gates clean: `lint:as-any` (Total 0), `lint:no-alert` (0 Treffer), `lint:no-tests-dir` clean, `lint:musterloesung` Drift +8 stammt aus pre-existing untracked Test-Files (`uebungsStorePruefen.test.ts`+`uebungsStoreLoesungsPreload.test.ts`), nicht aus Bundle BB. Verifikation via `git stash -u`: Bundle BB selbst zeigt 0 Drift.
+- vite build grün (~3s, PWA generateSW OK, 256 Cache-Entries).
+- Bestehende Tests grün — keine Regression.
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 3 → 1** ✅. Verbleibend: ConfigTab (747) als Bundle CC reserviert.
+
+**Browser-E2E:** Mit echten LP+SuS-Logins auf `staging` durchgeführt:
+- LP-Pfade ✅: Hilfe-Sidebar öffnen / Tabs durchklicken: Erste Schritte → KI-Assistent (komplexe Tabelle + Hinweis-Box) → Bloom-Taxonomie (Stateful Accordion: K1 expand) → FAQ (Stateful Toggle: erste Frage öffnen). Einstellungen-Sidebar öffnen / ProfilTab (Fachschaften/Kurse/Gefässe sichtbar) / Tab-Wechsel zu Favoriten + zurück / Problemmeldungen-Badge "(4)" funktioniert.
+- SuS-Pfade ✅: Hallo wr! / Empfohlenes Thema VWL / Filter Alle/BWL/Recht/VWL / Aktuelle Themen-Karten + BWL-Sektion sichtbar.
+- 0 Console-Errors auf beiden Tabs (verifiziert via `read_console_messages onlyErrors:true`).
+
+**Reviewer:** Self-Review-Modus (analog Bundle Z+AA) — kompakte Spec, kein 2-Iter-Reviewer-Loop. Bundle BB ist trotz Größe niedrig-Risiko: HilfeSeite reines Static Content, EinstellungenPanel Sub-Komponenten ohne Cross-State.
+
+**Architektur-Patterns (etabliert/wieder-verwendet):**
+- **Tab-Sektion-Cut** (Bundle T.f LPStartseite, 1043→382): static content in Tab-Switch-Renderern → 1 Sub-File pro Tab + 1 Layout-Helper-File mit Named Exports.
+- **Sub-Komponenten-Cut** (Bundle T.b TKontoFrage, 763→155): state-rich Sub-Komponenten (ProfilTab/AdminTab) als Default-Export in eigenes File, Hauptdatei nur noch Tab-Switch.
+- **Lokale Helper im Tab-File** (neu Bundle BB) — `BloomStufe` und `FAQItem` mit `useState` bleiben **innerhalb** ihres Parent-Tab-Files (`HilfeBloom.tsx` / `HilfeFAQ.tsx`), nicht extracted. Keine Cross-File-Re-Use, also intern lokal halten.
+- **Doppel-Cut in 1 Bundle** (Bundle Z/AA): zwei unabhängige Files mit Spec-Plan-Reviewer-Overhead 1× statt 2×.
+
+**Lehren neu (Bundle BB):**
+- **Hoch-Risiko-Klassifikation in HANDOFF nicht immer = hoch-Risiko-Cut** — HilfeSeite (906 Z., war als „hoch-Risiko" gemerged-Spawn-Task gelistet) zeigt: Größe ≠ Risiko. Wenn Inhalt rein static ist mit Tab-Switch-Pattern, ist der Cut byte-mechanisch und Low-Risk trotz Größe. Pre-Cut-Audit (`grep -n "^function\|^const.*=.*=>\|^export"`) zur Risk-Bewertung empfehlenswert.
+- **untracked Test-Files vor Bundle Spawn nicht ignorieren** — pre-existing untracked Test-Files (von vorherigen Sessions) tragen zu lint:musterloesung-Drift bei. Gut: `git stash -u` vor Audit, um Drift-Quelle zu isolieren. Empfehlung: Bei Bundle-Start prüfen ob Untracked-Files noch Bundle-relevant sind.
+- **Bei `Write`-Tool-Fehler "File not yet read" Read-Tool-Roundtrip ist nötig** — auch wenn man Sektionen via Read schon abgedeckt hat, kann der Tool-State bei Re-Write die Read-Validation neu prüfen. 5-Zeilen-Read als günstiger Workaround.
+
+**Spawn-Tasks (post-Bundle-BB):**
+- **Bundle CC: ConfigTab (747)** — letzter Hotspot >500 Z. (Code-Files). Hoch-Risiko wegen MaterialienSection mit Datei-Upload-State und composer-spezifischer Form-Logik.
+- 2 untracked Test-Files (`uebungsStorePruefen.test.ts` + `uebungsStoreLoesungsPreload.test.ts`) sind weiterhin vorhanden und sollten in einem eigenen Test-Pflege-Bundle reviewed werden (musterloesung-Drift + Bundle-Zugehörigkeit klären).
+
+**Out of Scope:**
+- Konsolidierung von ProfilTab/AdminTab in eine gemeinsame Form-Logik (eigene Architektur-Diskussion wert).
+- AdminTab CRUD-Sektionen-Dedup (4× ähnliche Sektionen für Gefässe/Kurse/Fachschaften/Fächer könnten via `<CRUDSection>`-Generic gebündelt werden — eigenes Bundle wert).
+
+**Merge:** lokal (push ausstehend).
+
+---
+
 ### Bundle AA — AktivPhase + BilanzERFrage Mittel-Risiko-Cuts ✅ MERGED (2026-05-09)
 
 Branch `bundle-aa/mittelrisiko`. **Viertes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X/Y/Z). **Doppel-Cut der zwei mittel-Risiko Files**: AktivPhase **573 → 420 Z. (-26.7%)** + BilanzERFrage **589 → 376 Z. (-36.2%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 5 → 3** ✅ — beide Files raus aus dem Set. +14 neue Vitest-Tests (1498 → 1512).
