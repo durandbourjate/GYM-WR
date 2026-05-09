@@ -62,7 +62,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const { activeTab, setActiveTab, wechsleTab } = useDurchfuehrenPhasenTab({ phase, urlTab, user, pruefungId })
   const { abgaben, setAbgaben, fragen, setFragen, config, setConfig, abgabenGeladenRef } =
     useDurchfuehrenLoad({ user, pruefungId, istDemoModus, phase, urlTab, setActiveTab })
-  const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten } =
+  const { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, resetFuerNeueDurchfuehrung } =
     useDurchfuehrenMonitoring({ user, pruefungId, istDemoModus, phase })
 
   // Phase-Sync: ersetzt die alte per-render-Computation.
@@ -375,7 +375,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                             // Phase-Watch-Effect verarbeitet den 'beendet'→'vorbereitung'-Wechsel
                             // automatisch ohne Auto-Forward, weil idx 0 ≤ idx 3.)
                             abgabenGeladenRef.current = false
-                            setDaten({ pruefungId: config!.id, pruefungTitel: '', schueler: [], gesamtSus: 0, aktualisiert: new Date().toISOString() })
+                            resetFuerNeueDurchfuehrung(config!.id)
                             setAbgaben({})
                             setFragen([])
                             // Config zurücksetzen: lokal + Backend

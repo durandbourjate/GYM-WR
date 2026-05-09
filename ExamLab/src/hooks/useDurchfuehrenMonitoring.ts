@@ -11,8 +11,7 @@ export interface UseDurchfuehrenMonitoringResult {
   setAutoRefresh: (v: boolean) => void
   zeigeVerbindungsBanner: boolean
   ladeDaten: () => Promise<void>
-  /** TODO Task 4 (T.f wenn phase-useState-Pattern eingeführt): durch resetDaten(pruefungId) oder onPruefungReset-Callback ersetzen — Direct-Setter-Leak vermeiden. */
-  setDaten: (d: MonitoringDaten | null) => void
+  resetFuerNeueDurchfuehrung: (pruefungId: string) => void
 }
 
 /**
@@ -88,5 +87,19 @@ export function useDurchfuehrenMonitoring(opts: {
     return () => clearInterval(interval)
   }, [autoRefresh, ladeStatus, ladeDaten, phase])
 
-  return { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, setDaten }
+  // Reset für 'Neue Durchführung': leerer Snapshot mit neuer pruefungId,
+  // bricht in-flight Monitoring-Fetch ab (verhindert Race mit Stale-Result).
+  const resetFuerNeueDurchfuehrung = useCallback((pid: string) => {
+    monitoringAbortRef.current?.abort()
+    fehlerCountRef.current = 0
+    setDaten({
+      pruefungId: pid,
+      pruefungTitel: '',
+      gesamtSus: 0,
+      schueler: [],
+      aktualisiert: new Date().toISOString(),
+    })
+  }, [])
+
+  return { daten, ladeStatus, autoRefresh, setAutoRefresh, zeigeVerbindungsBanner, ladeDaten, resetFuerNeueDurchfuehrung }
 }
