@@ -23,7 +23,7 @@
 
 | Bereich | Lücke |
 |---------|-------|
-| Apps-Script PDF SAVE | typenSpezifischeFelder Z. 4559-4562 hat NUR Alt-Felder, kein `pdf: frage.pdf` |
+| ~~Apps-Script PDF SAVE~~ | ✅ **Bereits erledigt seit `82dcb4db` (2026-04-19)** — `pdf: frage.pdf` in `typenSpezifischeFelder` PDF-case Z. 4563. Initialer Audit hatte übersehen (zu enger grep-Pattern). Phase 3 entfällt. |
 | Frontend Bild-Editor-Stack | `BildUpload`/`BildMitGenerator`/`HotspotEditor`/`BildbeschriftungEditor`/`DragDropBildEditor` schreiben Alt-Felder |
 | Frontend PDF-Editor-Stack | `PDFEditor` schreibt 4 Alt-Felder (`pdfBase64`/`pdfDriveFileId`/`pdfUrl`/`pdfDateiname`) |
 | Frontend Editor-Orchestrator | `fragenFactory.ts` + `buildFragePreview.ts` + `SharedFragenEditor.tsx` Bild- und PDF-Pfade |
@@ -54,12 +54,12 @@
 
 | Sub-Bundle | Branch | Ziel | Apps-Script-Deploy | Schätzung |
 |------------|--------|------|--------------------|-----------|
-| Phase 3 | `media-phase-3/apps-script-pdf-save` | Apps-Script SAVE für PDF | **Ja, manuell User** | 1 Session, ~30 Z. |
+| ~~Phase 3~~ | — | ~~Apps-Script SAVE für PDF~~ | — | ✅ Bereits erledigt seit `82dcb4db` (2026-04-19) |
 | Phase 4.a | `media-phase-4a/bild-stack` | Bild-Editor-State auf MediaQuelle | Nein | 1-2 Sessions, 8 Files |
 | Phase 4.b | `media-phase-4b/pdf-stack` | PDF-Editor-State auf MediaQuelle | Nein | 1 Session, 4 Files |
 | Phase 5 | `media-phase-5/renderer-cleanup` | Renderer-Cleanup ExamLab/src | Nein | 1 Session, 4 Files |
 
-**Reihenfolge zwingend:** Phase 3 → User deployed Apps-Script → User verifiziert → Phase 4.a → 4.b → 5.
+**Reihenfolge zwingend:** Phase 4.a → 4.b → 5. Phase-3-Deploy entfällt (ist live seit Bundle N im April).
 
 ### 2.2 Editor-Write-Strategie — Clean Break (Option A)
 
@@ -83,13 +83,21 @@ Editor-State ist `MediaQuelle | null`, nicht mehr `bildUrl: string`. Read via `e
 
 Konsistente Test-Matrix pro Media-Typ (Bild: Hotspot+Bildbeschriftung+DragDrop; PDF: PDFFrage+PDFEditor).
 
-### 2.5 Storage-Format — Single JSON-Column (bereits etabliert)
+### 2.5 Storage-Format — Single typDaten-Spalte mit JSON-Object (bereits etabliert)
 
-`bild`/`pdf` sind Spalten im Sheet, gespeichert als JSON-Object (MediaQuelle Discriminated Union via `JSON.stringify`/`JSON.parse`). Anhänge: `anhaenge`-Spalte als JSON-Array, jeder Eintrag enthält `quelle: MediaQuelle`. Pattern ist seit Phase 1+2 in Place.
+Es gibt **eine** `typDaten`-Spalte im Sheet pro Frage-Row. `typenSpezifischeFelder(frage)` produziert ein typ-spezifisches Object, das via `JSON.stringify(typDaten)` in diese Spalte geschrieben wird. `bild`/`pdf` sind **Keys innerhalb dieses JSON-Blobs** (nicht eigene Sheet-Spalten). MediaQuelle-Werte werden als JSON.stringify-Discriminated-Union persistiert. Anhänge: `anhaenge`-Spalte separat als JSON-Array, jeder Eintrag enthält `quelle: MediaQuelle`. Pattern ist seit Phase 1+2 in Place.
 
 ---
 
-## 3 · Phase 3 — Apps-Script SAVE für PDF
+## 3 · Phase 3 — Apps-Script SAVE für PDF ✅ BEREITS ERLEDIGT
+
+> **STATUS-UPDATE 2026-05-09:** Phase-3-Implementation ist **bereits auf main vorhanden** seit commit `82dcb4db` (Bundle N Apps-Script-Bereich, 2026-04-19). `git blame ExamLab/apps-script-code.js Z. 4563` bestätigt `pdf: frage.pdf` ist seit ~3 Wochen Teil des `typenSpezifischeFelder` PDF-case. Initialer Spec-Audit hat das übersehen weil der grep-Pattern auf Alt-Feldnamen beschränkt war (`pdfBase64|pdfDriveFileId|pdfUrl|pdfDateiname`) — das neue `pdf:`-Feld matchte keinen davon. **Lehre:** Bei "ist X schon implementiert"-Audits explizit nach X greppen, nicht aus Abwesenheit von Alt-Pattern schliessen.
+>
+> **Konsequenz:** Phase 3 hat keine Implementation-Arbeit. Die ursprünglich geplante 1-Zeilen-Änderung ist seit `82dcb4db` Live, READ-Pfad in `parseFrage` Z. 3023 ist Phase-2-ready, Apps-Script ist deployed. **User-Apps-Script-Deploy für Phase 3 entfällt.** Direkter Sprung zu Phase 4.a möglich.
+>
+> Phase-3-Plan-Datei (`docs/superpowers/plans/2026-05-09-media-phase-3-apps-script-pdf-save.md`) wurde gelöscht.
+>
+> Folgende Sub-Sections beschreiben den ursprünglich geplanten Scope (zur Dokumentation der getätigten Annahmen, nicht zur Ausführung).
 
 ### 3.1 Was geliefert
 
