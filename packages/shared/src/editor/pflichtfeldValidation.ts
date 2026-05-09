@@ -6,6 +6,7 @@ import type {
   KontenbestimmungFrage, BilanzERFrage, VisualisierungFrage, PDFFrage,
   CodeFrage, FormelFrage, AufgabengruppeFrage,
 } from '../types/fragen-core'
+import { ermittleBildQuelle, ermittlePdfQuelle } from '../utils/mediaQuelleResolver'
 
 export type FeldStatus = 'pflicht-leer' | 'empfohlen-leer' | 'ok'
 
@@ -191,7 +192,7 @@ function validiereZuordnung(frage: ZuordnungFrage): ValidationResult {
 
 function validiereBildbeschriftung(frage: BildbeschriftungFrage): ValidationResult {
   const fragetextOk = strNonEmpty(frage.fragetext)
-  const bildOk = strNonEmpty(frage.bildUrl)
+  const bildOk = ermittleBildQuelle(frage) !== null
   const beschriftungen = Array.isArray(frage.beschriftungen) ? frage.beschriftungen : []
   const allBeschOk =
     beschriftungen.length > 0 &&
@@ -223,7 +224,7 @@ function validiereBildbeschriftung(frage: BildbeschriftungFrage): ValidationResu
 
 function validiereDragDropBild(frage: DragDropBildFrage): ValidationResult {
   const fragetextOk = strNonEmpty(frage.fragetext)
-  const bildOk = strNonEmpty(frage.bildUrl)
+  const bildOk = ermittleBildQuelle(frage) !== null
   const zielzonen = Array.isArray(frage.zielzonen) ? frage.zielzonen : []
   const labelsRaw: unknown[] = Array.isArray(frage.labels) ? frage.labels : [] // Defensive: Legacy-Daten können string[] statt DragDropBildLabel[] enthalten
   const labels: string[] = labelsRaw
@@ -263,7 +264,7 @@ function validiereDragDropBild(frage: DragDropBildFrage): ValidationResult {
 
 function validiereHotspot(frage: HotspotFrage): ValidationResult {
   const fragetextOk = strNonEmpty(frage.fragetext)
-  const bildOk = strNonEmpty(frage.bildUrl)
+  const bildOk = ermittleBildQuelle(frage) !== null
   const frageCompat = frage as unknown as { hotspots?: unknown[] } // Defensive: legacy 'hotspots' alias vor Kanonisierung zu 'bereiche'
   const bereiche = Array.isArray(frage.bereiche)
     ? frage.bereiche
@@ -470,7 +471,7 @@ function validiereVisualisierung(frage: VisualisierungFrage): ValidationResult {
 
 function validierePDF(frage: PDFFrage): ValidationResult {
   const fragetextOk = strNonEmpty(frage.fragetext)
-  const pdfOk = strNonEmpty(frage.pdfDriveFileId) || strNonEmpty(frage.pdfUrl) || strNonEmpty(frage.pdfBase64)
+  const pdfOk = ermittlePdfQuelle(frage) !== null
   const frageCompat = frage as unknown as { pdfErlaubteWerkzeuge?: unknown[] } // Defensive: Legacy 'pdfErlaubteWerkzeuge'-Alias aus älteren Frage-Versionen
   const werkzeugeRaw = Array.isArray(frageCompat.pdfErlaubteWerkzeuge)
     ? frageCompat.pdfErlaubteWerkzeuge

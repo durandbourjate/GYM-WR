@@ -361,6 +361,15 @@ describe('validierePflichtfelder — pdf', () => {
     }))
     expect(r.pflichtErfuellt).toBe(true)
   })
+  it('akzeptiert pdf: MediaQuelle ohne Alt-Felder (Phase 6.a Resolver-Read)', () => {
+    const r = validierePflichtfelder(mockCoreFrage('pdf', {
+      fragetext: 'q',
+      pdfDriveFileId: undefined,
+      pdf: { typ: 'app', appPfad: 'materialien/witzsammlung.pdf', mimeType: 'application/pdf', dateiname: 'witzsammlung.pdf' },
+      erlaubteWerkzeuge: ['highlighter'],
+    }))
+    expect(r.pflichtErfuellt).toBe(true)
+  })
 })
 
 describe('validierePflichtfelder — code', () => {
@@ -617,6 +626,15 @@ describe('validierePflichtfelder — hotspot', () => {
       bereiche: undefined,
       hotspots: [{ id: 'br1' }],
     } as unknown as Frage /* Defensive: legacy hotspots-Feld, bereiche bewusst entfernt */)
+    expect(r.pflichtErfuellt).toBe(true)
+  })
+  it('akzeptiert bild: MediaQuelle ohne bildUrl (Phase 6.a Resolver-Read)', () => {
+    const r = validierePflichtfelder(mockCoreFrage('hotspot', {
+      fragetext: 'q',
+      bildUrl: '',
+      bild: { typ: 'app', appPfad: 'demo-bilder/europa.svg', mimeType: 'image/svg+xml' },
+      bereiche: gueltigeBereiche,
+    }))
     expect(r.pflichtErfuellt).toBe(true)
   })
 })
