@@ -8,6 +8,53 @@
 
 ## Letzter Stand auf main
 
+### Pre-Phase-6 Cleanup (S1+S3+S4) 🟡 STAGING (2026-05-09)
+
+Branch `cleanup/pre-phase6-s1-s3-s4` → preview. Aufwärm-Bundle vor Media-Phase 6, drei niedrig-Risiko Spawn-Tasks aus Media-Phase-3-5-Spec § 8 abgearbeitet. **Keine Wire-Vertrag-Änderungen** — Frontend-Pool-Konverter Dual-Write + Demo-Daten Dual-Write + ein Orphan-Delete.
+
+**Was geliefert (3 Commits + Spec):**
+
+| # | Commit | Datei(en) | Inhalt |
+|---|--------|-----------|--------|
+| Spec | `0a9cff1` | `docs/superpowers/specs/2026-05-09-pre-phase6-cleanup-design.md` | Design-Doc 97 Z., 4 Sektionen + DoD pro Task |
+| S1 | `b3de2f9` | `ExamLab/src/utils/fragenValidierung.ts` (delete -96 Z.) | Orphan-Duplikat: 0 Konsumenten in ExamLab/src, identisch zu shared-Version (re-exportiert via `@shared`). Diff-Audit: nur Doc-Comment + Type-Import-Pfad |
+| S4 | `7a1cab2` | `ExamLab/src/utils/poolConverter/konvertiereBild.ts` + `.test.ts` | `bild: MediaQuelle.pool { poolPfad, mimeType }` Dual-Write für hotspot/bildbeschriftung/dragdrop_bild. Inline-Helper `mimeTypeAusEndung` für 5 Image-MIME-Types. +3 Vitest |
+| S3 | `bdc5b6d` | `ExamLab/src/data/einrichtungsFragen.ts` + `…UebungFragen.ts` | 8 Stellen (4 pro File) Dual-Write `bild`/`pdf` als `MediaQuelle.app{appPfad, mimeType, dateiname?}`. Alt-Felder bleiben (Pflicht bis Phase 6) |
+
+**Verifikation:**
+- vitest **1517 passed | 4 todo | 1 skipped** (1514 → 1517, +3 für S4)
+- tsc -b clean
+- 4× lint clean (lint:as-any 0, lint:no-alert 0, lint:no-tests-dir clean, lint:musterloesung Baseline)
+- vite build grün (~3.34s, PWA generateSW 256 entries)
+
+**Browser-E2E auf Staging mit echten LP+SuS-Logins:**
+- **LP-Smoke** ✅ (Tab `wr.test@gymhofwil.ch`):
+  - Favoriten-Tab rendert (Einführungsprüfung sichtbar)
+  - Prüfen-Tab rendert (1 PRÜFUNGEN „Einführungsprüfung — Lerne ExamLab kennen", 22 Fragen)
+  - Composer-Editor öffnet (4 Tabs: Einstellungen / Abschnitte & Fragen (22) / Vorschau / Analyse, Sektionen Grunddaten/Prüfungsparameter/Optionen/Rechtschreibprüfung)
+  - Fragensammlung-Tab rendert (2363 Fragen, 8 Entwürfe, kein Render-Crash)
+  - Composer-„Interaktive SuS-Vorschau" → **PRE-EXISTING `useFrageMode`-Error** (Bundle V Memory, FrageModeProvider fehlt im Composer-Vorschau-Pfad — nicht durch dieses Bundle eingeführt, blockiert nicht den Production-Pfad)
+- **SuS-Smoke** ✅ (Tab `wr.test@stud.gymhofwil.ch` nach Cache-Buster-Reload):
+  - Dashboard rendert (Hallo wr! + Empfehlung VWL Bedürfnisse + 13+ Themen-Karten)
+  - Übung „Bedürfnisse, Knappheit & Produktionsfaktoren" gestartet → Frage 1/10 (Freitext, K3, 4 P.) rendert mit Tiptap-Editor
+- **0 NEUE Console-Errors** aus diesem Bundle. Alle gefundenen Errors sind:
+  - PRE-EXISTING `useFrageMode`-Error im PruefungsComposer-Vorschau (Bundle V Memory)
+  - Cache-Carryover-Errors aus altem `index-Lf6HwWkr.js`-Bundle vor SW-Reset (Tab 2 SuS); aktueller Render auf `index-BL88D9Cz.js` clean
+- **Demo-Daten Bild/PDF live testen DEFERRED:** Demo-Daten-Migration wirkt nur beim ersten Login (neuer User). Existierende DB hat Alt-Felder, Resolver-Migrator funktioniert. S4 Pool-Konverter durch +3 Vitest-Cases gedeckt. Browser-Verifikation der Demo-Daten beim nächsten Test-User-Setup oder via Phase-6-Sheet-Migration.
+
+**Was bleibt für Phase 6:**
+- S2 Token-Rename `bildUrl`/`pdfDriveFileId` etc. → wird mit Phase 6 zusammen erledigt (Type-Removal koppelt an Token-Rename)
+- Phase 4.a/4.b (Editor-State-Refactor) bewusst weggelassen — kein funktionaler Effekt, nächstes größeres Editor-Bundle nimmt das mit
+
+**Warum vor Phase 6:** Demo-Daten waren noch auf Alt-Feldern. Phase 6 entfernt die Alt-Felder aus den Frage-Types — wenn Demo-Daten nicht vorher MediaQuelle-aware sind, müsste Phase 6 sie als Side-Effect mit-migrieren und vermischt damit Risiko-Klassen (Sheet-Migration ≠ Demo-Daten-Refresh).
+
+**Merge:** _(folgt nach Browser-E2E + User-Freigabe)_
+
+**Lehre neu:**
+- **Aufwärm-Bundle vor großem Bundle bewährt** (analog Bundle P-Doku vor Phase 6) — niedrig-Risiko-Cleanups bündeln, gleiche Memory-Lehren wiederverwenden, dann Großes-Bundle ohne Side-Tasks angehen.
+
+---
+
 ### Media-Phase 5 — PDF-Renderer-Cleanup ✅ MERGED (2026-05-09)
 
 Branch `media-phase-5/renderer-cleanup`. Letzter funktional relevanter Sub-Bundle der Media-Migration vor Phase 6. **4 Files in `ExamLab/src/`** auf `ermittlePdfQuelle`-Resolver-Read-Pfad umgestellt — Alt-Feld-Direktzugriffe (`frage.pdfBase64`/`frage.pdfUrl`/`frage.pdfDriveFileId`/`frage.pdfDateiname`) raus, Resolver-Single-Read-Path mit Migrator-Fallback bleibt für Bestandsdaten.
