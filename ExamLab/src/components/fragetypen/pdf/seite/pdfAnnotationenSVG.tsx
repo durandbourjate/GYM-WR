@@ -45,8 +45,7 @@ function renderHighlight(
 ): React.ReactNode[] {
   // Use text items to compute approximate rects if no DOM available
   const rects = textLayer
-    ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset,
-        seitenInfo.breite, seitenInfo.hoehe)
+    ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset)
     : berechneFallbackRects(ann.textRange, seitenInfo)
 
   return rects.map((r, i) => (
@@ -66,8 +65,7 @@ function renderLabel(
   textLayer: HTMLDivElement | null,
 ): React.ReactNode[] {
   const rects = textLayer
-    ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset,
-        seitenInfo.breite, seitenInfo.hoehe)
+    ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset)
     : berechneFallbackRects(ann.textRange, seitenInfo)
 
   const nodes: React.ReactNode[] = rects.map((r, i) => (

@@ -46,14 +46,10 @@ export function leseTextauswahl(container: HTMLDivElement): PDFTextRange | null 
     let localStart = 0
     let localEnd = content.length
     if (span.contains(range.startContainer) || range.startContainer === span) {
-      localStart = range.startContainer === span
-        ? range.startOffset
-        : range.startOffset
+      localStart = range.startOffset
     }
     if (span.contains(range.endContainer) || range.endContainer === span) {
-      localEnd = range.endContainer === span
-        ? range.endOffset
-        : range.endOffset
+      localEnd = range.endOffset
     }
 
     const spanStart = so + localStart
@@ -76,8 +72,6 @@ export function findeSpanRectsRelativ(
   container: HTMLDivElement,
   startOffset: number,
   endOffset: number,
-  _containerBreite: number,
-  _containerHoehe: number,
 ): SimpleRect[] {
   const containerRect = container.getBoundingClientRect()
   const domRects = findeSpanRects(container, startOffset, endOffset)

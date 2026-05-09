@@ -86,7 +86,7 @@ describe('findeSpanRectsRelativ', () => {
     })
     container.appendChild(span)
     document.body.appendChild(container)
-    const rects = findeSpanRectsRelativ(container, 0, 2, 600, 800)
+    const rects = findeSpanRectsRelativ(container, 0, 2)
     expect(rects).toEqual([{ x: 10, y: 10, w: 20, h: 16 }])
   })
 
@@ -96,7 +96,7 @@ describe('findeSpanRectsRelativ', () => {
       value: () => ({ left: 0, top: 0, width: 100, height: 100, right: 0, bottom: 0, x: 0, y: 0, toJSON() { return {} } }),
     })
     document.body.appendChild(container)
-    expect(findeSpanRectsRelativ(container, 0, 5, 100, 100)).toEqual([])
+    expect(findeSpanRectsRelativ(container, 0, 5)).toEqual([])
   })
 })
 
