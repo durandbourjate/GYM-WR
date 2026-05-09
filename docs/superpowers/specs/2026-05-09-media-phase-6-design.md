@@ -167,19 +167,32 @@ Wie Pre-Phase-6 Cleanup. 6.c–6.e bekommen Reviewer-Loop wenn sie kommen.
 
 ---
 
-## 10 · 6.c Granularität (Folge-Sessions)
+## 10 · 6.c Granularität — Audit-Update 2026-05-10
 
-6.c ist zu groß für eine Session — wird in 6 Sub-Sub-Bundles aufgeteilt:
+**Audit-Befund (2026-05-10):** 6.c-Sub-Sub-Bundles weitgehend OBSOLET. Save-Pfade sind bereits MediaQuelle-aware:
 
-| Sub-Sub-Bundle | Dateien | Aufwand |
-|----------------|---------|---------|
-| 6.c.i | `BildUpload.tsx` (Editor-Komponente) | 1 Session |
-| 6.c.ii | `BildMitGenerator.tsx` + `HotspotEditor.tsx` (Bild-Editoren) | 1 Session |
-| 6.c.iii | `BildbeschriftungEditor.tsx` + `DragDropBildEditor.tsx` | 1 Session |
-| 6.c.iv | `PDFEditor.tsx` (komplett, 4 Alt-Felder zu 1) | 1 Session |
-| 6.c.v | `SharedFragenEditor.tsx` Mount-Refactor + `fragenFactory.ts`/`buildFragePreview.ts` Final-Cleanup | 1 Session |
-| 6.c.vi | Cleanup + Audit aller Editor-Konsumenten (ggf. Cascade-Fixes) | 1 Session |
+- `fragenFactory.ts::erstelleFrageObjekt` schreibt `bild`/`pdf` Dual-Write (Z. 216 PDF, Z. 254/267/287 Bild) via Migrator-Helper (Phase 4.a-Vorbereitung)
+- `buildFragePreview.ts` schreibt `bild`/`pdf` (Phase 6.b)
+- SuS-Renderer (HotspotFrage, BildbeschriftungFrage, DragDropBildFrage) lesen via `ermittleBildQuelle` + `mediaQuelleZuImgSrc` (Phase 5)
+- LP-Korrektur (PDFKorrektur, BildbeschriftungAnzeige) lesen via Resolver
+- Validator nutzt Resolver (Phase 6.a)
 
-Jeweils eigener Spec + Plan + Reviewer-Loop + E2E. Out-of-Scope dieser Spec.
+**Was bleibt für Phase 6:**
 
-**Reihenfolge:** Per Risiko aufsteigend. BildUpload zuerst (kleinste isolierte Komponente), SharedFragenEditor als Mount-Refactor zuletzt.
+| Sub-Bundle | Status | Aufwand |
+|------------|--------|---------|
+| 6.c.i (BildUpload) | **OBSOLET** | — |
+| 6.c.ii (BildMitGenerator+HotspotEditor) | **OBSOLET** | — |
+| 6.c.iii (BildbeschriftungEditor+DragDropBildEditor) | **OBSOLET** | — |
+| 6.c.iv (PDFEditor) | **OBSOLET** | — |
+| 6.c.v (SharedFragenEditor Mount-Refactor) | **REDUZIERT** zu 1-Stellen-Migration (Z. 477 `frage.bildUrl ?? ''` → Resolver) | ~1 Stunde |
+| 6.c.vi (Cleanup-Audit) | **REDUZIERT** auf Direct-Reader-Audit | ~1 Stunde |
+| 6.c.neu (PDFKorrektur+PDFFrage pdfDateiname-Material-Fallback Removal) | **NEUER SCOPE** — nach 6.f entfernen | ~1 Session |
+
+**Aktualisierte Reihenfolge:**
+1. **6.f (User-Action):** Sheet-Daten-Migration via `admin:migrierMediaQuelle`. Voraussetzung für 6.c.neu + 6.d.
+2. **6.c.neu (nach 6.f):** PDFKorrektur Z. 70/100/104/126/128 + PDFFrage Z. 146/149/236 — `frage.pdfDateiname`-Material-Fallback entfernen, da nach 6.f alle Daten `pdf: MediaQuelle.app` haben.
+3. **6.e (parallel zu 6.c.neu):** Apps-Script Schreib-Pfad nur noch MediaQuelle (User deployt).
+4. **6.d (final):** Type-Removal `bildUrl`/`pdfUrl`/etc. aus `fragen-core.ts`. Cascade auf 2-3 verbleibende Stellen (SharedFragenEditor Mount + AufgabengruppeEditor + TypEditorDispatcher).
+
+**Lehre:** Pre-Cut-Audit hat 4 Sub-Sub-Bundles eliminiert (6.c.i bis 6.c.iv). Phase-4.a-Vorbereitung in `fragenFactory.ts` (Z. 254 `bild: bildQuelleAus({bildUrl}) ?? undefined`) war bereits vor langer Zeit gemacht. Audit vor neuem Plan-Schreiben verhindert Doppel-Arbeit. Memory-Lehre „Sorgfalt vor Geschwindigkeit" + „Bei Audits explizit nach X greppen" bestätigt.
