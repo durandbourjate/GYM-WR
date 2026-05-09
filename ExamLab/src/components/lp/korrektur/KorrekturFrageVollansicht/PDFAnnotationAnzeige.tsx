@@ -9,7 +9,7 @@ import { mediaQuelleZuIframeSrc } from '@shared/utils/mediaQuelleUrl'
 export default function PDFAnnotationAnzeige({ frage, antwort }: { frage: Frage; antwort: Extract<Antwort, { typ: 'pdf' }> | undefined }) {
   const pdfAnhang = ('anhaenge' in frage ? (frage as { anhaenge?: FrageAnhang[] }).anhaenge : [])?.find(a => a.mimeType === 'application/pdf')
   const pdfQuelle = ermittlePdfQuelle(frage as Parameters<typeof ermittlePdfQuelle>[0])
-  const pdfDateiname = 'pdfDateiname' in frage ? (frage as { pdfDateiname?: string }).pdfDateiname : 'Dokument'
+  const pdfDateiname = pdfQuelle?.dateiname ?? 'Dokument'
 
   const hatPdf = Boolean(pdfAnhang || pdfQuelle)
 

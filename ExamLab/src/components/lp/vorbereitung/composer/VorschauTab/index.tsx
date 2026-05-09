@@ -18,6 +18,7 @@ import TKontoVorschau from './TKontoVorschau'
 import KontenbestimmungVorschau from './KontenbestimmungVorschau'
 import BilanzERVorschau from './BilanzERVorschau'
 import AufgabengruppeVorschau from './AufgabengruppeVorschau'
+import { ermittlePdfQuelle } from '@shared/utils/mediaQuelleResolver'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -252,8 +253,8 @@ function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
         <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 text-center space-y-2">
           <span className="text-2xl">📄</span>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">PDF-Annotation</p>
-          {frage.pdfDateiname && (
-            <p className="text-xs text-slate-500 dark:text-slate-400">Datei: {frage.pdfDateiname}</p>
+          {ermittlePdfQuelle(frage)?.dateiname && (
+            <p className="text-xs text-slate-500 dark:text-slate-400">Datei: {ermittlePdfQuelle(frage)?.dateiname}</p>
           )}
           <p className="text-xs text-slate-500 dark:text-slate-400">Interaktive Vorschau in der SuS-Ansicht verfügbar</p>
         </div>
