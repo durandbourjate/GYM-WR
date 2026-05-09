@@ -13,7 +13,6 @@ function zeichnePfeilspitze(
 ): void {
   const winkel = Math.atan2(bis.y - von.y, bis.x - von.x);
   const pfeilLaenge = Math.max(10, breite * 4);
-  const pfeilBreite = Math.max(6, breite * 2.5);
 
   ctx.beginPath();
   ctx.moveTo(bis.x, bis.y);
@@ -30,9 +29,6 @@ function zeichnePfeilspitze(
   // Pfeilspitze füllen (gleiche Farbe wie Linie)
   ctx.fillStyle = ctx.strokeStyle as string;
   ctx.fill();
-
-  // Pfeilbreite für Linienende anpassen (damit Linie nicht über Spitze hinausragt)
-  void pfeilBreite; // Verwendung über pfeilLaenge bereits abgedeckt
 }
 
 // ============================================================
