@@ -640,6 +640,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     fragetext: 'In dieser Aufgabe arbeiten Sie mit einem **PDF-Dokument** (Witzsammlung).\n\n**Aufgaben:**\n1. Blättern Sie durch das Dokument und finden Sie einen Witz der Ihnen gefällt\n2. **Markieren** Sie den Witz-Titel mit dem **Textmarker** (gelb)\n3. Fügen Sie einen **Kommentar** hinzu mit Ihrer Bewertung (z.B. «Lustig!» oder «Kenne ich schon»)\n\n💡 Nutzen Sie die Werkzeugleiste oben: Textmarker, Kommentar, Freihand.',
     pdfUrl: './materialien/witzsammlung.pdf',
     pdfDateiname: 'witzsammlung.pdf',
+    pdf: { typ: 'app', appPfad: 'materialien/witzsammlung.pdf', mimeType: 'application/pdf', dateiname: 'witzsammlung.pdf' },
     seitenAnzahl: 5,
     kategorien: [
       { id: 'lustig', label: 'Lustig', farbe: '#FFEB3B' },
@@ -706,6 +707,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     autor,
     fragetext: 'Klicken Sie auf die **Schweiz** (rot markiert) auf der Europakarte.\n\n💡 Klicken Sie direkt auf das Land. Ein Marker erscheint an der geklickten Stelle.',
     bildUrl: './demo-bilder/europa-karte.svg',
+    bild: { typ: 'app', appPfad: 'demo-bilder/europa-karte.svg', mimeType: 'image/svg+xml' },
     bereiche: [
       {
         id: 'schweiz',
@@ -754,6 +756,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     autor,
     fragetext: 'Beschriften Sie die markierten **Teile der Zelle**.\n\nTippen Sie den korrekten Begriff in das jeweilige Eingabefeld.\n\n💡 Akzeptierte Begriffe: deutsche oder lateinische Fachbezeichnungen.',
     bildUrl: './demo-bilder/tierzelle.svg',
+    bild: { typ: 'app', appPfad: 'demo-bilder/tierzelle.svg', mimeType: 'image/svg+xml' },
     beschriftungen: [
       { id: '1', position: { x: 50, y: 50 }, korrekt: ['Zellkern', 'Nukleus', 'Nucleus'] },
       { id: '2', position: { x: 25, y: 30 }, korrekt: ['Zellmembran', 'Membran'] },
@@ -790,6 +793,7 @@ export const einrichtungsUebungFragen: Frage[] = [
     autor,
     fragetext: 'Ordnen Sie die **Kontinente** den richtigen Positionen auf der Weltkarte zu.\n\n💡 Tippen Sie auf ein Label, dann auf die Zielzone (oder ziehen Sie es dorthin).',
     bildUrl: './demo-bilder/weltkarte.svg',
+    bild: { typ: 'app', appPfad: 'demo-bilder/weltkarte.svg', mimeType: 'image/svg+xml' },
     zielzonen: [
       { id: '1', form: 'rechteck' as const, punkte: [{x:12,y:35},{x:32,y:35},{x:32,y:60},{x:12,y:60}], korrekteLabels: ['Nordamerika'] },
       { id: '2', form: 'rechteck' as const, punkte: [{x:45,y:25},{x:60,y:25},{x:60,y:55},{x:45,y:55}], korrekteLabels: ['Europa'] },
