@@ -3,6 +3,7 @@ import { konvertierePoolFrage } from './poolConverter'
 import type {
   PoolFrageDragDropBild, PoolFrageBuchungssatz, PoolFrageTKonto,
   PoolFrageKontenbestimmung, PoolFrageBilanz,
+  PoolFrageHotspot, PoolFrageBildbeschriftung,
   PoolMeta, PoolTopic,
 } from '../types/pool'
 
@@ -164,5 +165,46 @@ describe('Pool-Konverter — FiBu Mapping', () => {
     expect(bilanz?.bilanzsumme).toBe(5000)
     expect(bilanz?.aktivSeite.gruppen[0].konten).toEqual(['1000'])
     expect(bilanz?.passivSeite.gruppen[0].konten).toEqual(['2800'])
+  })
+})
+
+describe('Pool-Konverter — Bild-Quelle als MediaQuelle (Pre-Phase-6 S4)', () => {
+  it('hotspot: poolFrage.img.src → bild als MediaQuelle.pool mit mimeType aus Endung', () => {
+    const poolFrage: PoolFrageHotspot = {
+      id: 'h1', topic: 'default', type: 'hotspot', tax: 'K1', diff: 1,
+      q: 'Hotspot',
+      img: { src: 'biologie/zelle.svg' },
+      hotspots: [{ x: 50, y: 50, r: 10, label: 'Kern' }],
+      correct: [0],
+    }
+    const out = konvertierePoolFrage(poolFrage, POOL_META, TOPICS)
+    if (out.typ !== 'hotspot') throw new Error('expected hotspot')
+    expect(out.bildUrl).toContain('biologie/zelle.svg')
+    expect(out.bild).toEqual({ typ: 'pool', poolPfad: 'biologie/zelle.svg', mimeType: 'image/svg+xml' })
+  })
+
+  it('bildbeschriftung: PNG-Endung → mimeType image/png', () => {
+    const poolFrage: PoolFrageBildbeschriftung = {
+      id: 'b1', topic: 'default', type: 'bildbeschriftung', tax: 'K1', diff: 1,
+      q: 'Beschriftung',
+      img: { src: 'geo/karte.png' },
+      labels: [{ id: 'l1', text: 'Bern', x: 50, y: 50 }],
+    }
+    const out = konvertierePoolFrage(poolFrage, POOL_META, TOPICS)
+    if (out.typ !== 'bildbeschriftung') throw new Error('expected bildbeschriftung')
+    expect(out.bild).toEqual({ typ: 'pool', poolPfad: 'geo/karte.png', mimeType: 'image/png' })
+  })
+
+  it('dragdrop_bild: JPG-Endung → mimeType image/jpeg', () => {
+    const poolFrage: PoolFrageDragDropBild = {
+      id: 'd1', topic: 'default', type: 'dragdrop_bild', tax: 'K2', diff: 1,
+      q: 'DragDrop',
+      img: { src: 'foto/scene.jpg' },
+      zones: [{ id: 'z1', x: 0, y: 0, w: 50, h: 50 }],
+      labels: [{ id: 'l1', text: 'A', zone: 'z1' }],
+    }
+    const out = konvertierePoolFrage(poolFrage, POOL_META, TOPICS)
+    if (out.typ !== 'dragdrop_bild') throw new Error('expected dragdrop_bild')
+    expect(out.bild).toEqual({ typ: 'pool', poolPfad: 'foto/scene.jpg', mimeType: 'image/jpeg' })
   })
 })

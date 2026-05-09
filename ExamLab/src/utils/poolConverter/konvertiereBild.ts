@@ -5,9 +5,24 @@ import type {
   BildbeschriftungFrage,
   DragDropBildFrage,
 } from '../../types/fragen-storage'
+import type { MediaQuelle } from '@shared/types/mediaQuelle'
 import type { PoolFrage } from '../../types/pool'
 import type { BasisFelder } from './index'
 import { genId, POOL_IMG_BASE_URL } from './konstanten'
+
+function mimeTypeAusEndung(pfad: string): string {
+  const lower = pfad.toLowerCase()
+  if (lower.endsWith('.png')) return 'image/png'
+  if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg'
+  if (lower.endsWith('.gif')) return 'image/gif'
+  if (lower.endsWith('.webp')) return 'image/webp'
+  if (lower.endsWith('.svg')) return 'image/svg+xml'
+  return 'image/png'
+}
+
+function poolBildQuelle(src: string): MediaQuelle {
+  return { typ: 'pool', poolPfad: src, mimeType: mimeTypeAusEndung(src) }
+}
 
 export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage {
   switch (poolFrage.type) {
@@ -40,6 +55,7 @@ export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage
         typ: 'hotspot',
         fragetext: poolFrage.q,
         bildUrl,
+        ...(poolFrage.img ? { bild: poolBildQuelle(poolFrage.img.src) } : {}),
         bereiche,
         mehrfachauswahl: korrektIndices.size > 1,
       }
@@ -62,6 +78,7 @@ export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage
         typ: 'bildbeschriftung',
         fragetext: poolFrage.q,
         bildUrl,
+        ...(poolFrage.img ? { bild: poolBildQuelle(poolFrage.img.src) } : {}),
         beschriftungen,
       }
       return frage
@@ -98,6 +115,7 @@ export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage
         typ: 'dragdrop_bild',
         fragetext: poolFrage.q,
         bildUrl,
+        ...(poolFrage.img ? { bild: poolBildQuelle(poolFrage.img.src) } : {}),
         zielzonen,
         labels,
       }
