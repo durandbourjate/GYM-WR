@@ -1749,8 +1749,8 @@ Bundle L (a/b/c) abgeschlossen, Folge-Cleanups gemergt. Mögliche nächste Theme
 
 **Hinweis:** Eine vorherige Session referenzierte Commits `868e01c`/`04a8648`/`758b192` als bereits-committed Spec+Plan. Diese existieren weder in `.git/objects/` noch in irgendeinem Branch (lokal oder remote) und auch nicht im Reflog. Spec+Plan müssen neu erstellt werden.
 
-### Media-Phase-3-5 Dual-Write — Spec auf main, Phase 4.a als Nächstes
-**Spec:** [`docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md`](../docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md) — Status-Update beim Spec-Schreiben offenbarte: **Phase 3 (Apps-Script SAVE für PDF) ist bereits seit `82dcb4db` (Bundle N, 19.04.2026) auf main**. Nur **3 Sub-Bundles** verbleiben: Phase 4.a (Bild-Editor-Stack, 8 Files), Phase 4.b (PDF-Editor-Stack, 4 Files), Phase 5 (Renderer-Cleanup ExamLab/src, 4 Files). Architektur-Entscheidungen: sequenzielle Sub-Bundles, Clean-Break-Editor-Writes, voller MediaQuelle-State-Refactor, per-Media-Type-Granularität. Plan für Phase 4.a noch nicht erstellt — `superpowers:brainstorming` (Folge-up) oder direkt `superpowers:writing-plans` mit der bestehenden Spec-Sektion 4. Phase 6 (Type-Cleanup + Sheet-Daten-Migration) als separates Bundle nach Phase 5.
+### Media-Phase 5 (Renderer-Cleanup) — als Nächstes
+**Spec:** [`docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md`](../docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md) (mit 2 STATUS-UPDATEs nach Audit-Passes). **Erkenntnis nach Audit:** Phase 3 ist seit `82dcb4db` (April) live UND Phase 4.a/4.b sind funktional bereits durch Factory+Apps-Script-Dual-Write abgedeckt — Editor-State-Refactor wäre reine Code-Hygiene. Einziger verbleibender funktionaler Schritt ist **Phase 5: 4 PDF-Renderer-Files in `ExamLab/src/`** (PDFKorrektur/PDFAnnotationAnzeige/VorschauTab/PDFFrage) auf `ermittlePdfQuelle`-Resolver umstellen. ~1 Session, low-mittel Risiko. Phase 6 (Type-Cleanup + Sheet-Daten-Migration) wie geplant nach Phase 5. Phase 4.a/4.b bleiben als optionale „Future Code-Hygiene-Bundles" markiert.
 
 ---
 
@@ -1766,7 +1766,9 @@ Bundle L (a/b/c) abgeschlossen, Folge-Cleanups gemergt. Mögliche nächste Theme
 
 ### Future Bundles (geplant)
 
-- **Media-Phase 4.a/4.b/5 Dual-Write Migration** — Spec auf main: [`docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md`](../docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md). Phase 3 (Apps-Script SAVE) seit `82dcb4db` (April) bereits live. Verbleibend: Phase 4.a (Bild-Editor-Stack, 8 Files in `packages/shared/src/editor/`) → Phase 4.b (PDF-Editor-Stack, 4 Files) → Phase 5 (Renderer-Cleanup, 4 Files in `ExamLab/src/`). ~3 Sessions Total, kein Apps-Script-Deploy mehr nötig. Phase 6 (Type-Cleanup + Sheet-Daten-Migration) als separates Bundle danach.
+- **Media-Phase 5 Renderer-Cleanup** — Spec auf main mit 2 STATUS-UPDATEs nach Audit. Phase 3 (April) + Phase 4.a/4.b (Factory schon Dual-Write) sind funktional erledigt. **Verbleibend nur Phase 5:** 4 PDF-Renderer-Files in `ExamLab/src/` (PDFKorrektur/PDFAnnotationAnzeige/VorschauTab/PDFFrage) auf `ermittlePdfQuelle`-Resolver. ~1 Session.
+- **Media-Phase 4.a/4.b Code-Hygiene** (optional, Future) — Editor-State-Refactor von URL-string zu MediaQuelle. Funktional folgenlos (Factory dual-writes schon), nur Type-Safety-Gewinn. 8 + 4 Files. Bei nächstem grösseren Editor-Refactor mit-mitnehmen oder eigene Bundles.
+- **Media-Phase 6 Type-Cleanup + Sheet-Daten-Migration** (groß, separates Bundle) — nach Phase 5: Alt-Felder aus `fragen-core.ts` raus, Sheet-Daten-Migration via `admin:migrierMediaQuelle`-Endpoint, Apps-Script `mq_ergaenzeMediaQuelle_` Read-Pfad rückbauen.
 - **Backend-Migration weg von Apps-Script** (langfristig, strategisch) — Edge-Runtime / Cloud Run / Cloudflare Workers. Vorbereitend: API-Contract (Zod/JSON-Schema), Endpoint-Inventar, Schema-Doku. Kein konkreter Trigger jetzt, aber Vorarbeit lohnt während anderer Bundles.
 
 ### Future / YAGNI (nur falls UX-Feedback negativ)
