@@ -104,21 +104,13 @@ describe('usePDFDrawing', () => {
     expect(punkte[1].y).toBeCloseTo(0.3, 10)
   })
 
-  it('Drag-End räumt dragRef + data-drag-orig-punkte auf', () => {
+  it('Drag-End löscht dragRef → Folge-Move triggert kein onEdit mehr', () => {
     const { result, onEdit } = setupHook({ selectedAnnotation: 'f1' })
     act(() => { result.current.handleDrawStart(fakePointerEvent(60, 80, 'f1')) })
     act(() => { result.current.handleDrawMove(fakePointerEvent(120, 160, null)) })
 
-    // Während Drag aktiv: data-drag-orig-punkte gesetzt
-    const dragDivVorEnd = document.querySelector('[data-drag-orig-punkte]')
-    expect(dragDivVorEnd).not.toBeNull()
-
     onEdit.mockClear()
     act(() => { result.current.handleDrawEnd() })
-
-    // Nach End: data-drag-orig-punkte entfernt
-    const dragDivNachEnd = document.querySelector('[data-drag-orig-punkte]')
-    expect(dragDivNachEnd).toBeNull()
 
     // Folge-Move darf onEdit nicht mehr triggern (dragRef = null)
     act(() => { result.current.handleDrawMove(fakePointerEvent(180, 240, null)) })

@@ -35,7 +35,14 @@ export function usePDFDrawing(params: UsePDFDrawingParams): UsePDFDrawingResult 
   } = params
 
   // Drag-State
-  const dragRef = useRef<{ annotId: string; startRelX: number; startRelY: number; origX: number; origY: number } | null>(null)
+  const dragRef = useRef<{
+    annotId: string
+    startRelX: number
+    startRelY: number
+    origX: number
+    origY: number
+    origPunkte?: { x: number; y: number }[]
+  } | null>(null)
   // Freehand drawing state
   const istZeichnung = useRef(false)
   const zeichnungsPfad = useRef<{ x: number; y: number }[]>([])
@@ -66,13 +73,18 @@ export function usePDFDrawing(params: UsePDFDrawingParams): UsePDFDrawingResult 
                 origY: (ann as PDFTextAnnotation).position.y,
               }
             } else {
-              // Freihand: Startpunkt merken, Punkte werden beim Drop verschoben
+              // Freihand: Originalpunkte einmalig parsen + im dragRef merken
+              let origPunkte: { x: number; y: number }[] = []
+              try {
+                origPunkte = JSON.parse((ann as PDFFreihandAnnotation).zeichnungsDaten) as { x: number; y: number }[]
+              } catch { /* JSON-Parse-Fehler: leer starten, Move ignoriert */ }
               dragRef.current = {
                 annotId: selectedAnnotation,
                 startRelX,
                 startRelY,
-                origX: 0,
-                origY: 0,
+                origX: origPunkte[0]?.x ?? 0,
+                origY: origPunkte[0]?.y ?? 0,
+                origPunkte,
               }
             }
             e.preventDefault()
@@ -112,25 +124,14 @@ export function usePDFDrawing(params: UsePDFDrawingParams): UsePDFDrawingResult 
       const dy = relY - dragRef.current.startRelY
       const ann = annotationen.find(a => a.id === dragRef.current!.annotId)
       if (ann?.werkzeug === 'freihand') {
-        // Freihand: alle Punkte verschieben
-        try {
-          const punkte = JSON.parse((ann as PDFFreihandAnnotation).zeichnungsDaten) as { x: number; y: number }[]
-          // Beim ersten Move die Originalpunkte merken
-          if (dragRef.current.origX === 0 && dragRef.current.origY === 0) {
-            dragRef.current.origX = punkte[0]?.x ?? 0
-            dragRef.current.origY = punkte[0]?.y ?? 0
-            // Original-Punkte in einem data-Attribut zwischenspeichern
-            containerRef.current?.setAttribute('data-drag-orig-punkte', (ann as PDFFreihandAnnotation).zeichnungsDaten)
-          }
-          const origPunkteStr = containerRef.current?.getAttribute('data-drag-orig-punkte')
-          if (origPunkteStr) {
-            const origPunkte = JSON.parse(origPunkteStr) as { x: number; y: number }[]
-            const verschoben = origPunkte.map(p => ({ x: p.x + dx, y: p.y + dy }))
-            onAnnotationEditieren?.(dragRef.current.annotId, {
-              zeichnungsDaten: JSON.stringify(verschoben),
-            } as Partial<PDFAnnotation>)
-          }
-        } catch { /* JSON-Parse-Fehler ignorieren */ }
+        // Freihand: alle Originalpunkte (aus dragRef) um dx/dy verschieben
+        const origPunkte = dragRef.current.origPunkte
+        if (origPunkte && origPunkte.length > 0) {
+          const verschoben = origPunkte.map(p => ({ x: p.x + dx, y: p.y + dy }))
+          onAnnotationEditieren?.(dragRef.current.annotId, {
+            zeichnungsDaten: JSON.stringify(verschoben),
+          } as Partial<PDFAnnotation>)
+        }
       } else {
         // Text: Position verschieben
         onAnnotationEditieren?.(dragRef.current.annotId, {
@@ -157,7 +158,6 @@ export function usePDFDrawing(params: UsePDFDrawingParams): UsePDFDrawingResult 
   const handleDrawEnd = useCallback(() => {
     // Drag-Ende
     if (dragRef.current) {
-      containerRef.current?.removeAttribute('data-drag-orig-punkte')
       dragRef.current = null
       return
     }
@@ -179,7 +179,7 @@ export function usePDFDrawing(params: UsePDFDrawingParams): UsePDFDrawingResult 
     if (ctx && zeichenCanvasRef.current) {
       ctx.clearRect(0, 0, zeichenCanvasRef.current.width, zeichenCanvasRef.current.height)
     }
-  }, [seitenNr, aktiveFarbe, onAnnotationHinzufuegen, containerRef, zeichenCanvasRef])
+  }, [seitenNr, aktiveFarbe, onAnnotationHinzufuegen, zeichenCanvasRef])
 
   return { handleDrawStart, handleDrawMove, handleDrawEnd }
 }
