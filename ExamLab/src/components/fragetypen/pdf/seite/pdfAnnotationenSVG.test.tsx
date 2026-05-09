@@ -21,7 +21,7 @@ function renderSvg(nodes: React.ReactNode[]) {
 
 describe('renderSVGOverlay', () => {
   it('rendert nichts bei leeren Annotationen', () => {
-    const { container } = renderSvg(renderSVGOverlay([], seitenInfo, null, 1))
+    const { container } = renderSvg(renderSVGOverlay([], seitenInfo, null))
     expect(container.querySelectorAll('[data-annotation-id]')).toHaveLength(0)
   })
 })
@@ -32,7 +32,7 @@ describe('Highlight-Renderer', () => {
     textRange: { startOffset: 0, endOffset: 5, text: 'hello' }, farbe: '#FEF08A',
   }
   it('rendert via Fallback-Rects wenn textLayer null ist', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null))
     const rect = container.querySelector('[data-annotation-id="h1"]')
     expect(rect).toBeTruthy()
     expect(rect?.getAttribute('fill')).toBe('#FEF08A')
@@ -46,7 +46,7 @@ describe('Label-Renderer', () => {
     kategorieId: 'kategorie-uuid', farbe: '#3b82f6',
   }
   it('rendert Rect + Badge mit Kategorie-ID-Slice', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null))
     expect(container.querySelectorAll('[data-annotation-id="l1"]').length).toBeGreaterThan(0)
     const text = container.querySelector('text')
     expect(text?.textContent).toBe('kategori') // 8-char-slice
@@ -59,7 +59,7 @@ describe('Kommentar-Renderer', () => {
     position: { x: 0.5, y: 0.5 }, kommentarText: 'Hi',
   }
   it('rendert circle + text bei position', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null))
     const g = container.querySelector('[data-annotation-id="k1"]')
     expect(g?.querySelector('circle')).toBeTruthy()
     expect(g?.querySelector('text')?.textContent).toBe('💬')
@@ -73,12 +73,12 @@ describe('Freihand-Renderer', () => {
     farbe: '#000',
   }
   it('rendert path mit M+L Commands', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null))
     const path = container.querySelector('path[data-annotation-id="f1"]')
     expect(path?.getAttribute('d')).toMatch(/^M\d+,\d+ L\d+,\d+/)
   })
   it('rendert Bounding-Box bei selected=true', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1, 'f1'))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 'f1'))
     const dashedRect = container.querySelector('rect[stroke-dasharray="4,2"]')
     expect(dashedRect).toBeTruthy()
   })
@@ -91,13 +91,13 @@ describe('Text-Annotation-Renderer', () => {
     groesse: 18, fett: false,
   }
   it('rendert text-Element mit korrektem fontSize', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null))
     const text = container.querySelector('text[data-annotation-id="t1"]')
     expect(text?.getAttribute('font-size')).toBe('18')
     expect(text?.textContent).toBe('Notiz')
   })
   it('rendert Selektions-Rahmen bei selected=true', () => {
-    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 1, 't1'))
+    const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null, 't1'))
     const dashedRect = container.querySelector('rect[stroke-dasharray="4,2"]')
     expect(dashedRect).toBeTruthy()
   })

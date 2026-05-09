@@ -2,7 +2,7 @@ import type {
   PDFAnnotation, PDFHighlightAnnotation, PDFKommentarAnnotation,
   PDFFreihandAnnotation, PDFLabelAnnotation, PDFTextAnnotation,
 } from '../PDFTypes.ts'
-import type { PDFSeitenInfo, ZoomStufe } from '../PDFTypes.ts'
+import type { PDFSeitenInfo } from '../PDFTypes.ts'
 import { findeSpanRectsRelativ, berechneFallbackRects } from './pdfSelection.ts'
 
 // --- SVG overlay rendering ---
@@ -11,7 +11,6 @@ export function renderSVGOverlay(
   annotationen: PDFAnnotation[],
   seitenInfo: PDFSeitenInfo,
   textLayer: HTMLDivElement | null,
-  zoom: ZoomStufe,
   selectedAnnotationId?: string | null,
 ): React.ReactNode[] {
   const elements: React.ReactNode[] = []
@@ -19,10 +18,10 @@ export function renderSVGOverlay(
   for (const ann of annotationen) {
     switch (ann.werkzeug) {
       case 'highlighter':
-        elements.push(...renderHighlight(ann, seitenInfo, textLayer, zoom))
+        elements.push(...renderHighlight(ann, seitenInfo, textLayer))
         break
       case 'label':
-        elements.push(...renderLabel(ann, seitenInfo, textLayer, zoom))
+        elements.push(...renderLabel(ann, seitenInfo, textLayer))
         break
       case 'kommentar':
         elements.push(renderKommentarMarker(ann, seitenInfo))
@@ -43,7 +42,6 @@ function renderHighlight(
   ann: PDFHighlightAnnotation,
   seitenInfo: PDFSeitenInfo,
   textLayer: HTMLDivElement | null,
-  _zoom: ZoomStufe,
 ): React.ReactNode[] {
   // Use text items to compute approximate rects if no DOM available
   const rects = textLayer
@@ -66,7 +64,6 @@ function renderLabel(
   ann: PDFLabelAnnotation,
   seitenInfo: PDFSeitenInfo,
   textLayer: HTMLDivElement | null,
-  _zoom: ZoomStufe,
 ): React.ReactNode[] {
   const rects = textLayer
     ? findeSpanRectsRelativ(textLayer, ann.textRange.startOffset, ann.textRange.endOffset,

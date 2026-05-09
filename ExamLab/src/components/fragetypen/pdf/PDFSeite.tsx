@@ -274,7 +274,7 @@ export function PDFSeite({
 
   // --- Render SVG overlay content ---
   const svgContent = seitenInfo ? renderSVGOverlay(
-    annotationen, seitenInfo, textLayerRef.current, zoom, selectedAnnotation
+    annotationen, seitenInfo, textLayerRef.current, selectedAnnotation
   ) : null
 
   // Container dimensions
