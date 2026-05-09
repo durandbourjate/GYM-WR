@@ -48,8 +48,8 @@ Branch `cleanup/dead-code-mini`. **10 Commits** über 2 Phasen: **6 Mini-Cleanup
 - 0-ahead: `9c61904` `e478559` `a2e3b07` `af84d7a` `18ad021` `aee436d` `6c13efd` `a94ff54` `42fe56f` `5bc20ad` `659c796`
 
 **Spawn-Tasks (post-Cleanup-Sweep):**
-- **Orphan-File `SchuelerZeile.tsx`** (~280 Z.) in `lp/durchfuehrung/` — nirgends importiert (war Konsument der gerade entfernten `_nachrichten`). Komplett-Delete-Kandidat in eigenem Mini-Bundle.
-- Optional: Remote-Branches `origin/audit/examlab-vereinfachung` etc. droppen (separat — User pushte parallel).
+- ~~**Orphan-File `SchuelerZeile.tsx`** in `lp/durchfuehrung/`~~ ✅ erledigt im Folge-Bundle „Cleanup Orphan: SchuelerZeile.tsx + sendeNachricht-API" (Commit `2810232`). Tatsächlich 456 Z. (nicht 280 Z.). Cascade-Cleanup brachte zusätzlich `sendeNachricht`-API raus (nachrichtenApi.ts + apiService.ts), da SchuelerZeile einziger Konsument war. Apps-Script-`sendeNachrichtEndpoint` bewusst belassen (harmlos, falls Reaktivierung). Total -484 Z.
+- ~~Optional: Remote-Branches~~ ✅ erledigt — alle 6 obsoleten Remote-Branches gedroppt (origin/audit/examlab-vereinfachung, cleanup/useLPDashboardData-setters, fix/useLPDashboardData-reload-backendFehler, ux/dropdown-labels-alle, fix/s140-bundle-f2-testdurchlauf, feature/bundle13-cluster-i).
 
 **Lehren neu:**
 - **Branch-Audit als Standard-Schritt vor Cleanup** — 4 unmerged Branches enthielten echten Wert (Bug-Fix + UX + Doku) der ohne Audit verloren gegangen wäre.
