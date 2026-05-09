@@ -8,6 +8,48 @@
 
 ## Letzter Stand auf main
 
+### Bundle CC — ConfigTab MaterialienSection-Cut ✅ MERGED (2026-05-09)
+
+Branch `bundle-cc/configtab`. **Sechstes (und letztes) Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach X/Y/Z/AA/BB). **Single-Cut der MaterialienSection** (447 Z.) + Helpers (10 Z.) in neuen Sub-Folder `materialien/`. ConfigTab **747 → 285 Z. (-62%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 1 → 0** ✅ — **Phase-5+ Hotspot-Reduction-Roadmap KOMPLETT**.
+
+**Was geliefert:**
+- `ExamLab/src/components/lp/vorbereitung/composer/materialien/materialienHelpers.ts` (~9 Z.) — Named Exports `formatGroesse`, `MAX_MATERIAL_GROESSE`, `ERLAUBTE_TYPEN`. Pure Konstanten + Helper.
+- `ExamLab/src/components/lp/vorbereitung/composer/materialien/MaterialienSection.tsx` (~456 Z.) — Default Export. Byte-identische Sub-Komponente mit komplettem Datei-Upload-State (10 useState, 3 useCallback, async handleUpload mit dynamic-import authStore). Imports: `Section`+`Field` aus `../ComposerUI.tsx`, `apiService`+`parseVideoUrl`+Helpers via `../../../../../`-Pfad-Anpassung um eine Tiefe.
+- `ExamLab/src/components/lp/vorbereitung/composer/ConfigTab.tsx` (747 → 285 Z., -462 Z., -62%): MaterialienSection + Helpers raus, Default-Import als Drop-In-Replacement. Imports von `useState`/`useRef`/`useCallback`/`PruefungsMaterial`/`apiService`/`parseVideoUrl` entfernt (nicht mehr benötigt).
+
+**Verifikation:**
+- vitest **1523 passed | 4 todo | 1 skipped** (drift =0).
+- tsc -b clean.
+- 4 Lint-Gates clean (musterloesung-Drift unverändert aus pre-existing untracked Test-Files, nicht aus Bundle CC).
+- vite build grün (~3s, PWA generateSW OK, 256 Cache-Entries).
+
+**Hotspot-Bilanz Files >500 Z. (ohne data/test): 1 → 0** ✅ — **Phase-5+ KOMPLETT**.
+
+**Browser-E2E:** Mit echtem LP-Login auf `staging` durchgeführt:
+- LP-Pfade ✅: Pruefen-Tab → Einführungsprüfung Bearbeiten → Composer „Einstellungen"-Tab → 4 Sections sichtbar (Grunddaten/Prüfungsparameter/Optionen/Rechtschreibprüfung) → MaterialienSection mit 2 bestehenden PDFs („Amtliche Witzsammlung" + „OR-Auszug") → „+ Material hinzufügen"-Button → Add-Form öffnet mit autoFocus-Titel + Typ-Dropdown (PDF-Link/Datei-Upload/Video/Rich-Text/Text/Link) + URL-Field + Abbrechen/Hinzufügen-Buttons.
+- 0 Console-Errors.
+
+**Reviewer:** Self-Review-Modus. Trotz HANDOFF-Klassifikation „hoch-Risiko" war Cut Low-Risk: MaterialienSection ist isolierte Sub-Komponente mit 2-Props-Interface, kein State-Sharing mit ConfigTab. Bundle-BB-Lehre 1 (Größe ≠ Risiko) bestätigt zum zweiten Mal.
+
+**Architektur-Patterns (etabliert/wieder-verwendet):**
+- **Sub-Komponenten-Cut** (Bundle T.b/BB): isolierte state-rich Sub-Komponente mit Props-Interface in eigenes Default-Export-File.
+- **Helpers-Co-Location** (Bundle Z/AA): pure Helpers + Konstanten zusammen mit der Sub-Komponente in Sub-Folder, nicht in shared/.
+- **Größe ≠ Risiko bei isolierter Sub-Komponente** (Bundle BB Lehre 1, jetzt zwei Mal bestätigt): MaterialienSection trotz 447 Z. + Datei-Upload-State Low-Risk via byte-identischem Move.
+
+**Lehren neu (Bundle CC):**
+- **Phase-5+ Hotspot-Reduction-Roadmap KOMPLETT** in 6 Sub-Bundles (X/Y/Z/AA/BB/CC) über 2 Tage. Pattern bewährt: Single-Cut für isolierte Sub-Komponenten, Doppel-Cut für 2 unabhängige Hotspots, Tab-Sektion-Cut für static content. Gesamt-Reduktion: BatchExportDialog 535→436, Layout 570→482, PruefungsComposer 526→454, ZeichnenCanvas 518→466, AktivPhase 573→420, BilanzERFrage 589→376, HilfeSeite 906→102, EinstellungenPanel 607→123, ConfigTab 747→285. **Total: ~5571 → 3144 Zeilen Hauptdatei-Code (-2427 Z., -44%)**.
+
+**Spawn-Tasks (post-CC):**
+- 2 untracked Test-Files (`uebungsStorePruefen.test.ts` + `uebungsStoreLoesungsPreload.test.ts`) sollten in einem eigenen Test-Pflege-Bundle reviewed werden (musterloesung-Drift + Bundle-Zugehörigkeit klären).
+- Optional: weitere Modularisierung von ConfigTab (4 Sections in eigene Sub-Files) wenn Composer-spezifischer Refactor ansteht — Hotspot ist aber bereits unter 500.
+
+**Out of Scope:**
+- Auflösung der 4 ConfigTab-Sections in eigene Sub-Files (würde ConfigTab auf ~80 Z. reduzieren) — nicht nötig für Hotspot-Removal.
+
+**Merge:** lokal (push ausstehend).
+
+---
+
 ### Bundle BB — HilfeSeite + EinstellungenPanel Doppel-Cut ✅ MERGED (2026-05-09)
 
 Branch `bundle-bb/hilfeseite-einstellungen`. **Fünftes Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach Bundle X/Y/Z/AA). **Doppel-Cut Mittel-Risiko + Hoch-Risiko-Static**: HilfeSeite **906 → 102 Z. (-89%)** + EinstellungenPanel **607 → 123 Z. (-80%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 3 → 1** ✅ — beide Files raus aus dem Set. Verbleibend: ConfigTab (747) als Bundle CC reserviert.
