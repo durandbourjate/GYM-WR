@@ -153,6 +153,16 @@ describe('buildFragePreview', () => {
     expect(f.bereiche).toHaveLength(1)
   })
 
+  it('hotspot: schreibt zusätzlich bild: MediaQuelle aus bildUrl (Phase 6.b Dual-Write)', () => {
+    const f = buildFragePreview({
+      typ: 'hotspot',
+      fragetext: 'q',
+      bildUrl: 'img/foo.svg',
+      hsBereiche: [],
+    }) as unknown as HotspotFrage
+    expect(f.bild).toEqual({ typ: 'pool', poolPfad: 'img/foo.svg', mimeType: 'image/svg+xml' })
+  })
+
   it('bildbeschriftung: legt bildUrl + beschriftungen ab', () => {
     const f = buildFragePreview({
       typ: 'bildbeschriftung',
@@ -225,6 +235,16 @@ describe('buildFragePreview', () => {
     expect(f.pdfDriveFileId).toBe('abc')
     expect(f.pdfUrl).toBe('https://x.pdf')
     expect(f.erlaubteWerkzeuge).toEqual(['highlighter'])
+  })
+
+  it('pdf: schreibt zusätzlich pdf: MediaQuelle aus pdfDriveFileId (Phase 6.b Dual-Write)', () => {
+    const f = buildFragePreview({
+      typ: 'pdf',
+      fragetext: 'q',
+      pdfDriveFileId: 'fileXYZ',
+      pdfErlaubteWerkzeuge: ['highlighter'],
+    }) as unknown as PDFFrage
+    expect(f.pdf).toEqual({ typ: 'drive', driveFileId: 'fileXYZ', mimeType: 'application/pdf', dateiname: undefined })
   })
 
   it('code: mappt codeSprache → sprache und codeMusterLoesungCode → musterLoesung', () => {
