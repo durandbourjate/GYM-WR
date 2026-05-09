@@ -144,3 +144,42 @@ Wie Pre-Phase-6 Cleanup. 6.c–6.e bekommen Reviewer-Loop wenn sie kommen.
 - **Aufwärm-Bundle vor großem Bundle bewährt.** Heute 6.a+6.b als Aufwärm vor 6.c–6.f.
 - **Sub-Bundle-Aufteilung nach Risiko-Klasse** — kleine vor große, isoliert vor cascade.
 - **Service-Worker-Cache-Reset nur bei Wire-Vertrag-Änderung.** 6.a+6.b hat keinen → nicht erzwingen.
+
+---
+
+## 9 · Bonus: useFrageMode-Bug in SuSVorschau (Phase-6-Vorbereitung)
+
+**Bug:** `SuSVorschau.tsx:112` rendert `<Layout />` ohne `<FrageModeProvider>` — Layout ruft Renderer auf, die `useFrageMode()` nutzen → ErrorBoundary triggert mit `useFrageMode muss innerhalb eines FrageModeProvider verwendet werden`.
+
+**Existiert seit:** Bundle V Memory dokumentiert (PruefungsComposer-Vorschau-Pfad).
+
+**Fix (1 File, 2 Zeilen):** `<Layout />` in `<FrageModeProvider mode="pruefung">` einwickeln. Pattern wie `App.tsx` Z. 354 + `AppUeben.tsx` Z. 210.
+
+**Warum jetzt fixen:** 6.c+6.d+6.e+6.f Browser-E2E auf Staging brauchen Composer-Vorschau (= SuSVorschau) für End-to-End-Tests des Editor-State-Refactor. Ohne Fix bleiben diese E2E-Pfade blockiert.
+
+**Risiko:** Niedrig. Reine Provider-Wrap-Änderung, kein Logic-Effekt. Nur Composer-Vorschau betroffen (App.tsx + AppUeben.tsx haben Provider bereits).
+
+**DoD:**
+- [x] FrageModeProvider import in SuSVorschau.tsx
+- [x] `<Layout />` in `<FrageModeProvider mode="pruefung">` gewrappt
+- [x] tsc -b clean
+- [ ] Browser-E2E auf Staging: LP Composer → Vorschau-Tab → "Interaktive SuS-Vorschau" → SuSVorschau-Modal öffnet ohne ErrorBoundary
+
+---
+
+## 10 · 6.c Granularität (Folge-Sessions)
+
+6.c ist zu groß für eine Session — wird in 6 Sub-Sub-Bundles aufgeteilt:
+
+| Sub-Sub-Bundle | Dateien | Aufwand |
+|----------------|---------|---------|
+| 6.c.i | `BildUpload.tsx` (Editor-Komponente) | 1 Session |
+| 6.c.ii | `BildMitGenerator.tsx` + `HotspotEditor.tsx` (Bild-Editoren) | 1 Session |
+| 6.c.iii | `BildbeschriftungEditor.tsx` + `DragDropBildEditor.tsx` | 1 Session |
+| 6.c.iv | `PDFEditor.tsx` (komplett, 4 Alt-Felder zu 1) | 1 Session |
+| 6.c.v | `SharedFragenEditor.tsx` Mount-Refactor + `fragenFactory.ts`/`buildFragePreview.ts` Final-Cleanup | 1 Session |
+| 6.c.vi | Cleanup + Audit aller Editor-Konsumenten (ggf. Cascade-Fixes) | 1 Session |
+
+Jeweils eigener Spec + Plan + Reviewer-Loop + E2E. Out-of-Scope dieser Spec.
+
+**Reihenfolge:** Per Risiko aufsteigend. BildUpload zuerst (kleinste isolierte Komponente), SharedFragenEditor als Mount-Refactor zuletzt.
