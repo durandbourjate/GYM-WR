@@ -9,6 +9,8 @@ import { PDFViewer } from '../../fragetypen/pdf/PDFViewer.tsx'
 import AudioRecorder from '../../AudioRecorder.tsx'
 import { useToast } from '../../../hooks/useToast'
 import { ermittlePdfQuelle } from '@shared/utils/mediaQuelleResolver'
+import { POOL_BASE_URL } from '@shared/utils/mediaQuelleUrl'
+import { toAssetUrl } from '../../../utils/assetUrl.ts'
 
 interface Props {
   pruefungId: string
@@ -87,11 +89,23 @@ export default function PDFKorrektur({
       return
     }
 
-    // Extern-Quelle: per URL laden und als Base64 konvertieren
-    // pool/app werden hier nicht abgedeckt: Korrektur-Pfad hat keinen toAssetUrl-Resolver in scope,
-    // und LP korrigiert SuS-Abgaben (keine Pool/App-Lehrer-Materialien). Falls je auftritt: kein Crash, nur leerer Korrektur-Block.
+    // Extern/Pool/App-Quelle: per URL laden und als Base64 konvertieren
+    let url: string | null = null
     if (pdfQuelle?.typ === 'extern') {
-      fetch(pdfQuelle.url)
+      url = pdfQuelle.url
+    } else if (pdfQuelle?.typ === 'pool') {
+      url = POOL_BASE_URL + pdfQuelle.poolPfad
+    } else if (pdfQuelle?.typ === 'app') {
+      url = toAssetUrl(pdfQuelle.appPfad)
+    } else if (frage.pdfDateiname) {
+      // Fallback: Lokale Datei aus pdfDateiname (Alt-Daten ohne pdfUrl/pdfBase64/pdfDriveFileId,
+      // z.B. Einrichtungsprüfung). pdfQuelleAus returnt null wenn keine PDF-Quelle setzbar.
+      // Phase-6-Cleanup: pdfDateiname-Felder migrieren auf MediaQuelle.app, dann diesen Fallback entfernen.
+      url = toAssetUrl(`./materialien/${frage.pdfDateiname}`)
+    }
+
+    if (url) {
+      fetch(url)
         .then(r => r.blob())
         .then(blob => {
           const reader = new FileReader()
