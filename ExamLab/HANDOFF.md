@@ -8,17 +8,21 @@
 
 ## Letzter Stand auf main
 
-### Media-Phase 6 (Sub-Bundles 6.a + 6.b) 🟡 STAGING (2026-05-09)
+### Media-Phase 6 (Sub-Bundles 6.a + 6.b + Bonus useFrageMode + 6.f Action-Brief) 🟡 STAGING (2026-05-09)
 
-Branch `media-phase-6` → preview. **Erste zwei Sub-Bundles** des großen finalen Media-Migration-Bundles. Niedrig-Risiko Aufwärm vor schweren 6.c–6.e (Spawn-Tasks). Self-Review-Modus.
+Branch `media-phase-6` → preview. **Erste zwei Sub-Bundles** des großen finalen Media-Migration-Bundles **plus Bonus-Bug-Fix** (useFrageMode in Composer-SuSVorschau, pre-existing seit Bundle V) **plus 6.f Action-Brief** für User-Action Sheet-Migration. Self-Review-Modus.
 
-**Was geliefert (3 Commits):**
+**Was geliefert (5 Commits + 2 Specs):**
 
 | # | Commit | Datei(en) | Inhalt |
 |---|--------|-----------|--------|
 | Spec | `173f1f6` | `docs/superpowers/specs/2026-05-09-media-phase-6-design.md` | 146 Z. Sub-Bundle-Roadmap 6.a–6.f mit Risiko-Klassifikation + DoD pro Task |
 | 6.a | `7a34f71` | `pflichtfeldValidation.ts` + `.test.ts` | 4 Stellen (Bildbeschriftung/DragDropBild/Hotspot/PDF) auf Resolver-Read (`ermittleBildQuelle`/`ermittlePdfQuelle`) statt direkt `frage.bildUrl` etc. +2 Vitest (`bild: MediaQuelle` ohne Alt-Felder) |
 | 6.b | `147fd6f` | `buildFragePreview.ts` + `.test.ts` | Editor schreibt zusätzlich `bild: MediaQuelle` für hotspot/bildbeschriftung/dragdrop_bild + `pdf: MediaQuelle` für PDF. Dual-Write neben Alt-Feldern via Migrator. +2 Vitest |
+| HANDOFF | `16a92a6` | `ExamLab/HANDOFF.md` | Phase-6 Bundle-Eintrag |
+| Bonus | `326ac9d` | `SuSVorschau.tsx` | **useFrageMode-Bug GEFIXT**: `<Layout />` in `<FrageModeProvider mode="pruefung">` eingewickelt. Pre-existing seit Bundle V Memory. +1 Import +2 Z. Wrap |
+| Spec-Update | `056ce11` | `media-phase-6-design.md` | § 9 useFrageMode-Bonus + § 10 6.c-Granularität (6.c.i–6.c.vi Sub-Sub-Bundles) |
+| Action-Brief | (neu) | `media-phase-6f-sheet-migration-action.md` | **6.f User-Action**: Konkreter fetch-Snippet + Apps-Script-Editor-Aufruf für `admin:migrierMediaQuelle` mit dryRun=true zuerst, dann false. Backup-Anleitung. Voraussetzung für 6.d |
 
 **Verifikation:**
 - vitest **1521 passed | 4 todo | 1 skipped** (1517 → +4 für 6.a +2 + 6.b +2)
@@ -29,14 +33,15 @@ Branch `media-phase-6` → preview. **Erste zwei Sub-Bundles** des großen final
 **Browser-E2E auf Staging mit echten LP+SuS-Logins:**
 - LP Composer-Editor "Abschnitte & Fragen (22)" rendert für 22 Fragen alle aus Demo-Pruefung — buildFragePreview (6.b) + pflichtfeldValidation (6.a) laufen für jede Frage ohne Crash
 - LP Favoriten/Pruefen-Tab rendert
+- LP Composer "Interaktive SuS-Vorschau" Modal **rendert jetzt erfolgreich** (vorher pre-existing `useFrageMode`-Error) — Banner „So sehen Ihre SuS die Prüfung" sichtbar, Frage 1 (MC) mit Optionen A/B/C/D rendert ✅
 - SuS Dashboard rendert (Hallo wr! + 13+ Themen-Karten)
-- 0 NEUE Console-Errors aus aktuellem Bundle `index-THFPpYyI.js`. Pre-existing `useFrageMode`-Error im Composer-„Interaktive SuS-Vorschau" ist Carryover (Bundle V Memory)
+- 0 NEUE Console-Errors aus aktuellem Bundle `index-CQDoM8mE.js`
 
-**Was bleibt — Spawn-Tasks gechippt:**
-- **6.c:** Editor-State-Refactor `bildUrl: string` → `bild: MediaQuelle | null` (Phase 4.a/4.b aktiviert, ~12 Files)
-- **6.d:** Type-Removal Alt-Felder aus `fragen-core.ts` (Compile-Cascade über 8+ Konsumenten, voraussetzt 6.c)
-- **6.e:** Apps-Script Schreib-Pfad-Cleanup (`parseFrage` + `typenSpezifischeFelder` nur noch MediaQuelle)
-- **6.f:** Sheet-Daten-Migration via `admin:migrierMediaQuelle` (User-Action, Backup vorher, dryRun=false)
+**Was bleibt — Spawn-Tasks + User-Action:**
+- **6.c (Folge-Sessions):** Editor-State-Refactor `bildUrl: string` → `bild: MediaQuelle | null` aufgeteilt in 6 Sub-Sub-Bundles 6.c.i–6.c.vi (siehe Spec § 10). Erstes 6.c.i (BildUpload.tsx) als kleinstes isoliertes Sub-Bundle starten.
+- **6.d (Folge-Session, voraussetzt 6.c + 6.f):** Type-Removal Alt-Felder aus `fragen-core.ts` (Compile-Cascade über 8+ Konsumenten)
+- **6.e (Folge-Session, parallel zu 6.d):** Apps-Script Schreib-Pfad-Cleanup (`parseFrage` + `typenSpezifischeFelder` nur noch MediaQuelle)
+- **6.f (User-Action ready):** Sheet-Daten-Migration via `admin:migrierMediaQuelle`. **Action-Brief mit konkretem Apps-Script-Editor-Aufruf:** [docs/superpowers/specs/2026-05-09-media-phase-6f-sheet-migration-action.md](../docs/superpowers/specs/2026-05-09-media-phase-6f-sheet-migration-action.md). Backup vorher, dryRun=true zuerst, dann false.
 
 **Architektur-Patterns etabliert:**
 - **Resolver-Read im Validator** — Validator entkoppelt vom Type-Schema, nutzt eigene `AltBildFrage`/`AltPdfFrage`-Interfaces aus `mediaQuelleResolver`
