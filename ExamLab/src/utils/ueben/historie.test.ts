@@ -39,6 +39,16 @@ describe('historie', () => {
       localStorage.setItem(HISTORIE_KEY, JSON.stringify(erg))
       expect(ladeHistorie()).toEqual(erg)
     })
+
+    it('Test 3b: mit `null`-JSON → [] (Defensiv-Check)', () => {
+      localStorage.setItem(HISTORIE_KEY, 'null')
+      expect(ladeHistorie()).toEqual([])
+    })
+
+    it('Test 3c: mit Objekt-JSON statt Array → [] (Defensiv-Check)', () => {
+      localStorage.setItem(HISTORIE_KEY, '{"foo":"bar"}')
+      expect(ladeHistorie()).toEqual([])
+    })
   })
 
   describe('speichereHistorie', () => {

@@ -20,11 +20,11 @@ export function ladeHistorie(): GespeichertesErgebnis[] {
   try {
     const raw = localStorage.getItem(HISTORIE_KEY)
     if (!raw) return []
-    const parsed = JSON.parse(raw) as GespeichertesErgebnis[]
-    // Migration: Antworten in gespeicherten Details auf einheitliches Format normalisieren.
-    // GespeichertesErgebnis enthält keine rohen Antwort-Objekte, aber zukünftige Formate
-    // könnten sie enthalten — hier als Sicherheitsnetz für ältere localStorage-Einträge.
-    return parsed
+    const parsed = JSON.parse(raw) as unknown
+    // Defensiv: localStorage-Wert kann durch externe Manipulation `null`, ein Objekt
+    // oder eine andere Struktur sein. Caller ruft `.map`/`.slice` darauf auf.
+    if (!Array.isArray(parsed)) return []
+    return parsed as GespeichertesErgebnis[]
   } catch { return [] }
 }
 
