@@ -3,6 +3,7 @@ import { useStammdatenStore } from '../../../store/stammdatenStore'
 import type { Stammdaten, KursDefinition, FachDefinition, FachschaftDefinition } from '../../../types/stammdaten'
 import { SettingsField } from './sharedFelder'
 import { InlineKursEditor, InlineTextEditor } from './InlineEditoren'
+import CRUDSectionShell from './CRUDSectionShell'
 
 export default function AdminTab({ email, stammdaten }: { email: string; stammdaten: Stammdaten }) {
   const { speichereStammdaten: speichereStammdatenAction } = useStammdatenStore()
@@ -76,13 +77,15 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
       <SettingsField label="Admins (E-Mails, eine pro Zeile)" value={admins} onChange={setAdmins} multiline readonly={!bearbeitungsModus} />
       <SettingsField label="Klassen (kommasepariert)" value={klassen} onChange={setKlassen} readonly={!bearbeitungsModus} hinweis="z.B. 27a, 28bc29fs, 29c, 30s" />
       {/* === GEFÄSSE CRUD === */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Gefässe ({gefaesse.length})</label>
-          {bearbeitungsModus && !neuesGefaessOffen && (
-            <button onClick={() => setNeuesGefaessOffen(true)} className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">+ Gefäss</button>
-          )}
-        </div>
+      <CRUDSectionShell
+        label="Gefässe"
+        count={gefaesse.length}
+        bearbeiten={bearbeitungsModus}
+        showAddButton={!neuesGefaessOffen}
+        addLabel="+ Gefäss"
+        onAdd={() => setNeuesGefaessOffen(true)}
+        hint="z.B. SF, EF, EWR, GF — werden bei Kursen und im Frageneditor als Auswahl angeboten."
+      >
         <div className="flex flex-wrap gap-1.5">
           {gefaesse.map((g, idx) => (
             <span key={g} className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded inline-flex items-center gap-1">
@@ -109,17 +112,17 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
             onAbbrechen={() => setNeuesGefaessOffen(false)}
           />
         )}
-        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">z.B. SF, EF, EWR, GF — werden bei Kursen und im Frageneditor als Auswahl angeboten.</p>
-      </div>
+      </CRUDSectionShell>
 
       {/* === KURSE CRUD === */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Kurse ({kurse.length})</label>
-          {bearbeitungsModus && !neuerKursOffen && (
-            <button onClick={() => setNeuerKursOffen(true)} className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">+ Kurs hinzufügen</button>
-          )}
-        </div>
+      <CRUDSectionShell
+        label="Kurse"
+        count={kurse.length}
+        bearbeiten={bearbeitungsModus}
+        showAddButton={!neuerKursOffen}
+        addLabel="+ Kurs hinzufügen"
+        onAdd={() => setNeuerKursOffen(true)}
+      >
         <div className="space-y-1">
           {kurse.map((k, idx) => (
             <div key={k.id} className="flex items-center gap-2 text-sm bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded">
@@ -139,16 +142,17 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
             onAbbrechen={() => setNeuerKursOffen(false)}
           />
         )}
-      </div>
+      </CRUDSectionShell>
 
       {/* === FACHSCHAFTEN CRUD === */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Fachschaften ({fachschaften.length})</label>
-          {bearbeitungsModus && !neueFachschaftOffen && (
-            <button onClick={() => setNeueFachschaftOffen(true)} className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">+ Fachschaft</button>
-          )}
-        </div>
+      <CRUDSectionShell
+        label="Fachschaften"
+        count={fachschaften.length}
+        bearbeiten={bearbeitungsModus}
+        showAddButton={!neueFachschaftOffen}
+        addLabel="+ Fachschaft"
+        onAdd={() => setNeueFachschaftOffen(true)}
+      >
         <div className="space-y-1">
           {fachschaften.map((fs, idx) => (
             <div key={fs.id} className="flex items-center gap-2 text-sm bg-slate-50 dark:bg-slate-700/50 px-3 py-1.5 rounded">
@@ -178,16 +182,17 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
             onAbbrechen={() => setNeueFachschaftOffen(false)}
           />
         )}
-      </div>
+      </CRUDSectionShell>
 
       {/* === FÄCHER CRUD === */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Fächer ({faecher.length})</label>
-          {bearbeitungsModus && !neuesFachOffen && (
-            <button onClick={() => setNeuesFachOffen(true)} className="text-xs text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">+ Fach</button>
-          )}
-        </div>
+      <CRUDSectionShell
+        label="Fächer"
+        count={faecher.length}
+        bearbeiten={bearbeitungsModus}
+        showAddButton={!neuesFachOffen}
+        addLabel="+ Fach"
+        onAdd={() => setNeuesFachOffen(true)}
+      >
         <div className="flex flex-wrap gap-1.5">
           {faecher.map((f, idx) => (
             <span key={f.id} className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded inline-flex items-center gap-1">
@@ -213,7 +218,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
             onAbbrechen={() => setNeuesFachOffen(false)}
           />
         )}
-      </div>
+      </CRUDSectionShell>
 
       {/* Speichern */}
       {bearbeitungsModus && (
