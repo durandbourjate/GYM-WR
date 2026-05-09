@@ -46,7 +46,9 @@ Branch `bundle-cc/configtab`. **Sechstes (und letztes) Sub-Bundle der Phase-5+ H
 **Out of Scope:**
 - Auflösung der 4 ConfigTab-Sections in eigene Sub-Files (würde ConfigTab auf ~80 Z. reduzieren) — nicht nötig für Hotspot-Removal.
 
-**Merge:** lokal (push ausstehend).
+**Merge:** `1b33746`.
+
+**Cleanup post-CC (selbe Session):** Untracked Test-Duplikate `src/tests/uebungsStorePruefen.test.ts` + `src/tests/uebungsStoreLoesungsPreload.test.ts` gelöscht (waren veraltete Duplikate der bereits committed Co-Located Tests in `src/store/ueben/`). vitest 1523→1512, `lint:musterloesung` Drift +8 → 0 (alle 6 Tokens auf Baseline). Files waren untracked, kein Commit nötig.
 
 ---
 
@@ -106,7 +108,7 @@ Branch `bundle-bb/hilfeseite-einstellungen`. **Fünftes Sub-Bundle der Phase-5+ 
 - Konsolidierung von ProfilTab/AdminTab in eine gemeinsame Form-Logik (eigene Architektur-Diskussion wert).
 - AdminTab CRUD-Sektionen-Dedup (4× ähnliche Sektionen für Gefässe/Kurse/Fachschaften/Fächer könnten via `<CRUDSection>`-Generic gebündelt werden — eigenes Bundle wert).
 
-**Merge:** lokal (push ausstehend).
+**Merge:** `4f53910`.
 
 ---
 
