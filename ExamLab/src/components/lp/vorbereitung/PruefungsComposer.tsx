@@ -9,6 +9,7 @@ import { apiService } from '../../../services/apiService.ts'
 import { preWarmFragen } from '../../../services/preWarmApi'
 import { demoFragen } from '../../../data/demoFragen.ts'
 import { useFragenStats } from '../../../hooks/useFragenStats'
+import { useAutoSavePruefung } from '../../../hooks/useAutoSavePruefung'
 import type { Frage } from '../../../types/fragen-storage'
 import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefung.ts'
 
@@ -51,12 +52,6 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
   const [zeigLoeschPruefung, setZeigLoeschPruefung] = useState(false)
   const [loescht, setLoescht] = useState(false)
 
-  // Autosave: Refs für Vergleich und Debounce
-  const vorherigePruefungRef = useRef<string>(JSON.stringify(config ?? leerePruefung))
-  const hasChangedRef = useRef(false)
-  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'gespeichert'>('idle')
-
   // Ref-Spiegel für aktuellen Zustand — verhindert stale Closures in Autosave-Timern
   const pruefungRef = useRef(pruefung)
   pruefungRef.current = pruefung
@@ -86,34 +81,11 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
   // Tracker-Daten laden für Fragen-Statistiken
   const fragenStats = useFragenStats()
 
-  // Autosave-Effekt: 3 Sekunden Debounce
-  useEffect(() => {
-    const aktuellerJSON = JSON.stringify(pruefung)
-    if (aktuellerJSON === vorherigePruefungRef.current) return
-
-    // Beim allerersten Unterschied merken, dass sich etwas geändert hat
-    if (!hasChangedRef.current) {
-      hasChangedRef.current = true
-      vorherigePruefungRef.current = aktuellerJSON
-      return
-    }
-
-    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
-
-    autoSaveTimerRef.current = setTimeout(async () => {
-      if (!pruefung.titel.trim()) return
-
-      await handleSpeichernIntern()
-      // vorherigePruefungRef wird bereits in handleSpeichernIntern aktualisiert
-      setAutoSaveStatus('gespeichert')
-      setTimeout(() => setAutoSaveStatus('idle'), 2000)
-    }, 3000)
-
-    return () => {
-      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pruefung])
+  // Autosave-Hook: 3 Sekunden Debounce, JSON-Diff-Erkennung
+  const { autoSaveStatus, markAsSaved, cancelTimer: cancelAutoSave } = useAutoSavePruefung({
+    pruefung,
+    onSave: () => handleSpeichernIntern(),
+  })
 
   const gesamtFragen = pruefung.abschnitte.reduce((s, a) => s + a.fragenIds.length, 0)
 
@@ -244,14 +216,14 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
       if (istDemoModus || !apiService.istKonfiguriert()) {
         await new Promise((r) => setTimeout(r, 300))
         setPruefung(zuSpeichern)
-        vorherigePruefungRef.current = JSON.stringify(zuSpeichern)
+        markAsSaved(zuSpeichern)
         return true
       }
 
       const ok = await apiService.speichereConfig(user!.email, zuSpeichern)
       if (ok) {
         setPruefung(zuSpeichern)
-        vorherigePruefungRef.current = JSON.stringify(zuSpeichern)
+        markAsSaved(zuSpeichern)
 
         // Bundle G.a Trigger A: Pre-Warm der fragenIds dieser Prüfung
         const fragenIds = (zuSpeichern.abschnitte ?? [])
@@ -270,10 +242,7 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
 
   async function handleSpeichern(): Promise<void> {
     // Autosave-Timer abbrechen — manuelles Speichern hat Vorrang
-    if (autoSaveTimerRef.current) {
-      clearTimeout(autoSaveTimerRef.current)
-      autoSaveTimerRef.current = null
-    }
+    cancelAutoSave()
     setSpeicherStatus('speichern')
     const ok = await handleSpeichernIntern()
     if (ok) {
