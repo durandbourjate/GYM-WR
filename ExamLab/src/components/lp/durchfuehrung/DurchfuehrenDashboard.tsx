@@ -1,11 +1,10 @@
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { TabBar } from '../../ui/TabBar'
 import DurchfuehrenVorbereitungSkeleton from '../skeletons/DurchfuehrenVorbereitungSkeleton'
 import DurchfuehrenSusReihenSkeleton from '../skeletons/DurchfuehrenSusReihenSkeleton'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { schreibeGespeicherteAnzahl } from '../../../utils/skeletonAnzahl'
-import type { PruefungsNachricht } from '../../../types/monitoring.ts'
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import EinstellungenPanel from '../../settings/EinstellungenPanel.tsx'
 import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
@@ -77,9 +76,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
 
-  // Nachrichten (LP → SuS)
-  const [_nachrichten, setNachrichten] = useState<PruefungsNachricht[]>([])
-
   // Auswertung: Ergebnis-Übersicht Accordion (offen wenn keine Korrektur gestartet)
   const [ergebnisOffen, setErgebnisOffen] = useState(true)
 
@@ -103,19 +99,6 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   // Timer für aktive Phase
   const [startTimestamp] = useState(() => Date.now())
   const [dauer, setDauer] = useState('')
-
-  // Nachrichten laden
-  const ladeNachrichten = useCallback(async () => {
-    if (!user || istDemoModus || !apiService.istKonfiguriert() || !pruefungId || pruefungId === 'demo') return
-    const result = await apiService.ladeNachrichten(pruefungId, user.email)
-    setNachrichten(result)
-  }, [user, istDemoModus, pruefungId])
-
-  useEffect(() => {
-    ladeNachrichten()
-    const interval = setInterval(ladeNachrichten, 20000)
-    return () => clearInterval(interval)
-  }, [ladeNachrichten])
 
   // G.f.2 — SuS-Anzahl pro pruefungId persistieren für layout-akkurates Skeleton
   useEffect(() => {
