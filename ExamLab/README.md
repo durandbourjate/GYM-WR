@@ -60,7 +60,7 @@ Digitale Prüfungs- und Übungsplattform für alle Fachschaften am Gymnasium Hof
 - PDF-Freihand selektierbar: Freihand-Zeichnungen in PDF-Annotation mit Auswahl-Tool verschieben und Farbe ändern
 
 **Backend**
-- Google Sheets als Datenbank (Fragenbank, Klassenlisten, Configs, Antworten)
+- Google Sheets als Datenbank (Fragensammlung, Klassenlisten, Configs, Antworten)
 - Google Apps Script als API (kein eigener Server nötig)
 - Google OAuth für Schul-Login (@gymhofwil.ch / @stud.gymhofwil.ch)
 - Schülercode-Login als Fallback (Name + Code + E-Mail)
@@ -158,7 +158,7 @@ src/
 │   │   ├── korrektur/         KorrekturDashboard + Sub-Komponenten (Noten, Analyse, Aktionen)
 │   │   ├── durchfuehrung/     DurchfuehrenDashboard, AktivPhase, LobbyPhase, Monitoring
 │   │   ├── vorbereitung/      VorbereitungPhase, PruefungsComposer, KursAuswahl + composer/
-│   │   ├── fragenbank/        FragenBrowser, FragenImport, Pool-Sync + fragenbrowser/
+│   │   ├── fragensammlung/    FragenBrowser, FragenImport, Pool-Sync + fragenbrowser/
 │   │   ├── frageneditor/      Fragen-Editor mit allen Typen
 │   │   └── ...                LPStartseite, LPHeader, HilfeSeite, TrackerSection
 │   ├── fragetypen/            20 Typen: MC, Freitext, Lückentext, Zuordnung, R/F, Berechnung + 4 FiBu + Aufgabengruppe + PDF + Zeichnen + Sortierung + Hotspot + Bildbeschriftung + Audio + Drag&Drop + Code + LaTeX

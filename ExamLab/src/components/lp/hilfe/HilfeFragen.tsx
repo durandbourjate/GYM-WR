@@ -122,6 +122,17 @@ export default function HilfeFragen() {
         Die Browser-Autokorrektur kann pro Prüfung deaktiviert werden — z.B. für Diktate oder Sprachprüfungen. Einstellung unter: Prüfung bearbeiten → Konfiguration → Rechtschreibprüfung. Im Freitext-Editor erscheint ein Hinweis-Link dazu.
       </Text>
 
+      <Untertitel>Auto-Save, Entwürfe & Papierkorb</Untertitel>
+      <Text>
+        Beim Bearbeiten einer Frage im Fragen-Editor wird der Stand <strong>automatisch gespeichert</strong> (Status &laquo;Gespeichert&raquo; / &laquo;Speichert...&raquo; oben rechts). Sie müssen nichts manuell sichern.
+      </Text>
+      <Text>
+        Neue Fragen werden zunächst als <strong>Entwurf</strong> angelegt und erscheinen in der Fragensammlung mit einem Entwurfs-Badge. Erst wenn Sie alle Pflichtfelder ausgefüllt haben (violett umrahmte Felder), wird der Entwurf zu einer regulären Frage.
+      </Text>
+      <Text>
+        Gelöschte Fragen landen im <strong>Papierkorb</strong> (5. Tab im Header). Dort können Sie sie <strong>wiederherstellen</strong> oder <strong>endgültig löschen</strong>. Frage versehentlich gelöscht? Toast-Meldung mit Wiederherstellen-Knopf erscheint kurz nach dem Löschen.
+      </Text>
+
       <Untertitel>iPad Diktierfunktion</Untertitel>
       <Text>
         Die iOS-Diktierfunktion (Mikrofon-Symbol auf der Tastatur) kann <strong>nicht</strong> per Webseite deaktiviert werden — es ist ein Systemfeature. Mögliche Massnahmen: (1) <strong>SEB</strong> (Safe Exam Browser) kann die Diktierfunktion unterbinden. (2) Über <strong>MDM-Profile</strong> (z.B. Jamf, Zuludesk) kann Dictation auf verwalteten iPads systemweit deaktiviert werden (Einschränkungsprofil → Siri → Diktierfunktion deaktivieren). Sprechen Sie bei Bedarf die Schulinformatik an.

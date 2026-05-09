@@ -14,12 +14,20 @@ export default function HilfeFAQ() {
         Die Antworten werden lokal im Browser gespeichert. Sobald die Verbindung wiederhergestellt ist, werden sie automatisch an den Server gesendet. Es gehen keine Daten verloren.
       </FAQItem>
 
+      <FAQItem frage="Habe ich versehentlich eine Frage gelöscht — kann ich sie wiederherstellen?">
+        Ja. Gelöschte Fragen landen im <strong>Papierkorb</strong> (5. Tab im Header) und können dort wiederhergestellt oder endgültig gelöscht werden. Direkt nach dem Löschen erscheint zudem kurz ein Toast mit Wiederherstellen-Knopf.
+      </FAQItem>
+
+      <FAQItem frage="Muss ich beim Frageneditor manuell speichern?">
+        Nein. Der Fragen-Editor speichert automatisch (Status oben rechts: &laquo;Gespeichert&raquo; / &laquo;Speichert...&raquo;). Neue Fragen werden zunächst als <strong>Entwurf</strong> angelegt und erst zur regulären Frage, wenn alle Pflichtfelder (violett umrahmt) ausgefüllt sind.
+      </FAQItem>
+
       <FAQItem frage="Können SuS zwischen Fragen hin- und herspringen?">
         Ja, wenn &laquo;Rücknavigation erlaubt&raquo; in den Prüfungseinstellungen aktiviert ist. Bei linearen Prüfungen können SuS nur vorwärts navigieren.
       </FAQItem>
 
       <FAQItem frage="Brauche ich den Safe Exam Browser (SEB)?">
-        SEB ist optional. Wenn aktiviert, werden SuS ohne SEB gewarnt und können die Prüfung nicht starten. SEB verhindert den Zugriff auf andere Apps und Websites während der Prüfung. Alternativ bietet der Soft-Lockdown (3 Stufen) SEB-unabhängige Sicherheit direkt im Browser.
+        SEB ist optional. Wenn aktiviert, werden SuS ohne SEB gewarnt und können die Prüfung nicht starten. SEB verhindert den Zugriff auf andere Apps und Websites während der Prüfung. Alternativ bietet der Soft-Lockdown (4 Stufen) SEB-unabhängige Sicherheit direkt im Browser.
       </FAQItem>
 
       <FAQItem frage="Was ist der Soft-Lockdown?">
