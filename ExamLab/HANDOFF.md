@@ -8,6 +8,58 @@
 
 ## Letzter Stand auf main
 
+### Spawn-Task-Cleanup-Sweep + Salvage-Bundle ✅ MERGED (2026-05-09)
+
+Branch `cleanup/dead-code-mini`. **10 Commits** über 2 Phasen: **6 Mini-Cleanups** aus Bundle U/V/T.a-Spawn-Tasks (Tot-Code/Pattern-Smells) + **4 Salvage-Commits** aus 4 unmerged Branches die im Branch-Audit aufgetaucht waren. **Reine Hygiene-Session ohne Hotspot-Cut**, parallel Branch-/Worktree-Aufräumung.
+
+**Phase 1 — Tot-Code & Pattern-Cleanups (6 Commits, -27 Netto-Zeilen):**
+
+| # | Item | Commit | Datei | Δ Zeilen |
+|---|------|--------|-------|----------|
+| A1 | `pfeilBreite` Tot-Code | `5e7e795` | `drawingRendering.ts` | -4 |
+| A3 | `_nachrichten` Tot-Code + 20s-API-Polling-Leak | `8f5fe05` | `DurchfuehrenDashboard.tsx` | -17 |
+| A4 | `zoom`-Param Pipeline raus (Phase-3+4 nie realisiert) | `22e61db` | `pdfAnnotationenSVG` + .test + `PDFSeite.tsx` | -3 |
+| A2 | `setDaten`-Direct-Setter-Leak ersetzt durch `resetFuerNeueDurchfuehrung` + Race-Härtung (Abort + fehlerCountRef-Reset) | `1375a59` | `useDurchfuehrenMonitoring.ts` + Caller | +13 |
+| B1 | dead-Ternary in `leseTextauswahl` + ungenutzte `_containerBreite/_containerHoehe`-Params in `findeSpanRectsRelativ` | `8d4ac67` | `pdfSelection.ts` + .test + `pdfAnnotationenSVG` | -8 |
+| B2 | `data-drag-orig-punkte` DOM-as-state-Smell → `dragRef.current.origPunkte` (1× JSON.parse statt N×, try/catch raus) | `b1e1c1c` | `usePDFDrawing.ts` + .test | -8 |
+
+**Phase 2 — Salvage aus unmerged Branches (4 Commits):**
+
+| # | Quelle | Commit | Inhalt |
+|---|--------|--------|--------|
+| 7 | `cleanup/useLPDashboardData-setters` (1 ahead, 103 behind) | `baa0630` | Setter-Cleanup `useLPDashboardData`-Public-API (Bundle T.f Spawn-Task) |
+| 8 | `fix/useLPDashboardData-reload-backendFehler` (1 ahead) | `4eb1e8c` | **Real Bug-Fix**: `reload()` setzt `setBackendFehler` jetzt zurück bei Erfolg (vorher: Banner blieb sichtbar bis Page-Reload) |
+| 9 | `ux/dropdown-labels-alle` (1 ahead) | `b42136c` | UX: Dropdown-Default-Labels „Alle Fächer/Themen/Typen" statt einzeln „Fach/Thema/Typ" in `FragenBrowserHeader` |
+| 10 | `audit/examlab-vereinfachung` (6 ahead) | `bc58037` | **Salvage Audit-Doku 598 Z.** — `docs/superpowers/audits/2026-05-05-examlab-vereinfachung-audit.md`. Fixt **4 broken Links** in HANDOFF (2x) + Bundle-S-A-Plan + Bundle-V-Spec. Tooling (`scripts/audit-tokens.sh`) war schon auf main. |
+
+**Verifikation:**
+- vitest **1514 passed | 4 todo | 1 skipped** (drift =0 vs Post-CC-Sweep-Baseline 1514)
+- tsc -b clean, vite build clean (PWA 256 Cache-Entries)
+- 4 Lint-Gates clean (as-any 0, no-alert 0, no-tests-dir clean, musterloesung Baseline)
+
+**Branch- + Worktree-Aufräumung (parallel):**
+- **Repo A (Production GYM-WR-DUY):** 4 Worktrees → 0 (`bundle-aa-mittelrisiko`, `bundle-u-usedrawingengine`, `cleanup-useLPDashboardData`, `fix-useLPDashboardData-reload-backendFehler`); 18 lokale Branches → 3 (nur `main`/`preview`/`cleanup/dead-code-mini`). 15 Branches gedroppt nach Verifikation 0-ahead oder Salvage-Cherry-Pick. Bundle-AA-Worktree hatte korrupten Stale-Checkout-State (PRE-Bundle-AA-Versionen + post-Bundle-AA-Untracked-Files), keine eindeutige Arbeit. Verwendete macOS `chflags -R nohidden` gegen Sandbox-rm-Block.
+- **Repo B (Sandbox `00 Automatisierung Unterricht`):** 19 Worktrees → 2 (Host-Dir + aktive Session); 17 `claude/*`-Sister-Worktrees + Branches gedroppt (alle stuck am obsoleten Plan-Commit `868e01c`). Disk 2.0M → 120K.
+
+**Bewusst NICHT angefasst:** `main`, `preview` (long-lived staging), `cleanup/dead-code-mini` (vor Merge), Remote-Refs (User pushte parallel cancelled-rerun-Pushes).
+
+**Branch-SHAs für Reflog-Recovery (alle gedroppt, ~30 Tage erreichbar):**
+- Salvage-Quellen: `a8b4456` `4cc048a` `1d35172` `fd233df`
+- 0-ahead: `9c61904` `e478559` `a2e3b07` `af84d7a` `18ad021` `aee436d` `6c13efd` `a94ff54` `42fe56f` `5bc20ad` `659c796`
+
+**Spawn-Tasks (post-Cleanup-Sweep):**
+- **Orphan-File `SchuelerZeile.tsx`** (~280 Z.) in `lp/durchfuehrung/` — nirgends importiert (war Konsument der gerade entfernten `_nachrichten`). Komplett-Delete-Kandidat in eigenem Mini-Bundle.
+- Optional: Remote-Branches `origin/audit/examlab-vereinfachung` etc. droppen (separat — User pushte parallel).
+
+**Lehren neu:**
+- **Branch-Audit als Standard-Schritt vor Cleanup** — 4 unmerged Branches enthielten echten Wert (Bug-Fix + UX + Doku) der ohne Audit verloren gegangen wäre.
+- **`chflags -R nohidden` als Workaround für macOS-Sandbox `rm`-Block** auf Worktree-Verzeichnissen mit Hidden-Flag (gesetzt durch Finder oder andere macOS-Tools). Standard-`rm -rf` wirft „Directory not empty" trotz korrekt gelisteten Inhalts.
+- **Salvage vor Destruktion lohnt sich** — selbst „1 commit ahead, 103 commits behind" Branches können einen real-Bug-Fix oder broken-Link-Reparatur enthalten.
+
+**Merge:** _(folgt direkt nach diesem Commit als FF-Merge auf main)_
+
+---
+
 ### Post-Bundle-CC Refactor-Sweep ✅ MERGED (2026-05-09)
 
 Sechs aufeinanderfolgende Out-of-Scope-Items-Refactors aus Bundle BB/CC HANDOFF abgearbeitet, plus Bundle W Final-Reviewer-Pass nachgeholt (war ursprünglich durch Org-Usage-Limit blockiert). **Kein Hotspot-Cut**, sondern Architektur-Verbesserungen + DRY + Reviewer-Findings. Reine Sweep-Session ohne Bundle-Bezeichnung.
@@ -525,10 +577,10 @@ Branch `bundle-w/uebungsstore-cuts`. **Drittes** Hoch-Risiko-Datei-Split der **P
 - **Audit-Baseline für Field-Drift bei Test-Hinzufügung antizipieren** — Tests, die domain-typed Backend-Vertrag-Identifier (`musterlosung` no-`e`) verwenden, erhöhen die `audit-musterloesung.sh`-Baseline. Bundle W: +12 Token (11 in loesungsMerge.test.ts + 1 in ergebnisBerechnung.test.ts mkFrage). Baseline-Update gehört zum Bundle-Commit.
 
 **Spawn-Tasks (post-Bundle-W cleanup, chip'd):**
-- **Bundle W.b: State-Refactor für Hotspot-Verlassen** — `starteSession`-Block-Builder + `pruefeAntwortJetzt`-Async-Logic in extra Helper. Schätzung: -40+ Z. → ~500 Z. uebungsStore.ts. Höher-Risiko, separates Bundle.
-- **`istSelbstbewertbar`-Konstante DRY** (Duplikat in `pruefeAntwortJetzt` Z. 263 + `selbstbewertenById` Z. 382) → `utils/ueben/fragetypGruppen.ts` mit `SELBSTBEWERTBARE_TYPEN: readonly Frage['typ'][]`.
-- **Test-Migration**: `src/tests/uebungsStore*.test.ts` zu co-located in `store/ueben/` verschieben (analog Bundle Q Heuristik B).
-- **Final-Code-Reviewer-Pass** für Bundle-W-Branch (war durch Org-Usage-Limit blockiert) — kann post-merge auf `main` als Code-Review-Task laufen.
+- ~~**Bundle W.b: State-Refactor für Hotspot-Verlassen**~~ ✅ erledigt durch Bundle W.b (Merge `5cf26b1` o.ä., siehe Eintrag oben).
+- ~~**`istSelbstbewertbar`-Konstante DRY**~~ ✅ erledigt durch Bundle W.b — `SELBSTBEWERTBARE_TYPEN` + `istSelbstbewertbar` in `utils/ueben/fragetypGruppen.ts` mit Tests + Twin-Cleanup `SELBSTBEWERTUNGS_TYPEN` aus `korrektur.ts`.
+- ~~**Test-Migration** `src/tests/uebungsStore*.test.ts` zu co-located in `store/ueben/`~~ ✅ erledigt im Cleanup post-Bundle-CC (untracked Test-Duplikate gelöscht, Co-Located bereits da, Merge `7025157`).
+- ~~**Final-Code-Reviewer-Pass** für Bundle-W-Branch~~ ✅ erledigt im Post-Bundle-CC Refactor-Sweep (Punkt 1, APPROVED mit 2 MINOR-Findings die direkt im Hardening-Folge-Commit `5a53f7e` adressiert wurden).
 
 **Out of Scope (Phase 5+ Roadmap):**
 - Phase 4 Audit komplett abgeschlossen mit Bundle W. Phase 5+ Scoping offen.
@@ -564,12 +616,12 @@ Branch `bundle-v/pdfseite-split`. Zweites Hoch-Risiko-Datei-Split der **Phase 4*
 - **Bonus-Bugfix durch Lint-Migration (Phase 4)**: Lint-mandated Dep-Array-Additions beim Hook-Move können latent stale-closure-Bugs als Side-Effect fixen — `handleDrawMove` Original hatte `annotationen` nicht in Deps obwohl im Body verwendet. Pattern: bei Hook-Cuts den ursprünglichen Dep-Array nicht blind übernehmen, sondern lint folgen lassen + gefundene Diffs im Reviewer-Step prüfen. Memory-File `feedback_hook_cut_dep_array_bonus_bugfix.md`.
 
 **Spawn-Tasks (post-Bundle-V cleanup, chip'd):**
-- `leseTextauswahl` dead-Ternary in `pdfSelection.ts` Z. 49-57 — investigate intended `range.startOffset - so` vs. simplification.
-- `data-drag-orig-punkte` DOM-as-state-Smell in `usePDFDrawing.ts` Z. 122-127 — promote orig-points-string ins `dragRef`-Object statt HTML-Attribut.
+- ~~`leseTextauswahl` dead-Ternary in `pdfSelection.ts` Z. 49-57~~ ✅ erledigt im Cleanup-Sweep (Cleanup B1, Commit `8d4ac67`). Beide Branches der Ternary waren tautologisch identisch — Refactor-Rest ohne Bedeutung. Kollabiert.
+- ~~`data-drag-orig-punkte` DOM-as-state-Smell in `usePDFDrawing.ts` Z. 122-127~~ ✅ erledigt im Cleanup-Sweep (Cleanup B2, Commit `b1e1c1c`). `origPunkte` jetzt im `dragRef.current`-Object, 1× JSON.parse statt N×.
 
 **Spawn-Tasks (Memory-TODO, optional):**
-- `_zoom`-Param in `pdfAnnotationenSVG.tsx` `renderHighlight`/`renderLabel` (unused, underscore-prefix preserved) — drop signature wenn Phase-3+4 nicht benötigt.
-- macOS-Datei-2-Duplikate aufräumen (`ToastContainer 2.tsx`, `ToastContainer.test 2.tsx`) — pre-existing Worktree-Drift, nicht Bundle V.
+- ~~`_zoom`-Param in `pdfAnnotationenSVG.tsx` `renderHighlight`/`renderLabel`~~ ✅ erledigt im Cleanup-Sweep (Cleanup A4, Commit `22e61db`). Komplette `zoom`-Pipeline raus inkl. Public-API + Tests + Caller.
+- ~~macOS-Datei-2-Duplikate aufräumen~~ ✅ Repo aktuell clean — `find ExamLab -name "* 2.*"` 0 Treffer (verifiziert 2026-05-09).
 
 **Out of Scope (für nächste Sessions):**
 - Bundle W — `uebungsStore.ts` Hoch-Risiko-Split (684 Z., Lösungs-Merge + Session-Historie). Letztes Hoch-Risiko-File aus Audit Phase 4.
@@ -609,9 +661,9 @@ Branch `feature/bundle-u-usedrawingengine-split`. Erstes Hoch-Risiko-Datei-Split
 - **FP-Toleranz-Tests**: `toBeCloseTo(...)` statt `toEqual` für Float-Approximationen (z.B. `18*0.6*2 = 33.5999...`).
 
 **Out of Scope (Spawn-Tasks für nächste Sessions):**
-- Bundle V — `PDFSeite.tsx` Hoch-Risiko-Split (950 Z., 17 Props, DOM-Selection + PDF.js + Canvas).
-- Bundle W — `uebungsStore.ts` Hoch-Risiko-Split (684 Z., Lösungs-Merge + Session-Historie).
-- `void pfeilBreite;` Tot-Code-Cleanup in `drawingRendering.ts` Z. 35.
+- ~~Bundle V — `PDFSeite.tsx` Hoch-Risiko-Split~~ ✅ erledigt (Bundle V Merge, siehe Eintrag oben).
+- ~~Bundle W — `uebungsStore.ts` Hoch-Risiko-Split~~ ✅ erledigt (Bundle W + W.b Merges).
+- ~~`void pfeilBreite;` Tot-Code-Cleanup in `drawingRendering.ts` Z. 35~~ ✅ erledigt im Cleanup-Sweep (Cleanup A1, Commit `5e7e795`).
 - Browser-E2E-Pfade 2-11 nachholen bei nächster Gelegenheit (manuell durchspielen, Smoke-Test in laufender Session statt Auto-Verifikation).
 
 ---
@@ -884,8 +936,8 @@ Refactor ist semantisch byte-identisch (per Reviewer-Bestätigung + Diff), Conti
 
 **Out of Scope (für nächste Session):**
 - T.a Spawn-Tasks (Memory-TODO):
-  - `setDaten`-Leak in useDurchfuehrenMonitoring (TODO Z.14): durch `resetDaten(pruefungId)` oder `onPruefungReset`-Callback ersetzen, Direct-Setter-Leak vermeiden — relevant ab T.f wenn phase-useState-Pattern propagiert
-  - `_nachrichten` Dead-Code-Verdacht (set, aber nicht gelesen) — separater Spawn-Task post-merge
+  - ~~`setDaten`-Leak in useDurchfuehrenMonitoring~~ ✅ erledigt im Cleanup-Sweep (Cleanup A2, Commit `1375a59`). Ersetzt durch `resetFuerNeueDurchfuehrung(pruefungId)`-Callback inkl. Bonus Race-Härtung (Abort + fehlerCountRef-Reset).
+  - ~~`_nachrichten` Dead-Code-Verdacht~~ ✅ erledigt im Cleanup-Sweep (Cleanup A3, Commit `8f5fe05`). State + 20s-API-Polling + `ladeNachrichten`-Callback komplett raus. Bonus-Befund: `SchuelerZeile.tsx` (~280 Z.) ist Orphan-File — neuer Spawn-Task.
 - Untracked-Files-Drift im Repo (nicht von T.a verursacht):
   - `ExamLab/src/components/lp/fragensammlung/fragenbrowser/FragenBrowserHeader.tsx` (modified-not-staged auf main bestätigt)
   - `ExamLab/src/components/lp/vorbereitung/composer/DruckAnsicht.tsx`, `VorschauTab.tsx` (untracked — vermutlich Bundle-S-Reste)
