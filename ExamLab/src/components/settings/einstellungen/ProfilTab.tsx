@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import { useStammdatenStore } from '../../../store/stammdatenStore'
 import type { Stammdaten, LPProfil } from '../../../types/stammdaten'
 import { CheckboxChip } from './sharedFelder'
+import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
+import SpeicherButton from './SpeicherButton'
 
 export default function ProfilTab({ email, stammdaten, profil }: { email: string; stammdaten: Stammdaten; profil: LPProfil | null }) {
   const { speichereLPProfil } = useStammdatenStore()
   const [gewaehlteKurse, setGewaehlteKurse] = useState<string[]>(profil?.kursIds ?? [])
   const [gewaehlteFachschaften, setGewaehlteFachschaften] = useState<string[]>(profil?.fachschaftIds ?? [])
   const [gewaehlteGefaesse, setGewaehlteGefaesse] = useState<string[]>(profil?.gefaesse ?? [])
-  const [speicherStatus, setSpeicherStatus] = useState<'idle' | 'laeuft' | 'gespeichert' | 'fehler'>('idle')
+  const { status: speicherStatus, speichern: runSpeichern } = useSpeicherStatus()
 
   // Wenn Profil geladen wird, State aktualisieren
   useEffect(() => {
@@ -19,17 +21,14 @@ export default function ProfilTab({ email, stammdaten, profil }: { email: string
     }
   }, [profil])
 
-  const speichern = async () => {
-    setSpeicherStatus('laeuft')
+  const speichern = () => {
     const neuesProfil: LPProfil = {
       email,
       kursIds: gewaehlteKurse,
       fachschaftIds: gewaehlteFachschaften,
       gefaesse: gewaehlteGefaesse,
     }
-    const ok = await speichereLPProfil(neuesProfil)
-    setSpeicherStatus(ok ? 'gespeichert' : 'fehler')
-    if (ok) setTimeout(() => setSpeicherStatus('idle'), 2000)
+    void runSpeichern(() => speichereLPProfil(neuesProfil))
   }
 
   return (
@@ -94,19 +93,7 @@ export default function ProfilTab({ email, stammdaten, profil }: { email: string
       </div>
 
       {/* Speichern */}
-      <button
-        onClick={speichern}
-        disabled={speicherStatus === 'laeuft'}
-        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-          speicherStatus === 'laeuft'
-            ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 cursor-wait'
-            : speicherStatus === 'gespeichert'
-            ? 'bg-green-600 text-white'
-            : 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 hover:bg-slate-900 dark:hover:bg-slate-100'
-        }`}
-      >
-        {speicherStatus === 'laeuft' ? 'Speichern...' : speicherStatus === 'gespeichert' ? '✓ Gespeichert' : 'Profil speichern'}
-      </button>
+      <SpeicherButton status={speicherStatus} idleLabel="Profil speichern" onClick={speichern} />
       {speicherStatus === 'fehler' && (
         <p className="text-sm text-red-600 dark:text-red-400">
           Fehler beim Speichern. {useStammdatenStore.getState().fehler ? `Details: ${useStammdatenStore.getState().fehler}` : 'Bitte erneut versuchen.'}
