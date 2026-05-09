@@ -1749,8 +1749,8 @@ Bundle L (a/b/c) abgeschlossen, Folge-Cleanups gemergt. Mögliche nächste Theme
 
 **Hinweis:** Eine vorherige Session referenzierte Commits `868e01c`/`04a8648`/`758b192` als bereits-committed Spec+Plan. Diese existieren weder in `.git/objects/` noch in irgendeinem Branch (lokal oder remote) und auch nicht im Reflog. Spec+Plan müssen neu erstellt werden.
 
-### Media-Phase-3-5 Dual-Write (groß, ~3-4 Sessions)
-`MediaQuelle`-Type ist in shared definiert, aber Apps-Script kennt ihn nicht. Echte Migration: Backend liest+schreibt beide Formate (`bildUrl`/`pdfBase64` UND `MediaQuelle`), Frontend-Migrator existiert (`mediaQuelleMigrator.ts`). Apps-Script-Deploy nötig. Phase 6 (alte Felder weg, Daten-Migration) als separates Bundle danach.
+### Media-Phase-3-5 Dual-Write — Spec auf main, Phase 4.a als Nächstes
+**Spec:** [`docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md`](../docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md) — Status-Update beim Spec-Schreiben offenbarte: **Phase 3 (Apps-Script SAVE für PDF) ist bereits seit `82dcb4db` (Bundle N, 19.04.2026) auf main**. Nur **3 Sub-Bundles** verbleiben: Phase 4.a (Bild-Editor-Stack, 8 Files), Phase 4.b (PDF-Editor-Stack, 4 Files), Phase 5 (Renderer-Cleanup ExamLab/src, 4 Files). Architektur-Entscheidungen: sequenzielle Sub-Bundles, Clean-Break-Editor-Writes, voller MediaQuelle-State-Refactor, per-Media-Type-Granularität. Plan für Phase 4.a noch nicht erstellt — `superpowers:brainstorming` (Folge-up) oder direkt `superpowers:writing-plans` mit der bestehenden Spec-Sektion 4. Phase 6 (Type-Cleanup + Sheet-Daten-Migration) als separates Bundle nach Phase 5.
 
 ---
 
@@ -1766,7 +1766,7 @@ Bundle L (a/b/c) abgeschlossen, Folge-Cleanups gemergt. Mögliche nächste Theme
 
 ### Future Bundles (geplant)
 
-- **Media-Phase-3-5 Dual-Write Migration** — `MediaQuelle`-Type ist in shared definiert (`packages/shared/src/types/mediaQuelle.ts`), aber Apps-Script kennt ihn nicht. Echte Migration ist eigenes Bundle in Bundle-J-Grösse: Backend liest+schreibt beide Formate (`bildUrl`/`pdfBase64` UND `MediaQuelle`), Frontend-Migrator ist bereits da (`mediaQuelleMigrator.ts`). ~3-4 Sessions, Apps-Script-Deploy nötig. Phase 6 (alte Felder weg, Daten-Migration) als separates Bundle danach.
+- **Media-Phase 4.a/4.b/5 Dual-Write Migration** — Spec auf main: [`docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md`](../docs/superpowers/specs/2026-05-09-media-phase-3-5-dual-write-design.md). Phase 3 (Apps-Script SAVE) seit `82dcb4db` (April) bereits live. Verbleibend: Phase 4.a (Bild-Editor-Stack, 8 Files in `packages/shared/src/editor/`) → Phase 4.b (PDF-Editor-Stack, 4 Files) → Phase 5 (Renderer-Cleanup, 4 Files in `ExamLab/src/`). ~3 Sessions Total, kein Apps-Script-Deploy mehr nötig. Phase 6 (Type-Cleanup + Sheet-Daten-Migration) als separates Bundle danach.
 - **Backend-Migration weg von Apps-Script** (langfristig, strategisch) — Edge-Runtime / Cloud Run / Cloudflare Workers. Vorbereitend: API-Contract (Zod/JSON-Schema), Endpoint-Inventar, Schema-Doku. Kein konkreter Trigger jetzt, aber Vorarbeit lohnt während anderer Bundles.
 
 ### Future / YAGNI (nur falls UX-Feedback negativ)
