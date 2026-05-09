@@ -8,7 +8,7 @@
 
 ## Letzter Stand auf main
 
-### Media-Phase 6.c.neu + 6.d + 6.e ✅ STAGING (2026-05-10)
+### Media-Phase 6.c.neu + 6.d + 6.e ✅ MERGED (2026-05-10)
 
 Branch `media-phase-6cde` → preview. Großes Hauptbundle nach Phase 6.f Sheet-Migration. **Type-Removal Frontend + Material-Fallback Removal + Apps-Script Schreib-Pfad-Cleanup** in einem Bundle. User hat Apps-Script deployt. Self-Review-Modus.
 
@@ -147,7 +147,7 @@ Branch `media-phase-6` → preview. **Erste zwei Sub-Bundles** des großen final
 
 ---
 
-### Pre-Phase-6 Cleanup (S1+S3+S4) 🟡 STAGING (2026-05-09)
+### Pre-Phase-6 Cleanup (S1+S3+S4) ✅ MERGED (2026-05-09)
 
 Branch `cleanup/pre-phase6-s1-s3-s4` → preview. Aufwärm-Bundle vor Media-Phase 6, drei niedrig-Risiko Spawn-Tasks aus Media-Phase-3-5-Spec § 8 abgearbeitet. **Keine Wire-Vertrag-Änderungen** — Frontend-Pool-Konverter Dual-Write + Demo-Daten Dual-Write + ein Orphan-Delete.
 
