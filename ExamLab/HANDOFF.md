@@ -8,6 +8,61 @@
 
 ## Letzter Stand auf main
 
+### Post-Bundle-CC Refactor-Sweep ✅ MERGED (2026-05-09)
+
+Sechs aufeinanderfolgende Out-of-Scope-Items-Refactors aus Bundle BB/CC HANDOFF abgearbeitet, plus Bundle W Final-Reviewer-Pass nachgeholt (war ursprünglich durch Org-Usage-Limit blockiert). **Kein Hotspot-Cut**, sondern Architektur-Verbesserungen + DRY + Reviewer-Findings. Reine Sweep-Session ohne Bundle-Bezeichnung.
+
+**Was geliefert (in Reihenfolge der Merges):**
+
+| # | Task | Files | Reduktion | Merge |
+|---|------|-------|-----------|-------|
+| 1 | **Bundle W Final-Reviewer-Pass** | (Review only) | APPROVED, 2 MINOR-Findings | — |
+| 2 | **historie.ts Hardening** | `historie.ts` + Tests | null-JSON-Defense + Dead-JSDoc-Cleanup, +2 Tests (1512→1514) | `5a53f7e` |
+| 3 | **A3: ConfigTab 4 Sections** | `composer/config/*.tsx` × 4 | ConfigTab 285→37 Z. (-87%) via Tab-Sektion-Cut | `48de94a` |
+| 4 | **A4: AdminTab CRUDSectionShell** | `einstellungen/CRUDSectionShell.tsx` | Shared Header für 4 CRUD-Sektionen (DRY-Win, kein Z.-Win) | `8d07413` |
+| 5 | **A2: useAutoSavePruefung-Hook** | `hooks/useAutoSavePruefung.ts` | PruefungsComposer 454→423 Z. (-7%), Hook 81 Z. neu | `21f214d` |
+| 6 | **A1: BilanzERFrage Aufgabe-Modus** | `fragetypen/BilanzERAufgabe.tsx` | BilanzERFrage 376→18 Z. (-95%), Aufgabe-File 361 Z. neu | `2cf7a29` |
+| 7 | **A5: useSpeicherStatus + SpeicherButton** | `hooks/useSpeicherStatus.ts` + `einstellungen/SpeicherButton.tsx` | ProfilTab 117→104 + AdminTab 247→234 (DRY-Hook für 4-Status-Save-Pattern) | `d805658` |
+| 8 | **Cleanup macOS-Duplikat** | (Delete) | `CRUDSectionShell 2.tsx` versehentlich mit-committed | `1be72d1` |
+
+**Bundle W Final-Reviewer (Punkt 1):**
+- Status: **APPROVED**. Spec-Plan-Implementation ohne Drift, byte-identische Pure-Logic-Cuts, alle Risk-Mitigations greifen, Tests gut gewählt (12+5+7=24 mit Edge-Cases inkl. Closure-Mock + fake-timers).
+- 2 MINOR-Findings für `historie.ts`: (a) Dead JSDoc-Comment Z. 24-26, (b) fehlende `Array.isArray`-Defense gegen externe localStorage-Manipulation. Beide direkt im Folge-Hardening (Punkt 2) gefixt.
+
+**Verifikation pro Punkt 2-7:**
+- vitest 1514 passed (drift =0 nach Punkt 2)
+- tsc -b clean
+- 4× lint clean (lint:as-any 0, lint:no-alert 0, lint:no-tests-dir clean, lint:musterloesung Baseline)
+- vite build grün, PWA OK
+- Browser-E2E (wo testbar): A2 Auto-Save Title-Change persistierte ✅, A3 ConfigTab Sections rendern ✅, A1 SuS-Tab Smoke ✅, 0 Console-Errors
+
+**6 neue wiederverwendbare Patterns / Architektur-Verbesserungen:**
+1. `useSpeicherStatus` + `SpeicherButton` — 4-Status-Save-Pattern (idle/laeuft/gespeichert/fehler) für Forms
+2. `useAutoSavePruefung` — Closure-Ref-Pattern (`onSaveRef.current`) für stabile Hook-Identity bei pruefung-Deps
+3. `CRUDSectionShell` — Header-Slot-Pattern (label/count/Add-Button/hint) für CRUD-UIs
+4. Tab-Sektion-Cut auch für nicht-Hotspot Files (ConfigTab 285→37 als Pattern-Anwendung, nicht Hotspot-Removal)
+5. Modus-Dispatcher als 18-Zeilen-Wrapper (BilanzERFrage delegiert nur an BilanzERAufgabe / BilanzERLoesung)
+6. `Array.isArray`-Defense für `JSON.parse`-Reads aus localStorage (gegen externe Manipulation)
+
+**Lehren neu (post-CC Sweep):**
+- **Reviewer-Findings nicht in Review-Session lassen** — Bundle W Reviewer-Findings (2 MINOR) wurden direkt im Follow-up-Hardening adressiert. Pattern: Reviewer → Findings → Mini-Hardening-Bundle in derselben Session.
+- **macOS „Datei 2.ext"-Duplikate vor `git add -A` checken** — beim A5-Commit wurde versehentlich `CRUDSectionShell 2.tsx` (macOS-Finder-Duplikat aus Drag-and-Drop o.ä.) mit-committed. Wurde im Folge-Cleanup-Commit entfernt. Workflow: `find ExamLab/src -name "* 2.*"` als Pre-Commit-Check.
+- **DRY-Win ≠ Zeilen-Win bei Hook+Komponenten-Pairs** — A4/A5 fügen netto Zeilen hinzu (Hook + Komponenten-File), aber dedup'en das Pattern an mehreren Stellen. Wartbarkeit > Z.-Saving bei Architektur-Refactors.
+
+**Spawn-Tasks aus Reviewer (chip'd):**
+- Keine, alle Findings adressiert.
+
+**Out of Scope:**
+- Tests für `useAutoSavePruefung` und `useSpeicherStatus` (low ROI für simple Hooks; transparente Logik, durch Browser-E2E gedeckt).
+
+**Final State:**
+- 0 Code-Files >500 Z. (Hotspot-Bilanz unverändert nach Post-CC Sweep, da Sweep nicht auf Hotspots zielte)
+- 4 Files >500 Z. verbleibend, alle data/test (out of scope): einrichtungsFragen 922, einrichtungsUebungFragen 869, bewertungsrasterVorlagen 608, autoKorrektur.test 547
+
+**Merge:** `1be72d1` (final cleanup commit nach allen 6 Sweep-Items + Bundle W Reviewer).
+
+---
+
 ### Bundle CC — ConfigTab MaterialienSection-Cut ✅ MERGED (2026-05-09)
 
 Branch `bundle-cc/configtab`. **Sechstes (und letztes) Sub-Bundle der Phase-5+ Hotspot-Reduction-Roadmap** (nach X/Y/Z/AA/BB). **Single-Cut der MaterialienSection** (447 Z.) + Helpers (10 Z.) in neuen Sub-Folder `materialien/`. ConfigTab **747 → 285 Z. (-62%)**. **Hotspot-Bilanz Files >500 Z. (ohne data/test): 1 → 0** ✅ — **Phase-5+ Hotspot-Reduction-Roadmap KOMPLETT**.
