@@ -8,6 +8,48 @@
 
 ## Letzter Stand auf main
 
+### Media-Phase 6 (Sub-Bundles 6.a + 6.b) 🟡 STAGING (2026-05-09)
+
+Branch `media-phase-6` → preview. **Erste zwei Sub-Bundles** des großen finalen Media-Migration-Bundles. Niedrig-Risiko Aufwärm vor schweren 6.c–6.e (Spawn-Tasks). Self-Review-Modus.
+
+**Was geliefert (3 Commits):**
+
+| # | Commit | Datei(en) | Inhalt |
+|---|--------|-----------|--------|
+| Spec | `173f1f6` | `docs/superpowers/specs/2026-05-09-media-phase-6-design.md` | 146 Z. Sub-Bundle-Roadmap 6.a–6.f mit Risiko-Klassifikation + DoD pro Task |
+| 6.a | `7a34f71` | `pflichtfeldValidation.ts` + `.test.ts` | 4 Stellen (Bildbeschriftung/DragDropBild/Hotspot/PDF) auf Resolver-Read (`ermittleBildQuelle`/`ermittlePdfQuelle`) statt direkt `frage.bildUrl` etc. +2 Vitest (`bild: MediaQuelle` ohne Alt-Felder) |
+| 6.b | `147fd6f` | `buildFragePreview.ts` + `.test.ts` | Editor schreibt zusätzlich `bild: MediaQuelle` für hotspot/bildbeschriftung/dragdrop_bild + `pdf: MediaQuelle` für PDF. Dual-Write neben Alt-Feldern via Migrator. +2 Vitest |
+
+**Verifikation:**
+- vitest **1521 passed | 4 todo | 1 skipped** (1517 → +4 für 6.a +2 + 6.b +2)
+- tsc -b clean
+- 4× lint clean (lint:as-any 0, lint:no-alert 0, lint:no-tests-dir clean, lint:musterloesung Baseline)
+- vite build grün (~3.34s, PWA generateSW 256 entries)
+
+**Browser-E2E auf Staging mit echten LP+SuS-Logins:**
+- LP Composer-Editor "Abschnitte & Fragen (22)" rendert für 22 Fragen alle aus Demo-Pruefung — buildFragePreview (6.b) + pflichtfeldValidation (6.a) laufen für jede Frage ohne Crash
+- LP Favoriten/Pruefen-Tab rendert
+- SuS Dashboard rendert (Hallo wr! + 13+ Themen-Karten)
+- 0 NEUE Console-Errors aus aktuellem Bundle `index-THFPpYyI.js`. Pre-existing `useFrageMode`-Error im Composer-„Interaktive SuS-Vorschau" ist Carryover (Bundle V Memory)
+
+**Was bleibt — Spawn-Tasks gechippt:**
+- **6.c:** Editor-State-Refactor `bildUrl: string` → `bild: MediaQuelle | null` (Phase 4.a/4.b aktiviert, ~12 Files)
+- **6.d:** Type-Removal Alt-Felder aus `fragen-core.ts` (Compile-Cascade über 8+ Konsumenten, voraussetzt 6.c)
+- **6.e:** Apps-Script Schreib-Pfad-Cleanup (`parseFrage` + `typenSpezifischeFelder` nur noch MediaQuelle)
+- **6.f:** Sheet-Daten-Migration via `admin:migrierMediaQuelle` (User-Action, Backup vorher, dryRun=false)
+
+**Architektur-Patterns etabliert:**
+- **Resolver-Read im Validator** — Validator entkoppelt vom Type-Schema, nutzt eigene `AltBildFrage`/`AltPdfFrage`-Interfaces aus `mediaQuelleResolver`
+- **Dual-Write im Editor-Preview** — bestehende Alt-Felder + zusätzlich MediaQuelle via Migrator (`bildQuelleAus({bildUrl})`)
+- **Aufwärm-Bundle vor schwerem Bundle** — analog Pre-Phase-6 Cleanup; niedrig-Risiko Vorarbeit, dann schwere Sub-Bundles separat
+
+**Lehre neu:**
+- **Schon vorhandene Dual-Write-Stellen entlasten Sub-Bundle-Aufwand** — `fragenFactory.ts` hatte bereits `bild: bildQuelleAus({bildUrl}) ?? undefined` Dual-Write aus Phase 4.a-Vorbereitung. Audit vor jedem Sub-Bundle, ob Dual-Write schon existiert; Edits können sich erübrigen.
+
+**Merge:** _(folgt nach User-Freigabe auf Staging)_
+
+---
+
 ### Pre-Phase-6 Cleanup (S1+S3+S4) 🟡 STAGING (2026-05-09)
 
 Branch `cleanup/pre-phase6-s1-s3-s4` → preview. Aufwärm-Bundle vor Media-Phase 6, drei niedrig-Risiko Spawn-Tasks aus Media-Phase-3-5-Spec § 8 abgearbeitet. **Keine Wire-Vertrag-Änderungen** — Frontend-Pool-Konverter Dual-Write + Demo-Daten Dual-Write + ein Orphan-Delete.
