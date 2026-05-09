@@ -140,7 +140,9 @@ export default function PDFFrage({ frage }: Props) {
         }
       }
 
-      // Fallback: Lokale Datei aus pdfDateiname (Alt-Daten ohne pdfUrl)
+      // Fallback: Lokale Datei aus pdfDateiname (Alt-Daten ohne pdfUrl/pdfBase64/pdfDriveFileId, z.B. Einrichtungsprüfung)
+      // pdfQuelleAus returnt null wenn keine PDF-Quelle setzbar — dieser Pfad lädt aus ./materialien/.
+      // Phase-6-Cleanup: pdfDateiname-Felder migrieren auf MediaQuelle.app, dann diesen Fallback entfernen.
       if (frage.pdfDateiname) {
         try {
           if (abgebrochen) return
@@ -231,7 +233,7 @@ export default function PDFFrage({ frage }: Props) {
   }
 
   // Loading state — sofort Spinner zeigen (kein weisses leeres Feld)
-  if (renderer.state.status === 'loading' || (renderer.state.status === 'idle' && !ladeFehler && (frage.pdfBase64 || frage.pdfUrl || frage.pdfDriveFileId || frage.pdfDateiname))) {
+  if (renderer.state.status === 'loading' || (renderer.state.status === 'idle' && !ladeFehler && (ermittlePdfQuelle(frage) !== null || frage.pdfDateiname))) {
     return (
       <div className="flex flex-col gap-4">
         {/* Badges */}
