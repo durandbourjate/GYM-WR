@@ -8,7 +8,38 @@
 
 ## Letzter Stand auf main
 
-### Media-Phase 6 (Sub-Bundles 6.a + 6.b + Bonus useFrageMode + 6.f Action-Brief) 🟡 STAGING (2026-05-09)
+### Media-Phase 6.f — Sheet-Daten-Migration ✅ AUSGEFÜHRT (2026-05-10)
+
+Admin-Endpoint `admin:migrierMediaQuelle` per Browser-fetch ausgeführt mit Admin-Login `yannick.durand@gymhofwil.ch`. Sheet-Backup vorher gemacht (User).
+
+**Bilanz (10 Rows additiv ergänzt):**
+
+| Tab | Rows total | Aktualisiert | Davon `bild` | Davon `pdf` |
+|-----|------------|--------------|--------------|-------------|
+| VWL | 1084 | **7** | 5 | 2 |
+| BWL | 535 | **2** | (Mix) | (Mix) |
+| Recht | 796 | **1** | (Mix) | (Mix) |
+| Informatik | 0 | (Tab nicht gefunden) | — | — |
+
+Quelle-Typen im Sample: `app` (Demo-Daten), `pool` (Pool-Bilder), `extern` (URLs). Migration-Endpoint hat `mq_bildQuelleAus_`/`mq_pdfQuelleAus_` aufgerufen für Rows ohne `bild`/`pdf` im typDaten-JSON.
+
+**Verifikation:**
+- Live-Run zeigte gleiche Zahlen wie Dry-Run (10 Updates, 0 Errors) ✅
+- Idempotenz-Check (zweiter Dry-Run): 0 Updates, 0 Errors ✅ — Migration vollständig
+- Alt-Felder (`bildUrl`/`pdfUrl`/etc.) bleiben unverändert (additive Migration)
+
+**Was 6.f freischaltet:**
+- **6.c.neu (jetzt machbar):** PDFKorrektur+PDFFrage `pdfDateiname`-Material-Fallback Removal — 7 Direct-Read-Stellen
+- **6.d (jetzt direkt machbar):** Type-Removal Alt-Felder aus `fragen-core.ts` — Cascade auf 2-3 verbleibende Stellen
+- **6.e (Apps-Script Schreib-Pfad-Cleanup):** parallel zu 6.d
+
+**Lehre:** Sheet-Migration war geringer-Umfang als erwartet (10 Rows statt erwartete „einige hundert"). Grund: Editor-Save-Pfad schreibt seit Phase 4.a-Vorbereitung schon Dual-Write. Nur sehr alte Rows (vor Phase 4.a) hatten kein `bild`/`pdf` — diese 10. Memory-Lehre: dryRun-Checks zuerst, Bilanz vorab kalibrieren.
+
+**Apps-Script-Endpoint:** [`ExamLab/apps-script-code.js`](../ExamLab/apps-script-code.js) Z. 11629–11737. Action-Brief: [`docs/superpowers/specs/2026-05-09-media-phase-6f-sheet-migration-action.md`](../docs/superpowers/specs/2026-05-09-media-phase-6f-sheet-migration-action.md).
+
+---
+
+### Media-Phase 6 (Sub-Bundles 6.a + 6.b + Bonus useFrageMode + 6.f Action-Brief) ✅ MERGED (2026-05-09)
 
 Branch `media-phase-6` → preview. **Erste zwei Sub-Bundles** des großen finalen Media-Migration-Bundles **plus Bonus-Bug-Fix** (useFrageMode in Composer-SuSVorschau, pre-existing seit Bundle V) **plus 6.f Action-Brief** für User-Action Sheet-Migration. Self-Review-Modus.
 
