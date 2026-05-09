@@ -4,6 +4,8 @@ import type { Stammdaten, KursDefinition, FachDefinition, FachschaftDefinition }
 import { SettingsField } from './sharedFelder'
 import { InlineKursEditor, InlineTextEditor } from './InlineEditoren'
 import CRUDSectionShell from './CRUDSectionShell'
+import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
+import SpeicherButton from './SpeicherButton'
 
 export default function AdminTab({ email, stammdaten }: { email: string; stammdaten: Stammdaten }) {
   const { speichereStammdaten: speichereStammdatenAction } = useStammdatenStore()
@@ -13,7 +15,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
   const [kurse, setKurse] = useState<KursDefinition[]>(stammdaten.kurse)
   const [faecher, setFaecher] = useState<FachDefinition[]>(stammdaten.faecher)
   const [fachschaften, setFachschaften] = useState<FachschaftDefinition[]>(stammdaten.fachschaften)
-  const [speicherStatus, setSpeicherStatus] = useState<'idle' | 'laeuft' | 'gespeichert' | 'fehler'>('idle')
+  const { status: speicherStatus, speichern: runSpeichern } = useSpeicherStatus()
   const [bearbeitungsModus, setBearbeitungsModus] = useState(false)
 
   // Inline-Edit State
@@ -32,7 +34,6 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
   }, [stammdaten])
 
   const speichern = useCallback(async () => {
-    setSpeicherStatus('laeuft')
     const daten: Partial<Stammdaten> = {
       admins: admins.split('\n').map(s => s.trim().toLowerCase()).filter(Boolean),
       klassen: klassen.split(',').map(s => s.trim()).filter(Boolean),
@@ -41,13 +42,9 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
       faecher,
       fachschaften,
     }
-    const ok = await speichereStammdatenAction(email, daten)
-    setSpeicherStatus(ok ? 'gespeichert' : 'fehler')
-    if (ok) {
-      setBearbeitungsModus(false)
-      setTimeout(() => setSpeicherStatus('idle'), 2000)
-    }
-  }, [admins, klassen, gefaesse, kurse, faecher, fachschaften, email, speichereStammdatenAction])
+    const ok = await runSpeichern(() => speichereStammdatenAction(email, daten))
+    if (ok) setBearbeitungsModus(false)
+  }, [admins, klassen, gefaesse, kurse, faecher, fachschaften, email, speichereStammdatenAction, runSpeichern])
 
   const abbrechen = () => {
     setBearbeitungsModus(false)
@@ -223,17 +220,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
       {/* Speichern */}
       {bearbeitungsModus && (
         <div className="flex gap-3 pt-2">
-          <button
-            onClick={speichern}
-            disabled={speicherStatus === 'laeuft'}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-              speicherStatus === 'laeuft' ? 'bg-slate-300 dark:bg-slate-600 cursor-wait'
-              : speicherStatus === 'gespeichert' ? 'bg-green-600 text-white'
-              : 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 hover:bg-slate-900 dark:hover:bg-slate-100'
-            }`}
-          >
-            {speicherStatus === 'laeuft' ? 'Speichern...' : speicherStatus === 'gespeichert' ? '✓ Gespeichert' : 'Speichern'}
-          </button>
+          <SpeicherButton status={speicherStatus} idleLabel="Speichern" onClick={speichern} />
           <button onClick={abbrechen} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
             Abbrechen
           </button>
