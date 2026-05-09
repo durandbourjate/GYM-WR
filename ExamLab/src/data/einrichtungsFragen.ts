@@ -355,8 +355,6 @@ export const einrichtungsFragen: Frage[] = [
     quelle: 'manuell',
     autor,
     fragetext: 'In dieser Aufgabe arbeiten Sie mit einem **PDF-Dokument** (Amtliche Witzsammlung der Schweiz).\n\n**Aufträge:**\n1. Blättern Sie durch das Dokument (mind. 2 Seiten)\n2. Suchen Sie Ihren **Lieblingswitz** und markieren Sie ihn mit dem **Textmarker** (gelbe Farbe)\n3. Fügen Sie einen **Kommentar** hinzu, in dem Sie kurz schreiben, warum Sie diesen Witz lustig finden\n\n💡 **Tipp:** Wählen Sie oben das Werkzeug «Textmarker» und dann die gelbe Farbe. Für einen Kommentar nutzen Sie das Kommentar-Werkzeug.',
-    pdfUrl: './materialien/witzsammlung.pdf',
-    pdfDateiname: 'witzsammlung.pdf',
     pdf: { typ: 'app', appPfad: 'materialien/witzsammlung.pdf', mimeType: 'application/pdf', dateiname: 'witzsammlung.pdf' },
     seitenAnzahl: 5,
     kategorien: [
@@ -724,7 +722,6 @@ export const einrichtungsFragen: Frage[] = [
     quelle: 'manuell',
     autor,
     fragetext: 'Klicken Sie auf die **Schweiz** (rot markiert) auf der Europakarte.\n\n💡 **Tipp:** Die Schweiz liegt im Herzen Europas, südlich von Deutschland und nördlich von Italien.',
-    bildUrl: './demo-bilder/europa-karte.svg',
     bild: { typ: 'app', appPfad: 'demo-bilder/europa-karte.svg', mimeType: 'image/svg+xml' },
     bereiche: [
       {
@@ -772,7 +769,6 @@ export const einrichtungsFragen: Frage[] = [
     quelle: 'manuell',
     autor,
     fragetext: 'Beschriften Sie die markierten **Teile der Zelle**. Tippen Sie den korrekten Begriff in das jeweilige Eingabefeld.\n\n💡 **Tipp:** Akzeptiert werden wissenschaftliche und deutsche Bezeichnungen.',
-    bildUrl: './demo-bilder/tierzelle.svg',
     bild: { typ: 'app', appPfad: 'demo-bilder/tierzelle.svg', mimeType: 'image/svg+xml' },
     beschriftungen: [
       { id: '1', position: { x: 50, y: 50 }, korrekt: ['Zellkern', 'Nukleus', 'Nucleus'] },
@@ -809,7 +805,6 @@ export const einrichtungsFragen: Frage[] = [
     quelle: 'manuell',
     autor,
     fragetext: 'Ordnen Sie die **Kontinente** den richtigen Positionen auf der Weltkarte zu. Ziehen Sie die Labels in die markierten Zielzonen.\n\n💡 **Tipp:** Afrika und Australien sind Distraktoren — sie haben keine Zielzone auf dieser Karte.',
-    bildUrl: './demo-bilder/weltkarte.svg',
     bild: { typ: 'app', appPfad: 'demo-bilder/weltkarte.svg', mimeType: 'image/svg+xml' },
     zielzonen: [
       { id: '1', form: 'rechteck' as const, punkte: [{x:12,y:35},{x:32,y:35},{x:32,y:60},{x:12,y:60}], korrekteLabels: ['Nordamerika'] },

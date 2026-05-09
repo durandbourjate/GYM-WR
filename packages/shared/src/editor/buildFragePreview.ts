@@ -139,9 +139,6 @@ export function buildFragePreview(s: FragePreviewState): Frage {
     case 'pdf':
       return {
         ...basis,
-        pdfDriveFileId: s.pdfDriveFileId,
-        pdfUrl: s.pdfUrl,
-        pdfBase64: s.pdfBase64,
         pdf: pdfQuelleAus({ pdfBase64: s.pdfBase64, pdfDriveFileId: s.pdfDriveFileId, pdfUrl: s.pdfUrl }) ?? undefined,
         erlaubteWerkzeuge: s.pdfErlaubteWerkzeuge,
       } as unknown as Frage
@@ -150,21 +147,18 @@ export function buildFragePreview(s: FragePreviewState): Frage {
     case 'hotspot':
       return {
         ...basis,
-        bildUrl: s.bildUrl,
         bild: bildQuelleAus({ bildUrl: s.bildUrl }) ?? undefined,
         bereiche: s.hsBereiche,
       } as unknown as Frage
     case 'bildbeschriftung':
       return {
         ...basis,
-        bildUrl: s.bildUrl,
         bild: bildQuelleAus({ bildUrl: s.bildUrl }) ?? undefined,
         beschriftungen: s.bbBeschriftungen,
       } as unknown as Frage
     case 'dragdrop_bild':
       return {
         ...basis,
-        bildUrl: s.bildUrl,
         bild: bildQuelleAus({ bildUrl: s.bildUrl }) ?? undefined,
         zielzonen: s.ddZielzonen,
         labels: s.ddLabels,

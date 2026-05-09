@@ -217,15 +217,12 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
         pdfDriveFileId: typDaten.pdfDriveFileId,
         pdfUrl: typDaten.pdfUrl,
         pdfDateiname: typDaten.pdfDateiname,
-      }) ?? undefined
+      })
+      if (!pdfQuelle) throw new Error('PDF-Frage benötigt mindestens eine PDF-Quelle (pdfBase64, pdfDriveFileId oder pdfUrl)')
       return {
         ...basis,
         typ: 'pdf',
         fragetext: typDaten.fragetext.trim(),
-        pdfDriveFileId: typDaten.pdfDriveFileId,
-        pdfBase64: typDaten.pdfBase64,
-        pdfUrl: typDaten.pdfUrl,
-        pdfDateiname: typDaten.pdfDateiname,
         pdf: pdfQuelle,
         seitenAnzahl: typDaten.seitenAnzahl,
         kategorien: typDaten.kategorien,
@@ -244,26 +241,26 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
       } as SortierungFrage
 
     case 'hotspot': {
-      const bildUrl = typDaten.bildUrl.trim()
+      const bild = bildQuelleAus({ bildUrl: typDaten.bildUrl.trim() })
+      if (!bild) throw new Error('Hotspot-Frage benötigt ein Bild (bildUrl)')
       return {
         ...basis,
         typ: 'hotspot',
         fragetext: typDaten.fragetext.trim(),
-        bildUrl,
-        bild: bildQuelleAus({ bildUrl }) ?? undefined,
+        bild,
         bereiche: typDaten.bereiche,
         mehrfachauswahl: typDaten.mehrfachauswahl,
       } as HotspotFrage
     }
 
     case 'bildbeschriftung': {
-      const bildUrl = typDaten.bildUrl.trim()
+      const bild = bildQuelleAus({ bildUrl: typDaten.bildUrl.trim() })
+      if (!bild) throw new Error('Bildbeschriftungs-Frage benötigt ein Bild (bildUrl)')
       return {
         ...basis,
         typ: 'bildbeschriftung',
         fragetext: typDaten.fragetext.trim(),
-        bildUrl,
-        bild: bildQuelleAus({ bildUrl }) ?? undefined,
+        bild,
         beschriftungen: typDaten.beschriftungen,
       } as BildbeschriftungFrage
     }
@@ -277,13 +274,13 @@ export function erstelleFrageObjekt(basis: FrageBasis, typDaten: TypSpezifischeD
       } as AudioFrage
 
     case 'dragdrop_bild': {
-      const bildUrl = typDaten.bildUrl.trim()
+      const bild = bildQuelleAus({ bildUrl: typDaten.bildUrl.trim() })
+      if (!bild) throw new Error('DragDrop-Bild-Frage benötigt ein Bild (bildUrl)')
       return {
         ...basis,
         typ: 'dragdrop_bild',
         fragetext: typDaten.fragetext.trim(),
-        bildUrl,
-        bild: bildQuelleAus({ bildUrl }) ?? undefined,
+        bild,
         zielzonen: typDaten.zielzonen,
         labels: typDaten.labels.filter(l => l && l.text.trim().length > 0),
       } as DragDropBildFrage

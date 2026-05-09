@@ -179,7 +179,6 @@ describe('Pool-Konverter — Bild-Quelle als MediaQuelle (Pre-Phase-6 S4)', () =
     }
     const out = konvertierePoolFrage(poolFrage, POOL_META, TOPICS)
     if (out.typ !== 'hotspot') throw new Error('expected hotspot')
-    expect(out.bildUrl).toContain('biologie/zelle.svg')
     expect(out.bild).toEqual({ typ: 'pool', poolPfad: 'biologie/zelle.svg', mimeType: 'image/svg+xml' })
   })
 

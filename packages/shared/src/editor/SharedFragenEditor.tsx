@@ -15,6 +15,22 @@ import DoppelteLabelDialog from './components/DoppelteLabelDialog'
 import PruefungstauglichBadge from './components/PruefungstauglichBadge'
 import { erstelleFrageObjekt } from './fragenFactory'
 import type { FrageBasis, TypSpezifischeDaten } from './fragenFactory'
+import { ermittleBildQuelle, ermittlePdfQuelle } from '../utils/mediaQuelleResolver'
+import { POOL_BASE_URL } from '../utils/mediaQuelleUrl'
+import type { MediaQuelle } from '../types/mediaQuelle'
+
+/** Editor-internes Mapping MediaQuelle → bildUrl-String (für BildUpload-Display).
+ *  app-Pfade kommen relativ mit './'-Prefix; Host-App resolved via resolvePoolBildUrl/toAssetUrl. */
+function mediaQuelleZuEditorBildUrl(q: MediaQuelle | null): string {
+  if (!q) return ''
+  switch (q.typ) {
+    case 'drive': return `https://lh3.googleusercontent.com/d/${q.driveFileId}`
+    case 'pool': return POOL_BASE_URL + q.poolPfad
+    case 'app': return './' + q.appPfad
+    case 'extern': return q.url
+    case 'inline': return `data:${q.mimeType};base64,${q.base64}`
+  }
+}
 import type {
   Frage, Fachbereich, BloomStufe, FrageAnhang,
   MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage,
@@ -438,18 +454,19 @@ export default function SharedFragenEditor({
     frage?.typ === 'visualisierung' ? (frage as VisualisierungFrage).musterloesungBild : undefined
   )
 
-  // PDF-spezifisch
+  // PDF-spezifisch — Mount via Resolver, dann Initial-MediaQuelle in 4 separate States destrukturieren
+  const initialPdf: MediaQuelle | null = frage?.typ === 'pdf' ? ermittlePdfQuelle(frage) : null
   const [pdfBase64, setPdfBase64] = useState(
-    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfBase64 ?? '' : ''
+    initialPdf?.typ === 'inline' ? initialPdf.base64 : ''
   )
   const [pdfDriveFileId, setPdfDriveFileId] = useState(
-    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDriveFileId || '' : ''
+    initialPdf?.typ === 'drive' ? initialPdf.driveFileId : ''
   )
   const [pdfUrl, setPdfUrl] = useState(
-    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfUrl ?? '' : ''
+    initialPdf?.typ === 'extern' ? initialPdf.url : (initialPdf?.typ === 'pool' ? POOL_BASE_URL + initialPdf.poolPfad : (initialPdf?.typ === 'app' ? './' + initialPdf.appPfad : ''))
   )
   const [pdfDateiname, setPdfDateiname] = useState(
-    frage?.typ === 'pdf' ? (frage as PDFFrage).pdfDateiname : ''
+    initialPdf?.dateiname ?? ''
   )
   const [pdfSeitenAnzahl, setPdfSeitenAnzahl] = useState(
     frage?.typ === 'pdf' ? (frage as PDFFrage).seitenAnzahl : 0
@@ -476,7 +493,8 @@ export default function SharedFragenEditor({
   const BILD_FRAGETYPEN = ['hotspot', 'bildbeschriftung', 'dragdrop_bild'] as const
   const [bildUrl, setBildUrl] = useState(() => {
     if (frage && (BILD_FRAGETYPEN as readonly string[]).includes(frage.typ)) {
-      return (frage as { bildUrl?: string }).bildUrl ?? ''
+      const bild = (frage as HotspotFrage | BildbeschriftungFrage | DragDropBildFrage).bild
+      return mediaQuelleZuEditorBildUrl(ermittleBildQuelle({ bild }))
     }
     return ''
   })

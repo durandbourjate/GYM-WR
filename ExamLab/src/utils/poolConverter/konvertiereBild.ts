@@ -8,7 +8,7 @@ import type {
 import type { MediaQuelle } from '@shared/types/mediaQuelle'
 import type { PoolFrage } from '../../types/pool'
 import type { BasisFelder } from './index'
-import { genId, POOL_IMG_BASE_URL } from './konstanten'
+import { genId } from './konstanten'
 
 function mimeTypeAusEndung(pfad: string): string {
   const lower = pfad.toLowerCase()
@@ -49,13 +49,12 @@ export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage
           punktzahl: korrektIndices.has(idx) ? 1 : 0,
         }
       })
-      const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
+      if (!poolFrage.img) throw new Error('Hotspot-PoolFrage benötigt img')
       const frage: HotspotFrage = {
         ...basis,
         typ: 'hotspot',
         fragetext: poolFrage.q,
-        bildUrl,
-        ...(poolFrage.img ? { bild: poolBildQuelle(poolFrage.img.src) } : {}),
+        bild: poolBildQuelle(poolFrage.img.src),
         bereiche,
         mehrfachauswahl: korrektIndices.size > 1,
       }
@@ -72,13 +71,12 @@ export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage
         position: { x: lbl.x ?? 50, y: lbl.y ?? 50 },
         korrekt: [lbl.text ?? ''],
       }))
-      const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
+      if (!poolFrage.img) throw new Error('Bildbeschriftung-PoolFrage benötigt img')
       const frage: BildbeschriftungFrage = {
         ...basis,
         typ: 'bildbeschriftung',
         fragetext: poolFrage.q,
-        bildUrl,
-        ...(poolFrage.img ? { bild: poolBildQuelle(poolFrage.img.src) } : {}),
+        bild: poolBildQuelle(poolFrage.img.src),
         beschriftungen,
       }
       return frage
@@ -109,13 +107,12 @@ export function konvertiereBild(poolFrage: PoolFrage, basis: BasisFelder): Frage
         id: l.id ?? genId(),
         text: l.text ?? '',
       }))
-      const bildUrl = poolFrage.img ? POOL_IMG_BASE_URL + poolFrage.img.src : ''
+      if (!poolFrage.img) throw new Error('DragDrop-Bild-PoolFrage benötigt img')
       const frage: DragDropBildFrage = {
         ...basis,
         typ: 'dragdrop_bild',
         fragetext: poolFrage.q,
-        bildUrl,
-        ...(poolFrage.img ? { bild: poolBildQuelle(poolFrage.img.src) } : {}),
+        bild: poolBildQuelle(poolFrage.img.src),
         zielzonen,
         labels,
       }

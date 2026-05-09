@@ -4556,10 +4556,6 @@ function getTypDaten(frage) {
       return { teilaufgabenIds: frage.teilaufgabenIds, kontextAnhaenge: frage.kontextAnhaenge };
     case 'pdf':
       return {
-        pdfDriveFileId: frage.pdfDriveFileId,
-        pdfUrl: frage.pdfUrl,
-        pdfBase64: frage.pdfBase64,
-        pdfDateiname: frage.pdfDateiname,
         pdf: frage.pdf,
         seitenAnzahl: frage.seitenAnzahl,
         kategorien: frage.kategorien,
@@ -4577,11 +4573,11 @@ function getTypDaten(frage) {
     case 'sortierung':
       return { elemente: frage.elemente, teilpunkte: frage.teilpunkte };
     case 'hotspot':
-      return { bildUrl: frage.bildUrl, bildDriveFileId: frage.bildDriveFileId, bild: frage.bild, bereiche: frage.bereiche, mehrfachauswahl: frage.mehrfachauswahl };
+      return { bild: frage.bild, bereiche: frage.bereiche, mehrfachauswahl: frage.mehrfachauswahl };
     case 'bildbeschriftung':
-      return { bildUrl: frage.bildUrl, bildDriveFileId: frage.bildDriveFileId, bild: frage.bild, beschriftungen: frage.beschriftungen };
+      return { bild: frage.bild, beschriftungen: frage.beschriftungen };
     case 'dragdrop_bild':
-      return { bildUrl: frage.bildUrl, bildDriveFileId: frage.bildDriveFileId, bild: frage.bild, labels: frage.labels, zielzonen: frage.zielzonen };
+      return { bild: frage.bild, labels: frage.labels, zielzonen: frage.zielzonen };
     case 'audio':
       return { maxDauerSekunden: frage.maxDauerSekunden, sprachhinweis: frage.sprachhinweis };
     case 'code':

@@ -22,7 +22,7 @@ const frage = {
   bewertungsraster: [],
   verwendungen: [],
   fragetext: 'Beschrifte die Bilanzseiten.',
-  bildUrl: '/bilanz.svg',
+  bild: { typ: 'app', appPfad: 'bilanz.svg', mimeType: 'image/svg+xml' },
   beschriftungen: [
     { id: 'l1', position: { x: 25, y: 50 }, korrekt: ['Aktiva'], erklaerung: 'Links = Mittelverwendung.' },
     { id: 'l2', position: { x: 75, y: 50 }, korrekt: ['Passiva'], erklaerung: 'Rechts = Mittelherkunft.' },

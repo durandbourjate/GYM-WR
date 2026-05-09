@@ -67,10 +67,9 @@ export default function PDFKorrektur({
   // PDF laden via MediaQuelle-Resolver — switch über die 5 Varianten,
   // mit Drive-Anhang-Fallback wenn keine Drive-Quelle in MediaQuelle.
   useEffect(() => {
-    if (frage.pdfBase64) return // Bereits inline vorhanden — kein Nachladen
     const pdfQuelle = ermittlePdfQuelle(frage)
 
-    // Defensiv: Inline-Quelle in MediaQuelle aber kein pdfBase64 gesetzt
+    // Inline-Quelle: Base64 direkt verwenden
     if (pdfQuelle?.typ === 'inline') {
       setGeladenesPdf(pdfQuelle.base64)
       return
@@ -97,11 +96,6 @@ export default function PDFKorrektur({
       url = POOL_BASE_URL + pdfQuelle.poolPfad
     } else if (pdfQuelle?.typ === 'app') {
       url = toAssetUrl(pdfQuelle.appPfad)
-    } else if (frage.pdfDateiname) {
-      // Fallback: Lokale Datei aus pdfDateiname (Alt-Daten ohne pdfUrl/pdfBase64/pdfDriveFileId,
-      // z.B. Einrichtungsprüfung). pdfQuelleAus returnt null wenn keine PDF-Quelle setzbar.
-      // Phase-6-Cleanup: pdfDateiname-Felder migrieren auf MediaQuelle.app, dann diesen Fallback entfernen.
-      url = toAssetUrl(`./materialien/${frage.pdfDateiname}`)
     }
 
     if (url) {
@@ -120,12 +114,9 @@ export default function PDFKorrektur({
           toast.error('PDF-Annotation konnte nicht geladen werden.')
         })
     }
-  // frage.id als Dep statt 4 separater Alt-Felder — Resolver liest pure aus frage,
-  // wechselt nur bei Frage-Wechsel. anhaenge bleibt als separate Dep weil Drive-Fallback.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frage.id, frage.pdfBase64, frage.anhaenge, schuelerEmail])
+  }, [frage, frage.anhaenge, schuelerEmail, renderer, toast])
 
-  const effectivePdf = frage.pdfBase64 || geladenesPdf
+  const effectivePdf = geladenesPdf
 
   useEffect(() => {
     if (effectivePdf) {

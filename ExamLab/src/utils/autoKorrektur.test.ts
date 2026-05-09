@@ -216,7 +216,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Klicke auf das richtige Feld',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       bereiche: [{
         id: 'b1', form: 'rechteck',
         punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}],
@@ -237,7 +237,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Klicke auf das richtige Feld',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       bereiche: [{
         id: 'b1', form: 'rechteck',
         punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}],
@@ -258,7 +258,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 3, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Klicke auf den Kreis',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       bereiche: [{
         id: 'b1', form: 'polygon',
         // 12-Punkt-Approximation eines Kreises bei (50,50) mit Radius 10
@@ -285,7 +285,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 3, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Beschrifte das Bild',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       beschriftungen: [
         { id: 'l1', position: { x: 10, y: 10 }, korrekt: ['Angebot', 'Supply'] },
         { id: 'l2', position: { x: 50, y: 50 }, korrekt: ['Nachfrage'] },
@@ -308,7 +308,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Beschrifte',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       beschriftungen: [
         { id: 'l1', position: { x: 10, y: 10 }, korrekt: ['BIP'] },
         { id: 'l2', position: { x: 50, y: 50 }, korrekt: ['Inflation'] },
@@ -330,7 +330,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Beschrifte',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       beschriftungen: [
         { id: 'l1', position: { x: 10, y: 10 }, korrekt: ['BIP'] },
         { id: 'l2', position: { x: 50, y: 50 }, korrekt: ['Inflation'] },
@@ -354,7 +354,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 3, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne die Labels zu',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       zielzonen: [
         { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['Angebot'] },
         { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrekteLabels: ['Nachfrage'] },
@@ -383,7 +383,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne zu',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       zielzonen: [
         { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['BIP'] },
         { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrekteLabels: ['Inflation'] },
@@ -410,7 +410,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne zu',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       zielzonen: [
         { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['BIP'] },
       ],
@@ -432,7 +432,7 @@ describe('autoKorrigiere', () => {
       semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne zu',
-      bildUrl: 'https://example.com/bild.png',
+      bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
       zielzonen: [
         { id: 'z1', form: 'rechteck', punkte: [{x:10,y:10},{x:30,y:10},{x:30,y:30},{x:10,y:30}], korrekteLabels: ['BIP'] },
         { id: 'z2', form: 'rechteck', punkte: [{x:50,y:50},{x:70,y:50},{x:70,y:70},{x:50,y:70}], korrekteLabels: ['Inflation'] },

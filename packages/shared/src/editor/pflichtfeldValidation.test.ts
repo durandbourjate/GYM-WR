@@ -337,10 +337,10 @@ describe('validierePflichtfelder — pdf', () => {
     }))
     expect(r.pflichtErfuellt).toBe(true)
   })
-  it('pflicht-leer ohne pdfDriveFileId/pdfUrl', () => {
+  it('pflicht-leer ohne pdf-Quelle', () => {
     const r = validierePflichtfelder(mockCoreFrage('pdf', {
       fragetext: 'q',
-      pdfDriveFileId: undefined,
+      pdf: undefined as unknown as never,
       erlaubteWerkzeuge: ['highlighter'],
     }))
     expect(r.pflichtErfuellt).toBe(false)
@@ -348,23 +348,21 @@ describe('validierePflichtfelder — pdf', () => {
   it('pflicht-leer ohne erlaubteWerkzeuge', () => {
     const r = validierePflichtfelder(mockCoreFrage('pdf', {
       fragetext: 'q',
-      pdfDriveFileId: 'abc',
       erlaubteWerkzeuge: [],
     }))
     expect(r.pflichtErfuellt).toBe(false)
   })
-  it('akzeptiert pdfUrl als Alternative', () => {
+  it('akzeptiert pdf: MediaQuelle.extern', () => {
     const r = validierePflichtfelder(mockCoreFrage('pdf', {
       fragetext: 'q',
-      pdfUrl: 'http://x/y.pdf',
+      pdf: { typ: 'extern', url: 'http://x/y.pdf', mimeType: 'application/pdf' },
       erlaubteWerkzeuge: ['highlighter'],
     }))
     expect(r.pflichtErfuellt).toBe(true)
   })
-  it('akzeptiert pdf: MediaQuelle ohne Alt-Felder (Phase 6.a Resolver-Read)', () => {
+  it('akzeptiert pdf: MediaQuelle.app (Phase 6.d kanonisch)', () => {
     const r = validierePflichtfelder(mockCoreFrage('pdf', {
       fragetext: 'q',
-      pdfDriveFileId: undefined,
       pdf: { typ: 'app', appPfad: 'materialien/witzsammlung.pdf', mimeType: 'application/pdf', dateiname: 'witzsammlung.pdf' },
       erlaubteWerkzeuge: ['highlighter'],
     }))
@@ -513,7 +511,7 @@ describe('validierePflichtfelder — bildbeschriftung', () => {
   it('alle erfüllt', () => {
     const r = validierePflichtfelder(mockCoreFrage('bildbeschriftung', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       beschriftungen: gueltigeBeschriftungen,
     }))
     expect(r.pflichtErfuellt).toBe(true)
@@ -521,7 +519,7 @@ describe('validierePflichtfelder — bildbeschriftung', () => {
   it('pflicht-leer ohne bildUrl', () => {
     const r = validierePflichtfelder(mockCoreFrage('bildbeschriftung', {
       fragetext: 'q',
-      bildUrl: '',
+      bild: undefined as unknown as never,
       beschriftungen: gueltigeBeschriftungen,
     }))
     expect(r.pflichtErfuellt).toBe(false)
@@ -529,7 +527,7 @@ describe('validierePflichtfelder — bildbeschriftung', () => {
   it('pflicht-leer mit Beschriftung ohne korrekt-Antwort', () => {
     const r = validierePflichtfelder(mockCoreFrage('bildbeschriftung', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       beschriftungen: [{ id: 'l1', position: { x: 10, y: 20 }, korrekt: [''] }],
     }))
     expect(r.pflichtErfuellt).toBe(false)
@@ -537,7 +535,7 @@ describe('validierePflichtfelder — bildbeschriftung', () => {
   it('pflicht-leer ohne Beschriftungen', () => {
     const r = validierePflichtfelder(mockCoreFrage('bildbeschriftung', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       beschriftungen: [],
     }))
     expect(r.pflichtErfuellt).toBe(false)
@@ -550,7 +548,7 @@ describe('validierePflichtfelder — dragdrop_bild', () => {
   it('alle erfüllt', () => {
     const r = validierePflichtfelder(mockCoreFrage('dragdrop_bild', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       zielzonen: gueltigeZielzonen,
       labels: gueltigeLabels,
     }))
@@ -559,7 +557,7 @@ describe('validierePflichtfelder — dragdrop_bild', () => {
   it('pflicht-leer wenn ein korrekteLabels-Eintrag nicht im labels-Pool ist', () => {
     const r = validierePflichtfelder(mockCoreFrage('dragdrop_bild', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       zielzonen: gueltigeZielzonen,
       labels: [{ id: 'l1', text: 'B' }, { id: 'l2', text: 'C' }],
     }))
@@ -568,7 +566,7 @@ describe('validierePflichtfelder — dragdrop_bild', () => {
   it('pflicht-leer ohne Zielzonen', () => {
     const r = validierePflichtfelder(mockCoreFrage('dragdrop_bild', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       zielzonen: [],
       labels: gueltigeLabels,
     }))
@@ -579,14 +577,14 @@ describe('validierePflichtfelder — dragdrop_bild', () => {
     const multiLabelPool: DragDropBildLabel[] = [{ id: 'l1', text: 'A' }, { id: 'l2', text: 'Alpha' }, { id: 'l3', text: 'B' }]
     expect(validierePflichtfelder(mockCoreFrage('dragdrop_bild', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       zielzonen: multiLabelZonen,
       labels: multiLabelPool,
     })).pflichtErfuellt).toBe(true)
     const fehlt: DragDropBildLabel[] = [{ id: 'l1', text: 'A' }, { id: 'l3', text: 'B' }]  // 'Alpha' fehlt
     expect(validierePflichtfelder(mockCoreFrage('dragdrop_bild', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       zielzonen: multiLabelZonen,
       labels: fehlt,
     })).pflichtErfuellt).toBe(false)
@@ -598,7 +596,7 @@ describe('validierePflichtfelder — hotspot', () => {
   it('alle erfüllt', () => {
     const r = validierePflichtfelder(mockCoreFrage('hotspot', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       bereiche: gueltigeBereiche,
     }))
     expect(r.pflichtErfuellt).toBe(true)
@@ -606,7 +604,7 @@ describe('validierePflichtfelder — hotspot', () => {
   it('pflicht-leer ohne bildUrl', () => {
     const r = validierePflichtfelder(mockCoreFrage('hotspot', {
       fragetext: 'q',
-      bildUrl: '',
+      bild: undefined as unknown as never,
       bereiche: gueltigeBereiche,
     }))
     expect(r.pflichtErfuellt).toBe(false)
@@ -614,7 +612,7 @@ describe('validierePflichtfelder — hotspot', () => {
   it('pflicht-leer ohne Bereiche', () => {
     const r = validierePflichtfelder(mockCoreFrage('hotspot', {
       fragetext: 'q',
-      bildUrl: 'http://x/y.png',
+      
       bereiche: [],
     }))
     expect(r.pflichtErfuellt).toBe(false)
@@ -622,16 +620,15 @@ describe('validierePflichtfelder — hotspot', () => {
   it('akzeptiert legacy hotspots[]-Feld', () => {
     // Defensive: legacy 'hotspots'-Feld existiert nicht im Typ; bereiche muss entfernt werden
     const r = validierePflichtfelder({
-      ...mockCoreFrage('hotspot', { fragetext: 'q', bildUrl: 'http://x/y.png' }),
+      ...mockCoreFrage('hotspot', { fragetext: 'q' }),
       bereiche: undefined,
       hotspots: [{ id: 'br1' }],
     } as unknown as Frage /* Defensive: legacy hotspots-Feld, bereiche bewusst entfernt */)
     expect(r.pflichtErfuellt).toBe(true)
   })
-  it('akzeptiert bild: MediaQuelle ohne bildUrl (Phase 6.a Resolver-Read)', () => {
+  it('akzeptiert bild: MediaQuelle (Phase 6.d Resolver-Read)', () => {
     const r = validierePflichtfelder(mockCoreFrage('hotspot', {
       fragetext: 'q',
-      bildUrl: '',
       bild: { typ: 'app', appPfad: 'demo-bilder/europa.svg', mimeType: 'image/svg+xml' },
       bereiche: gueltigeBereiche,
     }))

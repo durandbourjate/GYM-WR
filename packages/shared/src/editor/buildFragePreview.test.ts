@@ -141,15 +141,15 @@ describe('buildFragePreview', () => {
     expect(f.kontenMitSaldi).toHaveLength(1)
   })
 
-  it('hotspot: legt bildUrl + bereiche ab', () => {
+  it('hotspot: legt bild + bereiche ab', () => {
     const f = buildFragePreview({
       typ: 'hotspot',
       fragetext: 'Klicke',
-      bildUrl: '/img/x.png',
+      bildUrl: 'img/x.png',
       hsBereiche: [{ id: '1', x: 10, y: 10, radius: 5 }],
     }) as unknown as HotspotFrage
     expect(f.typ).toBe('hotspot')
-    expect(f.bildUrl).toBe('/img/x.png')
+    expect(f.bild).toBeTruthy()
     expect(f.bereiche).toHaveLength(1)
   })
 
@@ -163,28 +163,28 @@ describe('buildFragePreview', () => {
     expect(f.bild).toEqual({ typ: 'pool', poolPfad: 'img/foo.svg', mimeType: 'image/svg+xml' })
   })
 
-  it('bildbeschriftung: legt bildUrl + beschriftungen ab', () => {
+  it('bildbeschriftung: legt bild + beschriftungen ab', () => {
     const f = buildFragePreview({
       typ: 'bildbeschriftung',
       fragetext: 'Beschrifte',
-      bildUrl: '/img/x.png',
+      bildUrl: 'img/x.png',
       bbBeschriftungen: [{ id: '1', text: 'A', x: 0, y: 0 }],
     }) as unknown as BildbeschriftungFrage
     expect(f.typ).toBe('bildbeschriftung')
-    expect(f.bildUrl).toBe('/img/x.png')
+    expect(f.bild).toBeTruthy()
     expect(f.beschriftungen).toHaveLength(1)
   })
 
-  it('dragdrop_bild: legt bildUrl + zielzonen + labels ab', () => {
+  it('dragdrop_bild: legt bild + zielzonen + labels ab', () => {
     const f = buildFragePreview({
       typ: 'dragdrop_bild',
       fragetext: 'Ziehe',
-      bildUrl: '/img/x.png',
+      bildUrl: 'img/x.png',
       ddZielzonen: [{ id: 'z1', korrektesLabel: 'A' }],
       ddLabels: [{ id: 'l1', text: 'A' }],
     }) as unknown as DragDropBildFrage
     expect(f.typ).toBe('dragdrop_bild')
-    expect(f.bildUrl).toBe('/img/x.png')
+    expect(f.bild).toBeTruthy()
     expect(f.zielzonen).toHaveLength(1)
     expect(f.labels).toHaveLength(1)
   })
@@ -222,7 +222,7 @@ describe('buildFragePreview', () => {
     expect(f.canvasConfig).toBe(cfg)
   })
 
-  it('pdf: legt pdfDriveFileId + pdfUrl + pdfBase64 + erlaubteWerkzeuge ab', () => {
+  it('pdf: legt pdf + erlaubteWerkzeuge ab', () => {
     const f = buildFragePreview({
       typ: 'pdf',
       fragetext: 'PDF',
@@ -232,8 +232,7 @@ describe('buildFragePreview', () => {
       pdfErlaubteWerkzeuge: ['highlighter'],
     }) as unknown as PDFFrage
     expect(f.typ).toBe('pdf')
-    expect(f.pdfDriveFileId).toBe('abc')
-    expect(f.pdfUrl).toBe('https://x.pdf')
+    expect(f.pdf).toEqual({ typ: 'drive', driveFileId: 'abc', mimeType: 'application/pdf', dateiname: undefined })
     expect(f.erlaubteWerkzeuge).toEqual(['highlighter'])
   })
 

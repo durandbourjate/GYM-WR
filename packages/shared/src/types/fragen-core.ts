@@ -537,12 +537,8 @@ export type PDFAnnotation =
 export interface PDFFrage extends FrageBase {
   typ: 'pdf'
   fragetext: string
-  pdfDriveFileId?: string
-  pdfBase64?: string
-  pdfUrl?: string
-  pdfDateiname: string
-  /** Neue kanonische PDF-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
-  pdf?: MediaQuelle
+  /** Kanonische PDF-Referenz (Phase 6.d Pflicht). */
+  pdf: MediaQuelle
   seitenAnzahl: number
   kategorien?: PDFKategorie[]
   erlaubteWerkzeuge: PDFAnnotationsWerkzeug[]
@@ -573,11 +569,8 @@ export interface HotspotBereich {
 export interface HotspotFrage extends FrageBase {
   typ: 'hotspot'
   fragetext: string
-  bildUrl: string
-  /** @deprecated Phase 6 entfernt. Jetzt verwenden: `bild`. */
-  bildDriveFileId?: string
-  /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
-  bild?: MediaQuelle
+  /** Kanonische Bild-Referenz (Phase 6.d Pflicht). */
+  bild: MediaQuelle
   bereiche: HotspotBereich[]
   mehrfachauswahl: boolean
 }
@@ -599,11 +592,8 @@ export interface BildbeschriftungLabel {
 export interface BildbeschriftungFrage extends FrageBase {
   typ: 'bildbeschriftung'
   fragetext: string
-  bildUrl: string
-  /** @deprecated Phase 6 entfernt. Jetzt verwenden: `bild`. */
-  bildDriveFileId?: string
-  /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
-  bild?: MediaQuelle
+  /** Kanonische Bild-Referenz (Phase 6.d Pflicht). */
+  bild: MediaQuelle
   beschriftungen: BildbeschriftungLabel[]
 }
 
@@ -641,11 +631,8 @@ export interface DragDropBildLabel {
 export interface DragDropBildFrage extends FrageBase {
   typ: 'dragdrop_bild'
   fragetext: string
-  bildUrl: string
-  /** @deprecated Phase 6 entfernt. Jetzt verwenden: `bild`. */
-  bildDriveFileId?: string
-  /** Neue kanonische Bild-Referenz (Dual-Write Phase 3-5, Pflicht ab Phase 6). */
-  bild?: MediaQuelle
+  /** Kanonische Bild-Referenz (Phase 6.d Pflicht). */
+  bild: MediaQuelle
   zielzonen: DragDropBildZielzone[]
   /** Pool-Tokens mit IDs. Duplikate erlaubt (Multi-Zone-Tokens). */
   labels: DragDropBildLabel[]

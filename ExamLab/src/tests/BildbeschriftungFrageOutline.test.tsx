@@ -50,7 +50,7 @@ const frage = {
   bewertungsraster: [],
   verwendungen: [],
   fragetext: '?',
-  bildUrl: '/test.svg',
+  bild: { typ: 'app', appPfad: 'test.svg', mimeType: 'image/svg+xml' },
   beschriftungen: [
     { id: 'm0', position: { x: 10, y: 10 }, korrekt: ['Dach'] },
     { id: 'm1', position: { x: 50, y: 50 }, korrekt: ['Wand'] },

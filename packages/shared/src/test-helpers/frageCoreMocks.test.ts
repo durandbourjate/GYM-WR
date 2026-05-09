@@ -63,9 +63,9 @@ describe('mockCoreFrage', () => {
     expect(f.lueckentextModus).toBe('freitext')
   })
 
-  it('hotspot default hat bildUrl + bereiche: []', () => {
+  it('hotspot default hat bild + bereiche: []', () => {
     const f = mockCoreFrage('hotspot')
-    expect(f.bildUrl).toBeTruthy()
+    expect(f.bild).toBeTruthy()
     expect(f.bereiche).toEqual([])
   })
 

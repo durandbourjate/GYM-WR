@@ -24,7 +24,7 @@ const frage = {
   bewertungsraster: [],
   verwendungen: [],
   fragetext: 'Klicke auf die richtigen Bereiche.',
-  bildUrl: '/test.svg',
+  bild: { typ: 'app', appPfad: 'test.svg', mimeType: 'image/svg+xml' },
   mehrfachauswahl: true,
   bereiche: [
     {
