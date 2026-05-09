@@ -8,6 +8,7 @@ import { usePDFRenderer } from '../../fragetypen/pdf/usePDFRenderer.ts'
 import { PDFViewer } from '../../fragetypen/pdf/PDFViewer.tsx'
 import AudioRecorder from '../../AudioRecorder.tsx'
 import { useToast } from '../../../hooks/useToast'
+import { ermittlePdfQuelle } from '@shared/utils/mediaQuelleResolver'
 
 interface Props {
   pruefungId: string
@@ -61,19 +62,36 @@ export default function PDFKorrektur({
   const toast = useToast()
   const [geladenesPdf, setGeladenesPdf] = useState<string | null>(null)
 
-  // PDF aus Drive nachladen wenn Base64 fehlt, oder per URL laden als Fallback
+  // PDF laden via MediaQuelle-Resolver — switch über die 5 Varianten,
+  // mit Drive-Anhang-Fallback wenn keine Drive-Quelle in MediaQuelle.
   useEffect(() => {
-    if (frage.pdfBase64) return // Bereits vorhanden
-    const driveId = frage.pdfDriveFileId || frage.anhaenge?.find(a => a.mimeType === 'application/pdf')?.driveFileId
+    if (frage.pdfBase64) return // Bereits inline vorhanden — kein Nachladen
+    const pdfQuelle = ermittlePdfQuelle(frage)
+
+    // Defensiv: Inline-Quelle in MediaQuelle aber kein pdfBase64 gesetzt
+    if (pdfQuelle?.typ === 'inline') {
+      setGeladenesPdf(pdfQuelle.base64)
+      return
+    }
+
+    // Drive-Quelle (oder PDF-Anhang als Fallback): via apiService.ladeDriveFile
+    const driveId = pdfQuelle?.typ === 'drive'
+      ? pdfQuelle.driveFileId
+      : frage.anhaenge?.find(a => a.mimeType === 'application/pdf')?.driveFileId
     if (driveId && apiService.istKonfiguriert()) {
       apiService.ladeDriveFile(driveId, schuelerEmail).then((result) => {
         if (result?.base64) {
           setGeladenesPdf(result.base64)
         }
       })
-    } else if (frage.pdfUrl && !driveId) {
-      // Fallback: PDF per URL laden und als Base64 konvertieren (z.B. Einrichtungsprüfung)
-      fetch(frage.pdfUrl)
+      return
+    }
+
+    // Extern-Quelle: per URL laden und als Base64 konvertieren
+    // pool/app werden hier nicht abgedeckt: Korrektur-Pfad hat keinen toAssetUrl-Resolver in scope,
+    // und LP korrigiert SuS-Abgaben (keine Pool/App-Lehrer-Materialien). Falls je auftritt: kein Crash, nur leerer Korrektur-Block.
+    if (pdfQuelle?.typ === 'extern') {
+      fetch(pdfQuelle.url)
         .then(r => r.blob())
         .then(blob => {
           const reader = new FileReader()
@@ -88,7 +106,10 @@ export default function PDFKorrektur({
           toast.error('PDF-Annotation konnte nicht geladen werden.')
         })
     }
-  }, [frage.pdfDriveFileId, frage.pdfBase64, frage.pdfUrl, frage.anhaenge, schuelerEmail])
+  // frage.id als Dep statt 4 separater Alt-Felder — Resolver liest pure aus frage,
+  // wechselt nur bei Frage-Wechsel. anhaenge bleibt als separate Dep weil Drive-Fallback.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frage.id, frage.pdfBase64, frage.anhaenge, schuelerEmail])
 
   const effectivePdf = frage.pdfBase64 || geladenesPdf
 
