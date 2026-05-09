@@ -5,6 +5,7 @@ import { demoFragen } from '../../../data/demoFragen.ts'
 import type { PruefungsConfig } from '../../../types/pruefung.ts'
 import type { Frage } from '../../../types/fragen-storage'
 import Layout from '../../Layout.tsx'
+import { FrageModeProvider } from '../../../context/FrageModeContext.tsx'
 
 interface Props {
   config: PruefungsConfig
@@ -109,7 +110,9 @@ export default function SuSVorschau({ config, onSchliessen }: Props) {
 
       {/* Inhalt */}
       <div className="flex-1 overflow-auto">
-        <Layout />
+        <FrageModeProvider mode="pruefung">
+          <Layout />
+        </FrageModeProvider>
       </div>
     </div>
   )
