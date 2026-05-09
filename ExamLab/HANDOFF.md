@@ -8,6 +8,67 @@
 
 ## Letzter Stand auf main
 
+### Media-Phase 6.c.neu + 6.d + 6.e ✅ STAGING (2026-05-10)
+
+Branch `media-phase-6cde` → preview. Großes Hauptbundle nach Phase 6.f Sheet-Migration. **Type-Removal Frontend + Material-Fallback Removal + Apps-Script Schreib-Pfad-Cleanup** in einem Bundle. User hat Apps-Script deployt. Self-Review-Modus.
+
+**Was geliefert (1 Commit `bb2e7b8`, 19 Files, +108/-153):**
+
+**6.d Type-Removal (`packages/shared/src/types/fragen-core.ts`):**
+- `HotspotFrage`, `BildbeschriftungFrage`, `DragDropBildFrage`: `bildUrl: string` + `bildDriveFileId?` raus, `bild: MediaQuelle` Pflicht
+- `PDFFrage`: `pdfBase64`/`pdfDriveFileId`/`pdfUrl`/`pdfDateiname` raus, `pdf: MediaQuelle` Pflicht
+
+**6.d Cascade-Fixes (8 Files):**
+- `fragenFactory.erstelleFrageObjekt`: schreibt nur `bild`/`pdf`; wirft Error wenn keine MediaQuelle erstellbar
+- `buildFragePreview.ts`: schreibt nur `bild`/`pdf` für Validator-Preview
+- `SharedFragenEditor.tsx`: Mount-Read via Resolver, Editor-State via Destrukturierung der Initial-MediaQuelle
+- `frageCoreMocks.ts`: Default-Mocks setzen `bild`/`pdf` MediaQuelle.app
+- Demo-Daten `einrichtungsFragen.ts` + `einrichtungsUebungFragen.ts`: 8 Stellen Alt-Felder raus
+- `poolConverter/konvertiereBild.ts`: schreibt nur `bild` MediaQuelle (kein `bildUrl`)
+- 4 Test-Files: Test-Fixtures auf `bild`/`pdf` MediaQuelle umgestellt
+
+**6.c.neu (PDFKorrektur+PDFFrage Material-Fallback Removal):**
+- `PDFKorrektur.tsx`: pdfBase64-Inline-Defense + pdfDateiname-Material-Fallback raus. Reine Resolver-basierte Quelle-Auflösung
+- `PDFFrage.tsx`: pdfDateiname-Material-Fallback raus. Loading-Check nur via `ermittlePdfQuelle`
+
+**6.e (Apps-Script Schreib-Pfad-Cleanup):**
+- `getTypDaten` in `apps-script-code.js`: 4 Cases schreiben nur noch `pdf`/`bild` MediaQuelle, nicht mehr Alt-Spalten
+- `mq_ergaenzeMediaQuelle_` als Read-Defense BEHALTEN (Edge-Cases)
+- **User hat Apps-Script manuell deployed** ✅
+
+**Verifikation:**
+- vitest **1521 passed** (drift =0)
+- tsc -b clean
+- 4× lint clean (lint:as-any 0, lint:no-alert 0, lint:no-tests-dir clean, lint:musterloesung Baseline)
+- vite build grün (PWA generateSW 256 entries)
+
+**Browser-E2E auf Staging mit echtem LP-Login (Bundle `DF0LOKQi`):**
+- LP Composer-Editor öffnet ✅
+- LP Composer-Sub-Tab "Vorschau" rendert ✅
+- LP "Interaktive SuS-Vorschau" Modal öffnet ✅ — Banner "So sehen Ihre SuS die Prüfung" sichtbar
+- **0 NEUE Console-Errors aus aktuellem Bundle** `DF0LOKQi`. Alle 21 gefundenen Errors sind Carryover aus alten Bundles vor Cache-Reset
+
+**Phase 6 KOMPLETT.** Alle Sub-Bundles 6.a–6.f abgearbeitet:
+- 6.a (Validator-Resolver-Read) ✅
+- 6.b (Editor-Dual-Write) ✅
+- 6.c.neu (Material-Fallback Removal) ✅
+- 6.d (Type-Removal) ✅
+- 6.e (Apps-Script Schreib-Pfad) ✅
+- 6.f (Sheet-Migration) ✅
+
+**Architektur-Patterns etabliert:**
+- **Type-Removal Cascade-Pattern:** Pflichtfeld-Type-Wechsel → tsc-Errors zeigen alle Konsumenten → systematisch via Resolver/MediaQuelle umstellen
+- **Editor-Mount-Read via Resolver:** `ermittlePdfQuelle`/`ermittleBildQuelle` lesen `bild`/`pdf` direkt; Display-State (`bildUrl: string`) abgeleitet via Helper `mediaQuelleZuEditorBildUrl`
+- **fragenFactory mit `throw` bei fehlender Quelle:** Editor-Save bricht ab statt undefined-Output, klare Fehlermeldung
+
+**Lehre neu:**
+- **Pre-Cut-Audit eliminiert geplante Sub-Bundles:** 4 von 6 6.c-Sub-Sub-Bundles (BildUpload, BildMitGenerator+HotspotEditor, BildbeschriftungEditor+DragDropBildEditor, PDFEditor) waren OBSOLET — Save-Pfade aus Phase 4.a-Vorbereitung schon Dual-Write. Geplante 6 Sessions auf 1 Session reduziert.
+- **Apps-Script Read-Defense (`mq_ergaenzeMediaQuelle_`) behalten lohnt sich:** Niedriges Kost-Nutzen-Verhältnis um zu entfernen, defensive für Edge-Cases (Pool-Imports ohne `bild`).
+
+**Merge:** _(folgt nach finaler User-Bestätigung auf Staging)_
+
+---
+
 ### Media-Phase 6.f — Sheet-Daten-Migration ✅ AUSGEFÜHRT (2026-05-10)
 
 Admin-Endpoint `admin:migrierMediaQuelle` per Browser-fetch ausgeführt mit Admin-Login `yannick.durand@gymhofwil.ch`. Sheet-Backup vorher gemacht (User).
