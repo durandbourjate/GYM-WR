@@ -57,28 +57,38 @@ const frage = {
   rechenwegErforderlich: false,
 } as BType
 
-describe('BerechnungFrage Violett-Outline', () => {
+// Test-Tickets Bundle 10.05.2026: Outer-Container-Violet entfernt (war doppelter Rahmen).
+// Tests prüfen jetzt die per-Input-Border (granulare Pflichtfeld-Indikatoren).
+describe('BerechnungFrage Violett-Outline (per Input)', () => {
   beforeEach(() => mockAdapter.mockReset())
 
-  it('Violett-Outline auf leerer Eingabe vor Antwort prüfen', () => {
+  function inputs() {
+    const area = screen.getByTestId('berechnung-input-area')
+    // Outer-Container hat keinen Violet-Border mehr
+    expect(area.className).not.toContain('border-violet-400')
+    return Array.from(area.querySelectorAll<HTMLInputElement>('input'))
+  }
+
+  it('Inputs violet auf leerer Eingabe vor Antwort', () => {
     mockAdapter.mockReturnValue(defaultAdapter())
     render(<BerechnungFrage frage={frage} />)
-    const area = screen.getByTestId('berechnung-input-area')
-    expect(area.className).toContain('border-violet-400')
+    const ins = inputs()
+    expect(ins.length).toBe(2)
+    ins.forEach(i => expect(i.className).toContain('border-violet-400'))
   })
 
-  it('Violett verschwindet nach Antwort prüfen (feedbackSichtbar=true)', () => {
+  it('Inputs verlieren violet nach Antwort prüfen (disabled=true)', () => {
     mockAdapter.mockReturnValue(defaultAdapter({ feedbackSichtbar: true, istGeprueft: true, disabled: true }))
     render(<BerechnungFrage frage={frage} />)
-    const area = screen.getByTestId('berechnung-input-area')
-    expect(area.className).not.toContain('border-violet-400')
+    const ins = inputs()
+    ins.forEach(i => expect(i.className).not.toContain('border-violet-400'))
   })
 
-  it('Violett verschwindet wenn alle Ergebnisse gefüllt', () => {
+  it('Inputs verlieren violet wenn alle Ergebnisse gefüllt', () => {
     const antwort: Antwort = { typ: 'berechnung', ergebnisse: { e0: '100', e1: '200' } }
     mockAdapter.mockReturnValue(defaultAdapter({ antwort }))
     render(<BerechnungFrage frage={frage} />)
-    const area = screen.getByTestId('berechnung-input-area')
-    expect(area.className).not.toContain('border-violet-400')
+    const ins = inputs()
+    ins.forEach(i => expect(i.className).not.toContain('border-violet-400'))
   })
 })
