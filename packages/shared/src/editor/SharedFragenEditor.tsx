@@ -1313,17 +1313,6 @@ export default function SharedFragenEditor({
             </>
           )}
 
-          {/* Frage löschen am Scrollende (Bestätigung übernimmt LoeschBestaetigungsDialog des Hosts) */}
-          {frage && onLoeschen && (
-            <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-              <button
-                onClick={() => onLoeschen(frage)}
-                className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
-              >
-                🗑 Frage löschen
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </ResizableSidebar>
