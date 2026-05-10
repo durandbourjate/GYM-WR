@@ -136,7 +136,7 @@ function KontenbestimmungAufgabe({ frage }: { frage: KontenbestimmungFrageType }
                       </>
                     )}
 
-                    {/* Konto */}
+                    {/* Konto — Kategorie-Farben in SuS-Sicht ausgeblendet (verrät die Lösung) */}
                     {zeigeKonto && (
                       <td className="px-3 py-1.5">
                         <KontenSelect
@@ -145,6 +145,7 @@ function KontenbestimmungAufgabe({ frage }: { frage: KontenbestimmungFrageType }
                           config={frage.kontenauswahl}
                           placeholder="Konto..."
                           disabled={readOnly}
+                          zeigeKategoriefarben={false}
                         />
                       </td>
                     )}

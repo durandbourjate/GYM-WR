@@ -127,6 +127,7 @@ export default function KontoSeite({
                 config={kontenauswahl}
                 placeholder="Gegenkonto"
                 disabled={readOnly}
+                zeigeKategoriefarben={false}
               />
             </div>
             <input
