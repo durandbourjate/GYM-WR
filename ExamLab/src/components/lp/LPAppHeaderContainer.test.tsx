@@ -13,11 +13,6 @@ vi.mock('../../store/themeStore', () => ({
     selector({ mode: 'light', toggleMode: vi.fn() }),
 }))
 
-vi.mock('../../store/fragenbankStore', () => ({
-  useFragensammlungStore: (selector: (s: { summaries: [] }) => unknown) =>
-    selector({ summaries: [] }),
-}))
-
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
 
 // matchMedia-Mock (identisch zu AppHeader.test.tsx)

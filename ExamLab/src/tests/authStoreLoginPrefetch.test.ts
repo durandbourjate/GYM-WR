@@ -248,7 +248,7 @@ describe('Bundle G.c — authStore Login-Pre-Fetch + Logout-Cleanup', () => {
 
   it('anmelden() (SuS via Google-Login) feuert nur Gruppen, NICHT Fragensammlung/Klassenlisten (LP-only)', async () => {
     // SuS-Email-Domain → rolleAusDomain returnt 'sus' bevor LP-Liste geprüft wird.
-    // Ohne Rollen-Guard würde Backend 403 für ladeKlassenlisten/ladeFragenbank schicken
+    // Ohne Rollen-Guard würde Backend 403 für ladeKlassenlisten/ladeFragensammlung schicken
     // (silent-fail catch + Console-Warning bei jedem SuS-Google-Login).
     const susCredential = {
       email: 'student@stud.gymhofwil.ch',

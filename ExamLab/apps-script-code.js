@@ -117,7 +117,7 @@ const LERNZIELE_TAB = 'Lernziele';
 // === LERNPLATTFORM-KONFIGURATION ===
 const GRUPPEN_REGISTRY_ID = '1VH7Vu7JIKYLic2-wK2uSa2nXA7WVvStKOjUDi9cpWnI';
 // Dynamisch: Alle Tabs im Fragensammlung-Sheet ausser System-Tabs
-const FRAGENBANK_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
+const FRAGENSAMMLUNG_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
 // Fachbereich-Mapping: Unklare Tab-Namen auf saubere Bezeichnungen mappen
 const FACHBEREICH_MAPPING = { 'Allgemein': 'Andere' };
 
@@ -282,7 +282,7 @@ function getFragensammlungTabs_() {
   var tabs = [];
   for (var i = 0; i < sheets.length; i++) {
     var name = sheets[i].getName();
-    if (FRAGENBANK_SYSTEM_TABS.indexOf(name) === -1) {
+    if (FRAGENSAMMLUNG_SYSTEM_TABS.indexOf(name) === -1) {
       tabs.push(name);
     }
   }
@@ -767,7 +767,7 @@ function baueFrageMetaMap_(frageIds) {
   for (var s = 0; s < sheets.length; s++) {
     var sheet = sheets[s];
     var name = sheet.getName();
-    if (FRAGENBANK_SYSTEM_TABS.indexOf(name) !== -1) continue;
+    if (FRAGENSAMMLUNG_SYSTEM_TABS.indexOf(name) !== -1) continue;
     var lastCol = sheet.getLastColumn();
     if (lastCol === 0) continue;
     var data = sheet.getDataRange().getValues();
@@ -9262,10 +9262,10 @@ function lernplattformLadeFragen(body) {
   try {
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var alleFragen = [];
-    var fragenbankTabs = getFragensammlungTabs_();
+    var fragensammlungTabs = getFragensammlungTabs_();
 
-    for (var t = 0; t < fragenbankTabs.length; t++) {
-      var tabName = fragenbankTabs[t];
+    for (var t = 0; t < fragensammlungTabs.length; t++) {
+      var tabName = fragensammlungTabs[t];
       var sheet = fragensammlung.getSheetByName(tabName);
       if (!sheet) continue;
 
