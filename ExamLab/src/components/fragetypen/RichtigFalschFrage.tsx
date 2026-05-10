@@ -4,7 +4,6 @@ import type { Antwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
 import { fachbereichFarbe } from '../../utils/fachUtils.ts'
 import { AntwortZeile } from '@shared/ui/AntwortZeile'
-import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 
 interface Props {
   frage: RichtigFalschFrageType
@@ -24,10 +23,6 @@ function RichtigFalschAufgabe({ frage }: { frage: RichtigFalschFrageType }) {
 
   const bewertungen: Record<string, boolean> =
     (antwort as Extract<Antwort, { typ: 'richtigfalsch' }> | null)?.bewertungen ?? {}
-
-  const violettOutline = !feedbackSichtbar && istEingabeLeer(frage, antwort, 'gesamt')
-    ? 'border-violet-400 dark:border-violet-500 ring-1 ring-violet-300 dark:ring-violet-600/40'
-    : 'border-transparent'
 
   const fragetextIstEinzelAussage =
     (frage.aussagen?.length ?? 0) === 1 && frage.aussagen?.[0]?.text?.trim() === frage.fragetext?.trim()
@@ -72,7 +67,7 @@ function RichtigFalschAufgabe({ frage }: { frage: RichtigFalschFrageType }) {
       )}
 
       {/* Aussagen */}
-      <div data-testid="richtigfalsch-input-area" className={`flex flex-col gap-3 rounded-xl border ${violettOutline} p-1`}>
+      <div data-testid="richtigfalsch-input-area" className="flex flex-col gap-3">
         {(frage.aussagen ?? []).map((aussage, index) => {
           const gewaehlt = bewertungen[aussage.id]
           return (
