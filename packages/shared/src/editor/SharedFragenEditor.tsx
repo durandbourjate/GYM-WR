@@ -782,14 +782,21 @@ export default function SharedFragenEditor({
     } as Frage
   }, [aktuelleFrage, thema, fachbereich, punkte, bloom, tags, semester, gefaesse, lernzielIds, geteilt, anhaenge, frage?.fach])
 
+  // Ref-Mirror gegen autoSave-Recreation-Trigger: autoSaveAdapter wird im Caller
+  // (useFragenEditor) bei jeder autoSaveState.status-Änderung neu memoized — wäre
+  // `autoSave` in den Deps unten, würde jeder Status-Wechsel ein onTippe auslösen
+  // und damit erneut den 10s-Server-Debouncer resetten (Geist-Save-Loop). Daher:
+  // useEffect feuert ausschliesslich auf echte frageFuerAutoSave-Datenwechsel.
+  const autoSaveRef = useRef(autoSave)
+  autoSaveRef.current = autoSave
   const istErsterRender = useRef(true)
   useEffect(() => {
     if (istErsterRender.current) {
       istErsterRender.current = false
       return
     }
-    if (frageFuerAutoSave) autoSave?.onTippe(frageFuerAutoSave)
-  }, [frageFuerAutoSave, autoSave])
+    if (frageFuerAutoSave) autoSaveRef.current?.onTippe(frageFuerAutoSave)
+  }, [frageFuerAutoSave])
 
   // Bundle 3 P-C.3 — Schliessen-Versuch: bei autoSave erst Caller fragen, sonst direkt
   // onAbbrechen. Caller (FragenBrowser) entscheidet basierend auf Status, ob ein
