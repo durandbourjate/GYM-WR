@@ -116,4 +116,33 @@ describe('DraftsSection', () => {
     expect(screen.getByText('Test')).toBeInTheDocument()
     expect(screen.getByText(/a{80}…/)).toBeInTheDocument()
   })
+
+  it('Klick auf Header-Toggle blendet die Drafts aus', () => {
+    localStorage.removeItem('examlab.draftsSection.aufgeklappt')
+    render(
+      <DraftsSection
+        drafts={[mockDraft({ thema: 'Bilanz' })]}
+        onClickDraft={vi.fn()}
+        ownEmail="lp@gymhofwil.ch"
+      />
+    )
+    expect(screen.getByText('Bilanz')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /entwürfe \(1\)/i }))
+    expect(screen.queryByText('Bilanz')).not.toBeInTheDocument()
+    expect(localStorage.getItem('examlab.draftsSection.aufgeklappt')).toBe('0')
+  })
+
+  it('liest persistierten zugeklappt-State aus localStorage', () => {
+    localStorage.setItem('examlab.draftsSection.aufgeklappt', '0')
+    render(
+      <DraftsSection
+        drafts={[mockDraft({ thema: 'Bilanz' })]}
+        onClickDraft={vi.fn()}
+        ownEmail="lp@gymhofwil.ch"
+      />
+    )
+    expect(screen.queryByText('Bilanz')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /entwürfe \(1\)/i })).toHaveAttribute('aria-expanded', 'false')
+    localStorage.removeItem('examlab.draftsSection.aufgeklappt')
+  })
 })
