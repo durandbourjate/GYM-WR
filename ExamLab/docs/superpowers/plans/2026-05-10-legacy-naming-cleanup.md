@@ -6,7 +6,9 @@
 
 **Architecture:** 4-phase rename (no functional changes). Phase 1 = `fragenbank` cleanup (no wire-contract change). Phase 2 = `lernplattform*` action-strings (Hard-Cut wire-contract rename — Apps-Script + Frontend deployed simultaneously). Phase 3 = Sheet-prefix + `apps-script-lernen/` deletion. Phase 4 = Browser-E2E + Drive-Cleanup-Brief + HANDOFF/Memory.
 
-**Plan-Revision 1 (2026-05-10) nach Reviewer-Iter-1:** Phase 2 Reordering — `storageMigration.ts`-Function-Rename + Caller-Audit (vorher Task 2.9) wurde nach Task 2.3 vorgezogen, weil Stores/Services in den späteren Tasks sonst per `replace_all` Caller-Imports korrumpieren würden. uppercase `LERNPLATTFORM`-Comments in apps-script-code.js werden in eigenen Step 4 von Task 2.2 behandelt. authStore.ts:93 Migration-Comment wird in Task 2.3 vorab umformuliert (bevor `replace_all` in Task 2.6 ihn zu Nonsens macht).
+**Status:** Plan **APPROVED** (Reviewer Iter 2 ✅) — bereit für Execution.
+
+**Plan-Revision 1 (2026-05-10) nach Reviewer-Iter-1:** Phase 2 Reordering — `storageMigration.ts`-Function-Rename + Caller-Audit (vorher Task 2.9) wurde nach Task 2.3 vorgezogen, weil Stores/Services in den späteren Tasks sonst per `replace_all` Caller-Imports korrumpieren würden. uppercase `LERNPLATTFORM`-Comments in apps-script-code.js werden in eigenem Step 4 von Task 2.2 behandelt. authStore.ts:93 Migration-Comment wird in Task 2.3 vorab umformuliert (bevor `replace_all` in Task 2.6 ihn zu Nonsens macht).
 
 **Tech Stack:** React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 (PWA), Google Apps Script backend, Vitest, GitHub Actions CI.
 
