@@ -1,7 +1,7 @@
 # Bundle Legacy-Naming-Cleanup — Design Spec
 
 **Datum:** 2026-05-10
-**Status:** Spec — Revision 1 nach Reviewer-Loop Iter 1
+**Status:** Spec **APPROVED** (Reviewer Iter 2 ✅) — bereit für User-Review + writing-plans
 **Branch:** `refactor/legacy-naming-cleanup` (von `main` @ `08c4a38`)
 **Bundle-Name:** Bundle Legacy-Naming-Cleanup (kurz „Bundle LN")
 
@@ -81,7 +81,7 @@ Innerhalb des Mega-Bundles 4 Phasen, jede eigenständig verifizierbar (vitest + 
 | src/ Stores | 3 Stores: [ueben/uebungsStore.ts](../../../src/store/ueben/uebungsStore.ts), [ueben/authStore.ts](../../../src/store/ueben/authStore.ts), [ueben/auftragStore.ts](../../../src/store/ueben/auftragStore.ts) | action-Strings im Store-Code |
 | src/ Components | 3 Files: [UebenEditorProvider.tsx](../../../src/components/ueben/admin/UebenEditorProvider.tsx), [SuSStartseite.tsx](../../../src/components/sus/SuSStartseite.tsx), [UebungsToolView.tsx](../../../src/components/lp/UebungsToolView.tsx) | action-String-Refs in fetch-Calls |
 | src/ Types | 2 Files: [pruefResultat.ts](../../../src/types/ueben/pruefResultat.ts), [loesung.ts](../../../src/types/ueben/loesung.ts) | action-String-Refs in Type-Doku oder Discriminated-Union-Tags |
-| src/ Tests | 5 Files: `uebenSecurityInvariant.test.ts`, `preWarmApi.test.ts`, `uebenLoesungsApi.test.ts`, `uebenKorrekturApi.test.ts`, `uebungsStorePruefen.test.ts` | Mock-action-Strings + Test-Snapshots |
+| src/ Tests | 5 Files: `src/tests/uebenSecurityInvariant.test.ts`, `src/tests/preWarmApi.test.ts`, `src/tests/uebenLoesungsApi.test.ts`, `src/tests/uebenKorrekturApi.test.ts`, `src/store/ueben/uebungsStorePruefen.test.ts` (co-located) | Mock-action-Strings + Test-Snapshots |
 | src/ Migration-Function | [storageMigration.ts](../../../src/utils/ueben/storageMigration.ts) | Function `migriereLernplattformKeys` → `migriereLernplattformKeysAlt` (rename Funktion auf `migriereAlteLernplattformKeysToUeben` für Klarheit) **ABER:** die 4 historic localStorage-Keys (`'lernplattform-auth'`, `'lernplattform-fortschritt'`, `'lernplattform-auftraege'`, `'lernplattform-theme'`) bleiben als Migration-Source-Keys; sie sind kein laufender Code, sondern Backwards-Migration für User die noch nie seit altem IDB-Setup eingeloggt waren. |
 | `apps-script-code.js` | **32 case-Statements** im `doPost`-Switch + **36 Funktions-Definitionen** (inkl. 4 internal `_`-suffix: `lernplattformGeneriereToken_`, `lernplattformValidiereToken_`, `lernplattformRateLimitCheck_`, `lernplattformLadeFragenAusGruppenSheet_`) | Wire-Vertrag-Wechsel |
 
@@ -123,6 +123,7 @@ Innerhalb des Mega-Bundles 4 Phasen, jede eigenständig verifizierbar (vitest + 
 | 30 | `lernplattformLadeLernziele` | `uebenLadeLernziele` |
 | 31 | `lernplattformLadeLernzieleV2` | `uebenLadeLernzieleV2` |
 | 32 | `lernplattformSpeichereLernziel` | `uebenSpeichereLernziel` |
+| 33 | `lernplattformMarkiereKIFeedbackAlsIgnoriert` ⚠️ Frontend-only | `uebenMarkiereKIFeedbackAlsIgnoriert` — kein Backend-Handler vorhanden, siehe §6.1 Latent-Bug |
 
 **Zusätzlich Funktions-Definitionen (4 internal `_`-Suffix):**
 
@@ -352,3 +353,8 @@ Während des Audits aufgetauchte Issues, die nicht direkt zum Bundle gehören ab
   - Action-String-Mapping-Tabelle 23 → 32 Strings vollständig
   - Bonus-Findings + Typo-Entscheidung als §6 ergänzt
   - Spec Revision 1 erstellt
+- **Iter 2 (2026-05-10):** **APPROVED**. Sanity-check-Tabelle bestätigt alle quantitativen Claims (14 fragenbank-Files, 19 lernplattform-Files, 32 case-Statements, 36 function-Defs, 6 dead-mocks). 4 Recommendations (advisory):
+  - Path-Detail `uebungsStorePruefen.test.ts` co-located → korrigiert
+  - 33rd action-String `lernplattformMarkiereKIFeedbackAlsIgnoriert` zur Mapping-Tabelle ergänzt (mit Footnote zu §6.1)
+  - §6.2 dead-mock-Path-Variation (`./fragenbankStore`/`../store/fragenbankStore`/`../../store/fragenbankStore`) — Plan-Phase-Detail
+  - Phase 4 Drive-Brief „vermutlich Fragenbank" — Plan-Phase-Detail (User-Aktion vor Ort)
