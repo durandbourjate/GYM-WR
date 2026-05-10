@@ -114,7 +114,7 @@ const LP_DOMAIN = 'gymhofwil.ch';
 const SUS_DOMAIN = 'stud.gymhofwil.ch';
 const LERNZIELE_TAB = 'Lernziele';
 
-// === LERNPLATTFORM-KONFIGURATION ===
+// === UEBEN-KONFIGURATION ===
 const GRUPPEN_REGISTRY_ID = '1VH7Vu7JIKYLic2-wK2uSa2nXA7WVvStKOjUDi9cpWnI';
 // Dynamisch: Alle Tabs im Fragensammlung-Sheet ausser System-Tabs
 const FRAGENSAMMLUNG_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
@@ -227,12 +227,12 @@ function rateLimitCheck_(action, email, maxProFenster, fensterSekunden) {
   return { blocked: false };
 }
 
-// === LERNPLATTFORM: Session-Tokens (eigenes Cache-Prefix, andere Signatur) ===
+// === UEBEN: Session-Tokens (eigenes Cache-Prefix, andere Signatur) ===
 
 /**
- * Generiert ein Session-Token für die Lernplattform (ohne pruefungId).
+ * Generiert ein Session-Token für die Üben (ohne pruefungId).
  */
-function lernplattformGeneriereToken_(email) {
+function uebenGeneriereToken_(email) {
   var token = Utilities.getUuid();
   var cache = CacheService.getScriptCache();
   var daten = JSON.stringify({
@@ -244,9 +244,9 @@ function lernplattformGeneriereToken_(email) {
 }
 
 /**
- * Validiert ein Lernplattform-Session-Token (ohne pruefungId-Prüfung).
+ * Validiert ein Üben-Session-Token (ohne pruefungId-Prüfung).
  */
-function lernplattformValidiereToken_(token, email) {
+function uebenValidiereToken_(token, email) {
   if (!token || !email) return false;
   var cache = CacheService.getScriptCache();
   var raw = cache.get('lp_session_' + token);
@@ -260,9 +260,9 @@ function lernplattformValidiereToken_(token, email) {
 }
 
 /**
- * Rate Limiting für Lernplattform-Endpoints (eigenes Cache-Prefix).
+ * Rate Limiting für Üben-Endpoints (eigenes Cache-Prefix).
  */
-function lernplattformRateLimitCheck_(action, key, maxProFenster, fensterSekunden) {
+function uebenRateLimitCheck_(action, key, maxProFenster, fensterSekunden) {
   if (!key) return { blocked: false };
   var cache = CacheService.getScriptCache();
   var cacheKey = 'lp_rl_' + action + '_' + key.toLowerCase();
@@ -274,7 +274,7 @@ function lernplattformRateLimitCheck_(action, key, maxProFenster, fensterSekunde
   return { blocked: false };
 }
 
-// === LERNPLATTFORM: Helper-Funktionen ===
+// === UEBEN: Helper-Funktionen ===
 
 function getFragensammlungTabs_() {
   var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
@@ -296,7 +296,7 @@ function getFragensammlungTabs_() {
  */
 function istGruppenAdmin_(body, gruppeId) {
   var email = (body.email || '').toLowerCase().trim();
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) return null;
+  if (!uebenValidiereToken_(body.token || body.sessionToken, email)) return null;
 
   var gruppen = alleGruppenLaden_();
   var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
@@ -329,7 +329,7 @@ function istGruppenAdmin_(body, gruppeId) {
  */
 function istGruppenMitglied_(body, gruppeId) {
   var email = (body.email || '').toLowerCase().trim();
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) return null;
+  if (!uebenValidiereToken_(body.token || body.sessionToken, email)) return null;
 
   var gruppen = alleGruppenLaden_();
   var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
@@ -859,7 +859,7 @@ function listeProblemmeldungen(body) {
   var email = String(body.email || '').toLowerCase().trim();
   if (!istZugelasseneLP(email)) return jsonResponse({ success: false, error: 'Nicht autorisiert' });
   // Konsistent mit listeKIFeedbacks & Co: kein LP-Session-Token im Frontend → nur istZugelasseneLP.
-  var rl = lernplattformRateLimitCheck_('listeProblemmeldungen', email, 30, 300);
+  var rl = uebenRateLimitCheck_('listeProblemmeldungen', email, 30, 300);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
 
   var sheetId = PropertiesService.getScriptProperties().getProperty('PROBLEMMELDUNGEN_SHEET_ID');
@@ -963,7 +963,7 @@ function markiereProblemmeldungErledigt(body) {
   var erledigt = !!body.erledigt;
   if (!istZugelasseneLP(email)) return jsonResponse({ success: false, error: 'Nicht autorisiert' });
   // Konsistent mit aktualisiereKIFeedback & Co: kein LP-Session-Token → nur istZugelasseneLP.
-  var rl = lernplattformRateLimitCheck_('toggleProblemmeldung', email, 60, 300);
+  var rl = uebenRateLimitCheck_('toggleProblemmeldung', email, 60, 300);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
   if (!id) return jsonResponse({ success: false, error: 'id fehlt' });
 
@@ -1179,13 +1179,13 @@ function doPost(e) {
     cacheInvalidieren_();
   }
 
-  // LERNPLATTFORM: Rate Limiting für Auth-Aktionen
-  if (action === 'lernplattformCodeLogin') {
-    var lpRlCode = lernplattformRateLimitCheck_('codeLogin', body.code || 'anon', 10, 300);
+  // UEBEN: Rate Limiting für Auth-Aktionen
+  if (action === 'uebenCodeLogin') {
+    var lpRlCode = uebenRateLimitCheck_('codeLogin', body.code || 'anon', 10, 300);
     if (lpRlCode.blocked) return jsonResponse({ success: false, error: lpRlCode.error });
   }
-  if (action === 'lernplattformLogin') {
-    var lpRlLogin = lernplattformRateLimitCheck_('login', body.email || 'anon', 20, 600);
+  if (action === 'uebenLogin') {
+    var lpRlLogin = uebenRateLimitCheck_('login', body.email || 'anon', 20, 600);
     if (lpRlLogin.blocked) return jsonResponse({ success: false, error: lpRlLogin.error });
   }
 
@@ -1361,89 +1361,89 @@ function doPost(e) {
       return jsonResponse({ success: true, ergebnisse });
     }
 
-    // === LERNPLATTFORM ENDPOINTS ===
+    // === UEBEN ENDPOINTS ===
 
     // Auth
-    case 'lernplattformLogin':
-      return lernplattformLogin(body);
-    case 'lernplattformValidiereToken':
-      return lernplattformValidiereToken(body);
-    case 'lernplattformCodeLogin':
-      return lernplattformCodeLogin(body);
-    case 'lernplattformGeneriereCode':
-      return lernplattformGeneriereCode(body);
+    case 'uebenLogin':
+      return uebenLogin(body);
+    case 'uebenValidiereToken':
+      return uebenValidiereToken(body);
+    case 'uebenCodeLogin':
+      return uebenCodeLogin(body);
+    case 'uebenGeneriereCode':
+      return uebenGeneriereCode(body);
 
     // Gruppen
-    case 'lernplattformLadeGruppen':
-      return lernplattformLadeGruppen(body);
-    case 'lernplattformErstelleGruppe':
-      return lernplattformErstelleGruppe(body);
+    case 'uebenLadeGruppen':
+      return uebenLadeGruppen(body);
+    case 'uebenErstelleGruppe':
+      return uebenErstelleGruppe(body);
 
     // Mitglieder
-    case 'lernplattformLadeMitglieder':
-      return lernplattformLadeMitglieder(body);
-    case 'lernplattformEinladen':
-      return lernplattformEinladen(body);
-    case 'lernplattformEntfernen':
-      return lernplattformEntfernen(body);
-    case 'lernplattformUmbenneGruppe':
-      return lernplattformUmbenneGruppe(body);
-    case 'lernplattformAendereRolle':
-      return lernplattformAendereRolle(body);
+    case 'uebenLadeMitglieder':
+      return uebenLadeMitglieder(body);
+    case 'uebenEinladen':
+      return uebenEinladen(body);
+    case 'uebenEntfernen':
+      return uebenEntfernen(body);
+    case 'uebenUmbenneGruppe':
+      return uebenUmbenneGruppe(body);
+    case 'uebenAendereRolle':
+      return uebenAendereRolle(body);
 
     // Fragen
-    case 'lernplattformLadeFragen':
-      return lernplattformLadeFragen(body);
-    case 'lernplattformSpeichereFrage':
-      return lernplattformSpeichereFrage(body);
-    case 'lernplattformLoescheFrage':
-      return lernplattformLoescheFrage(body);
-    case 'lernplattformPruefeAntwort':
-      return lernplattformPruefeAntwort(body);
-    case 'lernplattformLadeLoesungen':
-      return lernplattformLadeLoesungen(body);
-    case 'lernplattformPreWarmFragen':
-      return lernplattformPreWarmFragen(body);
-    case 'lernplattformPreWarmKorrektur':
-      return lernplattformPreWarmKorrektur(body);
+    case 'uebenLadeFragen':
+      return uebenLadeFragen(body);
+    case 'uebenSpeichereFrage':
+      return uebenSpeichereFrage(body);
+    case 'uebenLoescheFrage':
+      return uebenLoescheFrage(body);
+    case 'uebenPruefeAntwort':
+      return uebenPruefeAntwort(body);
+    case 'uebenLadeLoesungen':
+      return uebenLadeLoesungen(body);
+    case 'uebenPreWarmFragen':
+      return uebenPreWarmFragen(body);
+    case 'uebenPreWarmKorrektur':
+      return uebenPreWarmKorrektur(body);
 
     // Fortschritt
-    case 'lernplattformSpeichereFortschritt':
-      return lernplattformSpeichereFortschritt(body);
-    case 'lernplattformLadeFortschritt':
-      return lernplattformLadeFortschritt(body);
-    case 'lernplattformLadeGruppenFortschritt':
-      return lernplattformLadeGruppenFortschritt(body);
+    case 'uebenSpeichereFortschritt':
+      return uebenSpeichereFortschritt(body);
+    case 'uebenLadeFortschritt':
+      return uebenLadeFortschritt(body);
+    case 'uebenLadeGruppenFortschritt':
+      return uebenLadeGruppenFortschritt(body);
 
     // Aufträge
-    case 'lernplattformLadeAuftraege':
-      return lernplattformLadeAuftraege(body);
-    case 'lernplattformSpeichereAuftrag':
-      return lernplattformSpeichereAuftrag(body);
+    case 'uebenLadeAuftraege':
+      return uebenLadeAuftraege(body);
+    case 'uebenSpeichereAuftrag':
+      return uebenSpeichereAuftrag(body);
 
     // Themen-Sichtbarkeit
-    case 'lernplattformLadeThemenSichtbarkeit':
-      return lernplattformLadeThemenSichtbarkeit(body);
-    case 'lernplattformSetzeThemenStatus':
-      return lernplattformSetzeThemenStatus(body);
+    case 'uebenLadeThemenSichtbarkeit':
+      return uebenLadeThemenSichtbarkeit(body);
+    case 'uebenSetzeThemenStatus':
+      return uebenSetzeThemenStatus(body);
 
     // Einstellungen
-    case 'lernplattformLadeEinstellungen':
-      return lernplattformLadeEinstellungen(body);
-    case 'lernplattformSpeichereEinstellungen':
-      return lernplattformSpeichereEinstellungen(body);
+    case 'uebenLadeEinstellungen':
+      return uebenLadeEinstellungen(body);
+    case 'uebenSpeichereEinstellungen':
+      return uebenSpeichereEinstellungen(body);
 
     // KI / Upload / Lernziele
-    case 'lernplattformKIAssistent':
-      return lernplattformKIAssistent(body);
-    case 'lernplattformUploadAnhang':
-      return lernplattformUploadAnhang(body);
-    case 'lernplattformLadeLernziele':
-      return lernplattformLadeLernziele(body);
-    case 'lernplattformLadeLernzieleV2':
-      return lernplattformLadeLernzieleV2(body);
-    case 'lernplattformSpeichereLernziel':
-      return lernplattformSpeichereLernziel(body);
+    case 'uebenKIAssistent':
+      return uebenKIAssistent(body);
+    case 'uebenUploadAnhang':
+      return uebenUploadAnhang(body);
+    case 'uebenLadeLernziele':
+      return uebenLadeLernziele(body);
+    case 'uebenLadeLernzieleV2':
+      return uebenLadeLernzieleV2(body);
+    case 'uebenSpeichereLernziel':
+      return uebenSpeichereLernziel(body);
 
     // === STAMMDATEN ===
     case 'ladeStammdaten':
@@ -1662,7 +1662,7 @@ function safeJsonParse(str, fallback) {
   }
 }
 
-/** Alias für Lernplattform-Funktionen (die safeJsonParse_ mit Unterstrich verwenden) */
+/** Alias für Üben-Funktionen (die safeJsonParse_ mit Unterstrich verwenden) */
 function safeJsonParse_(str, fallback) { return safeJsonParse(str, fallback); }
 
 /**
@@ -2351,7 +2351,7 @@ function bereinigeFrageFuerSuS_(frage, opts) {
  * Rückgabe enthält NUR Lösungs-Felder (keine Frage-Metadaten wie fragetext).
  *
  * Aufgabengruppen werden NICHT rekursiv verarbeitet — der Endpoint-Handler
- * (lernplattformLadeLoesungen, Task 4) ist dafür verantwortlich, teilaufgaben
+ * (uebenLadeLoesungen, Task 4) ist dafür verantwortlich, teilaufgaben
  * separat zu extrahieren und als eigene Map-Keys in die LoesungsMap zu legen
  * (flache Serialisierungs-Strategie).
  */
@@ -7082,7 +7082,7 @@ function setKorrekturStatus(sheet, status, erledigt, gesamt) {
  * Bundle G.d.1 — Berechnet die Korrektur-Body-Struktur (ohne jsonResponse-Wrapping
  * und ohne letzteAktualisierung). Auth-Check ist Caller-Responsibility.
  *
- * Wird von ladeKorrektur und lernplattformPreWarmKorrektur genutzt.
+ * Wird von ladeKorrektur und uebenPreWarmKorrektur genutzt.
  *
  * @returns {Object} Body. Bei fehlendem Sheet leerer Schueler-Array + idle-Status.
  */
@@ -8764,18 +8764,18 @@ function repariereEinrichtungsFragen() {
 }
 
 // ============================================================
-// LERNPLATTFORM — ENDPOINT-FUNKTIONEN
+// UEBEN — ENDPOINT-FUNKTIONEN
 // ============================================================
 
 /**
  * Login mit Google OAuth E-Mail.
  * Generiert Session-Token, gibt Gruppen zurück.
  */
-function lernplattformLogin(body) {
+function uebenLogin(body) {
   var email = (body.email || '').toLowerCase().trim();
   if (!email) return jsonResponse({ success: false, error: 'E-Mail fehlt' });
 
-  var token = lernplattformGeneriereToken_(email);
+  var token = uebenGeneriereToken_(email);
 
   // Gruppen für diese E-Mail laden
   var gruppen = alleGruppenLaden_().filter(function(g) {
@@ -8809,15 +8809,15 @@ function lernplattformLogin(body) {
 /**
  * Session-Token validieren.
  */
-function lernplattformValidiereToken(body) {
-  var gueltig = lernplattformValidiereToken_(body.sessionToken, body.email);
+function uebenValidiereToken(body) {
+  var gueltig = uebenValidiereToken_(body.sessionToken, body.email);
   return jsonResponse({ success: gueltig });
 }
 
 /**
  * Login mit 6-stelligem Code (für Kinder ohne E-Mail).
  */
-function lernplattformCodeLogin(body) {
+function uebenCodeLogin(body) {
   var code = String(body.code || '').trim().toUpperCase();
   if (!code || code.length < 4) {
     return jsonResponse({ success: false, error: 'Ungültiger Code' });
@@ -8842,7 +8842,7 @@ function lernplattformCodeLogin(body) {
         if (String(daten[j][codeIdx]).trim().toUpperCase() === code) {
           var email = String(daten[j][emailIdx]).toLowerCase().trim();
           var name = String(daten[j][nameIdx]).trim();
-          var token = lernplattformGeneriereToken_(email || 'code_' + code);
+          var token = uebenGeneriereToken_(email || 'code_' + code);
 
           return jsonResponse({
             success: true,
@@ -8865,7 +8865,7 @@ function lernplattformCodeLogin(body) {
 /**
  * Code generieren für ein Mitglied (Admin-Aktion).
  */
-function lernplattformGeneriereCode(body) {
+function uebenGeneriereCode(body) {
   var gruppeId = body.gruppeId;
   var mitgliedEmail = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
 
@@ -8912,13 +8912,13 @@ function lernplattformGeneriereCode(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — GRUPPEN ENDPOINTS
+// UEBEN — GRUPPEN ENDPOINTS
 // ============================================================
 
 /**
  * Alle Gruppen laden für eine E-Mail (als Admin oder Mitglied).
  */
-function lernplattformLadeGruppen(body) {
+function uebenLadeGruppen(body) {
   var email = (body.email || '').toLowerCase().trim();
   if (!email) return jsonResponse({ success: false, error: 'E-Mail fehlt' });
 
@@ -8953,7 +8953,7 @@ function lernplattformLadeGruppen(body) {
  * Neue Gruppe erstellen (Admin-Aktion).
  * Erstellt automatisch Fragensammlung-Sheet + Analytik-Tabs.
  */
-function lernplattformErstelleGruppe(body) {
+function uebenErstelleGruppe(body) {
   var name = body.name;
   var typ = body.typ || 'gym'; // gym | familie
   var adminEmail = (body.adminEmail || '').toLowerCase().trim();
@@ -8975,7 +8975,7 @@ function lernplattformErstelleGruppe(body) {
   }
 
   // Fragensammlung-Sheet erstellen
-  var fragensammlungSS = SpreadsheetApp.create('Lernplattform: ' + name);
+  var fragensammlungSS = SpreadsheetApp.create('ExamLab: ' + name);
   var fragensammlungId = fragensammlungSS.getId();
 
   // Standard-Tabs erstellen
@@ -9022,10 +9022,10 @@ function lernplattformErstelleGruppe(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — MITGLIEDER ENDPOINTS
+// UEBEN — MITGLIEDER ENDPOINTS
 // ============================================================
 
-function lernplattformLadeMitglieder(body) {
+function uebenLadeMitglieder(body) {
   var gruppeId = body.gruppeId;
 
   // Auth + Mitglied-Check (jedes Mitglied darf die Liste sehen)
@@ -9060,7 +9060,7 @@ function lernplattformLadeMitglieder(body) {
   }
 }
 
-function lernplattformEinladen(body) {
+function uebenEinladen(body) {
   var gruppeId = body.gruppeId;
   var email = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
   var name = body.name || '';
@@ -9100,7 +9100,7 @@ function lernplattformEinladen(body) {
   }
 }
 
-function lernplattformEntfernen(body) {
+function uebenEntfernen(body) {
   var gruppeId = body.gruppeId;
   var email = (body.mitgliedEmail || body.email || '').toLowerCase().trim();
 
@@ -9137,7 +9137,7 @@ function lernplattformEntfernen(body) {
 /**
  * Gruppenname ändern (nur Admin).
  */
-function lernplattformUmbenneGruppe(body) {
+function uebenUmbenneGruppe(body) {
   var gruppeId = body.gruppeId;
   var neuerName = (body.neuerName || '').trim();
 
@@ -9171,7 +9171,7 @@ function lernplattformUmbenneGruppe(body) {
 /**
  * Rolle eines Mitglieds ändern (nur Admin). Letzter Admin kann nicht degradiert werden.
  */
-function lernplattformAendereRolle(body) {
+function uebenAendereRolle(body) {
   var gruppeId = body.gruppeId;
   var mitgliedEmail = (body.mitgliedEmail || '').toLowerCase().trim();
   var neueRolle = body.neueRolle; // 'admin' oder 'lernend'
@@ -9229,7 +9229,7 @@ function lernplattformAendereRolle(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — FRAGEN ENDPOINTS
+// UEBEN — FRAGEN ENDPOINTS
 // ============================================================
 
 /**
@@ -9237,14 +9237,14 @@ function lernplattformAendereRolle(body) {
  * Liest alle Fragen aus FRAGENSAMMLUNG_ID, Tabs: VWL, BWL, Recht, Informatik.
  * Gibt Fragen im kanonischen shared-Format zurück (fragetext, fachbereich, bloom, typDaten).
  */
-function lernplattformLadeFragen(body) {
+function uebenLadeFragen(body) {
   // gruppeId wird für Berechtigungsprüfung noch gebraucht, aber Fragen kommen aus der gemeinsamen Fragensammlung
   var gruppeId = body.gruppeId;
   // SICHERHEIT: Email NICHT aus body übernehmen — Token-Validierung ist die einzige Quelle.
   // Ohne validiertes Token: SuS-Pfad (bereinigt), nie LP-Pfad.
   var claimEmail = (body.email || '').toString().toLowerCase();
   var token = body.token || body.sessionToken;
-  var tokenGueltig = lernplattformValidiereToken_(token, claimEmail);
+  var tokenGueltig = uebenValidiereToken_(token, claimEmail);
   var email = tokenGueltig ? claimEmail : '';
   var istLP = tokenGueltig && istZugelasseneLP(email);
 
@@ -9255,7 +9255,7 @@ function lernplattformLadeFragen(body) {
 
   // Familie-Gruppen: weiterhin eigenes Sheet nutzen (falls vorhanden)
   if (gruppe.typ === 'familie' && gruppe.fragensammlungSheetId) {
-    return lernplattformLadeFragenAusGruppenSheet_(gruppe);
+    return uebenLadeFragenAusGruppenSheet_(gruppe);
   }
 
   // Gym-Gruppen: Gemeinsame Fragensammlung (wie ExamLab)
@@ -9292,7 +9292,7 @@ function lernplattformLadeFragen(body) {
     }
 
     // Pre-Warm CacheService: alle unbereinigten Fragen einmalig speichern.
-    // Jeder spätere lernplattformPruefeAntwort-Call findet die Frage <100ms im Cache,
+    // Jeder spätere uebenPruefeAntwort-Call findet die Frage <100ms im Cache,
     // statt erneut Sheet-Reads über alle Tabs zu machen.
     try {
       var cache = CacheService.getScriptCache();
@@ -9313,7 +9313,7 @@ function lernplattformLadeFragen(body) {
       }
     } catch (eCache) {
       // Cache-Failure ist nicht kritisch — Prüf-Calls fallen auf Sheet-Read zurück.
-      console.log('[lernplattformLadeFragen] Pre-Warm Cache fehlgeschlagen: ' + eCache.message);
+      console.log('[uebenLadeFragen] Pre-Warm Cache fehlgeschlagen: ' + eCache.message);
     }
 
     // Security: SuS erhalten bereinigte + gemischte Fragen (LP sieht Original)
@@ -9332,7 +9332,7 @@ function lernplattformLadeFragen(body) {
  * Kehrt nur `{korrekt, musterlosung}` oder `{selbstbewertung:true, musterlosung}` zurück —
  * niemals die Frage mit Lösungsfeldern.
  */
-function lernplattformPruefeAntwort(body) {
+function uebenPruefeAntwort(body) {
   var gruppeId = body.gruppeId;
   var frageId = body.frageId;
   var antwort = body.antwort;
@@ -9344,14 +9344,14 @@ function lernplattformPruefeAntwort(body) {
   }
 
   // SICHERHEIT: Token zwingend — Email wird nur verwendet wenn Token gültig.
-  if (!lernplattformValidiereToken_(token, claimEmail)) {
+  if (!uebenValidiereToken_(token, claimEmail)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
   var email = claimEmail;
 
   // Rate-Limit: 10 Prüf-Requests pro Minute pro SuS
   // (macht Brute-Force auf R/F mit N Aussagen merklich teurer, ohne zügiges Üben zu blockieren).
-  var rl = lernplattformRateLimitCheck_('pruefe-antwort', email, 10, 60);
+  var rl = uebenRateLimitCheck_('pruefe-antwort', email, 10, 60);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
 
   // Gruppe existiert + Mitgliedschaft prüfen (via etablierten Helper)
@@ -9394,11 +9394,11 @@ function lernplattformPruefeAntwort(body) {
  * Wird vom Frontend beim Session-Start im selbstständigen Üben-Modus
  * aufgerufen, damit clientseitige Korrektur instant Feedback geben kann.
  *
- * Auth: Token-Pflicht, Mitgliedschaft-Check (wie lernplattformPruefeAntwort).
+ * Auth: Token-Pflicht, Mitgliedschaft-Check (wie uebenPruefeAntwort).
  * Rate-Limit: 5 Calls/Minute pro SuS (1 Call pro Session-Start reicht).
  * Aufgabengruppen: Teilaufgaben als eigene Map-Keys (flach serialisiert).
  */
-function lernplattformLadeLoesungen(body) {
+function uebenLadeLoesungen(body) {
   var gruppeId = body.gruppeId;
   var fragenIds = body.fragenIds;
   var claimEmail = (body.email || '').toString().toLowerCase();
@@ -9408,13 +9408,13 @@ function lernplattformLadeLoesungen(body) {
     return jsonResponse({ success: false, error: 'Fehlende oder ungültige Parameter' });
   }
 
-  if (!lernplattformValidiereToken_(token, claimEmail)) {
+  if (!uebenValidiereToken_(token, claimEmail)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
   var email = claimEmail;
 
   // Rate-Limit: 5 Calls/Minute pro SuS
-  var rl = lernplattformRateLimitCheck_('lade-loesungen', email, 5, 60);
+  var rl = uebenRateLimitCheck_('lade-loesungen', email, 5, 60);
   if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
 
   // Gruppe + Mitgliedschaft prüfen
@@ -9426,7 +9426,7 @@ function lernplattformLadeLoesungen(body) {
 
   // Audit-Log — wer hat wann wieviele Lösungen abgefragt
   try {
-    Logger.log('[lernplattformLadeLoesungen] gruppe=%s email=%s n=%s',
+    Logger.log('[uebenLadeLoesungen] gruppe=%s email=%s n=%s',
       gruppeId, email, String(fragenIds.length));
   } catch (e) { /* Logger-Unavailable nicht kritisch */ }
 
@@ -9454,7 +9454,7 @@ function lernplattformLadeLoesungen(body) {
       }
     }
   } catch (e) {
-    console.log('[lernplattformLadeLoesungen] Bulk-Read-Fallback aktiv: ' + e.message);
+    console.log('[uebenLadeLoesungen] Bulk-Read-Fallback aktiv: ' + e.message);
     fragenMap = {}; // Sicherheits-Reset, der Per-Frage-Loop unten füllt neu
   }
 
@@ -9500,7 +9500,7 @@ function lernplattformLadeLoesungen(body) {
  * @param {Object} body
  * @return {Object} jsonResponse
  */
-function lernplattformPreWarmFragen(body) {
+function uebenPreWarmFragen(body) {
   var startMs = Date.now();
   try {
     var email = (body.email || '').toLowerCase().trim();
@@ -9526,13 +9526,13 @@ function lernplattformPreWarmFragen(body) {
       return jsonResponse({ error: 'gruppeId oder fachbereich fehlt' });
     }
 
-    // 2. Auth: LP via Domain ODER User via Lernplattform-Session-Token
-    //    lernplattformValidiereToken_ ist der korrekte Helper für LP/SuS-Lernplattform-Logins
+    // 2. Auth: LP via Domain ODER User via Üben-Session-Token
+    //    uebenValidiereToken_ ist der korrekte Helper für LP/SuS-Üben-Logins
     //    (Cache lp_session_*). validiereSessionToken_ wäre für ExamLab-Prüfungs-Tokens
     //    (Cache sus_session_*) — falscher Pfad für unsere Pre-Warm-Calls.
     var istLP = istZugelasseneLP(email);
     if (!istLP) {
-      if (!sessionToken || !lernplattformValidiereToken_(sessionToken, email)) {
+      if (!sessionToken || !uebenValidiereToken_(sessionToken, email)) {
         return jsonResponse({ error: 'Nicht autorisiert' });
       }
     }
@@ -9580,7 +9580,7 @@ function lernplattformPreWarmFragen(body) {
  *         | { success: true, deduped: true }
  *         | { error: 'Nicht autorisiert' | 'Pruefung nicht gefunden' | <fehler> }
  */
-function lernplattformPreWarmKorrektur(body) {
+function uebenPreWarmKorrektur(body) {
   var startMs = Date.now();
   try {
     var email = (body.email || '').toLowerCase().trim();
@@ -9703,7 +9703,7 @@ function preWarmKorrekturNachAbgabe_(pruefungId, susEmail) {
  * Wird aus schalteFreiEndpoint nach setValue('freigeschaltet') aufgerufen (try/catch).
  * Liest fragenIds aus Configs-Sheet anhand pruefungId und befüllt CacheService
  * via bulkLadeFragenAusSheet_. CacheService-Soft-Lock (30s) dedupliziert mit
- * G.a-Trigger A (lernplattformPreWarmFragen) — Lock-Key konkurriert NICHT
+ * G.a-Trigger A (uebenPreWarmFragen) — Lock-Key konkurriert NICHT
  * (anderer Prefix), also doppelter Pre-Warm möglich aber unschädlich.
  *
  * Latenz-Impact auf schalteFrei-Response: ~50-200ms cold, ~10ms warm.
@@ -9752,7 +9752,7 @@ function preWarmFragenBeimFreischalten_(pruefungId) {
 
     var gruppeId = configRow.klasse || '';
     var fachbereich = (configRow.fachbereiche || '').split(',')[0] || '';
-    // Guard analog lernplattformPreWarmFragen Z. 8942: ohne beide Hinweise würde
+    // Guard analog uebenPreWarmFragen Z. 8942: ohne beide Hinweise würde
     // gruppiereFragenIdsNachTab_ undefiniert reagieren (G.a-Pattern).
     if (!gruppeId && !fachbereich) {
       console.log('[PreWarmFreischalten] keine gruppeId/fachbereich, skip pruefungId=' + pruefungId);
@@ -10187,7 +10187,7 @@ function parseFrageKanonisch_(row, fachbereich) {
 }
 
 /** Legacy: Fragen aus gruppenspezifischem Sheet laden (für Familie-Gruppen) */
-function lernplattformLadeFragenAusGruppenSheet_(gruppe) {
+function uebenLadeFragenAusGruppenSheet_(gruppe) {
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
     var sheet = ss.getSheetByName('Fragen');
@@ -10224,7 +10224,7 @@ function lernplattformLadeFragenAusGruppenSheet_(gruppe) {
  * Einzelne Frage speichern (Upsert: Update oder Insert).
  * Nur Admin der Gruppe darf Fragen speichern.
  */
-function lernplattformSpeichereFrage(body) {
+function uebenSpeichereFrage(body) {
   var gruppeId = body.gruppeId;
   var frage = body.frage;
   if (!frage || !frage.id) {
@@ -10366,7 +10366,7 @@ function speichereFrageInGruppenSheet_(gruppe, frage) {
  * Gym-Gruppen: Löscht aus FRAGENSAMMLUNG_ID (Fach-Tab).
  * Familie-Gruppen: Löscht aus Gruppen-Sheet.
  */
-function lernplattformLoescheFrage(body) {
+function uebenLoescheFrage(body) {
   var gruppeId = body.gruppeId;
   var frageId = body.frageId;
   var fachbereich = body.fachbereich;
@@ -10413,13 +10413,13 @@ function lernplattformLoescheFrage(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — FORTSCHRITT ENDPOINTS
+// UEBEN — FORTSCHRITT ENDPOINTS
 // ============================================================
 
 /**
  * Fortschritt für ein Mitglied speichern (nach Übungs-Session).
  */
-function lernplattformSpeichereFortschritt(body) {
+function uebenSpeichereFortschritt(body) {
   var gruppeId = body.gruppeId;
   var email = (body.email || '').toLowerCase().trim();
   var fortschritte = body.fortschritte || []; // Array von { fragenId, korrekt, sessionId }
@@ -10521,7 +10521,7 @@ function berechneMasteryMitRecency_(baseMastery, letzterVersuch) {
 /**
  * Fortschritt laden für ein Mitglied (alle Fragen oder gefiltert).
  */
-function lernplattformLadeFortschritt(body) {
+function uebenLadeFortschritt(body) {
   var gruppeId = body.gruppeId;
   var email = (body.email || '').toLowerCase().trim();
 
@@ -10559,10 +10559,10 @@ function lernplattformLadeFortschritt(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — AUFTRAEGE ENDPOINTS
+// UEBEN — AUFTRAEGE ENDPOINTS
 // ============================================================
 
-function lernplattformLadeAuftraege(body) {
+function uebenLadeAuftraege(body) {
   var gruppeId = body.gruppeId;
 
   var gruppen = alleGruppenLaden_();
@@ -10611,7 +10611,7 @@ function lernplattformLadeAuftraege(body) {
   }
 }
 
-function lernplattformSpeichereAuftrag(body) {
+function uebenSpeichereAuftrag(body) {
   var gruppeId = body.gruppeId;
   var auftrag = body.auftrag;
   if (!auftrag || !auftrag.id) {
@@ -10681,7 +10681,7 @@ function lernplattformSpeichereAuftrag(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — THEMEN-SICHTBARKEIT ENDPOINTS
+// UEBEN — THEMEN-SICHTBARKEIT ENDPOINTS
 // ============================================================
 
 /**
@@ -10689,7 +10689,7 @@ function lernplattformSpeichereAuftrag(body) {
  * Liest den Tab "ThemenSichtbarkeit" aus dem Gruppen-Sheet.
  * Fallback: Wenn Tab nicht existiert → leere Liste (alle Themen sichtbar).
  */
-function lernplattformLadeThemenSichtbarkeit(body) {
+function uebenLadeThemenSichtbarkeit(body) {
   var gruppeId = body.gruppeId;
 
   var gruppen = alleGruppenLaden_();
@@ -10767,7 +10767,7 @@ function lernplattformLadeThemenSichtbarkeit(body) {
  * Erstellt Tab automatisch wenn nötig.
  * FIFO: Wenn >3 Themen aktiv → ältestes wird abgeschlossen.
  */
-function lernplattformSetzeThemenStatus(body) {
+function uebenSetzeThemenStatus(body) {
   var gruppeId = body.gruppeId;
   var fach = body.fach;
   var thema = body.thema;
@@ -10886,7 +10886,7 @@ function lernplattformSetzeThemenStatus(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — EINSTELLUNGEN ENDPOINTS
+// UEBEN — EINSTELLUNGEN ENDPOINTS
 // ============================================================
 
 /**
@@ -10894,7 +10894,7 @@ function lernplattformSetzeThemenStatus(body) {
  * Liest die 'einstellungen'-Spalte aus der Registry.
  * Falls leer oder fehlend: Defaults basierend auf 'typ'-Spalte zurückgeben.
  */
-function lernplattformLadeEinstellungen(body) {
+function uebenLadeEinstellungen(body) {
   var gruppeId = body.gruppeId;
   if (!gruppeId) return jsonResponse({ success: false, error: 'gruppeId fehlt' });
 
@@ -10943,7 +10943,7 @@ function lernplattformLadeEinstellungen(body) {
  * Schreibt die Einstellungen als JSON-String in die 'einstellungen'-Spalte.
  * Erstellt die Spalte falls nötig.
  */
-function lernplattformSpeichereEinstellungen(body) {
+function uebenSpeichereEinstellungen(body) {
   var gruppeId = body.gruppeId;
   var einstellungen = body.einstellungen;
   var email = (body.email || '').toLowerCase().trim();
@@ -10991,16 +10991,16 @@ function lernplattformSpeichereEinstellungen(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — KI-ASSISTENT
+// UEBEN — KI-ASSISTENT
 // ============================================================
 
 /**
  * KI-Assistent für den SharedFragenEditor.
  * Benötigt ANTHROPIC_API_KEY in Script Properties.
  */
-function lernplattformKIAssistent(body) {
+function uebenKIAssistent(body) {
   var email = (body.email || '').toLowerCase().trim();
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
+  if (!uebenValidiereToken_(body.token || body.sessionToken, email)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
 
@@ -11090,15 +11090,15 @@ function lernplattformKIAssistent(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — UPLOAD (Anhänge an Google Drive)
+// UEBEN — UPLOAD (Anhänge an Google Drive)
 // ============================================================
 
 /**
  * Datei-Anhang an Google Drive hochladen.
  */
-function lernplattformUploadAnhang(body) {
+function uebenUploadAnhang(body) {
   var email = (body.email || '').toLowerCase().trim();
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
+  if (!uebenValidiereToken_(body.token || body.sessionToken, email)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
 
@@ -11149,15 +11149,15 @@ function lernplattformUploadAnhang(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — LERNZIELE
+// UEBEN — LERNZIELE
 // ============================================================
 
 /**
  * Lernziele aus der Fragensammlung laden (aus lernzielIds-Spalte).
  */
-function lernplattformLadeLernziele(body) {
+function uebenLadeLernziele(body) {
   var email = (body.email || '').toLowerCase().trim();
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
+  if (!uebenValidiereToken_(body.token || body.sessionToken, email)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
 
@@ -11215,13 +11215,13 @@ function lernplattformLadeLernziele(body) {
 }
 
 // ============================================================
-// LERNPLATTFORM — GRUPPEN-FORTSCHRITT + LERNZIELE V2
+// UEBEN — GRUPPEN-FORTSCHRITT + LERNZIELE V2
 // ============================================================
 
 /**
  * Lädt den Fortschritt aller SuS einer Gruppe (nur für Admins).
  */
-function lernplattformLadeGruppenFortschritt(body) {
+function uebenLadeGruppenFortschritt(body) {
   var auth = istGruppenAdmin_(body, body.gruppeId);
   if (!auth) {
     auditLog_('ladeGruppenFortschritt:DENIED', (body.email || ''), { gruppeId: body.gruppeId });
@@ -11304,9 +11304,9 @@ function lernplattformLadeGruppenFortschritt(body) {
  * Lädt Lernziele aus dediziertem Lernziele-Tab.
  * Gym: aus FRAGENSAMMLUNG_ID, Familie: aus Gruppen-Sheet.
  */
-function lernplattformLadeLernzieleV2(body) {
+function uebenLadeLernzieleV2(body) {
   var email = (body.email || '').toLowerCase().trim();
-  if (!lernplattformValidiereToken_(body.token || body.sessionToken, email)) {
+  if (!uebenValidiereToken_(body.token || body.sessionToken, email)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
 
@@ -11351,7 +11351,7 @@ function lernplattformLadeLernzieleV2(body) {
 /**
  * Speichert ein Lernziel (Upsert). Nur Admins.
  */
-function lernplattformSpeichereLernziel(body) {
+function uebenSpeichereLernziel(body) {
   var auth = istGruppenAdmin_(body, body.gruppeId);
   if (!auth) {
     auditLog_('speichereLernziel:DENIED', (body.email || ''), { gruppeId: body.gruppeId });
@@ -14255,7 +14255,7 @@ function testBulkLadeFragenAusSheet_() {
 function testLadeLoesungenLatenzNachBundleE() { return testLadeLoesungenLatenzNachBundleE_(); }
 
 /**
- * Misst die INTERNE Latenz von lernplattformLadeLoesungen nach Bundle E.
+ * Misst die INTERNE Latenz von uebenLadeLoesungen nach Bundle E.
  * Date.now()-Brackets DIREKT um den Bulk-Read + Per-Frage-Loop, nicht um den
  * gesamten Web-App-Call (= ohne Plattform-Overhead von ~1.5-2 s).
  * Akzeptanz-Kriterium: N=10 cold ≤ 800 ms intern.
@@ -14290,7 +14290,7 @@ function testLadeLoesungenLatenzNachBundleE_() {
     }
     Utilities.sleep(50);
 
-    // Internes Brackets — simuliert den Bulk-Read + Per-Frage-Loop von lernplattformLadeLoesungen
+    // Internes Brackets — simuliert den Bulk-Read + Per-Frage-Loop von uebenLadeLoesungen
     var t0 = Date.now();
     var byTab = gruppiereFragenIdsNachTab_(ids, null, 'BWL');
     var fragenMap = {};
@@ -14362,7 +14362,7 @@ function testLadeLoesungenLatenzNachBundleE_() {
 // ============================================================
 
 /**
- * Test-Shim für lernplattformPreWarmFragen.
+ * Test-Shim für uebenPreWarmFragen.
  *
  * Cases:
  *   (a) Cold-Call mit 30 fragenIds einer Prüfung → success, fragenAnzahl > 0
@@ -14394,7 +14394,7 @@ function testPreWarmFragen_() {
   cache.removeAll(['prewarm_' + lpEmail + '_' + hashIds_(bwlIds)]);
 
   // (a) Cold-Call
-  var r1 = lernplattformPreWarmFragen({
+  var r1 = uebenPreWarmFragen({
     email: lpEmail, sessionToken: '',
     fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
   });
@@ -14406,7 +14406,7 @@ function testPreWarmFragen_() {
   assert_(b1.latenzMs < 5000, '(a) latenzMs <5s, war ' + b1.latenzMs);
 
   // (b) Re-Call sofort → deduped
-  var r2 = lernplattformPreWarmFragen({
+  var r2 = uebenPreWarmFragen({
     email: lpEmail, sessionToken: '',
     fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
   });
@@ -14418,7 +14418,7 @@ function testPreWarmFragen_() {
   // (c) Andere fragenIds → kein Lock, neuer Sheet-Read
   var anderePool = bwlIds.slice(5, 15); // verschobener Subset = anderer Hash
   cache.removeAll(['prewarm_' + lpEmail + '_' + hashIds_(anderePool)]);
-  var r3 = lernplattformPreWarmFragen({
+  var r3 = uebenPreWarmFragen({
     email: lpEmail, sessionToken: '',
     fragenIds: anderePool, gruppeId: gruppeId, fachbereich: 'BWL'
   });
@@ -14428,7 +14428,7 @@ function testPreWarmFragen_() {
   assert_(!b3.deduped, '(c) NICHT deduped');
 
   // (d) Auth-Fail (SuS ohne Token)
-  var r4 = lernplattformPreWarmFragen({
+  var r4 = uebenPreWarmFragen({
     email: 'wr.test@stud.gymhofwil.ch', sessionToken: 'invalid-token',
     fragenIds: bwlIds, gruppeId: gruppeId, fachbereich: 'BWL'
   });
@@ -14439,7 +14439,7 @@ function testPreWarmFragen_() {
   // (e) Sanity-Check
   var rieseIds = [];
   for (var k = 0; k < 250; k++) rieseIds.push('frage_' + k);
-  var r5 = lernplattformPreWarmFragen({
+  var r5 = uebenPreWarmFragen({
     email: lpEmail, sessionToken: '',
     fragenIds: rieseIds, gruppeId: gruppeId, fachbereich: 'BWL'
   });
@@ -14455,7 +14455,7 @@ function testPreWarmFragen() { return testPreWarmFragen_(); }
 
 /**
  * Test-Shim für die zentrale Akzeptanz-Frage:
- * Wie viel schneller ist lernplattformLadeLoesungen nach Pre-Warm?
+ * Wie viel schneller ist uebenLadeLoesungen nach Pre-Warm?
  *
  * N=10 cold-Pfad (Cache-Reset, dann Lade-Call)
  *   vs. N=10 warm-Pfad (Pre-Warm + sofortiger Lade-Call)
@@ -14483,7 +14483,7 @@ function testPreWarmEffekt_() {
   cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
 
   var coldStart = Date.now();
-  var coldResult = lernplattformLadeLoesungen({
+  var coldResult = uebenLadeLoesungen({
     email: lpEmail, sessionToken: '',
     gruppe: { fragensammlungSheetId: FRAGENSAMMLUNG_ID, id: 'standard' },
     fragenIds: fragenIds, fachbereich: fachbereich
@@ -14498,14 +14498,14 @@ function testPreWarmEffekt_() {
   cache.remove('prewarm_' + lpEmail + '_' + hashIds_(fragenIds));
 
   // Pre-Warm
-  lernplattformPreWarmFragen({
+  uebenPreWarmFragen({
     email: lpEmail, sessionToken: '',
     fragenIds: fragenIds, gruppeId: gruppeId, fachbereich: fachbereich
   });
 
   // Sofort Lade-Call
   var warmStart = Date.now();
-  var warmResult = lernplattformLadeLoesungen({
+  var warmResult = uebenLadeLoesungen({
     email: lpEmail, sessionToken: '',
     gruppe: { fragensammlungSheetId: FRAGENSAMMLUNG_ID, id: 'standard' },
     fragenIds: fragenIds, fachbereich: fachbereich
@@ -14612,7 +14612,7 @@ function testPreWarmFragenBeimFreischalten_() {
 function testPreWarmFragenBeimFreischalten() { testPreWarmFragenBeimFreischalten_(); }
 
 /**
- * Test-Shim für lernplattformPreWarmKorrektur (Bundle G.d.1 Hebel C).
+ * Test-Shim für uebenPreWarmKorrektur (Bundle G.d.1 Hebel C).
  */
 function testPreWarmKorrektur_() {
   var configSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
@@ -14628,7 +14628,7 @@ function testPreWarmKorrektur_() {
 
   // Case (a) Cold-Call
   var t1 = Date.now();
-  var r1 = JSON.parse(lernplattformPreWarmKorrektur({
+  var r1 = JSON.parse(uebenPreWarmKorrektur({
     email: testLP, pruefungId: testConfig.id
   }).getContent());
   Logger.log('Case (a) Cold: success=%s ms=%s', r1.success, Date.now() - t1);
@@ -14637,21 +14637,21 @@ function testPreWarmKorrektur_() {
   assert_(cache.get('korrektur_data_' + testConfig.id), 'Cache nach Cold-Call leer');
 
   // Case (b) Deduped
-  var r2 = JSON.parse(lernplattformPreWarmKorrektur({
+  var r2 = JSON.parse(uebenPreWarmKorrektur({
     email: testLP, pruefungId: testConfig.id
   }).getContent());
   Logger.log('Case (b) Deduped: success=%s deduped=%s', r2.success, r2.deduped);
   assert_(r2.deduped === true, 'Zweiter Call nicht deduped');
 
   // Case (c) Auth-Fail
-  var r3 = JSON.parse(lernplattformPreWarmKorrektur({
+  var r3 = JSON.parse(uebenPreWarmKorrektur({
     email: 'fremder@example.com', pruefungId: testConfig.id
   }).getContent());
   Logger.log('Case (c) Auth-Fail: error=%s', r3.error);
   assert_(r3.error === 'Nicht autorisiert', 'Fremder LP nicht abgelehnt');
 
   // Case (d) Pruefung nicht gefunden
-  var r4 = JSON.parse(lernplattformPreWarmKorrektur({
+  var r4 = JSON.parse(uebenPreWarmKorrektur({
     email: testLP, pruefungId: 'inexistente-id-xyz'
   }).getContent());
   // ladeKorrekturBerechne_ liefert immer Body (auch wenn Sheet nicht gefunden) — kein Crash erwartet
