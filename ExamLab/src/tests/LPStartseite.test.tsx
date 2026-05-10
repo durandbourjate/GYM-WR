@@ -63,13 +63,6 @@ vi.mock('../store/ueben/gruppenStore', () => ({
     selector({ gruppen: [] }),
 }))
 
-vi.mock('../store/fragenbankStore', () => ({
-  useFragensammlungStore: Object.assign(
-    (selector: (s: { summaries: [] }) => unknown) => selector({ summaries: [] }),
-    { getState: () => ({ lade: vi.fn() }) },
-  ),
-}))
-
 vi.mock('../store/stammdatenStore', () => ({
   useStammdatenStore: Object.assign(
     (selector: (s: { lpProfil: null }) => unknown) => selector({ lpProfil: null }),

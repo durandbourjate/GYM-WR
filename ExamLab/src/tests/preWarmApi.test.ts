@@ -25,7 +25,7 @@ describe('preWarmFragen', () => {
     const result = await preWarmFragen(['f1', 'f2'], 'gruppe1', 'BWL')
     expect(result).toBeUndefined()
     expect(postJsonMock).toHaveBeenCalledWith(
-      'lernplattformPreWarmFragen',
+      'uebenPreWarmFragen',
       expect.objectContaining({ fragenIds: ['f1', 'f2'], gruppeId: 'gruppe1', fachbereich: 'BWL' }),
       expect.anything(),
     )
@@ -74,7 +74,7 @@ describe('preWarmKorrektur', () => {
     const { preWarmKorrektur } = await import('../services/preWarmApi')
     await preWarmKorrektur('p123', 'lp@gymhofwil.ch')
     expect(postJsonMock).toHaveBeenCalledWith(
-      'lernplattformPreWarmKorrektur',
+      'uebenPreWarmKorrektur',
       expect.objectContaining({ pruefungId: 'p123', email: 'lp@gymhofwil.ch' }),
       expect.anything(),
     )
@@ -103,7 +103,7 @@ describe('preWarmKorrektur', () => {
     const { preWarmKorrektur } = await import('../services/preWarmApi')
     await preWarmKorrektur('p123', 'lp@gymhofwil.ch', undefined, 'tok-lp-99')
     expect(postJsonMock).toHaveBeenCalledWith(
-      'lernplattformPreWarmKorrektur',
+      'uebenPreWarmKorrektur',
       expect.anything(),
       'tok-lp-99',
     )

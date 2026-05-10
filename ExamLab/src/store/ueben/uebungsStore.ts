@@ -37,7 +37,7 @@ interface UebungsState {
   beantworteById: (frageId: string, antwort: Antwort) => void
   /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen + Üben-Modus) */
   speichereZwischenstandById: (frageId: string, antwort: Antwort) => void
-  /** Üben-Modus: explizit "Antwort prüfen" — ruft Server-Endpoint lernplattformPruefeAntwort */
+  /** Üben-Modus: explizit "Antwort prüfen" — ruft Server-Endpoint uebenPruefeAntwort */
   pruefeAntwortJetzt: (frageId: string) => Promise<void>
   /** Üben-Modus: SuS-Selbstbewertung für Freitext/Visualisierung/PDF/Audio/Code */
   selbstbewertenById: (frageId: string, bewertung: Selbstbewertung) => void

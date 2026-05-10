@@ -18,7 +18,7 @@ interface Options {
 
 /**
  * Bundle G.b — Lädt nach 300 ms Debounce die ±1 Nachbar-Fragen ins
- * fragenbankStore.detailCache. Fire-and-forget, fail-silent.
+ * fragensammlungStore.detailCache. Fire-and-forget, fail-silent.
  *
  * Skipping-Bedingungen: PRE_WARM_ENABLED=false, currentFrageId=null, email leer.
  */

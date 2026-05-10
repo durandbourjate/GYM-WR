@@ -13,13 +13,13 @@ export interface PruefenParams {
 }
 
 /**
- * Ruft den Apps-Script-Endpoint `lernplattformPruefeAntwort` auf.
+ * Ruft den Apps-Script-Endpoint `uebenPruefeAntwort` auf.
  * Liefert ein {@link PruefResultat} zurück oder wirft bei success:false / Netzwerk-Fehler.
  */
 export async function pruefeAntwortApi(params: PruefenParams): Promise<PruefResultat> {
   const { gruppeId, frageId, antwort, email, token, fachbereich } = params
   const response = await uebenApiClient.post<PruefResultat>(
-    'lernplattformPruefeAntwort',
+    'uebenPruefeAntwort',
     { gruppeId, frageId, antwort, email, fachbereich },
     token,
   )

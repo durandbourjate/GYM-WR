@@ -9,9 +9,6 @@ vi.mock('../services/draftCache', () => ({
 }))
 
 // Mock alle Store-reset()-Funktionen damit abmelden() nicht auf echte IDB trifft
-vi.mock('./fragenbankStore', () => ({
-  useFragensammlungStore: { getState: () => ({ reset: vi.fn().mockResolvedValue(undefined) }) },
-}))
 vi.mock('./klassenlistenStore', () => ({
   useKlassenlistenStore: { getState: () => ({ reset: vi.fn().mockResolvedValue(undefined) }) },
 }))

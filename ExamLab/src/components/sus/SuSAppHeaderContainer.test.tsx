@@ -11,10 +11,6 @@ vi.mock('../../store/themeStore', () => ({
   useThemeStore: (selector: (s: { mode: 'light' | 'dark'; toggleMode: () => void }) => unknown) =>
     selector({ mode: 'light', toggleMode: vi.fn() }),
 }))
-vi.mock('../../store/fragenbankStore', () => ({
-  useFragensammlungStore: (selector: (s: { summaries: [] }) => unknown) => selector({ summaries: [] }),
-}))
-
 import { SuSAppHeaderContainer } from './SuSAppHeaderContainer'
 
 function mockMatchMedia() {

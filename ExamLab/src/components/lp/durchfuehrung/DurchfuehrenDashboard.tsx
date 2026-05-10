@@ -72,7 +72,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   }, [config, daten])
 
   // Data-State (aus MonitoringDashboard)
-  const [zeigFragenbank, setZeigFragenbank] = useState(false)
+  const [zeigFragensammlung, setZeigFragensammlung] = useState(false)
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [zeigEinstellungen, setZeigEinstellungen] = useState(false)
 
@@ -156,8 +156,8 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
   return (
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       <LPAppHeaderContainer
-        onHilfe={() => { setZeigFragenbank(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
-        onEinstellungen={() => { setZeigFragenbank(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
+        onHilfe={() => { setZeigFragensammlung(false); setZeigEinstellungen(false); setZeigHilfe(!zeigHilfe) }}
+        onEinstellungen={() => { setZeigFragensammlung(false); setZeigHilfe(false); setZeigEinstellungen(!zeigEinstellungen) }}
         onZurueck={zurueck}
         untertitel={`${titel}${istDemoModus ? ' (Demo)' : ''}`}
         aktionsButtons={
@@ -430,10 +430,10 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       </div>{/* Ende Flex-Row */}
 
       {/* Fragensammlung Overlay */}
-      {zeigFragenbank && (
+      {zeigFragensammlung && (
         <FragenBrowser
           onHinzufuegen={() => {}}
-          onSchliessen={() => setZeigFragenbank(false)}
+          onSchliessen={() => setZeigFragensammlung(false)}
           bereitsVerwendet={[]}
         />
       )}

@@ -8,6 +8,45 @@
 
 ## Letzter Stand auf main
 
+### Bundle Legacy-Naming-Cleanup 🟡 READY FOR DEPLOY (2026-05-10)
+
+Branch `refactor/legacy-naming-cleanup`. Vollständige Migration `fragenbank` → `fragensammlung` + `lernplattform*` → `ueben*` (Frontend + Apps-Script Wire-Vertrag, Hard-Cut). Spec + Plan beide im 2-Iter-Reviewer-Loop approved.
+
+| Commit | Inhalt |
+|---|---|
+| `269c602` | Phase 1: fragenbank → fragensammlung. 14 src/ Files (4 Components + 7 Tests + 1 Hook + 1 Store route-token + 1 Storage-Drop) + 6 stellen in apps-script-code.js. Dead-Mocks `vi.mock('./fragenbankStore')` gefixt/entfernt |
+| `01db72c` | Phase 2.1+2.2: Apps-Script Wire-Vertrag — 32 doPost-case-statements (`case 'lernplattform'` → `case 'ueben'`), 36 function-defs (inkl. 4 internal `_`-suffix), alle lowercase + 17 uppercase `LERNPLATTFORM` Section-Header. Bonus: Sheet-Prefix `'Lernplattform: '` → `'ExamLab: '` (Phase-3-Inhalt vorgezogen für sauberen Grep-Checkpoint) |
+| `da05c7a` | Phase 2.3+2.6: storageMigration.ts (Function `migriereLernplattformKeys` → `migriereAlteUebenKeys`, 4 historic localStorage Source-Keys preserved als Migration-Source) + 3 Stores (uebungsStore/authStore/auftragStore action-Strings + JSDoc) + co-located test (uebungsStorePruefen) sync. Reordering kritisch (2.3 vor 2.6) |
+| `f8bb85c` | Phase 2.4-2.9: src/ Services (4) + Adapter (1) + Components (3) + Types (2) + Tests (5) action-Strings + JSDoc |
+| `4bb8b74` | Phase 3: `apps-script-lernen/` (Pre-Fusion-Phase-6-Legacy, 3 Files inkl. 1917-Z. backend.js) gelöscht. Doku-Konsolidierung: Archive-Doc `docs/lernplattform-archive-2026-05-10.md` mit Setup-Schema-History für Gruppen-Registry/Tab-Struktur |
+| `1c20774` | Phase 4.1: Drive-Aufräum-Brief `docs/drive-aufraum-2026-05-10.md` (User-Action für Apps-Script-Deploy + optional Sheet-Renames) |
+| `3a47675` | Phase 4.4: HANDOFF Bundle-Eintrag |
+| `6b2712f` | **Hotfix:** Pre-existing Wire-Vertrag-Slip `uebenMarkiereKIFeedbackAlsIgnoriert` — Backend-case auf `ueben`-Prefix umbenannt (Option A). Plus Wire-Contract-Audit-Script `scripts/audit-wire-contract.mjs` + neuer CI-Gate `npm run lint:wire-contract` (59 Frontend-actions, 0 ohne Backend-handler) |
+
+**Verifikation:** vitest 1523 ✓ (drift = 0), tsc clean, 4× lint clean (as-any 0/0/0, no-alert 0, no-tests-dir clean, musterloesung Baseline), vite build grün. 4 historic Storage-Migration-Source-Keys (`'lernplattform-auth'` etc.) in `storageMigration.ts` absichtlich preserved. Token-form-grep `lernplattform[A-Z]` in src/ + apps-script-code.js: **0 Treffer**.
+
+**Reviewer-Loop:** Phase 1 + 2.1+2.2 + 2.3+2.6 + 2.4-2.9 + 3 alle 2-Stage-Review (Spec + Code-Quality) APPROVED. Spec-Iter-1 hatte 6 Issues — alle behoben. Plan-Iter-1 hatte 7 Issues — alle behoben.
+
+**Apps-Script-Deploy:** ⚠️ **PFLICHT** — User muss `apps-script-code.js` aus diesem Branch in Apps-Script-Editor einfügen + neue Version bereitstellen. Hard-Cut: Frontend (von preview-Branch) + Apps-Script gleichzeitig deployt.
+
+**Drive-Aufräumung:** Optional, kosmetisch. Brief in `ExamLab/docs/drive-aufraum-2026-05-10.md`.
+
+**Out-of-Scope (Spawn-Tasks für später):**
+- ~~Pre-existing latent-bug `uebenMarkiereKIFeedbackAlsIgnoriert`~~ ✅ **In Hotfix `6b2712f` behoben** (Backend-case mit `ueben`-Prefix + Wire-Contract-Lint-Gate)
+- `'adminFragensammlung'` route-token in `navigationStore.ts` ist orphan (0 Caller — Union-Member ohne aktiven Konsumenten)
+- Optional Typo-Fix `uebenUmbenneGruppe` → `uebenUmbenenneGruppe`
+- 2 awkward German-JSDoc-Comments in apps-script-code.js (`für die Üben` statt `für das Üben`)
+- Local-Vars `lpRlCode`/`lpRlLogin` in apps-script-code.js (legacy LP-Prefix)
+- `ExamLab/scripts/*-fibu-fragen*.js` Migrations-Scripts haben noch `fragenbank`-Tokens (vermutlich historisch, keine Backend-Calls)
+
+**Lehre:**
+- **Reordering von Token-Renames**: Function-Rename + Caller-Edit + Comment-Reformulation MÜSSEN vor `replace_all` in den Caller-Files laufen, sonst korrumpiert `replace_all` Comments + Imports (Phase 2.3 vor 2.6 war Plan-Reviewer-Iter-1-Lehre).
+- **Bonus-In-Scope-Integration**: Sheet-Prefix-Update (originally Phase 3) wurde in Phase 2.1+2.2-Commit gezogen, weil sonst `grep -ni "lernplattform" = 0` Invariant nicht erreichbar war. Kostet 1 Zeile Scope-Creep, gewinnt sauberen Checkpoint-Grep.
+- **`replace_all` mit case-sensitive lowercase trifft uppercase nicht**: 17 Section-Header-Comments mit `LERNPLATTFORM` brauchten eigenen replace_all-Step.
+- **Co-located Tests können scope-bridge sein**: `src/store/ueben/uebungsStorePruefen.test.ts` musste in Phase 2.3+2.6 partial editiert werden (Line 156) und in Phase 2.4-2.9 finalisiert werden (Line 159). TODO-Marker im Übergang verhindert Drift.
+
+---
+
 ### Bundle Test-Tickets ✅ MERGED (2026-05-10)
 
 Branch `refactor/test-tickets-bundle` → preview → main. 7 User-gemeldete Test-Tickets + 5 Folge-Hotfixes nach Browser-E2E.

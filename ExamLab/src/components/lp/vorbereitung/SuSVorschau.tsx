@@ -121,11 +121,11 @@ export default function SuSVorschau({ config, onSchliessen }: Props) {
 /** Löst die Fragen-IDs aus der Config gegen die Fragensammlung auf (Fallback: demoFragen) */
 function resolveVorschauFragen(config: PruefungsConfig): { navigationsFragen: Frage[]; alleFragen: Frage[] } {
   // Zuerst Fragensammlung versuchen, dann demoFragen als Fallback
-  const fragenbankMap = useFragensammlungStore.getState().fragenMap
+  const fragensammlungMap = useFragensammlungStore.getState().fragenMap
   const demoMap = new Map(demoFragen.map((f) => [f.id, f]))
 
   function findeFrage(id: string): Frage | undefined {
-    return fragenbankMap[id] || demoMap.get(id)
+    return fragensammlungMap[id] || demoMap.get(id)
   }
 
   const navigationsFragen: Frage[] = []

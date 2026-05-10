@@ -162,7 +162,7 @@ export default function FragenBrowserHeader({
                     const datum = new Date().toISOString().slice(0, 10)
                     const a = document.createElement('a')
                     a.href = url
-                    a.download = `fragenbank_export_${datum}.json`
+                    a.download = `fragensammlung_export_${datum}.json`
                     a.click()
                     URL.revokeObjectURL(url)
                     setExportOffen(false)

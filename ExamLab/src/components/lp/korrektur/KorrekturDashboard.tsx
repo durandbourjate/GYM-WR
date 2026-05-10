@@ -61,7 +61,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
   const [susNavIndex, setSusNavIndex] = useState(0)
   const [analyseOffen, setAnalyseOffen] = useState(false)
   const [notenConfigOffen, setNotenConfigOffen] = useState(false)
-  const [zeigFragenbank, setZeigFragenbank] = useState(false)
+  const [zeigFragensammlung, setZeigFragensammlung] = useState(false)
   const [zeigHilfe, setZeigHilfe] = useState(false)
   const [pdfSchuelerEmail, setPdfSchuelerEmail] = useState<string | null>(null)
 
@@ -115,7 +115,7 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
     <div className={eingebettet ? '' : 'min-h-screen bg-slate-50 dark:bg-slate-900'}>
       {!eingebettet && (
         <LPAppHeaderContainer
-          onHilfe={() => { setZeigFragenbank(false); setZeigHilfe(!zeigHilfe) }}
+          onHilfe={() => { setZeigFragensammlung(false); setZeigHilfe(!zeigHilfe) }}
           onEinstellungen={() => {}}
           onZurueck={() => navigate(istFormativ ? '/uebung' : '/pruefung')}
           statusText={
@@ -297,8 +297,8 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
       />
 
       {/* Overlays */}
-      {!eingebettet && zeigFragenbank && (
-        <FragenBrowser onHinzufuegen={() => {}} onSchliessen={() => setZeigFragenbank(false)} bereitsVerwendet={[]} />
+      {!eingebettet && zeigFragensammlung && (
+        <FragenBrowser onHinzufuegen={() => {}} onSchliessen={() => setZeigFragensammlung(false)} bereitsVerwendet={[]} />
       )}
       {!eingebettet && zeigHilfe && (
         <HilfeSeite onSchliessen={() => setZeigHilfe(false)} />

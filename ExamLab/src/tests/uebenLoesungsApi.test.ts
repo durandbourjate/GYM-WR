@@ -22,7 +22,7 @@ describe('uebenLoesungsApi.ladeLoesungenApi', () => {
     fachbereich: 'VWL',
   }
 
-  it('ruft lernplattformLadeLoesungen mit korrektem Payload', async () => {
+  it('ruft uebenLadeLoesungen mit korrektem Payload', async () => {
     vi.mocked(uebenApiClient.post).mockResolvedValue({
       success: true,
       loesungen: { f1: { musterlosung: 'X' }, f2: { optionen: [{ id: 'o1', korrekt: true }] } },
@@ -31,7 +31,7 @@ describe('uebenLoesungsApi.ladeLoesungenApi', () => {
     const result = await ladeLoesungenApi(basisParams)
 
     expect(uebenApiClient.post).toHaveBeenCalledWith(
-      'lernplattformLadeLoesungen',
+      'uebenLadeLoesungen',
       {
         gruppeId: 'g1',
         fragenIds: ['f1', 'f2'],
@@ -62,7 +62,7 @@ describe('uebenLoesungsApi.ladeLoesungenApi', () => {
     await ladeLoesungenApi({ ...basisParams, fachbereich: undefined })
 
     expect(uebenApiClient.post).toHaveBeenCalledWith(
-      'lernplattformLadeLoesungen',
+      'uebenLadeLoesungen',
       { gruppeId: 'g1', fragenIds: ['f1', 'f2'], email: 'sus@stud.test' },
       'tok-abc',
     )

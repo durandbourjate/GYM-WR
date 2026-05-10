@@ -153,10 +153,10 @@ describe('uebungsStore.pruefeAntwortJetzt (async, Server-seitig)', () => {
 
     let pruefCalls = 0
     vi.spyOn(uebenApiClient, 'post').mockImplementation(async (action: string) => {
-      if (action === 'lernplattformValidiereToken') {
+      if (action === 'uebenValidiereToken') {
         return { success: true } as unknown as null
       }
-      if (action === 'lernplattformPruefeAntwort') {
+      if (action === 'uebenPruefeAntwort') {
         pruefCalls++
         if (pruefCalls === 1) {
           return { success: false, error: 'Nicht authentifiziert' } as unknown as null

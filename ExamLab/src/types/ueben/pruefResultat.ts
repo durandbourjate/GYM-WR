@@ -1,6 +1,6 @@
 /**
  * Ergebnis einer Server-seitigen Antwort-Prüfung (Üben-Modus).
- * Vom Apps-Script-Endpoint `lernplattformPruefeAntwort` geliefert.
+ * Vom Apps-Script-Endpoint `uebenPruefeAntwort` geliefert.
  *
  * - Auto-korrigierbare Typen: success:true + korrekt:boolean (+ optional musterlosung)
  * - Selbstbewertungstypen:   success:true + selbstbewertung:true (+ musterlosung/bewertungsraster)

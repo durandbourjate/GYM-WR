@@ -32,26 +32,6 @@ vi.mock('../store/authStore', () => ({
     selector({ user: { email: 'test@gymhofwil.ch' }, istDemoModus: false }),
 }))
 
-// --- fragenbankStore: status='idle' → ladeStatus wird 'laden' ---
-vi.mock('../store/fragenbankStore', () => ({
-  useFragensammlungStore: Object.assign(
-    (selector: (s: { summaries: []; fragen: []; status: 'idle' }) => unknown) =>
-      selector({ summaries: [], fragen: [], status: 'idle' }),
-    {
-      getState: () => ({
-        getDetail: () => null,
-        ladeDetail: vi.fn(),
-        lade: vi.fn(),
-        setFragen: vi.fn(),
-        aktualisiereFrage: vi.fn(),
-        entferneFrage: vi.fn(),
-        fuegeFragenHinzu: vi.fn(),
-        summaries: [],
-        fragen: [],
-      }),
-    },
-  ),
-}))
 
 // --- Schwere Sub-Komponenten mocken (werden nur bei ladeStatus='fertig' gerendert) ---
 vi.mock('../components/lp/fragensammlung/fragenbrowser/FragenBrowserHeader', () => ({

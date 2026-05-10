@@ -17,7 +17,7 @@ interface LadeLoesungenResponse {
 }
 
 /**
- * Ruft den Apps-Script-Endpoint `lernplattformLadeLoesungen` auf.
+ * Ruft den Apps-Script-Endpoint `uebenLadeLoesungen` auf.
  * Liefert eine flache Map {frageId → LoesungsSlice} zurück oder wirft
  * bei success:false / Netzwerk-Fehler.
  *
@@ -30,7 +30,7 @@ export async function ladeLoesungenApi(params: LadeLoesungenParams): Promise<Loe
   if (fachbereich) payload.fachbereich = fachbereich
 
   const response = await uebenApiClient.post<LadeLoesungenResponse>(
-    'lernplattformLadeLoesungen',
+    'uebenLadeLoesungen',
     payload,
     token,
   )

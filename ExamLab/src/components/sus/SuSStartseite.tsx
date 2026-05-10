@@ -48,7 +48,7 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
         const response = await uebenApiClient.post<{
           success: boolean
           data: { sessionToken: string }
-        }>('lernplattformLogin', {
+        }>('uebenLogin', {
           email: user!.email,
           name: user!.name || user!.email,
         })

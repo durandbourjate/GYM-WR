@@ -44,7 +44,7 @@ export default function UebenEditorProvider({ children }: Props) {
     kiAssistent: async (kiAktion: string, daten: Record<string, unknown>) => {
       try {
         const response = await uebenApiClient.post<{ success: boolean; data?: Record<string, unknown>; feedbackId?: string; error?: string }>(
-          'lernplattformKIAssistent',
+          'uebenKIAssistent',
           { kiAktion, daten, email: user?.email },
           getToken()
         )
@@ -65,7 +65,7 @@ export default function UebenEditorProvider({ children }: Props) {
     markiereFeedbackAlsIgnoriert: async (feedbackId: string) => {
       try {
         await uebenApiClient.post(
-          'lernplattformMarkiereKIFeedbackAlsIgnoriert',
+          'uebenMarkiereKIFeedbackAlsIgnoriert',
           { feedbackId, email: user?.email },
           getToken()
         )
@@ -77,7 +77,7 @@ export default function UebenEditorProvider({ children }: Props) {
       try {
         const base64 = await dateiZuBase64(datei)
         const response = await uebenApiClient.post<{ success: boolean; data: import('../../../types/fragen-storage').FrageAnhang }>(
-          'lernplattformUploadAnhang',
+          'uebenUploadAnhang',
           { frageId, dateiname: datei.name, mimeType: datei.type, base64, email: user?.email },
           getToken()
         )
@@ -92,7 +92,7 @@ export default function UebenEditorProvider({ children }: Props) {
     ladeLernziele: async (_gefaess: string, fachbereich: string) => {
       try {
         const response = await uebenApiClient.post<{ success: boolean; data: import('../../../types/fragen-storage').Lernziel[] }>(
-          'lernplattformLadeLernziele',
+          'uebenLadeLernziele',
           { fachbereich, email: user?.email },
           getToken()
         )

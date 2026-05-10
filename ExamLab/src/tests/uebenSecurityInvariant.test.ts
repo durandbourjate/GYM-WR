@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
 /**
- * Invariante: Eine SuS-Response von lernplattformLadeFragen darf KEINES der Lösungsfelder enthalten.
+ * Invariante: Eine SuS-Response von uebenLadeFragen darf KEINES der Lösungsfelder enthalten.
  * Dieser Test mockt eine Response-Payload wie sie vom Backend kommt und prüft, dass
  * kein Feld aus der Sperrliste erscheint.
  */

@@ -13,7 +13,7 @@ export type UebenScreenTyp =
   | 'uebung'
   | 'ergebnis'
   | 'admin'
-  | 'adminFragenbank'
+  | 'adminFragensammlung'
 
 interface UebenNavigationState {
   /** Aktueller Screen — wird von useSuSRouteSync aus der URL gesetzt */

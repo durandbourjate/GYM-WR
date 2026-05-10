@@ -1,7 +1,7 @@
 /**
  * API-Client für das Üben-Backend.
  * Nach der Backend-Fusion nutzt die LP das gleiche Apps Script wie ExamLab Prüfen.
- * Die Üben-Endpoints (lernplattform*) sind im selben doPost-Switch.
+ * Die Üben-Endpoints (ueben*) sind im selben doPost-Switch.
  */
 
 const APPS_SCRIPT_URL: string = (import.meta.env.VITE_APPS_SCRIPT_URL as string) || ''

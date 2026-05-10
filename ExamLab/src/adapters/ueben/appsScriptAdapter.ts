@@ -24,7 +24,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async ladeGruppen(email: string): Promise<Gruppe[]> {
     const response = await uebenApiClient.post<{ success: boolean; data: Gruppe[] }>(
-      'lernplattformLadeGruppen',
+      'uebenLadeGruppen',
       { email },
       this.getToken()
     )
@@ -35,7 +35,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
     gruppe: Omit<Gruppe, 'fragensammlungSheetId' | 'analytikSheetId'>
   ): Promise<Gruppe> {
     const response = await uebenApiClient.post<{ success: boolean; data: Gruppe }>(
-      'lernplattformErstelleGruppe',
+      'uebenErstelleGruppe',
       { ...gruppe },
       this.getToken()
     )
@@ -45,7 +45,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async ladeMitglieder(gruppeId: string): Promise<Mitglied[]> {
     const response = await uebenApiClient.post<{ success: boolean; data: Mitglied[] }>(
-      'lernplattformLadeMitglieder',
+      'uebenLadeMitglieder',
       { gruppeId, email: this.getEmail() },
       this.getToken()
     )
@@ -59,7 +59,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
     rolle: 'admin' | 'lernend' = 'lernend',
   ): Promise<void> {
     await uebenApiClient.post(
-      'lernplattformEinladen',
+      'uebenEinladen',
       { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail(), name, rolle },
       this.getToken()
     )
@@ -67,7 +67,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async entfernen(gruppeId: string, email: string): Promise<void> {
     await uebenApiClient.post(
-      'lernplattformEntfernen',
+      'uebenEntfernen',
       { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail() },
       this.getToken()
     )
@@ -75,7 +75,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async umbenneGruppe(gruppeId: string, neuerName: string): Promise<void> {
     const response = await uebenApiClient.post<{ success: boolean; error?: string }>(
-      'lernplattformUmbenneGruppe',
+      'uebenUmbenneGruppe',
       { gruppeId, neuerName, adminEmail: this.getEmail() },
       this.getToken()
     )
@@ -84,7 +84,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async aendereRolle(gruppeId: string, mitgliedEmail: string, neueRolle: 'admin' | 'lernend'): Promise<void> {
     const response = await uebenApiClient.post<{ success: boolean; error?: string }>(
-      'lernplattformAendereRolle',
+      'uebenAendereRolle',
       { gruppeId, mitgliedEmail, neueRolle, adminEmail: this.getEmail() },
       this.getToken()
     )
@@ -93,7 +93,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async generiereCode(gruppeId: string, email: string): Promise<string> {
     const response = await uebenApiClient.post<{ success: boolean; data: { code: string } }>(
-      'lernplattformGeneriereCode',
+      'uebenGeneriereCode',
       { gruppeId, mitgliedEmail: email, adminEmail: this.getEmail() },
       this.getToken()
     )
@@ -106,7 +106,7 @@ class AppsScriptGruppenAdapter implements GruppenService {
       success: boolean
       data: { email: string; name: string; sessionToken: string }
       error?: string
-    }>('lernplattformCodeLogin', { code })
+    }>('uebenCodeLogin', { code })
 
     return {
       erfolg: !!response?.success,
@@ -118,14 +118,14 @@ class AppsScriptGruppenAdapter implements GruppenService {
 
   async ladeEinstellungen(gruppeId: string): Promise<GruppenEinstellungen> {
     const response = await uebenApiClient.post<{ success: boolean; data: GruppenEinstellungen }>(
-      'lernplattformLadeEinstellungen', { gruppeId }, this.getToken()
+      'uebenLadeEinstellungen', { gruppeId }, this.getToken()
     )
     return response?.data || defaultEinstellungen('gym')
   }
 
   async speichereEinstellungen(gruppeId: string, einstellungen: GruppenEinstellungen, email: string): Promise<void> {
     const response = await uebenApiClient.post<{ success: boolean; error?: string }>(
-      'lernplattformSpeichereEinstellungen', { gruppeId, einstellungen, email }, this.getToken()
+      'uebenSpeichereEinstellungen', { gruppeId, einstellungen, email }, this.getToken()
     )
     if (response && !response.success) throw new Error(response.error || 'Speichern fehlgeschlagen')
   }
@@ -154,7 +154,7 @@ class AppsScriptFragenAdapter implements FragenService {
         const token = this.getToken()
         const email = this.getEmail()
         const response = await uebenApiClient.post<{ success: boolean; data: Frage[] }>(
-          'lernplattformLadeFragen', { gruppeId, email }, token
+          'uebenLadeFragen', { gruppeId, email }, token
         )
         fragen = response?.data || []
       }
@@ -178,7 +178,7 @@ class AppsScriptFragenAdapter implements FragenService {
     const token = this.getToken()
     const email = this.getEmail()
     const response = await uebenApiClient.post<{ success: boolean; id: string }>(
-      'lernplattformSpeichereFrage',
+      'uebenSpeichereFrage',
       { gruppeId, frage, email },
       token
     )
@@ -191,7 +191,7 @@ class AppsScriptFragenAdapter implements FragenService {
     const token = this.getToken()
     const email = this.getEmail()
     const response = await uebenApiClient.post<{ success: boolean }>(
-      'lernplattformLoescheFrage',
+      'uebenLoescheFrage',
       { gruppeId, frageId, fachbereich, email },
       token
     )
@@ -256,7 +256,7 @@ class AppsScriptFortschrittAdapter implements FortschrittService {
       success: boolean
       data: { fortschritte: FragenFortschritt[]; sessions: SessionEintrag[] }
       error?: string
-    }>('lernplattformLadeGruppenFortschritt', { gruppeId, email: this.getEmail() }, this.getToken())
+    }>('uebenLadeGruppenFortschritt', { gruppeId, email: this.getEmail() }, this.getToken())
 
     if (!response?.success) throw new Error(response?.error || 'Fortschritt laden fehlgeschlagen')
     return response.data
@@ -267,7 +267,7 @@ class AppsScriptFortschrittAdapter implements FortschrittService {
       success: boolean
       data: Lernziel[]
       error?: string
-    }>('lernplattformLadeLernzieleV2', { gruppeId, email: this.getEmail() }, this.getToken())
+    }>('uebenLadeLernzieleV2', { gruppeId, email: this.getEmail() }, this.getToken())
 
     return response?.data || []
   }
@@ -279,7 +279,7 @@ class AppsScriptFortschrittAdapter implements FortschrittService {
   ): Promise<boolean> {
     if (fortschritte.length === 0) return true
     const response = await uebenApiClient.post<{ success: boolean; error?: string }>(
-      'lernplattformSpeichereFortschritt',
+      'uebenSpeichereFortschritt',
       { gruppeId, email, fortschritte },
       this.getToken()
     )
@@ -291,7 +291,7 @@ class AppsScriptFortschrittAdapter implements FortschrittService {
       success: boolean
       data: { id: string }
       error?: string
-    }>('lernplattformSpeichereLernziel', { gruppeId, lernziel, email: this.getEmail() }, this.getToken())
+    }>('uebenSpeichereLernziel', { gruppeId, lernziel, email: this.getEmail() }, this.getToken())
 
     if (!response?.success) throw new Error(response?.error || 'Lernziel speichern fehlgeschlagen')
     return response.data
@@ -319,7 +319,7 @@ class AppsScriptThemenSichtbarkeitAdapter {
 
   async ladeFreischaltungen(gruppeId: string): Promise<ThemenFreischaltung[]> {
     const response = await uebenApiClient.post<{ success: boolean; data: ThemenFreischaltung[] }>(
-      'lernplattformLadeThemenSichtbarkeit',
+      'uebenLadeThemenSichtbarkeit',
       { gruppeId },
       this.getToken()
     )
@@ -336,7 +336,7 @@ class AppsScriptThemenSichtbarkeitAdapter {
     unterthemen?: string[],
   ): Promise<boolean> {
     const response = await uebenApiClient.post<{ success: boolean }>(
-      'lernplattformSetzeThemenStatus',
+      'uebenSetzeThemenStatus',
       { gruppeId, fach, thema, status, aktiviertVon, typ, ...(unterthemen ? { unterthemen } : {}) },
       this.getToken()
     )

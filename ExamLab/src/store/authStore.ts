@@ -155,10 +155,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
         void useKlassenlistenStore.getState().lade(credential.email).catch((e) => {
           console.warn('[G.d.2] Klassenlisten-Pre-Fetch fehlgeschlagen (silent):', e)
         })
-        // Bundle M: alte fragenbank-DB einmalig droppen (Cleanup nach IDB-Rename)
-        const dropReq = indexedDB.deleteDatabase('examlab-fragenbank-cache')
-        dropReq.onsuccess = () => console.info('[Bundle M] alte fragenbank-DB gedroppt')
-        // onerror/onblocked silent — DB existiert evtl. nicht (post-Deploy-Re-Login)
       }
     } finally {
       loginInProgress = false
