@@ -27,8 +27,6 @@ export default function KontoSeite({
   const istLinks = seite === 'links'
 
   // Felder pro Seite auswählen
-  const beschriftung = istLinks ? konto.beschriftungLinks : konto.beschriftungRechts
-  const beschriftungFeld: keyof KontoEingabe = istLinks ? 'beschriftungLinks' : 'beschriftungRechts'
   const zunahmeAbnahme = istLinks ? konto.zunahmeAbnahmeLinks : konto.zunahmeAbnahmeRechts
   const zunahmeAbnahmeFeld: keyof KontoEingabe = istLinks ? 'zunahmeAbnahmeLinks' : 'zunahmeAbnahmeRechts'
   const anfangsbestand = istLinks ? konto.anfangsbestandLinks : konto.anfangsbestandRechts
@@ -48,23 +46,12 @@ export default function KontoSeite({
 
   return (
     <>
-      {/* Kopfzeile: Beschriftung + Z/A — bottom-border 2px (war border-b-2 auf Grid-Container) */}
+      {/* Kopfzeile: Beschriftung + Z/A — bottom-border 2px (war border-b-2 auf Grid-Container).
+          Ticket 3: Soll/Haben-Beschriftung ist immer fix (links=Soll, rechts=Haben).
+          opts.beschriftungSollHaben wird ignoriert (Field bleibt im Schema, Backwards-Compat). */}
       <div className={`pb-1.5 ${padX} ${seitenBorderRight} border-b-2 border-b-slate-800 dark:border-b-slate-300`}>
         <div className="flex items-center gap-1.5 flex-wrap">
-          {opts.beschriftungSollHaben ? (
-            <select
-              value={beschriftung}
-              onChange={(e) => onFeldAendern(beschriftungFeld, e.target.value)}
-              disabled={readOnly}
-              className={`min-h-[28px] text-xs font-bold uppercase tracking-wider bg-transparent rounded border px-1 py-0.5 focus:outline-none text-slate-700 dark:text-slate-200 disabled:opacity-50 ${brd(beschriftung, readOnly)}`}
-            >
-              <option value="">Seite...</option>
-              <option value="Soll">Soll</option>
-              <option value="Haben">Haben</option>
-            </select>
-          ) : (
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">{defaultBeschriftung}</span>
-          )}
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">{defaultBeschriftung}</span>
           {opts.zunahmeAbnahme && (
             <select
               value={zunahmeAbnahme}

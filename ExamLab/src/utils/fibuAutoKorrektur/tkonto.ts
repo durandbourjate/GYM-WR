@@ -60,8 +60,9 @@ export function korrigiereTKonto(
   const details: KorrekturDetail[] = []
   const opts = frage.bewertungsoptionen
 
-  // Aktive Kriterien zählen
-  const aktivKriterien = [opts.beschriftungSollHaben, opts.kontenkategorie,
+  // Aktive Kriterien zählen — beschriftungSollHaben ist seit Ticket 3 fix (links=Soll,
+  // rechts=Haben) und wird nicht mehr als Bewertungs-Kriterium gezählt.
+  const aktivKriterien = [opts.kontenkategorie,
     opts.zunahmeAbnahme, opts.buchungenKorrekt, opts.saldoKorrekt].filter(Boolean).length
   const punkteProKonto = frage.punkte / Math.max(1, frage.konten.length)
   const punkteProKriterium = punkteProKonto / Math.max(1, aktivKriterien)
@@ -73,17 +74,6 @@ export function korrigiereTKonto(
     if (!eingabe) {
       details.push({ bezeichnung: `T-Konto ${i + 1}`, korrekt: false, erreicht: 0, max: punkteProKonto })
       continue
-    }
-
-    // Beschriftung Soll/Haben
-    if (opts.beschriftungSollHaben) {
-      const korrekt = eingabe.beschriftungLinks === 'Soll' && eingabe.beschriftungRechts === 'Haben'
-      details.push({
-        bezeichnung: `T-Konto ${i + 1}: Beschriftung`,
-        korrekt,
-        erreicht: korrekt ? punkteProKriterium : 0,
-        max: punkteProKriterium,
-      })
     }
 
     // Kontenkategorie
