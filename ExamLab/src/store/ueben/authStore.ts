@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { UebenAuthUser, GooglePayload, UebenRolle } from '../../types/ueben/auth'
 import { uebenApiClient } from '../../services/ueben/apiClient'
-import { migriereLernplattformKeys } from '../../utils/ueben/storageMigration'
+import { migriereAlteUebenKeys } from '../../utils/ueben/storageMigration'
 
 const STORAGE_KEY = 'ueben-auth'
 
@@ -29,7 +29,7 @@ export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
 
     try {
       const response = await uebenApiClient.post<{ success: boolean; data: { sessionToken: string } }>(
-        'lernplattformLogin',
+        'uebenLogin',
         { email: payload.email, name: payload.name }
       )
 
@@ -64,7 +64,7 @@ export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
         success: boolean
         data: { email: string; name: string; sessionToken: string }
         error?: string
-      }>('lernplattformCodeLogin', { code })
+      }>('uebenCodeLogin', { code })
 
       if (!response?.success || !response.data) {
         set({ ladeStatus: 'fehler', fehler: response?.error || 'Ungueltiger Code' })
@@ -90,8 +90,8 @@ export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
   },
 
   sessionWiederherstellen: async () => {
-    // Migration: lernplattform-* → ueben-* (einmalig, idempotent)
-    migriereLernplattformKeys()
+    // Storage-Migration alter Keys auf neues Schema (einmalig, idempotent — siehe storageMigration.ts)
+    migriereAlteUebenKeys()
 
     const gespeichert = localStorage.getItem(STORAGE_KEY)
     if (!gespeichert) return
@@ -104,10 +104,10 @@ export const useUebenAuthStore = create<UebenAuthState>((set, get) => ({
       }
 
       // Backend liefert `{success: boolean}` ohne data-Wrapper (apps-script-code.js
-      // `lernplattformValidiereToken`). Früher las der Check `response.data.gueltig`
+      // `uebenValidiereToken`). Früher las der Check `response.data.gueltig`
       // — das war IMMER undefined → User wurde bei jedem Session-Restore ausgeloggt.
       const response = await uebenApiClient.post<{ success: boolean }>(
-        'lernplattformValidiereToken',
+        'uebenValidiereToken',
         { email: user.email, sessionToken: user.sessionToken }
       )
 

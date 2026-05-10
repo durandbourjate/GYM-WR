@@ -49,7 +49,7 @@ async function migriereLokaleAuftraege(gruppeId: string): Promise<void> {
     console.log(`[Aufträge] Migration: ${lokale.length} lokale Aufträge → Backend`)
     for (const auftrag of lokale) {
       await uebenApiClient.post(
-        'lernplattformSpeichereAuftrag',
+        'uebenSpeichereAuftrag',
         { gruppeId, auftrag },
         getToken()
       )
@@ -75,7 +75,7 @@ export const useUebenAuftragStore = create<UebenAuftragState>((set, get) => ({
 
     try {
       const response = await uebenApiClient.post<{ success: boolean; data: Auftrag[] }>(
-        'lernplattformLadeAuftraege',
+        'uebenLadeAuftraege',
         { gruppeId },
         getToken()
       )
@@ -97,7 +97,7 @@ export const useUebenAuftragStore = create<UebenAuftragState>((set, get) => ({
 
     // Backend
     await uebenApiClient.post(
-      'lernplattformSpeichereAuftrag',
+      'uebenSpeichereAuftrag',
       { gruppeId, auftrag },
       getToken()
     )
@@ -115,7 +115,7 @@ export const useUebenAuftragStore = create<UebenAuftragState>((set, get) => ({
     const auftrag = get().auftraege.find(a => a.id === id)
     if (auftrag) {
       await uebenApiClient.post(
-        'lernplattformSpeichereAuftrag',
+        'uebenSpeichereAuftrag',
         { gruppeId, auftrag: { ...auftrag, status: 'abgeschlossen' } },
         getToken()
       )

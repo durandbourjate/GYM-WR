@@ -1,5 +1,5 @@
 /**
- * localStorage-Migration: lernplattform-* → ueben-*
+ * Storage-Migration alter Keys auf neues ueben-* Schema.
  *
  * SuS die sich vor der Umbenennung eingeloggt hatten, haben noch
  * den alten Key. Diese Funktion kopiert den Wert auf den neuen Key
@@ -19,7 +19,7 @@ let migrationAusgefuehrt = false
  * Führt die Migration aller bekannten Keys durch.
  * Sicher aufzurufen: überschreibt nie einen bereits vorhandenen neuen Key.
  */
-export function migriereLernplattformKeys(): void {
+export function migriereAlteUebenKeys(): void {
   if (migrationAusgefuehrt) return
   migrationAusgefuehrt = true
 
