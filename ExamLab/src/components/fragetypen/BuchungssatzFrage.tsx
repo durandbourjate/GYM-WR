@@ -160,7 +160,7 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
 
             {/* Soll-Konto "an" Haben-Konto Betrag — inline */}
             <div className="flex flex-wrap items-center gap-2">
-              {/* Soll-Konto */}
+              {/* Soll-Konto — Kategorie-Farben in SuS-Sicht ausgeblendet */}
               <div className="flex-1 min-w-[140px]">
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Soll</label>
                 <KontenSelect
@@ -169,6 +169,7 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
                   config={frage.kontenauswahl}
                   placeholder="Soll-Konto..."
                   disabled={readOnly}
+                  zeigeKategoriefarben={false}
                 />
               </div>
 
@@ -177,7 +178,7 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
                 an
               </span>
 
-              {/* Haben-Konto */}
+              {/* Haben-Konto — Kategorie-Farben in SuS-Sicht ausgeblendet */}
               <div className="flex-1 min-w-[140px]">
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Haben</label>
                 <KontenSelect
@@ -186,6 +187,7 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
                   config={frage.kontenauswahl}
                   placeholder="Haben-Konto..."
                   disabled={readOnly}
+                  zeigeKategoriefarben={false}
                 />
               </div>
 

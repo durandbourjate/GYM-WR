@@ -8,6 +8,33 @@
 
 ## Letzter Stand auf main
 
+### Bundle Test-Tickets ✅ MERGED (2026-05-10)
+
+Branch `refactor/test-tickets-bundle` → preview → main. 7 User-gemeldete Test-Tickets + 5 Folge-Hotfixes nach Browser-E2E.
+
+| Commit | Inhalt |
+|---|---|
+| `a5c25a0` | Ticket 1: Doppelter violetter Pflichtfeld-Rahmen R/F + Berechnung — Outer-Container-Border raus, innere granulare Indikatoren reichen |
+| `1ba163a` | Ticket 5: Trash-/Duplizier-Icons in DetailKarte + KompaktZeile immer sichtbar (Touch-tauglich) |
+| `0ffcfb1` | Ticket 6: Entwürfe-Sektion ein-/ausklappbar (Toggle-Chevron, localStorage) |
+| `101421d` | Ticket 4: Auto-Save Geist-Saves entfernt — 2 Quellen (`useFragenAutoSave` redundanter useEffect + `SharedFragenEditor` autoSave-Recreation-Trigger via Ref-Mirror) |
+| `8876701` | Ticket 2: Konto-Dropdown bei SuS ohne Kategorie-Farben (`zeigeKategoriefarben={false}` in Kontenbestimmung+Buchungssatz+TKonto-Renderern) |
+| `c36dd3a` | Ticket 3: Soll/Haben fix bei T-Konto (kein Dropdown mehr) — Field `beschriftungSollHaben` bleibt im Schema (Backwards-Compat), Frontend ignoriert es |
+| `2c9d06f` | Ticket 7: Lernplattform-Token (217 Treffer) im HANDOFF-Legacy-Cleanup-Scope ergänzt |
+| `3856a3d` | Test-Anpassungen Violet-Outline (DOM-Contract-Wechsel) |
+| `18a9c87` | Hotfix: Trash-Icon auch in KompaktZeile + SchliessenModal-z-Index 1000 (war hinter ResizableSidebar versteckt) |
+| `5187319` | Hotfix: Trash-Icons auffälliger (size+color) + Editor-Header-Lösch + onLoeschen-Plumbing PruefungFragenEditor → SharedFragenEditor |
+| `ebc0ef4` | Hotfix: DraftsSection-Lösch (war Hauptbeschwerde "kein Lösch-Button") + Editor-Bottom-Doppel-Bestätigung weg (`window.confirm` raus) |
+| `fe4c6c2` | Hotfix: Editor-Bottom-Lösch ganz entfernt — Header reicht |
+
+**Verifikation:** vitest 1523 ✓, tsc clean, 4× lint clean (as-any 0/0/0, no-alert 0, no-tests-dir clean, musterloesung Baseline), vite build grün. Browser-E2E auf Staging mit echten LP+SuS-Logins (LP `wr.test@gymhofwil.ch`, SuS `wr.test@stud.gymhofwil.ch`): alle 7 Tickets verifiziert, 0 neue Console-Errors.
+
+**Lehre:** Bei „Wo finde ich X?"-Tickets immer alle Render-Pfade prüfen (Detail + Kompakt + Drafts + Editor — nicht nur einen). Bei Z-Index-Modal-Konflikten: ResizableSidebar.overlay startet bei 51 + auto-increment, deshalb brauchen darüberliegende Modals `zIndex: 1000`.
+
+**Apps-Script-Deploy:** keiner — kein Wire-Vertrag-Change.
+
+---
+
 ### Media-Phase 6.c.neu + 6.d + 6.e ✅ MERGED (2026-05-10)
 
 Branch `media-phase-6cde` → preview. Großes Hauptbundle nach Phase 6.f Sheet-Migration. **Type-Removal Frontend + Material-Fallback Removal + Apps-Script Schreib-Pfad-Cleanup** in einem Bundle. User hat Apps-Script deployt. Self-Review-Modus.
@@ -128,9 +155,11 @@ vitest 1517 passed, tsc/lint/build clean. Browser-E2E auf Staging mit echten LP+
 
 **Ziel:** Altlasten aus dem Code entfernen, Bezeichner an aktuelle Begriffe anpassen.
 
-**Konkret identifiziert (Audit 01.05.2026):**
+**Konkret identifiziert (Audit 01.05.2026 + Test-Tickets-Audit 10.05.2026):**
 - `fragenbank` (291 Treffer: 132 src + 159 apps-script + 4 Filenames) → komplett legacy, soll auf `fragensammlung` umbenannt werden. UI-Begriff ist seit S99 „Fragensammlung".
 - `pool` (344 Treffer als Identifier) → gemischt: manche legacy (Pool-Import-UI im LP-Editor), manche aktiv (Übungspools im Üben-Modus). Vor Implementation **Audit nötig** welche Stellen legacy sind.
+- `lernplattform` / `Lernplattform` (217 Treffer: 68 ts/tsx + 149 apps-script) → Begriff aus Fusion-Phase Lernplattform→ExamLab (S59-64). Heutiges Konzept ist „ExamLab Üben". Apps-Script-Endpoints wie `lernplattformLadeFragen`/`lernplattformPruefeAntwort`/`lernplattformPreWarmFragen` sind Backend-Vertrag → Rename erfordert dual-Read-Phase + Apps-Script-Deploy. Frontend-Tokens (`UebenEditorProvider`, `UebungsToolView`, `auftragStore`) referenzieren Apps-Script-Endpoints. User-Konsens 10.05.2026: in Cleanup-Plan integrieren.
+- **„welche Lernplattform-Files auf Google Drive brauchen wir noch?"** — User-Frage vom 10.05.2026, ausserhalb des Codebase-Scopes. Drive-Aufräumung als separate User-Aktion vor Backend-Migration weg von Apps-Script.
 
 **Workflow vor Implementation:**
 1. `superpowers:brainstorming` — Scope klären (welche Tokens? Filenames? Apps-Script-Endpoints? Storage-Felder?)

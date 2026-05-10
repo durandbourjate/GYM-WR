@@ -37,10 +37,13 @@ describe('useFragenAutoSave', () => {
     expect(subscribeMock).not.toHaveBeenCalled()
   })
 
-  it('frage gesetzt + valid → tippeFrage gerufen mit (email, frage)', () => {
+  it('frage gesetzt + valid → KEIN tippeFrage durch Hook (Editor onTippe ist canonical-trigger)', () => {
+    // Bundle Test-Tickets, Ticket 4: Hook ruft tippeFrage NICHT mehr automatisch.
+    // tippeFrage wird ausschliesslich vom SharedFragenEditor onTippe-Adapter
+    // bei tatsächlichen Editor-Events gerufen (verhindert Geist-Saves).
     const frage = mockFrage('mc')
     renderHook(() => useFragenAutoSave('e1', frage))
-    expect(tippeFrageMock).toHaveBeenCalledWith('lp@gymhofwil.ch', frage)
+    expect(tippeFrageMock).not.toHaveBeenCalled()
   })
 
   it('frage gesetzt + invalid (Pflichtfeld leer) → status entwurf', () => {

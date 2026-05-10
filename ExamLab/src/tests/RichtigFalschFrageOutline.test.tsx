@@ -56,36 +56,47 @@ const frage = {
   ],
 } as RFType
 
-describe('RichtigFalschFrage Violett-Outline', () => {
+// Test-Tickets Bundle 10.05.2026: Outer-Container-Violet entfernt (war doppelter Rahmen).
+// Tests prüfen jetzt die per-Aussage-Card-Border (granulare Pflichtfeld-Indikatoren).
+describe('RichtigFalschFrage Violett-Outline (per Aussage)', () => {
   beforeEach(() => mockAdapter.mockReset())
 
-  it('Violett-Outline auf leerer Eingabe vor Antwort prüfen', () => {
+  function aussageCards() {
+    const area = screen.getByTestId('richtigfalsch-input-area')
+    // Outer-Container hat keinen Violet-Border mehr
+    expect(area.className).not.toContain('border-violet-400')
+    return Array.from(area.querySelectorAll<HTMLDivElement>(':scope > div'))
+  }
+
+  it('Aussage-Cards violet auf leerer Eingabe vor Antwort', () => {
     mockAdapter.mockReturnValue(defaultAdapter())
     render(<RichtigFalschFrage frage={frage} />)
-    const area = screen.getByTestId('richtigfalsch-input-area')
-    expect(area.className).toContain('border-violet-400')
+    const cards = aussageCards()
+    expect(cards.length).toBe(2)
+    cards.forEach(card => expect(card.className).toContain('border-violet-400'))
   })
 
-  it('Violett verschwindet nach Antwort prüfen (feedbackSichtbar=true)', () => {
+  it('Aussage-Cards verlieren violet nach Antwort prüfen (disabled=true)', () => {
     mockAdapter.mockReturnValue(defaultAdapter({ feedbackSichtbar: true, istGeprueft: true, disabled: true }))
     render(<RichtigFalschFrage frage={frage} />)
-    const area = screen.getByTestId('richtigfalsch-input-area')
-    expect(area.className).not.toContain('border-violet-400')
+    const cards = aussageCards()
+    cards.forEach(card => expect(card.className).not.toContain('border-violet-400'))
   })
 
-  it('Violett verschwindet wenn alle Aussagen bewertet', () => {
+  it('Aussage-Cards verlieren violet wenn alle bewertet', () => {
     const antwort: Antwort = { typ: 'richtigfalsch', bewertungen: { x1: true, x2: false } }
     mockAdapter.mockReturnValue(defaultAdapter({ antwort }))
     render(<RichtigFalschFrage frage={frage} />)
-    const area = screen.getByTestId('richtigfalsch-input-area')
-    expect(area.className).not.toContain('border-violet-400')
+    const cards = aussageCards()
+    cards.forEach(card => expect(card.className).not.toContain('border-violet-400'))
   })
 
-  it('Violett bleibt wenn nur ein Teil bewertet', () => {
+  it('Nur unbewertete Aussage-Cards bleiben violet', () => {
     const antwort: Antwort = { typ: 'richtigfalsch', bewertungen: { x1: true } }
     mockAdapter.mockReturnValue(defaultAdapter({ antwort }))
     render(<RichtigFalschFrage frage={frage} />)
-    const area = screen.getByTestId('richtigfalsch-input-area')
-    expect(area.className).toContain('border-violet-400')
+    const cards = aussageCards()
+    expect(cards[0].className).not.toContain('border-violet-400') // x1 bewertet
+    expect(cards[1].className).toContain('border-violet-400')     // x2 leer
   })
 })

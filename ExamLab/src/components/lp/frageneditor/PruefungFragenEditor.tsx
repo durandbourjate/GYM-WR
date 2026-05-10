@@ -41,9 +41,11 @@ interface Props {
   onNaechsteFrage?: () => void
   /** Bundle 3 P-C.3 — Auto-Save-Adapter (opt-in, nur Fragensammlung). */
   autoSave?: AutoSaveAdapter
+  /** Test-Tickets-Bundle — Lösch-Button im Editor (mit Bestätigung). undefined = kein Button. */
+  onLoeschen?: (frage: Frage) => void
 }
 
-export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage, autoSave }: Props) {
+export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage, autoSave, onLoeschen }: Props) {
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
   const summaries = useFragensammlungStore((s) => s.summaries)
@@ -129,6 +131,7 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
         frage={frage as unknown as SharedFrage | null}
         onSpeichern={(f, meta) => onSpeichern(f as unknown as Frage, meta)}
         onAbbrechen={onAbbrechen}
+        onLoeschen={onLoeschen ? (f) => onLoeschen(f as unknown as Frage) : undefined}
         performance={performance}
         onVorherigeFrage={onVorherigeFrage}
         onNaechsteFrage={onNaechsteFrage}

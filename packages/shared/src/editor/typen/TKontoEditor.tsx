@@ -417,8 +417,10 @@ export function TKontoBewertungsoptionen({ bewertungsoptionen, setBewertungsopti
         Welche Aspekte sollen die SuS bearbeiten und bewertet werden?
       </p>
       <div className="space-y-2">
+        {/* Ticket 3: 'beschriftungSollHaben' aus der Toggles-Liste entfernt — Soll/Haben
+            ist im SuS-Render immer fix (links=Soll, rechts=Haben). Field bleibt im Schema
+            für Backwards-Compat; AutoKorrektur ignoriert es ebenfalls. */}
         {([
-          ['beschriftungSollHaben', 'Beschriftung Soll/Haben', 'SuS müssen die Seiten korrekt beschriften'],
           ['kontenkategorie', 'Kontenkategorie', 'SuS bestimmen aktiv/passiv/aufwand/ertrag'],
           ['zunahmeAbnahme', 'Zunahme/Abnahme', 'SuS ordnen korrekt zu'],
           ['buchungenKorrekt', 'Buchungen korrekt', 'Gegenkonten + Beträge werden geprüft'],

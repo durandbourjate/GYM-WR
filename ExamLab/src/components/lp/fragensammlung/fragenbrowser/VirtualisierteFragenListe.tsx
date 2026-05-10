@@ -240,6 +240,7 @@ export default function VirtualisierteFragenListe(p: Props) {
                   onToggle={() => p.toggleFrageInPruefung(frage.id)}
                   onEdit={() => p.handleEditFrage(frage)}
                   onDuplizieren={() => p.handleFrageDuplizieren(frage)}
+                  onLoeschen={() => p.handleFrageLoeschen(frage)}
                   zeigeGruppierung={p.gruppierung}
                   performance={p.fragenStats.get(frage.id)}
                 />

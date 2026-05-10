@@ -43,7 +43,10 @@ export default function SchliessenModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      // z-Index muss über ResizableSidebar.overlay-Stack liegen (startet bei 51 + auto-increment).
+      // Sonst ist das Modal hinter dem Editor-Overlay versteckt (Ticket 9 Bug).
+      className="fixed inset-0 flex items-center justify-center bg-black/50"
+      style={{ zIndex: 1000 }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onAbbrechen()
       }}

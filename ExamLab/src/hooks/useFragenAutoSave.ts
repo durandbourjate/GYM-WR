@@ -1,16 +1,18 @@
 /**
  * Bundle 3 Phase B.4 — useFragenAutoSave
  *
- * Kombiniert dirty-Tracking + draftSync + pflichtfeldValidation.
- * Jeder frage-Wechsel triggert tippeFrage. UI bekommt status für SaveStatusIndikator.
- * `finalisiereVorClose` für Schliessen-Modal (await Server-Sync).
+ * Kombiniert pflichtfeldValidation + draftSync-Subscribe für UI-Status.
+ * `tippeFrage` wird ausschliesslich vom SharedFragenEditor `onTippe`-Adapter
+ * (siehe useFragenEditor.tsx) bei tatsächlichen Editor-Events gerufen — NICHT
+ * automatisch beim Editor-Open / Nachbar-Navigation, da das ungewollte
+ * Geist-Saves erzeugte und das Schliessen via 'sync-läuft' blockierte
+ * (Bundle Test-Tickets, Ticket 4).
  *
  * Hooks-Order: alle Hooks vor jeglichem early-return — Body-Guards (`if (!frage)`)
  * statt Deklarations-Guards (vgl. Memory-Lehre S130 React-Hooks-vor-Early-Returns).
  */
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import {
-  tippeFrage,
   finalisiere,
   subscribe,
   type DraftSyncState,
@@ -48,13 +50,6 @@ export function useFragenAutoSave(
       unsubscribe()
     }
   }, [frage])
-
-  // Frage-Change → tippeFrage. Editor mutiert frage-Object → ref-equality reicht
-  // als Trigger für jeden Tipp.
-  useEffect(() => {
-    if (!frage || !email) return
-    tippeFrage(email, frage)
-  }, [frage, email])
 
   // Pflichtfeld-Validation — null-safe (validierePflichtfelder akzeptiert null).
   // Storage→Core Layer-Boundary: tags ist `(string | Tag)[]` in Storage vs.

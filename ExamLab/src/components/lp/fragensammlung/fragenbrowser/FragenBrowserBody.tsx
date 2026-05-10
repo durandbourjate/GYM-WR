@@ -90,6 +90,7 @@ export default function FragenBrowserBody({
         <DraftsSection
           drafts={drafts}
           onClickDraft={(frage) => handleEditFrage(frage)}
+          onLoeschen={(frage) => handleFrageLoeschen(frage)}
           ownEmail={ownEmail}
         />
       )}
