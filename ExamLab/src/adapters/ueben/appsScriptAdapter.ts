@@ -73,9 +73,9 @@ class AppsScriptGruppenAdapter implements GruppenService {
     )
   }
 
-  async umbenneGruppe(gruppeId: string, neuerName: string): Promise<void> {
+  async umbenenneGruppe(gruppeId: string, neuerName: string): Promise<void> {
     const response = await uebenApiClient.post<{ success: boolean; error?: string }>(
-      'uebenUmbenneGruppe',
+      'uebenUmbenenneGruppe',
       { gruppeId, neuerName, adminEmail: this.getEmail() },
       this.getToken()
     )

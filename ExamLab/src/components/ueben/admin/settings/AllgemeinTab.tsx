@@ -64,7 +64,7 @@ export default function AllgemeinTab() {
     setNameStatus('laden')
     setNameFehler('')
     try {
-      await uebenGruppenAdapter.umbenneGruppe(aktiveGruppe.id, name)
+      await uebenGruppenAdapter.umbenenneGruppe(aktiveGruppe.id, name)
       // Lokalen State aktualisieren
       useUebenGruppenStore.setState(s => ({
         aktiveGruppe: s.aktiveGruppe ? { ...s.aktiveGruppe, name } : null,

@@ -230,7 +230,7 @@ function rateLimitCheck_(action, email, maxProFenster, fensterSekunden) {
 // === UEBEN: Session-Tokens (eigenes Cache-Prefix, andere Signatur) ===
 
 /**
- * Generiert ein Session-Token für die Üben (ohne pruefungId).
+ * Generiert ein Session-Token für die Übungs-Funktion (ohne pruefungId).
  */
 function uebenGeneriereToken_(email) {
   var token = Utilities.getUuid();
@@ -1181,12 +1181,12 @@ function doPost(e) {
 
   // UEBEN: Rate Limiting für Auth-Aktionen
   if (action === 'uebenCodeLogin') {
-    var lpRlCode = uebenRateLimitCheck_('codeLogin', body.code || 'anon', 10, 300);
-    if (lpRlCode.blocked) return jsonResponse({ success: false, error: lpRlCode.error });
+    var uebenRlCode = uebenRateLimitCheck_('codeLogin', body.code || 'anon', 10, 300);
+    if (uebenRlCode.blocked) return jsonResponse({ success: false, error: uebenRlCode.error });
   }
   if (action === 'uebenLogin') {
-    var lpRlLogin = uebenRateLimitCheck_('login', body.email || 'anon', 20, 600);
-    if (lpRlLogin.blocked) return jsonResponse({ success: false, error: lpRlLogin.error });
+    var uebenRlLogin = uebenRateLimitCheck_('login', body.email || 'anon', 20, 600);
+    if (uebenRlLogin.blocked) return jsonResponse({ success: false, error: uebenRlLogin.error });
   }
 
   switch (action) {
@@ -1386,8 +1386,8 @@ function doPost(e) {
       return uebenEinladen(body);
     case 'uebenEntfernen':
       return uebenEntfernen(body);
-    case 'uebenUmbenneGruppe':
-      return uebenUmbenneGruppe(body);
+    case 'uebenUmbenenneGruppe':
+      return uebenUmbenenneGruppe(body);
     case 'uebenAendereRolle':
       return uebenAendereRolle(body);
 
@@ -9137,7 +9137,7 @@ function uebenEntfernen(body) {
 /**
  * Gruppenname ändern (nur Admin).
  */
-function uebenUmbenneGruppe(body) {
+function uebenUmbenenneGruppe(body) {
   var gruppeId = body.gruppeId;
   var neuerName = (body.neuerName || '').trim();
 
@@ -9147,7 +9147,7 @@ function uebenUmbenneGruppe(body) {
   var auth = istGruppenAdmin_(adminBody, gruppeId);
   if (!auth) return jsonResponse({ success: false, error: 'Keine Berechtigung' });
 
-  auditLog_('umbenneGruppe', auth.email, { gruppeId: gruppeId, neuerName: neuerName });
+  auditLog_('umbenenneGruppe', auth.email, { gruppeId: gruppeId, neuerName: neuerName });
 
   try {
     var sheet = getGruppenRegistry_();
