@@ -13,6 +13,7 @@
     "lint:musterloesung": "../scripts/audit-musterloesung.sh --strict",
     "lint:no-alert": "../scripts/audit-no-alert.sh --strict",
     "lint:no-tests-dir": "../scripts/audit-test-locations.sh --strict",
+    "lint:wire-contract": "node ../scripts/audit-wire-contract.mjs --strict",
     "preview": "vite preview",
     "preview:lernen": "VITE_APP_MODE=lernen vite preview --outDir dist-lernen",
     "test": "vitest run",

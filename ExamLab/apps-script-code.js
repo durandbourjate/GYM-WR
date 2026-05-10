@@ -1474,7 +1474,7 @@ function doPost(e) {
     case 'bulkLoescheKIFeedbacks': return bulkLoescheKIFeedbacks(body);
     case 'kalibrierungsEinstellungen': return kalibrierungsEinstellungen(body);
     case 'kalibrierungsStatistik': return kalibrierungsStatistik(body);
-    case 'markiereKIFeedbackAlsIgnoriert': {
+    case 'uebenMarkiereKIFeedbackAlsIgnoriert': {
       if (!istZugelasseneLP(body.email)) return jsonResponse({success:false,error:'Nicht autorisiert'});
       // IDOR-Schutz: prüfe dass feedbackId wirklich dem anfragenden LP gehört
       var sheetCheck = stelleKIFeedbackSheetBereit_();
