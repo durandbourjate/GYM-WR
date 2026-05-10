@@ -8,7 +8,7 @@
 
 ## Letzter Stand auf main
 
-### Bundle Legacy-Naming-Cleanup 🟡 READY FOR DEPLOY (2026-05-10)
+### Bundle Legacy-Naming-Cleanup ✅ MERGED (2026-05-10)
 
 Branch `refactor/legacy-naming-cleanup`. Vollständige Migration `fragenbank` → `fragensammlung` + `lernplattform*` → `ueben*` (Frontend + Apps-Script Wire-Vertrag, Hard-Cut). Spec + Plan beide im 2-Iter-Reviewer-Loop approved.
 
