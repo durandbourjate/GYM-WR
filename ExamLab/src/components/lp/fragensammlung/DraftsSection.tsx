@@ -18,6 +18,8 @@ interface Props {
   onClickDraft: (frage: Frage) => void
   /** Eigene E-Mail für Owner-Differenzierung (eigener vs geteilter Draft). */
   ownEmail: string
+  /** Optional: Callback bei Klick auf das Trash-Icon — öffnet LoeschBestaetigungsDialog. */
+  onLoeschen?: (frage: Frage) => void
 }
 
 /** Schneidet Fragetext-Snippet auf max. ~80 Zeichen + Ellipsis. */
@@ -39,7 +41,7 @@ function lokalTeil(email: string): string {
  * Sektion ist ein-/ausklappbar (Default: aufgeklappt). State in localStorage.
  * Returnt `null` wenn keine Drafts vorhanden (keine leere Sektion zeigen).
  */
-export default function DraftsSection({ drafts, onClickDraft, ownEmail }: Props): ReactElement | null {
+export default function DraftsSection({ drafts, onClickDraft, ownEmail, onLoeschen }: Props): ReactElement | null {
   const [aufgeklappt, setAufgeklappt] = useState<boolean>(() => {
     try {
       const gespeichert = localStorage.getItem(STORAGE_KEY)
@@ -83,11 +85,11 @@ export default function DraftsSection({ drafts, onClickDraft, ownEmail }: Props)
             const istGeteilt = draft.autor && draft.autor !== ownEmail
             const textSnippet = snippet(('fragetext' in draft ? (draft as { fragetext?: string }).fragetext : ''))
             return (
-              <li key={draft.id}>
+              <li key={draft.id} className="flex items-stretch gap-1 rounded-md bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                 <button
                   type="button"
                   onClick={() => onClickDraft(draft)}
-                  className="w-full text-left px-3 py-2 rounded-md bg-slate-50 dark:bg-slate-700/40 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 transition-colors cursor-pointer"
+                  className="flex-1 min-w-0 text-left px-3 py-2 cursor-pointer"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">
@@ -105,6 +107,17 @@ export default function DraftsSection({ drafts, onClickDraft, ownEmail }: Props)
                     </p>
                   )}
                 </button>
+                {onLoeschen && (
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); onLoeschen(draft) }}
+                    title="Entwurf löschen"
+                    aria-label="Entwurf löschen"
+                    className="px-3 flex items-center text-slate-500 hover:text-red-600 hover:bg-red-50 dark:text-slate-300 dark:hover:text-red-300 dark:hover:bg-red-900/30 rounded-r-md transition-colors cursor-pointer shrink-0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                )}
               </li>
             )
           })}

@@ -1313,15 +1313,11 @@ export default function SharedFragenEditor({
             </>
           )}
 
-          {/* Frage löschen (nur bei bestehenden Fragen, mit Bestätigung) */}
+          {/* Frage löschen am Scrollende (Bestätigung übernimmt LoeschBestaetigungsDialog des Hosts) */}
           {frage && onLoeschen && (
             <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
               <button
-                onClick={() => {
-                  if (confirm(`Frage "${(frage as { fragetext?: string }).fragetext?.substring(0, 60) || frage.id}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.`)) {
-                    onLoeschen(frage)
-                  }
-                }}
+                onClick={() => onLoeschen(frage)}
                 className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
               >
                 🗑 Frage löschen
