@@ -6,6 +6,8 @@
 
 **Architecture:** 4-phase rename (no functional changes). Phase 1 = `fragenbank` cleanup (no wire-contract change). Phase 2 = `lernplattform*` action-strings (Hard-Cut wire-contract rename — Apps-Script + Frontend deployed simultaneously). Phase 3 = Sheet-prefix + `apps-script-lernen/` deletion. Phase 4 = Browser-E2E + Drive-Cleanup-Brief + HANDOFF/Memory.
 
+**Plan-Revision 1 (2026-05-10) nach Reviewer-Iter-1:** Phase 2 Reordering — `storageMigration.ts`-Function-Rename + Caller-Audit (vorher Task 2.9) wurde nach Task 2.3 vorgezogen, weil Stores/Services in den späteren Tasks sonst per `replace_all` Caller-Imports korrumpieren würden. uppercase `LERNPLATTFORM`-Comments in apps-script-code.js werden in eigenen Step 4 von Task 2.2 behandelt. authStore.ts:93 Migration-Comment wird in Task 2.3 vorab umformuliert (bevor `replace_all` in Task 2.6 ihn zu Nonsens macht).
+
 **Tech Stack:** React 19 + TypeScript + Vite + Zustand + Tailwind CSS v4 (PWA), Google Apps Script backend, Vitest, GitHub Actions CI.
 
 **Spec:** [2026-05-10-legacy-naming-cleanup-design.md](../specs/2026-05-10-legacy-naming-cleanup-design.md)
@@ -38,13 +40,15 @@ git log --oneline ^main HEAD
 # expected: 3 spec commits (891a822, 633fdcb, ddc5afc)
 ```
 
-- [ ] **Step 2: Run baseline vitest + record count**
+- [ ] **Step 2: Run baseline vitest + record count in audit-baseline.txt**
 
 ```bash
 cd ExamLab
-npm run test -- --run 2>&1 | tail -5
-# expected: "Test Files X passed (X)" + "Tests Y passed (Y)" — record Y as baseline
+npm run test -- --run 2>&1 | tail -5 | tee /tmp/audit-baseline-vitest.txt
+# expected: "Test Files X passed (X)" + "Tests Y passed (Y)"
 ```
+
+Y-Zahl notieren als **`<BASELINE_TESTS>`** (typisch ~1523 laut HANDOFF-Stand) — wird in jedem späteren Verifikations-Step referenziert.
 
 - [ ] **Step 3: Run baseline lint + tsc + build**
 
@@ -153,13 +157,28 @@ Erwartung: 99% UI-Strings (Bundle M war UI-only). Beispiele:
 - `<h2>Fragenbank</h2>` → `<h2>Fragensammlung</h2>`
 - `aria-label="Fragenbank durchsuchen"` → `aria-label="Fragensammlung durchsuchen"`
 
-Falls Identifier-Treffer auftaucht (z.B. `props.fragenbankRef`), separat handlen mit Caller-Audit.
+**Verzweigung:**
 
-- [ ] **Step 3: Edit pro File — case-sensitive replace**
+- **Code-Path A** — Alle Treffer sind UI-Strings/Comments (`>Fragenbank<`, `"Fragenbank"`, `'Fragenbank'`, `// ...Fragenbank...`):
+  → weiter zu Step 3a (`replace_all: true` blanket)
+- **Code-Path B** — Mind. 1 Treffer ist Identifier (`fragenbankRef`, `props.fragenbank`, `const fragenbank = ...`, `interface Fragenbank ...`):
+  → STOPP `replace_all`, weiter zu Step 3b (Caller-Audit + targeted Edits)
+
+Heuristik: Treffer-Zeile lesen. Falls von Anführungszeichen umgeben → UI-String/Test-String → Path A. Falls direkt im Code (variable, prop, type, function-name) → Identifier → Path B.
+
+- [ ] **Step 3a: Edit pro File — `replace_all: true` (nur wenn alle Treffer UI-Strings)**
 
 Pro File mit Edit tool `replace_all: true`:
 - `Fragenbank` → `Fragensammlung`
 - `fragenbank` → `fragensammlung` (separater Edit-Call falls Konstanten-Refs auch im Kontext)
+
+- [ ] **Step 3b: Edit pro File — targeted Edits + Caller-Audit (falls Identifier-Treffer)**
+
+Pro Identifier-Treffer:
+1. `grep -rIn "<identifier>" src` → Liste aller Caller
+2. Pro Caller-File targeted Edit: `<identifier>` → `<neuer-identifier>`
+3. UI-Strings + Comments separat mit `replace_all: true` (sollten von Identifier-Renames unabhängig sein)
+4. tsc + vitest run zur Bestätigung
 
 - [ ] **Step 4: Pro File grep-Verifikation**
 
@@ -170,7 +189,7 @@ grep -ni "fragenbank" src/components/lp/vorbereitung/SuSVorschau.tsx
 
 Wiederholen für alle 4 Files.
 
-- [ ] **Step 5: vitest run (UI-Tests könnten fail wegen Test-Strings die noch „Fragenbank" suchen — ist OK, kommt in Task 1.3)**
+- [ ] **Step 5: vitest run nur über Component-Tests (Mid-Phase-Tolerierung)**
 
 ```bash
 npm run test -- --run src/components/lp 2>&1 | tail -5
@@ -519,15 +538,17 @@ Mit Edit tool `replace_all: true`:
 
 Achtung: dies trifft NUR Function-Defs am Zeilenanfang. Falls es einen `// function lernplattformXXX` als Kommentar gibt, der wäre auch betroffen — das ist OK (Kommentar referenziert Function-Name).
 
-- [ ] **Step 3: Edit aller Function-Refs (Aufrufe + interne Calls)**
+- [ ] **Step 3: Edit aller lowercase Function-Refs + Comments + Error-Messages**
 
 ```bash
 # Audit aller verbleibenden lernplattform*-Refs (sollten Calls sein, nicht mehr Defs)
 grep -nE "lernplattform[A-Z]" apps-script-code.js | head -20
+# zusätzlich lowercase comments + error-messages
+grep -n "lernplattform" apps-script-code.js | head -10
 ```
 
 Mit Edit tool `replace_all: true` auf apps-script-code.js:
-- old_string: `lernplattform` (case-sensitive!)
+- old_string: `lernplattform` (case-sensitive lowercase!)
 - new_string: `ueben`
 
 **Achtung:** dies ist ein **massiver replace_all**. Vor dem Edit nochmal lesen:
@@ -537,13 +558,32 @@ Mit Edit tool `replace_all: true` auf apps-script-code.js:
 
 Nach Edit:
 ```bash
-grep -nE "lernplattform" apps-script-code.js
-# expected: 0 matches im gesamten File
-grep -nE "ueben[A-Z]" apps-script-code.js | wc -l
-# expected: deutlich höher als vorher (alle Function-Defs + Refs umbenannt)
+grep -n "lernplattform" apps-script-code.js
+# expected: 0 lowercase matches
 ```
 
-- [ ] **Step 4: Manueller Sanity-Check**
+- [ ] **Step 4: Edit uppercase `LERNPLATTFORM` (Section-Header-Comments)**
+
+`apps-script-code.js` hat 5 Section-Header-Comments mit `LERNPLATTFORM` uppercase (Z. ~117, 230, 277, 1182, 1364):
+- `// === LERNPLATTFORM-KONFIGURATION ===`
+- `// === LERNPLATTFORM: Session-Tokens ...`
+- `// === LERNPLATTFORM: Helper-Funktionen ===`
+- `// LERNPLATTFORM: Rate Limiting für Auth-Aktionen`
+- `// === LERNPLATTFORM ENDPOINTS ===`
+
+Mit Edit tool `replace_all: true` auf apps-script-code.js:
+- old_string: `LERNPLATTFORM`
+- new_string: `UEBEN`
+
+Verifikation:
+```bash
+grep -ni "lernplattform" apps-script-code.js
+# expected: 0 matches case-insensitive
+grep -nE "ueben[A-Z]" apps-script-code.js | wc -l
+# expected: deutlich höher als vorher (alle Function-Defs + Refs + Section-Header umbenannt)
+```
+
+- [ ] **Step 5: Manueller Sanity-Check**
 
 `Read` Tool auf apps-script-code.js:1367-1450 (doPost-Switch-Bereich):
 - Erwartung: `case 'uebenLogin':` → ruft `uebenLogin(body)` auf → Function ist als `function uebenLogin(body) {` definiert
@@ -557,7 +597,96 @@ grep -nE "ueben[A-Z]" apps-script-code.js | wc -l
 
 ---
 
-### Task 2.3: src/ Services umbenennen (4 Files)
+### Task 2.3: storageMigration.ts (Function-Rename + Caller-Audit + authStore-Comment-Umformulierung)
+
+**WICHTIG: muss vor allen anderen Phase-2-Tasks laufen** — sonst korrumpieren spätere `replace_all`-Edits in Stores die Caller-Imports und den Migration-Comment.
+
+**Files:**
+- Modify: `ExamLab/src/utils/ueben/storageMigration.ts`
+- Modify (Caller-Edit): `ExamLab/src/store/ueben/authStore.ts` (Z. 4 Import + Z. 93 Comment + Z. 94 Function-Call)
+- ggf. weitere Caller-Files (Audit in Step 2)
+
+**Achtung:** Die Function `migriereLernplattformKeys` wird umbenannt, aber die **4 Source-localStorage-Keys** (`'lernplattform-auth'`, `'lernplattform-fortschritt'`, `'lernplattform-auftraege'`, `'lernplattform-theme'`) **bleiben** als Migration-Source-Reads.
+
+- [ ] **Step 1: Read storageMigration.ts vollständig**
+
+```bash
+cat src/utils/ueben/storageMigration.ts
+```
+
+Erwartung: Function `migriereLernplattformKeys` enthält Map oder Array-Loop, der die 4 Keys list und für jede Key liest+migriert+löscht.
+
+Die 4 Keys mit `'lernplattform-'`-Prefix MÜSSEN als Read-Source bleiben.
+
+- [ ] **Step 2: Caller-Audit**
+
+```bash
+grep -rIn "migriereLernplattformKeys" src
+# Erwartung: 1-3 Caller (vermutlich authStore.ts:94 + ggf. App-Start oder Test-File)
+```
+
+Liste aller Caller-Files notieren.
+
+- [ ] **Step 3: Function-Rename in storageMigration.ts (targeted Edit)**
+
+Edit tool präzise (NICHT `replace_all: true` — nur Function-Definition):
+- old_string: `function migriereLernplattformKeys(`
+- new_string: `function migriereAlteUebenKeys(`
+
+(Falls als `export const migriereLernplattformKeys = `: analog.)
+
+- [ ] **Step 4: Pro Caller-File: targeted Edit für Function-Reference**
+
+Pro Caller (mind. authStore.ts):
+- old_string: `migriereLernplattformKeys` (Function-Name allein, ohne führendes `function`)
+- new_string: `migriereAlteUebenKeys`
+
+In authStore.ts: trifft Z. 4 Import + Z. 94 Function-Call.
+
+- [ ] **Step 5: authStore.ts:93 Migration-Comment umformulieren**
+
+`Read` Tool authStore.ts:90-95 Kontext. Comment ist:
+```typescript
+// Migration: lernplattform-* → ueben-* (einmalig, idempotent)
+```
+
+Edit tool präzise:
+- old_string: `// Migration: lernplattform-* → ueben-* (einmalig, idempotent)`
+- new_string: `// Storage-Migration alter Keys auf neues Schema (einmalig, idempotent — siehe storageMigration.ts)`
+
+(Comment hat damit kein `lernplattform`-Token mehr → wird nicht mehr von `replace_all` in Task 2.6 getroffen.)
+
+- [ ] **Step 6: storageMigration.ts JSDoc-Comment Z. 1-3 prüfen**
+
+```bash
+head -5 src/utils/ueben/storageMigration.ts
+```
+
+Falls JSDoc `lernplattform-* → ueben-*` enthält: Edit tool präzise umformulieren auf z.B. `Storage-Migration: alte Storage-Keys auf neues ueben-* Schema`.
+
+- [ ] **Step 7: Verifikation**
+
+```bash
+grep -n "migriereLernplattformKeys" src
+# expected: 0 matches (Function-Name komplett umbenannt)
+grep -n "lernplattform-auth\|lernplattform-fortschritt\|lernplattform-auftraege\|lernplattform-theme" src/utils/ueben/storageMigration.ts
+# expected: 4 Treffer (Source-Keys bleiben!)
+grep -ni "// Migration: lernplattform" src/store/ueben/authStore.ts
+# expected: 0 matches (Comment umformuliert)
+```
+
+- [ ] **Step 8: vitest run + tsc**
+
+```bash
+cd ExamLab
+npm run test -- --run 2>&1 | tail -3
+npx tsc -b 2>&1 | tail -3
+# expected: vitest grün, tsc clean
+```
+
+---
+
+### Task 2.4: src/ Services umbenennen (4 Files)
 
 **Files:**
 - Modify: `ExamLab/src/services/preWarmApi.ts`
@@ -603,7 +732,7 @@ npm run test -- --run src/tests/uebenKorrekturApi 2>&1 | tail -3
 
 ---
 
-### Task 2.4: src/ Adapter umbenennen (1 File)
+### Task 2.5: src/ Adapter umbenennen (1 File)
 
 **Files:**
 - Modify: `ExamLab/src/adapters/ueben/appsScriptAdapter.ts`
@@ -628,14 +757,20 @@ grep -n "lernplattform" src/adapters/ueben/appsScriptAdapter.ts
 
 ---
 
-### Task 2.5: src/ Stores umbenennen (3 Files)
+### Task 2.6: src/ Stores umbenennen (3 Files)
 
 **Files:**
 - Modify: `ExamLab/src/store/ueben/uebungsStore.ts`
 - Modify: `ExamLab/src/store/ueben/authStore.ts`
 - Modify: `ExamLab/src/store/ueben/auftragStore.ts`
 
-- [ ] **Step 1: Pro Store grep**
+**Voraussetzung:** Task 2.3 muss abgeschlossen sein (Function-Rename `migriereLernplattformKeys` → `migriereAlteUebenKeys` + Comment-Umformulierung in authStore.ts:93). Sonst korrumpiert `replace_all` den Comment zu `// Migration: ueben-* → ueben-*` (Nonsens) und der Function-Import zu einem Mismatch.
+
+- [ ] **Step 1: Pre-Check: storageMigration.ts NICHT in dieser Task anfassen**
+
+`storageMigration.ts` ist in Task 2.3 separat behandelt. Dieser Task betrifft NUR die 3 Store-Files.
+
+- [ ] **Step 2: Pro Store grep**
 
 ```bash
 grep -n "lernplattform" src/store/ueben/uebungsStore.ts
@@ -643,15 +778,17 @@ grep -n "lernplattform" src/store/ueben/authStore.ts
 grep -n "lernplattform" src/store/ueben/auftragStore.ts
 ```
 
-- [ ] **Step 2: Edit pro Store mit `replace_all: true`**
+Erwartung in `authStore.ts` nach Task 2.3: nur action-Strings (`'lernplattformLogin'`, `'lernplattformValidiereToken'`, `'lernplattformCodeLogin'`) + Z.107 JSDoc-Ref auf `lernplattformValidiereToken` (action-String-Ref im Comment, wird mit umbenannt — OK). KEINE `migriereLernplattformKeys`-Refs mehr (durch Task 2.3 schon gefixt). KEIN `// Migration: lernplattform-...`-Comment mehr.
+
+- [ ] **Step 3: Edit pro Store mit `replace_all: true`**
 
 Pro File:
 - old_string: `lernplattform`
 - new_string: `ueben`
 
-**Achtung:** `auftragStore.ts` und `authStore.ts` enthalten möglicherweise localStorage-Key-Refs. Falls das File nur action-Strings hat: replace_all ist sicher. Falls auch Storage-Keys (`'lernplattform-auftraege'` etc.) → siehe Task 2.9 (storageMigration). Im Store sollten die Storage-Keys aber NICHT direkt referenziert werden (Migration läuft via storageMigration-Helper).
+Da Task 2.3 alle Function-Refs + den problematischen Comment schon umbenannt hat, betrifft `replace_all` jetzt nur noch action-String-Literale + JSDoc-Refs auf action-Strings. Beides ist konsistent renamenbar.
 
-- [ ] **Step 3: Verifikation**
+- [ ] **Step 4: Verifikation**
 
 ```bash
 grep -n "lernplattform" src/store/ueben/uebungsStore.ts
@@ -660,9 +797,17 @@ grep -n "lernplattform" src/store/ueben/auftragStore.ts
 # expected: 0 matches in jedem File
 ```
 
+- [ ] **Step 5: vitest run + tsc**
+
+```bash
+npm run test -- --run 2>&1 | tail -3
+npx tsc -b 2>&1 | tail -3
+# expected: vitest grün (Function-Refs + Comment + Import-Path konsistent), tsc clean
+```
+
 ---
 
-### Task 2.6: src/ Components umbenennen (3 Files)
+### Task 2.7: src/ Components umbenennen (3 Files)
 
 **Files:**
 - Modify: `ExamLab/src/components/ueben/admin/UebenEditorProvider.tsx`
@@ -694,7 +839,7 @@ grep -n "lernplattform" src/components/lp/UebungsToolView.tsx
 
 ---
 
-### Task 2.7: src/ Types umbenennen (2 Files)
+### Task 2.8: src/ Types umbenennen (2 Files)
 
 **Files:**
 - Modify: `ExamLab/src/types/ueben/pruefResultat.ts`
@@ -725,7 +870,7 @@ npx tsc -b 2>&1 | tail -5
 
 ---
 
-### Task 2.8: src/ Tests umbenennen (5 Files)
+### Task 2.9: src/ Tests umbenennen (5 Files)
 
 **Files:**
 - Modify: `ExamLab/src/tests/uebenSecurityInvariant.test.ts`
@@ -760,85 +905,34 @@ npm run test -- --run 2>&1 | tail -5
 
 ---
 
-### Task 2.9: storageMigration.ts (Function-Rename, 4 Source-Keys behalten!)
-
-**Files:**
-- Modify: `ExamLab/src/utils/ueben/storageMigration.ts`
-
-**Achtung:** Die Function `migriereLernplattformKeys` wird umbenannt, aber die **4 Source-localStorage-Keys** (`'lernplattform-auth'`, `'lernplattform-fortschritt'`, `'lernplattform-auftraege'`, `'lernplattform-theme'`) **bleiben** als Migration-Source-Reads.
-
-- [ ] **Step 1: Read storageMigration.ts vollständig**
-
-Erwartung: Function `migriereLernplattformKeys` enthält Map oder Array-Loop, der die 4 Keys list und für jede Key:
-- `localStorage.getItem('lernplattform-auth')` lesen
-- ggf. transformieren
-- als neuen Key (z.B. `'examlab-ueben-auth'`) schreiben
-- alten Key löschen (`localStorage.removeItem('lernplattform-auth')`)
-
-Die 4 Keys mit `'lernplattform-'`-Prefix MÜSSEN als Read-Source bleiben.
-
-- [ ] **Step 2: Identifizieren — was bleibt, was wird umbenannt?**
-
-- BLEIBT: 4 Source-Keys-Strings (`'lernplattform-auth'`, etc.)
-- UMBENNANT: Function-Name `migriereLernplattformKeys` → `migriereLernplattformKeysToUeben` (klarer) oder einfach `migriereAlteUebenKeys`
-- UMBENNANT: ggf. Function-Aufrufe in Caller-Files
-
-- [ ] **Step 3: Function-Rename mit `replace_all: false`**
-
-Edit tool präzise:
-- old_string: `function migriereLernplattformKeys(`
-- new_string: `function migriereAlteUebenKeys(`
-
-(Ähnlich falls `export const migriereLernplattformKeys = `.)
-
-- [ ] **Step 4: Caller-Audit + Edit**
-
-```bash
-grep -rIn "migriereLernplattformKeys" src
-# Erwartung: 1-3 Caller (vermutlich in authStore oder beim App-Start)
-```
-
-Pro Caller-File:
-- old_string: `migriereLernplattformKeys`
-- new_string: `migriereAlteUebenKeys`
-
-- [ ] **Step 5: Verifikation: 4 Source-Keys noch da, Function-Name weg**
-
-```bash
-grep -n "lernplattform-auth\|lernplattform-fortschritt\|lernplattform-auftraege\|lernplattform-theme" src/utils/ueben/storageMigration.ts
-# expected: 4 Treffer (Source-Keys bleiben!)
-grep -n "migriereLernplattformKeys" src
-# expected: 0 matches
-```
-
-- [ ] **Step 6: vitest run + tsc**
-
-```bash
-npm run test -- --run 2>&1 | tail -3
-npx tsc -b 2>&1 | tail -3
-```
-
----
-
 ### Task 2.10: Phase 2 Final-Verifikation + Commit
 
 **Files:**
 - No code changes
 - git commit
 
-- [ ] **Step 1: Token-Form-grep `lernplattform[A-Z]` (sollte 0 sein)**
+- [ ] **Step 1: Case-insensitive Repo-Wide-grep — alles außer Storage-Migration-Source-Keys soll weg sein**
 
 ```bash
 cd ExamLab
-grep -rInE "lernplattform[A-Z]" src apps-script-code.js
-# expected: 0 matches
+# 1. Total case-insensitive Treffer in Code-Files
+grep -rIni "lernplattform" src apps-script-code.js | grep -v "lernplattform-" | wc -l
+# expected: 0 (keine action-Strings, function-Refs, comments, section-headers mehr)
+
+# 2. Storage-Migration-Source-Keys: erwartet bleiben 4 Treffer
+grep -rIn "lernplattform-" src | wc -l
+# expected: 4 (in src/utils/ueben/storageMigration.ts)
+
+# 3. Sanity-Check: keine 5. Stelle?
+grep -rIn "lernplattform-" src
+# expected: alle 4 Treffer in storageMigration.ts (auf 4 verschiedenen Zeilen für die 4 Source-Keys)
 ```
 
-- [ ] **Step 2: Storage-Migration-Source-Keys grep (sollten 4 sein)**
+- [ ] **Step 2: Storage-Migration-Source-Keys grep (Anwesenheits-Beweis)**
 
 ```bash
-grep -rIn "lernplattform-" src
-# expected: 4 Treffer in src/utils/ueben/storageMigration.ts
+grep -n "lernplattform-auth\|lernplattform-fortschritt\|lernplattform-auftraege\|lernplattform-theme" src/utils/ueben/storageMigration.ts
+# expected: 4 Treffer
 ```
 
 - [ ] **Step 3: Anwesenheit von `ueben*`-action-Strings im Apps-Script**
@@ -1090,12 +1184,15 @@ Memory-Lehre `feedback_preview_forcepush.md`:
 
 ```bash
 git fetch origin preview
+echo "=== A: Commits in HEAD die NICHT in preview sind (= mein Local hat mehr → erwartet) ==="
 git log preview..HEAD --oneline
+echo "=== B: Commits in preview die NICHT in HEAD sind (= preview hat WIP → DANGER!) ==="
 git log HEAD..preview --oneline
-# Pre-Check: enthält origin/preview Work-in-Progress, der nicht in HEAD ist?
 ```
 
-Falls `origin/preview` Work-in-Progress hat: STOP, mit User abklären.
+**Safety-Check:** Output von **B** muss leer sein (oder nur erwartete Merge-Commits enthalten).
+- Falls B leer: ✅ sicher, Force-Push freigegeben.
+- Falls B Commits enthält: **STOP**, mit User abklären welche WIP-Commits auf preview sind und ob diese mit dem aktuellen Branch konfligieren.
 
 - [ ] **Step 2: Branch nach preview pushen**
 
