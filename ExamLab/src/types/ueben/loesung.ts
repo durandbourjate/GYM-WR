@@ -1,6 +1,6 @@
 /**
  * Lösungs-Slice einer Frage — nur Lösungs-relevante Felder.
- * Wird vom Apps-Script-Endpoint `lernplattformLadeLoesungen` geliefert und
+ * Wird vom Apps-Script-Endpoint `uebenLadeLoesungen` geliefert und
  * vor der clientseitigen Korrektur in die Frage-Kopie gemerged.
  *
  * Aufgabengruppen werden flach serialisiert: jede Teilaufgabe ist ein

@@ -156,8 +156,7 @@ describe('uebungsStore.pruefeAntwortJetzt (async, Server-seitig)', () => {
       if (action === 'uebenValidiereToken') {
         return { success: true } as unknown as null
       }
-      // Phase 2.4: rename to 'uebenPruefeAntwort' when src/services/uebenKorrekturApi.ts migrates
-      if (action === 'lernplattformPruefeAntwort') {
+      if (action === 'uebenPruefeAntwort') {
         pruefCalls++
         if (pruefCalls === 1) {
           return { success: false, error: 'Nicht authentifiziert' } as unknown as null

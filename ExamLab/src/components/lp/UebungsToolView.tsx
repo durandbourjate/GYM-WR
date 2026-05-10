@@ -14,7 +14,7 @@ const LP_AUTH_KEY = 'ueben-auth'
  * und das AdminDashboard rendert.
  *
  * Schritte:
- * 1. LP-Login auf dem Üben-Backend (lernplattformLogin) → Session-Token holen
+ * 1. LP-Login auf dem Üben-Backend (uebenLogin) → Session-Token holen
  * 2. Token + User in localStorage + Zustand-Store schreiben
  * 3. Gruppen laden
  * 4. AdminDashboard rendern
@@ -72,7 +72,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
         const response = await uebenApiClient.post<{
           success: boolean
           data: { sessionToken: string }
-        }>('lernplattformLogin', {
+        }>('uebenLogin', {
           email: pruefungUser!.email,
           name: pruefungUser!.name || pruefungUser!.email,
         })

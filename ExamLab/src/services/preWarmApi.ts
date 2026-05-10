@@ -24,7 +24,7 @@ interface PreWarmResponse {
  * Wenn `gruppeId` leer: kein API-Call.
  * Wenn `PRE_WARM_ENABLED` false: kein API-Call.
  *
- * Backend-Endpoint: `lernplattformPreWarmFragen`.
+ * Backend-Endpoint: `uebenPreWarmFragen`.
  */
 export async function preWarmFragen(
   fragenIds: string[],
@@ -46,7 +46,7 @@ export async function preWarmFragen(
     if (fachbereich) payload.fachbereich = fachbereich
 
     const response = await uebenApiClient.post<PreWarmResponse>(
-      'lernplattformPreWarmFragen',
+      'uebenPreWarmFragen',
       payload,
       sessionToken,
     )
@@ -72,7 +72,7 @@ export async function preWarmFragen(
  * hat — Backend-Endpoint authentifiziert via `email` + `istZugelasseneLP`. Wenn
  * irgendwann ein expliziter Token vorliegt, kann er hier durchgereicht werden.
  *
- * Backend-Endpoint: `lernplattformPreWarmKorrektur`.
+ * Backend-Endpoint: `uebenPreWarmKorrektur`.
  */
 export async function preWarmKorrektur(
   pruefungId: string,
@@ -87,7 +87,7 @@ export async function preWarmKorrektur(
 
   try {
     const response = await uebenApiClient.post<PreWarmResponse>(
-      'lernplattformPreWarmKorrektur',
+      'uebenPreWarmKorrektur',
       { email, pruefungId },
       sessionToken,
     )

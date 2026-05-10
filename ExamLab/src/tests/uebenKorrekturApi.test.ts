@@ -16,7 +16,7 @@ describe('uebenKorrekturApi.pruefeAntwortApi', () => {
     vi.restoreAllMocks()
   })
 
-  it('ruft lernplattformPruefeAntwort mit korrektem Payload', async () => {
+  it('ruft uebenPruefeAntwort mit korrektem Payload', async () => {
     const postSpy = vi.spyOn(uebenApiClient, 'post').mockResolvedValue({
       success: true,
       korrekt: true,
@@ -27,7 +27,7 @@ describe('uebenKorrekturApi.pruefeAntwortApi', () => {
 
     expect(postSpy).toHaveBeenCalledTimes(1)
     expect(postSpy).toHaveBeenCalledWith(
-      'lernplattformPruefeAntwort',
+      'uebenPruefeAntwort',
       {
         gruppeId: 'test-gruppe',
         frageId: 'f1',
