@@ -163,6 +163,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           frage={editor.editFrage}
           onSpeichern={editor.speichern}
           onAbbrechen={editor.abbrechen}
+          onLoeschen={(f) => { editor.abbrechen(); aktionen.setLoeschKandidat(f) }}
           performance={editor.editFrage ? fragenStats.get(editor.editFrage.id) : undefined}
           onVorherigeFrage={editor.nachbarCallbacks.onVor}
           onNaechsteFrage={editor.nachbarCallbacks.onNach}
