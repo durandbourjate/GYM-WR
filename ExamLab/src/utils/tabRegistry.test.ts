@@ -33,6 +33,17 @@ describe('TAB_REGISTRY', () => {
       'ueben', 'ki', 'bloom', 'zusammenarbeit', 'faq',
     ])
   })
+
+  it('Hilfe-Tab-IDs sind stabil (Hash-Link-Kompatibilität)', () => {
+    // Diese IDs werden in HilfeSeite.tsx als KOMPONENTEN-Map-Keys verwendet.
+    // Eine Umbenennung würde stillen Render-Bruch verursachen.
+    const hilfeIds = TAB_REGISTRY.filter(t => t.surface === 'hilfe').map(t => t.id).sort()
+    expect(hilfeIds).toEqual([
+      'bloom', 'durchfuehrung', 'einstieg', 'faq',
+      'fragen', 'ki', 'korrektur', 'pruefung',
+      'ueben', 'zusammenarbeit',
+    ])
+  })
 })
 
 describe('tabsFuerSurface', () => {

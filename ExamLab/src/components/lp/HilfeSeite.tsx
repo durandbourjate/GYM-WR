@@ -88,7 +88,12 @@ export default function HilfeSeite({ onSchliessen }: Props) {
           ))}
         </div>
 
-        {/* Inhalt */}
+        {/*
+          Inhalt — defensive Fallback: falls Registry-ID nicht in KOMPONENTEN
+          existiert (z.B. neuer Tab im Registry ohne Map-Eintrag), rendert
+          die Seite nichts statt zu crashen. tabRegistry.test.ts hat einen
+          Drift-Schutz-Test, der diesen Fall früh fängt.
+        */}
         <div className="flex-1 overflow-auto px-6 py-5">
           {AktiveKomponente ? <AktiveKomponente /> : null}
         </div>
