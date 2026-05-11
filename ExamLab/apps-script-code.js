@@ -14827,21 +14827,33 @@ function apiAdminSeedTestdaten_(body) {
  * Wire-Vertrag-Felder bleiben über F.2.a→F.2.e konstant.
  */
 function seedTestdaten_(mode, callerEmail) {
+  // Mode 'reset' wird in F.2.e implementiert (loescheAlleTestdaten_).
+  // Vorläufig: 'reset' verhält sich wie 'initial' (idempotent).
+  if (mode === 'reset') {
+    Logger.log('seedTestdaten_(reset) — loescheAlleTestdaten_ wird in F.2.e implementiert; läuft wie initial');
+  }
+
+  var lp = seedTestdatenLP_();
+  var kurs = seedTestdatenKurs_();
+  var sus = seedTestdatenSuS_();
+
   return {
     mode: mode,
     callerEmail: callerEmail,
-    stammdatenErgaenzt: false,
-    klasseAngelegt: false,
-    kursAngelegt: false,
-    testLpAngelegt: false,
-    testSuSAngelegt: 0,
+    stammdatenErgaenzt: !!(kurs.kursAngelegt || kurs.susTabAngelegt),
+    klasseAngelegt: false,    // Klassen-Sheet existiert nicht — emergent
+    kursAngelegt: kurs.kursAngelegt,
+    susTabAngelegt: kurs.susTabAngelegt,
+    testLpAngelegt: lp.angelegt,
+    testSuSAngelegt: sus.angelegt,
+    testSuSVorhanden: sus.vorhanden,
     testPruefungenAngelegt: 0,
     testAntwortenAngelegt: 0,
     testKorrekturenAngelegt: 0,
     testUebungenAngelegt: 0,
     testSessionsAngelegt: 0,
     testFortschrittAngelegt: 0,
-    hinweis: 'seedTestdaten_ Skelett (F.2.a) — Implementation folgt in F.2.b-e'
+    hinweis: 'F.2.b — Prüfungen/Übungen/Sessions in F.2.c-d nachgeliefert'
   };
 }
 
@@ -14857,4 +14869,172 @@ function testIsoDatumVorTagen_(tageZurueck) {
   var d = new Date();
   d.setDate(d.getDate() - tageZurueck);
   return d.toISOString();
+}
+
+/**
+ * Test-LP-Profil im CONFIGS_ID Lehrpersonen-Sheet anlegen.
+ * Email: wr.test@gymhofwil.ch (rolle 'lp', kein Admin).
+ * Schema verifiziert via getLPInfo Z.425-432: email, name, kuerzel, fachschaft, rolle, apikey, aktiv.
+ * Idempotent: zweite Ausführung ist No-Op.
+ */
+function seedTestdatenLP_() {
+  var sheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
+  if (!sheet) throw new Error('Lehrpersonen-Sheet nicht in CONFIGS_ID gefunden');
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var emailCol = headers.indexOf('email');
+  if (emailCol < 0) throw new Error('Lehrpersonen-Sheet hat keine "email"-Spalte');
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][emailCol]).toLowerCase().trim() === TEST_LP_EMAIL) {
+      return { angelegt: false };
+    }
+  }
+  var zeile = new Array(data[0].length).fill('');
+  var setIf = function(name, value) {
+    var c = headers.indexOf(name);
+    if (c >= 0) zeile[c] = value;
+  };
+  setIf('email', TEST_LP_EMAIL);
+  setIf('name', 'WR Test');
+  setIf('kuerzel', 'WT');
+  setIf('fachschaft', 'WR');
+  setIf('rolle', 'lp');
+  setIf('aktiv', true);
+  sheet.appendRow(zeile);
+  return { angelegt: true };
+}
+
+/**
+ * Test-Kurs im KURSE_SHEET_ID Kurse-Sheet anlegen.
+ * Spalten verifiziert via ladeKurseEndpoint Z.1925-1939 + ladeKursDetailsEndpoint Z.1948-1949:
+ *   kursId, klassen (CSV), lpEmail, aktiv ('false' für inaktiv), name (sofern Spalte existiert).
+ * Klassen-Sheet existiert NICHT — die Test-Klasse ist emergent durch klassen='test-klasse-01'.
+ * Zusätzlich: leerer SuS-Tab mit Namen TEST_KURS_ID wird hier vorbereitet (Schueler werden in F.2.b.3 eingefügt).
+ *
+ * Idempotent.
+ */
+function seedTestdatenKurs_() {
+  var ergebnis = { kursAngelegt: false, susTabAngelegt: false };
+  var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+  var kurseSheet = kurseSS.getSheetByName('Kurse');
+  if (!kurseSheet) throw new Error('Kurse-Sheet nicht in KURSE_SHEET_ID gefunden');
+
+  var data = kurseSheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var kursIdCol = headers.indexOf('kursid');
+  if (kursIdCol < 0) throw new Error('Kurse-Sheet hat keine "kursId"-Spalte');
+
+  var hatKurs = false;
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][kursIdCol]).trim() === TEST_KURS_ID) { hatKurs = true; break; }
+  }
+
+  if (!hatKurs) {
+    var zeile = new Array(data[0].length).fill('');
+    var setIf = function(name, value) {
+      var c = headers.indexOf(String(name).toLowerCase());
+      if (c >= 0) zeile[c] = value;
+    };
+    setIf('kursid', TEST_KURS_ID);
+    setIf('klassen', TEST_KLASSE_ID);
+    setIf('lpemail', TEST_LP_EMAIL);
+    setIf('aktiv', true);
+    setIf('name', 'Testkurs WR');
+    setIf('fach', 'Wirtschaft & Recht');
+    setIf('gefaess', 'SF');
+    setIf('fachschaft', 'WR');
+    setIf('semester', 'HS25');
+    kurseSheet.appendRow(zeile);
+    ergebnis.kursAngelegt = true;
+  }
+
+  // SuS-Tab vorbereiten (Tab-Name = kursId)
+  var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+  if (!susTab) {
+    susTab = kurseSS.insertSheet(TEST_KURS_ID);
+    susTab.getRange('A1:F1').setValues([['email', 'name', 'vorname', 'klasse', 'schuelerID', 'geschlecht']]);
+    susTab.getRange('A1:F1').setFontWeight('bold');
+    ergebnis.susTabAngelegt = true;
+  }
+
+  return ergebnis;
+}
+
+/**
+ * 20 Test-SuS in KURSE_SHEET_ID Tab TEST_KURS_ID anlegen.
+ * Idempotent: prüft email-Spalte, überspringt vorhandene.
+ *
+ * Pre-Check (Spec §7 Daten-Sicherheit): falls eine TEST_SUS_EMAIL bereits in einem ANDEREN
+ * Kurs-Tab existiert (Echt-Kollision: unwahrscheinlich, aber Daten-Loss-Risiko bei späterem Reset),
+ * bricht ab mit klarem Fehler. Reset würde via TEST_EMAIL_REGEX matchen und Echt-SuS löschen.
+ */
+function seedTestdatenSuS_() {
+  var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+
+  // Pre-Check: Echt-SuS-Email-Kollision
+  var kollisionen = [];
+  var alleTabs = kurseSS.getSheets();
+  for (var t = 0; t < alleTabs.length; t++) {
+    var tab = alleTabs[t];
+    var tabName = tab.getName();
+    if (tabName === 'Kurse' || tabName === TEST_KURS_ID) continue;
+    var tabData = tab.getDataRange().getValues();
+    if (tabData.length < 2) continue;
+    var tabHeaders = tabData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var emailIdx = tabHeaders.indexOf('email');
+    if (emailIdx < 0) continue;
+    for (var r = 1; r < tabData.length; r++) {
+      var em = String(tabData[r][emailIdx] || '').toLowerCase().trim();
+      if (!em) continue;
+      if (TEST_EMAIL_REGEX.test(em)) {
+        kollisionen.push({ tab: tabName, email: em });
+      }
+    }
+  }
+  if (kollisionen.length > 0) {
+    throw new Error(
+      'Test-Email-Kollision: ' + kollisionen.length + ' Echt-SuS-Records haben Test-Pattern-Email. ' +
+      'Beispiel: ' + kollisionen[0].email + ' in Tab ' + kollisionen[0].tab + '. ' +
+      'Reset würde diese SuS löschen. Bitte erst diese Records umbenennen oder TEST_EMAIL_REGEX einschränken.'
+    );
+  }
+
+  // SuS einfügen
+  var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+  if (!susTab) throw new Error('SuS-Tab nicht gefunden (sollte durch seedTestdatenKurs_ angelegt sein)');
+  var data = susTab.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var emailCol = headers.indexOf('email');
+  if (emailCol < 0) throw new Error('SuS-Tab hat keine "email"-Spalte');
+
+  var existing = {};
+  for (var i = 1; i < data.length; i++) {
+    var em2 = String(data[i][emailCol] || '').toLowerCase().trim();
+    if (em2) existing[em2] = true;
+  }
+
+  var setIfFn = function(zeile, name, value) {
+    var c = headers.indexOf(String(name).toLowerCase());
+    if (c >= 0) zeile[c] = value;
+  };
+
+  var neueZeilen = [];
+  for (var k = 0; k < TEST_SUS_EMAILS.length; k++) {
+    var email = TEST_SUS_EMAILS[k];
+    if (existing[email]) continue;
+    var zeile = new Array(data[0].length).fill('');
+    setIfFn(zeile, 'email', email);
+    setIfFn(zeile, 'name', TEST_SUS_NACHNAMEN[k]);
+    setIfFn(zeile, 'vorname', TEST_SUS_VORNAMEN[k]);
+    setIfFn(zeile, 'klasse', TEST_KLASSE_ID);
+    setIfFn(zeile, 'schuelerid', 'test-' + (k + 1).toString().padStart(3, '0'));
+    setIfFn(zeile, 'geschlecht', k % 2 === 0 ? 'm' : 'w');
+    neueZeilen.push(zeile);
+  }
+
+  if (neueZeilen.length > 0) {
+    var letzteZeile = susTab.getLastRow();
+    susTab.getRange(letzteZeile + 1, 1, neueZeilen.length, data[0].length).setValues(neueZeilen);
+  }
+  return { angelegt: neueZeilen.length, vorhanden: TEST_SUS_EMAILS.length - neueZeilen.length };
 }
