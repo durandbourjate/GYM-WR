@@ -8,6 +8,52 @@
 
 ## Letzter Stand auf main
 
+### Post-Test-Sweep — 7 Cluster-Specs ✅ AUF MAIN (2026-05-11)
+
+Aus User-Test mit ~16 Tickets entstanden 7 thematische Cluster-Specs. **Spec-Phase komplett**, Implementation ausstehend. Jeder Cluster mit Subagent-Reviewer-Pass + Polish-Iteration committed.
+
+| Commit | Cluster | Inhalt |
+|---|---|---|
+| `77edc56` + `f76187e` + `419f689` | **F — Testdaten-Infrastruktur** | Apps-Script `seedTestdaten()` idempotent, 1 Test-Kurs mit 20 SuS inkl. `wr.test`, Toggle im LP-Profil-Backend, Filter via Kurs/Klasse/Email-Prefix, weekly Trigger rollt Mastery |
+| `40e9d3c` + `bd6bd55` | **G — Icon-System** | Lucide-react als Library, alle Emojis ersetzt, 5 Custom-Icons (IconAbc, IconAB, IconAn, IconTKonto), 20 Fragetypen mit FragetypIcon-Komponente, Brand=Violet-500, Status 500er, Größen 14/16/20/24 |
+| `604c0e1` + `3cbea97` | **E — Konsistenz** | 5-Tier Typografie (Display/H1/H2/Body/Caption), Hilfe-Tabs Workflow-Order, zentrale Tab-Registry, Favoriten erweitert um Tabs, Backend-Migration der Favoriten |
+| `641c545` + `6435f7a` | **A — Bug-Fixes** | Optimistic-Delete mit Error-Recovery, Entwürfe-Header-Style, Scroll-Container, ladeGruppen-Lazy-Load-Fix, Lückentext-Buttons Brand-Violet, Problemmeldungen (3 Sub-Bugs), generischer optimisticDelete-Helper |
+| `c694a36` + `e75ca84` | **B — Header-Redesign** | Logo→Home, Favoriten separat, Papierkorb als L2 unter Fragensammlung, Sticky-Collapse-Chip-Bar beim Scrollen |
+| `382c6bf` + `3bb5385` | **D — Batch-Edit** | Multi-Select mit Checkbox + Floating-Bar, Cross-Filter-Selektion, Edit via normaler Editor im Batch-Modus mit violet markierten Feldern, Confirm-Modal mit Overwrite/Add-Diff, Backend `apiBulkUpdateFragen` |
+| `91ffbdc` + `c63a1b4` | **C — Globale Suche** | 7 Quellen (Einstellungen/Hilfe-Tabs + Kurse/Prüfungen/Übungen/Fragen/Schüler), gruppierte Treffer max 5/Quelle, Keyboard-Nav, XSS-sicher via JSX-Split, Lazy-Load-Index |
+
+**Spec-Pfade:** `ExamLab/docs/superpowers/specs/2026-05-11-cluster-{a,b,c,d,e,f,g}-*-design.md` (alle 7 Files committed + pushed, HEAD `c63a1b4`).
+
+**Implementations-Reihenfolge (Abhängigkeiten):**
+1. **G Phase 1** + **E Foundation** — liefern Icons + Typografie-Tokens + Tab-Registry, sind Voraussetzung für A/B/C/D
+2. **F** — orthogonal, kann parallel
+3. **A** — konsumiert G + E
+4. **B** — konsumiert E (Favoriten-Backend) + G
+5. **D** — konsumiert G + A (optimisticDelete-Helper)
+6. **C** — konsumiert E (Tab-Registry) + G
+
+**Out-of-Scope (in Specs explizit benannt):**
+- Multi-Klassen-Prüfung (Cluster F Section 8)
+- Frame Motion (Cluster B §6.3 — max-height-Trick stattdessen)
+- Volltext-Suche in Frage-Inhalten (Cluster C §9 — Phase 2)
+- Bulk-Edit für Fragetext/Lösung (Cluster D §8)
+- Storybook-Setup (Cluster G §13 — Plan-Phase entscheidet)
+
+**Plan-Phase-Voraussetzungen pro Cluster** (in jeder Spec Section „Offene Punkte"):
+- F: Pruefung-zu-Frage-Persistenz Audit, Mastery-Datenmodell, Statistik-Felder
+- G: Fragetyp-Discriminator-Audit, Bundle-Größen-Baseline, Storybook-Entscheidung
+- E: Backend-API für LPProfil-Update prüfen, Hilfe-Hash-Link-Grep, Storybook
+- A: Race-ID-Strategie, Problemmeldung-Schema-Audit, Permission-Modell
+- B: Home/Dashboard-Modus, Scroll-Container-Identifier, Mobile-L2-Verhalten
+- D: Apps-Script Bulk-Endpoint-Performance, Audit-Log, Tag-Datenmodell
+- C: Such-Library-Wahl, SchuelerStore-Pfad, XSS-Highlight-Pattern
+
+**Visual Companion Session-Details:** 11 HTML-Mockups erstellt für Cluster G (Icon-Library/Emoji-Strategy/Fragetypen 3 Iterationen) und Cluster B (Sticky-Collapse 3 Varianten). Live unter localhost-Port-rotierten URLs (Server starb 3× wegen OWNER_PID-Tracking, Workaround `env -u BRAINSTORM_OWNER_PID`).
+
+**Lehre:** Pro-Cluster-Spec-Approach (statt Mega-Spec) bewährt — jeder Cluster bekam fokussierte Brainstorming-Runde + Subagent-Reviewer + 1 Polish-Iteration + Commit. Reviewer fand pro Spec 5-8 Recommendations, 0 echte blocking-Issues. Total 7 Specs in 1 Session.
+
+---
+
 ### Bundle Legacy-Naming-Cleanup ✅ MERGED (2026-05-10)
 
 Branch `refactor/legacy-naming-cleanup`. Vollständige Migration `fragenbank` → `fragensammlung` + `lernplattform*` → `ueben*` (Frontend + Apps-Script Wire-Vertrag, Hard-Cut). Spec + Plan beide im 2-Iter-Reviewer-Loop approved.
