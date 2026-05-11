@@ -8,6 +8,54 @@
 
 ## Letzter Stand auf main
 
+### Foundation Bundle G P1 + E ✅ AUF PREVIEW (2026-05-11)
+
+Erstes Implementations-Bundle der Post-Test-Sweep-Roadmap. **Reine Additionen, keine UI-Migration.** Branch `feature/foundation-g1-e-bundle` zu preview gemerged.
+
+| Commit | Inhalt |
+|---|---|
+| `8340139` | lucide-react@1.14.0 als Dependency installiert |
+| `d357f5b` | 5 Custom-Icons (`IconAbc`, `IconAB`, `IconAn`, `IconTKonto`) im Lucide-Stil + 5 Tests |
+| `7af8ae9` | `FragetypIcon` Mapping-Komponente (20 Typen → Lucide+Custom Icons, MAP-Type via `Frage['typ']`) + 5 Tests |
+| `2b8ae11` | Icons-Barrel-Export (`src/components/ui/icons/index.ts`) |
+| `d90dce3` | Typografie-Tokens `TYPO` (5-Tier: Display/H1/H2/Body/Caption) + 3 Tests |
+| `ab98f79` | `AppOrt.screen` + `Favorit.typ` um Einstellungen/Hilfe-Tabs additiv erweitert |
+| `149dfe1` | Zentrale Tab-Registry (`src/utils/tabRegistry.ts`, 9 Einstellungen + 10 Hilfe Tabs Workflow-Order) + 8 Tests |
+
+**Verifikation:**
+- vitest **1544 passed** (1523 → 1544, +21 neue Tests)
+- tsc -b clean
+- 5× lint clean (as-any 0/0/0, no-alert 0, no-tests-dir clean, musterloesung Baseline, wire-contract 59/0)
+- vite build grün, PWA generateSW 256 entries
+- **Bundle-Größen-Delta: 0 KB raw / 0 KB gzip** ✅ — Tree-shaking perfekt (Foundation-Module werden noch nicht konsumiert). Erste Konsumenten kommen in G Phase 2 (Header) und E Phase 2 (Typografie-Migration).
+
+**Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-11-foundation-bundle-g1-e.md` (Plan-Reviewer 2 Iterationen ✅, 11/11 Issues behoben).
+
+**Workflow:**
+- Spec-Phase ✅ (alle 7 Cluster, HEAD `c63a1b4`)
+- Plan-Phase ✅ Foundation-Bundle (G P1 + E)
+- Implementation ✅ Foundation-Bundle (7 Commits)
+- **Aktuell:** preview-Push ausstehend → User-Test → main-Merge
+
+**Pre-Audit (Offene Punkte aufgelöst):**
+- ✓ Fragetyp-Discriminator: alle 20 `typ`-Werte in `fragen-core.ts` matchen MAP exakt
+- ✓ Storybook: Nein für Foundation (Visual via Browser-E2E)
+- ✓ Lint-Regeln (`no-emoji-in-source`, `no-inline-svg-icon`, `typo-tokens`): Out-of-Scope, kommen in G Phase 6 / E Phase 2
+- ✓ Backend-Migration / Favoriten-Backend: Out-of-Scope, kommt in E Phase 4
+- ✓ HilfeSeite-Reorder: Out-of-Scope, kommt in E Phase 3
+- ✓ Discriminated-Union-Switch-Audit: nur Filter-Pattern (`f.typ === 'pruefung'`), kein exhaustive Switch — additive Erweiterung safe
+
+**Nächste Schritte (Reihenfolge aus User-Memo):**
+1. F (orthogonal) — kann parallel zu A starten
+2. A (Bug-Fixes) — nach Foundation-Merge zu main, konsumiert G + E
+3. B (Header-Redesign) — konsumiert E (Favoriten-Backend) + G
+4. D (Batch-Edit) — konsumiert G + A (optimisticDelete-Helper)
+5. C (Globale Suche) — konsumiert E (Tab-Registry) + G
+
+**Lehre:** Lucide-react v1.x mergt SVG-Klassen automatisch (`lucide lucide-list-checks` Prefix). Tests für className-Pass-Through müssen `.toContain()` statt `.toBe()` nutzen, oder Custom-Icons als Vergleichsbasis verwenden.
+
+---
+
 ### Post-Test-Sweep — 7 Cluster-Specs ✅ AUF MAIN (2026-05-11)
 
 Aus User-Test mit ~16 Tickets entstanden 7 thematische Cluster-Specs. **Spec-Phase komplett**, Implementation ausstehend. Jeder Cluster mit Subagent-Reviewer-Pass + Polish-Iteration committed.
