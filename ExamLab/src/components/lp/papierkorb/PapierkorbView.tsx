@@ -8,6 +8,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAuthStore } from '../../../store/authStore'
 import { useToast } from '../../../hooks/useToast'
+import Button from '../../ui/Button'
 import {
   listePapierkorb,
   stelleWiederHer,
@@ -212,21 +213,21 @@ export default function PapierkorbView() {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 shrink-0">
-                  <button
+                <div className="flex flex-row gap-2 shrink-0">
+                  <Button
                     type="button"
+                    variant="secondary"
                     onClick={() => void handleWiederherstellen(frage)}
-                    className="px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 min-h-[44px]"
                   >
                     Wiederherstellen
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant="danger"
                     onClick={() => void handleEndgueltigLoeschen(frage)}
-                    className="px-3 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 min-h-[44px]"
                   >
                     Endgültig löschen
-                  </button>
+                  </Button>
                 </div>
               </div>
             </li>
