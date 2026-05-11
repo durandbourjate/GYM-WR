@@ -14837,7 +14837,14 @@ function seedTestdaten_(mode, callerEmail) {
   var kurs = seedTestdatenKurs_();
   var sus = seedTestdatenSuS_();
   var pruefung = seedTestdatenPruefung_();
-  var antworten = pruefung.angelegt > 0 ? seedTestdatenAntwortenUndKorrekturen_() : { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
+  // Hardening gegen Crash zwischen Pruefung-Insert und Antworten-Insert:
+  // Trigger Antworten-Seed wenn Pruefung NEU angelegt ODER Antworten-Sheet noch leer.
+  // Die Sub-Funktion ist intern idempotent (existingAntwEmails-Check).
+  var antwortenSheetForCheck = getOrCreateAntwortenSheet(TEST_PRUEFUNG_1_ID);
+  var antwortenLeer = antwortenSheetForCheck && antwortenSheetForCheck.getLastRow() <= 1;
+  var antworten = (pruefung.angelegt > 0 || antwortenLeer)
+    ? seedTestdatenAntwortenUndKorrekturen_()
+    : { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
 
   return {
     mode: mode,
@@ -15086,23 +15093,6 @@ function holeTestPruefungFragenIds_() {
 }
 
 /**
- * Liefert eine FrageMeta-Map (id → {typ, punkte}) für die gegebenen Frage-IDs.
- * Wir brauchen typ + punkte für Antwort-Schema-Generierung + Korrekturen.
- *
- * Wiederverwendung der existierenden ladeFragen-Funktion (parseFrage Z.2924).
- */
-function holeFragenMeta_(fragenIds) {
-  if (!fragenIds || fragenIds.length === 0) return {};
-  var fragen = ladeFragen(fragenIds);
-  var meta = {};
-  for (var i = 0; i < fragen.length; i++) {
-    var f = fragen[i];
-    meta[f.id] = { typ: f.typ, punkte: Number(f.punkte) || 4 };
-  }
-  return meta;
-}
-
-/**
  * Test-Prüfung 1 in CONFIGS_ID/Configs anlegen.
  * Status 'beendet' (alle 20 SuS haben abgegeben + sind korrigiert).
  * Schema aus ladePruefung Z.2092-2123 verifiziert.
@@ -15196,6 +15186,7 @@ function testAntwortFuerFrage_(frage, susIndex) {
     case 'richtigfalsch': {
       var aussagen = frage.aussagen || [];
       var bewertungen = {};
+      // SuS-Bewertung = Soll-Wert → SuS trifft die Wahrheit (für korrekt + teils-Range).
       for (var a = 0; a < aussagen.length; a++) {
         var ag = aussagen[a];
         if (korrekt) bewertungen[ag.id] = ag.korrekt;
@@ -15284,7 +15275,8 @@ function seedTestdatenAntwortenUndKorrekturen_() {
   var fragenIds = holeTestPruefungFragenIds_();
   if (fragenIds.length === 0) return { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
 
-  var fragenMeta = holeFragenMeta_(fragenIds);
+  // Single ladeFragen-Call statt doppelt (holeFragenMeta_ wäre redundant —
+  // typ + punkte werden aus fragen[] direkt gelesen).
   var fragen = ladeFragen(fragenIds);
   var fragenMap = {};
   for (var fi = 0; fi < fragen.length; fi++) fragenMap[fragen[fi].id] = fragen[fi];
@@ -15375,15 +15367,13 @@ function seedTestdatenAntwortenUndKorrekturen_() {
         return korrekturHeaders.map(function(h) { return z[h] !== undefined ? z[h] : ''; });
       });
       korrekturSheet.getRange(2, 1, rows.length, korrekturHeaders.length).setValues(rows);
-      korrekturSheet.getRange('Z1').setValue(JSON.stringify({
-        status: 'fertig', erledigt: korrekturZeilen.length, gesamt: korrekturZeilen.length, timestamp: jetztIso
-      }));
+      // Cache-Invalidate inkludiert (setKorrekturStatus Z.7139-7152).
+      setKorrekturStatus(korrekturSheet, 'fertig', korrekturZeilen.length, korrekturZeilen.length);
     }
   }
 
   return {
     antwortenAngelegt: antwortenZeilen.length,
-    korrekturenAngelegt: korrekturZeilen.length,
-    fragenJeSuS: fragenIds.length
+    korrekturenAngelegt: korrekturZeilen.length
   };
 }
