@@ -193,6 +193,9 @@ Direkt nach `case 'loescheFrage':` (Z.~1281), neuer Case:
  * Body: { email: string, mode: 'initial' | 'reset' }
  * Response: { success: boolean, error?: string, statistik?: {...}, dauerMs?: number }
  *
+ * Lock-Pattern: tryLock statt waitLock — Single-Operation darf nicht parallel laufen.
+ * Bei Konflikt direktes Error-Return statt 5s-Blocking → klarere Frontend-Meldung.
+ *
  * Spec: docs/superpowers/specs/2026-05-11-cluster-f-testdaten-infrastruktur-design.md §5.1
  * Plan: docs/superpowers/plans/2026-05-11-cluster-f-testdaten-f2-backend.md
  */
@@ -232,12 +235,15 @@ function apiAdminSeedTestdaten_(body) {
 /**
  * Skelett — wird in Phasen F.2.b-e ausgebaut.
  * Aktuell: gibt leere Statistik zurück. Kein Side-Effect auf Sheets.
+ * Wire-Vertrag-Felder bleiben über F.2.a→F.2.e konstant.
  */
 function seedTestdaten_(mode, callerEmail) {
   return {
     mode: mode,
     callerEmail: callerEmail,
     stammdatenErgaenzt: false,
+    klasseAngelegt: false,
+    kursAngelegt: false,
     testLpAngelegt: false,
     testSuSAngelegt: 0,
     testPruefungenAngelegt: 0,
@@ -251,14 +257,14 @@ function seedTestdaten_(mode, callerEmail) {
 }
 
 /** ISO-Datum (YYYY-MM-DD) tageZurueck Tage vor heute. */
-function _testdatumVorTagen_(tageZurueck) {
+function testdatumVorTagen_(tageZurueck) {
   var d = new Date();
   d.setDate(d.getDate() - tageZurueck);
   return Utilities.formatDate(d, 'Europe/Zurich', 'yyyy-MM-dd');
 }
 
 /** Voller ISO-Timestamp tageZurueck Tage vor heute. */
-function _testIsoDatumVorTagen_(tageZurueck) {
+function testIsoDatumVorTagen_(tageZurueck) {
   var d = new Date();
   d.setDate(d.getDate() - tageZurueck);
   return d.toISOString();
@@ -401,7 +407,7 @@ ExamLab: Testdaten Apps-Script Konstanten + Bonus-Schema-Fix + Endpoint-Skelett 
 - Apps-Script Konstanten (TEST_KURS_ID, TEST_KLASSE_ID, 20 SuS-Emails)
 - Bonus-Fix: uebenErstelleGruppe Sessions-Init 6→8 Spalten (anzahlFragen + richtig)
 - doPost-Case 'apiAdminSeedTestdaten' + Auth (rolle==='admin') + tryLock + Stub seedTestdaten_
-- Datum-Helpers _testdatumVorTagen_ + _testIsoDatumVorTagen_
+- Datum-Helpers testdatumVorTagen_ + testIsoDatumVorTagen_
 - Frontend Service-Wrapper testdatenApi.ts mit Types + 4 Tests
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
@@ -806,7 +812,7 @@ function seedTestdatenPruefung_() {
   setIf('gefaess', 'SF');
   setIf('semester', 'HS25');
   setIf('fachbereiche', 'BWL,Recht');
-  setIf('datum', _testdatumVorTagen_(14));
+  setIf('datum', testdatumVorTagen_(14));
   setIf('typ', 'Lernkontrolle');
   setIf('modus', 'pruefung');
   setIf('zeitModus', 'countdown');
@@ -824,7 +830,7 @@ function seedTestdatenPruefung_() {
   setIf('sebAusnahmen', JSON.stringify([]));
   setIf('teilnehmer', JSON.stringify(TEST_SUS_EMAILS.map(function(e) { return { email: e }; })));
   setIf('materialien', JSON.stringify([]));
-  setIf('beendetUm', _testIsoDatumVorTagen_(14));
+  setIf('beendetUm', testIsoDatumVorTagen_(14));
   setIf('durchfuehrungId', Utilities.getUuid());
   setIf('status', 'beendet');
 
@@ -987,7 +993,7 @@ function seedTestdatenAntwortenUndKorrekturen_() {
 
   var antwortenZeilen = [];
   var korrekturZeilen = [];
-  var jetztIso = _testIsoDatumVorTagen_(13);
+  var jetztIso = testIsoDatumVorTagen_(13);
 
   for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
     var email = TEST_SUS_EMAILS[s];
@@ -1208,7 +1214,7 @@ function seedTestdatenGruppe_() {
     '[Test] Selbstständiges Üben WR',
     'Wirtschaft & Recht',
     'bwl_einfuehrung,recht_einfuehrung',
-    _testdatumVorTagen_(-14),
+    testdatumVorTagen_(-14),
     true
   ]);
 
@@ -1275,7 +1281,7 @@ function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
 
     for (var idx = 0; idx < sessionsCount; idx++) {
       var tagZurueck = ((s * 3 + idx * 5) % 41) + 1;   // 1..41 (kein 0)
-      var datum = _testdatumVorTagen_(tagZurueck);
+      var datum = testdatumVorTagen_(tagZurueck);
       var fragenInSession = 4 + (idx % 5);
       var anteil = s < 10 ? 0.8 : (s < 15 ? 0.6 : 0.4);
       var richtigCount = Math.floor(fragenInSession * anteil);
