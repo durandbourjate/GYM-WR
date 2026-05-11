@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react'
 import { apiService } from '../services/apiService.ts'
 import { useFragensammlungStore } from '../store/fragensammlungStore.ts'
+import { useToast } from './useToast'
+import { optimisticDelete } from '../utils/optimisticDelete'
 import type { Frage, FrageSummary } from '../types/fragen-storage'
 
 interface UseFragenAktionenOptions {
@@ -27,6 +29,7 @@ interface UseFragenAktionenResult {
 
 export function useFragenAktionen({ user, istDemoModus, onFrageAktualisiert }: UseFragenAktionenOptions): UseFragenAktionenResult {
   const [loeschKandidat, setLoeschKandidatState] = useState<LoeschKandidat | null>(null)
+  const toast = useToast()
 
   const setLoeschKandidat = useCallback((frage: Frage | FrageSummary) => {
     setLoeschKandidatState({
@@ -43,17 +46,30 @@ export function useFragenAktionen({ user, istDemoModus, onFrageAktualisiert }: U
 
   const bestaetigenLoeschen = useCallback(async (): Promise<void> => {
     if (!loeschKandidat) return
-    const { entferneFrage } = useFragensammlungStore.getState()
-    entferneFrage(loeschKandidat.id)
+    const store = useFragensammlungStore.getState()
     const frage = loeschKandidat
+    const detailSnapshot = store.getDetail(frage.id)  // Snapshot für Rollback
     setLoeschKandidatState(null)
-    if (user && apiService.istKonfiguriert() && !istDemoModus) {
-      const ok = await apiService.loescheFrage(user.email, frage.id, frage.fachbereich)
-      if (!ok) {
-        console.warn('[useFragenAktionen] Frage lokal gelöscht, aber Backend-Löschen fehlgeschlagen')
-      }
+
+    // Demo-Modus oder offline: nur lokal entfernen, kein Backend, kein Rollback nötig
+    if (!user || !apiService.istKonfiguriert() || istDemoModus) {
+      store.entferneFrage(frage.id)
+      return
     }
-  }, [loeschKandidat, user, istDemoModus])
+
+    await optimisticDelete({
+      optimisticRemove: () => store.entferneFrage(frage.id),
+      backendCall: async () => {
+        const ok = await apiService.loescheFrage(user.email, frage.id, frage.fachbereich)
+        if (!ok) throw new Error('Backend-Löschen fehlgeschlagen')
+      },
+      rollback: () => {
+        if (detailSnapshot) store.fuegeFragenHinzu([detailSnapshot])
+      },
+      onSuccess: () => toast.success('Frage gelöscht'),
+      onError: () => toast.error('Konnte nicht gelöscht werden — bitte erneut versuchen'),
+    })
+  }, [loeschKandidat, user, istDemoModus, toast])
 
   const importieren = useCallback(async (importierteFragen: Frage[]): Promise<void> => {
     const { fuegeFragenHinzu } = useFragensammlungStore.getState()
