@@ -71,6 +71,15 @@ Ziel: einheitliche Typografie-Skala, sinnvolle Hilfe-Tab-Reihenfolge, erweiterba
  }
 ```
 
+**Verhältnis zu `AppOrt`:** `Favorit.typ` (Store-Diskriminator) und `AppOrt.screen` (Type-Discriminator des `AppOrt`-Records im Backend) sind redundant. Plan-Phase entscheidet:
+- **Option A:** `AppOrt` bleibt einziges Schema. `Favorit` wird einfach `AppOrt`. Plan-Phase entfernt `Favorit`-Type, ersetzt durch `AppOrt`.
+- **Option B:** Beide bleiben, mit klarer Mapping-Konvention `favorit.typ → appOrt.screen` (z.B. `'einstellungen-tab' → 'einstellungen'`).
+- **Empfehlung:** Option A (Konsolidierung), reduziert Drift-Risiko.
+
+### 4.4 ID-Naming-Konvention
+
+Alle Tab-IDs (Registry-Keys) sind **kebab-case** (`pruefung-erstellen`, `ki-kalibrierung`). Konsistent mit Routen-Pfaden und mit Memory-Lehre `feedback_examlab_sprachkonvention` (Identifier ohne Umlaut).
+
 ## 5. Komponenten
 
 ### 5.1 Typografie-Tokens (`src/styles/typografie.ts` — neu)
@@ -183,7 +192,12 @@ Aktueller Store nutzt Zustand-`persist`-Middleware mit localStorage. Refactor:
 - Entferne `persist`-Middleware.
 - Lade Favoriten beim App-Start aus `LPProfil.favoriten` (via existierendem `stammdatenStore`).
 - Schreibe Änderungen via debounced `speichereLPProfil()` zurück ins Backend.
-- Migration-Hook: bei erstem Lauf nach Update, lese localStorage-Key `'examlab-favoriten'`, mergen mit Backend-Favoriten (Backend gewinnt bei Konflikt), commit, lösche localStorage-Key.
+- Migration-Hook (einmalig pro User pro Gerät): bei erstem Lauf nach Update
+  1. Lese localStorage-Key `'examlab-favoriten'`.
+  2. Wenn leer → nichts tun, lösche eventuellen Key.
+  3. Wenn vorhanden → Merge-Regel: **Union per `id`-Match.** Falls Backend-Favorit und localStorage-Favorit dieselbe `id` haben → Backend gewinnt (jüngere `erstelltAm` wäre Alternative — Plan-Phase entscheidet). Backend-only und localStorage-only werden vereint.
+  4. Commit das Merge-Resultat via `speichereLPProfil()`.
+  5. Lösche localStorage-Key erst nach erfolgreichem Commit (sonst Datenverlust bei Backend-Fehler).
 
 #### Backend (Apps-Script)
 
@@ -207,11 +221,12 @@ Im Favoriten-Tab gibt's einen „+ Favorit hinzufügen"-Button → öffnet einen
 - Auf jeder Top-Level-Seite (Einstellungen, Hilfe, Prüfen, Üben, Fragensammlung) einen Display-Titel ergänzen falls fehlend.
 - Tab-Komponenten-Header: `<h3 text-sm>` durch `<h1 className={TYPO.h1}>` ersetzen.
 - Sub-Sektion-Header auf `TYPO.h2`.
-- Lint-Regel (optional): grep nach Inline-Strings wie `text-sm font-semibold` in Heading-Tags und Warnung ausgeben (Plan-Phase entscheidet Machbarkeit).
+- **Lint-Regel `lint:typo-tokens`: ja, einführen.** Konsistent mit etablierten Lint-Pattern (`lint:no-alert`, `lint:wire-contract`, `lint:musterloesung`). Greppt nach Heading-Tags (`<h1`, `<h2`, `<h3`) deren `className` nicht eines der `TYPO.*`-Konstanten referenziert. Whitelist für gerechtfertigte Ausnahmen.
 
 ### Phase 3: Hilfe-Tab-Reihenfolge
-- Tab-Definitions-Array `KATEGORIEN` in `src/components/lp/HilfeSeite.tsx` durch Tab-Registry-Filter ersetzen (oder Array umordnen wenn Registry-Refactor zu groß).
+- Tab-Definitions-Array `KATEGORIEN` in `src/components/lp/HilfeSeite.tsx` **wird durch Tab-Registry-Filter ersetzt** (verbindlicher Pfad, kein Either-Or). HilfeSeite konsumiert `tabsFuerSurface('hilfe', ctx)`. Single source of truth bleibt zwingend.
 - Workflow-Order: Erste Schritte / Fragen / Prüfung erstellen / Durchführung / Korrektur / Üben / KI / Bloom / Zusammenarbeit / FAQ.
+- Bestehende Hash-Links (`#einstieg`, `#korrektur` etc.) bleiben gleich (IDs sind preserved).
 
 ### Phase 4: Favoriten-Migration zu Backend
 - `favoritenStore.ts` Refactor (siehe 5.4).
@@ -283,7 +298,7 @@ Modal-Dialog mit Tab-Bar oben (Surfaces) + scrollbare Liste der Tabs/Locations p
 
 - **Cluster F (Testdaten):** Testdaten-Tab wird in der Tab-Registry registriert (`id: 'testdaten'`, `surface: 'einstellungen'`). Sichtbar für alle LPs, Aktionen nur für Admins (Predicate-Logik im Tab-Content, nicht in Registry).
 - **Cluster G (Icon-System):** Star-Toggle nutzt Lucide-`Star`. Tab-Registry hat optional `icon`-Feld für künftiges Tab-Icon-Mapping. Typografie-Skala und Icon-Größen-Skala teilen Tier-Konzept (md / lg).
-- **Cluster B (Header-Redesign):** Favoriten-Bar im Header (heute bereits da) konsumiert aus dem Backend-Favoriten-Store statt localStorage nach Migration. L2-Hover-Menüs zeigen Favoriten dynamisch.
+- **Cluster B (Header-Redesign):** Favoriten-Bar im Header (heute bereits da) konsumiert aus dem Backend-Favoriten-Store statt localStorage nach Migration. L2-Hover-Menüs zeigen Favoriten dynamisch. **Reihenfolge:** Cluster E muss vor Cluster B implementiert werden — sonst baut Cluster B auf localStorage-Favoriten und müsste danach migrieren.
 - **Cluster C (Globale Suche):** Suche kann Tab-Registry nutzen um Einstellungen/Hilfe-Tabs als Treffer anzubieten. Single source of truth = Registry.
 
 ## 11. Test-Strategie
