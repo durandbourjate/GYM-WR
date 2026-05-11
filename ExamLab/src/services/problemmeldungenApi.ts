@@ -21,3 +21,14 @@ export async function toggleProblemmeldung(
   )
   return !!result?.success
 }
+
+/**
+ * Cluster A Bug 6c: Problemmeldung endgültig löschen. Admin-only im Backend.
+ * Throws Error wenn Backend fehlschlägt (für optimisticDelete-Helper-Kompatibilität).
+ */
+export async function loescheProblemmeldung(email: string, id: string): Promise<void> {
+  const result = await postJson<ToggleResponse>('loescheProblemmeldung', { email, id })
+  if (!result?.success) {
+    throw new Error(result?.error || 'Backend-Löschen fehlgeschlagen')
+  }
+}

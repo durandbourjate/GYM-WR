@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react'
 import type { Problemmeldung } from '../../../types/problemmeldung'
 import { priorisiereDeepLink } from './filterLogik'
 
@@ -5,6 +6,8 @@ interface Props {
   meldung: Problemmeldung
   toggleErledigt: (id: string, neuerWert: boolean) => Promise<void> | void
   onOeffne: (ziel: ReturnType<typeof priorisiereDeepLink>) => void
+  /** Cluster A Bug 6c: Trash-Button (nur sichtbar wenn gesetzt; Parent zeigt Confirm-Modal). */
+  onLoeschen?: (meldung: Problemmeldung) => void
   istAdmin: boolean
 }
 
@@ -22,7 +25,7 @@ function formatRelativ(isoStr: string): string {
   return new Date(isoStr).toLocaleDateString('de-CH')
 }
 
-export default function ProblemmeldungZeile({ meldung, toggleErledigt, onOeffne, istAdmin }: Props) {
+export default function ProblemmeldungZeile({ meldung, toggleErledigt, onOeffne, onLoeschen, istAdmin }: Props) {
   const ziel = priorisiereDeepLink(meldung)
   const isLegacy = !meldung.id
   const kannToggle = !isLegacy && (istAdmin || meldung.recht === 'inhaber' || meldung.recht === 'bearbeiter')
@@ -72,6 +75,16 @@ export default function ProblemmeldungZeile({ meldung, toggleErledigt, onOeffne,
             className="flex-shrink-0 px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
           >
             → Öffnen
+          </button>
+        )}
+        {onLoeschen && istAdmin && !isLegacy && (
+          <button
+            onClick={() => onLoeschen(meldung)}
+            title="Problemmeldung endgültig löschen"
+            aria-label="Problemmeldung löschen"
+            className="flex-shrink-0 p-1.5 rounded-md text-slate-500 hover:text-red-600 hover:bg-red-50 dark:text-slate-400 dark:hover:text-red-400 dark:hover:bg-red-900/30 cursor-pointer"
+          >
+            <Trash2 className="w-4 h-4" />
           </button>
         )}
       </div>

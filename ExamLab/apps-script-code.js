@@ -1041,6 +1041,63 @@ function markiereProblemmeldungErledigt(body) {
   return jsonResponse({ success: false, error: 'Meldung nicht gefunden' });
 }
 
+/**
+ * Cluster A Bug 6c: Problemmeldung endgültig löschen.
+ * Permission: Admin-only (`getLPInfo(email).rolle === 'admin'`).
+ * Lock via LockService (analog loescheKIFeedback).
+ */
+function loescheProblemmeldung(body) {
+  var email = String(body.email || '').toLowerCase().trim();
+  var id = String(body.id || '');
+  if (!istZugelasseneLP(email)) return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  if (!id) return jsonResponse({ success: false, error: 'id fehlt' });
+
+  // Admin-only Permission-Check
+  var lpInfo = getLPInfo(email);
+  var istAdmin = !!(lpInfo && lpInfo.rolle === 'admin');
+  if (!istAdmin) return jsonResponse({ success: false, error: 'Nur Admins dürfen Problemmeldungen löschen' });
+
+  var rl = uebenRateLimitCheck_('loescheProblemmeldung', email, 30, 300);
+  if (rl.blocked) return jsonResponse({ success: false, error: rl.error });
+
+  var sheetId = PropertiesService.getScriptProperties().getProperty('PROBLEMMELDUNGEN_SHEET_ID');
+  if (!sheetId) return jsonResponse({ success: false, error: 'Problemmeldungen-Sheet nicht konfiguriert' });
+
+  var ss;
+  try { ss = SpreadsheetApp.openById(sheetId); }
+  catch (e) { return jsonResponse({ success: false, error: 'Sheet nicht erreichbar: ' + e.message }); }
+
+  var sheet = ss.getSheetByName('ExamLab-Problemmeldungen');
+  if (!sheet) return jsonResponse({ success: false, error: 'Tab nicht gefunden' });
+
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+
+    var lastCol = sheet.getLastColumn();
+    if (lastCol === 0) return jsonResponse({ success: false, error: 'Sheet leer' });
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) { return String(h).trim(); });
+    var idCol = problemmeldungenColIdx_(headers, 'id');
+    if (idCol < 0) return jsonResponse({ success: false, error: 'Sheet-Schema kaputt' });
+
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return jsonResponse({ success: false, error: 'Meldung nicht gefunden' });
+
+    var data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    for (var i = 0; i < data.length; i++) {
+      if (String(data[i][idCol]) === id) {
+        sheet.deleteRow(i + 2);  // +2 weil 1-indexed + Header-Zeile
+        return jsonResponse({ success: true });
+      }
+    }
+    return jsonResponse({ success: false, error: 'Meldung nicht gefunden' });
+  } catch (e) {
+    return jsonResponse({ success: false, error: 'Lock/Delete-Fehler: ' + e.message });
+  } finally {
+    try { lock.releaseLock(); } catch(e) { /* ignore */ }
+  }
+}
+
 // Zentrale Daten-Sheets (Synergien)
 const KURSE_SHEET_ID = '1inmEds_g48-lTFCqo9NUqAcxhDxF2mFSoBM5fO6uJng';       // User muss ID einsetzen
 const STUNDENPLAN_SHEET_ID = '1mesBOmPuLewvnY5iNb4iD2zNDUn8-ruK5HE0DsKwUSs';
@@ -1478,9 +1535,10 @@ function doPost(e) {
     case 'admin:migriereZonen':
       return migrierZonenEndpoint_(body);
 
-    // === PROBLEMMELDUNGEN: Read + Toggle (F1) ===
+    // === PROBLEMMELDUNGEN: Read + Toggle (F1) + Delete (Cluster A.2) ===
     case 'listeProblemmeldungen': return listeProblemmeldungen(body);
     case 'markiereProblemmeldungErledigt': return markiereProblemmeldungErledigt(body);
+    case 'loescheProblemmeldung': return loescheProblemmeldung(body);
 
     // === KI-KALIBRIERUNG: Review + Statistik + Einstellungen (Task 9) ===
     case 'listeKIFeedbacks': return listeKIFeedbacks(body);

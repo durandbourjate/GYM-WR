@@ -2,10 +2,12 @@ import { useState, useEffect, useCallback } from 'react'
 import type { Problemmeldung } from '../../../types/problemmeldung'
 import type { FilterConfig } from './filterLogik'
 import { filterMeldungen } from './filterLogik'
-import { listeProblemmeldungen, toggleProblemmeldung } from '../../../services/problemmeldungenApi'
+import { listeProblemmeldungen, toggleProblemmeldung, loescheProblemmeldung } from '../../../services/problemmeldungenApi'
 import ProblemmeldungenFilter from './ProblemmeldungenFilter'
 import ProblemmeldungZeile from './ProblemmeldungZeile'
 import { useDeepLink } from './useDeepLink'
+import { optimisticDelete } from '../../../utils/optimisticDelete'
+import { useToast } from '../../../hooks/useToast'
 
 interface Props {
   email: string
@@ -21,6 +23,8 @@ export default function ProblemmeldungenTab({ email, istAdmin, onSchliessen }: P
     typ: 'alle',
     nurMeine: false,
   })
+  const [loeschKandidat, setLoeschKandidat] = useState<Problemmeldung | null>(null)
+  const toast = useToast()
 
   const oeffneDeepLink = useDeepLink(onSchliessen)
 
@@ -43,6 +47,19 @@ export default function ProblemmeldungenTab({ email, istAdmin, onSchliessen }: P
       setTimeout(() => setFehler(null), 3000)
     }
   }, [email])
+
+  const bestaetigeLoeschen = useCallback(async () => {
+    if (!loeschKandidat) return
+    const meldung = loeschKandidat
+    setLoeschKandidat(null)
+    await optimisticDelete({
+      optimisticRemove: () => setMeldungen(prev => prev ? prev.filter(m => m.id !== meldung.id) : prev),
+      backendCall: () => loescheProblemmeldung(email, meldung.id),
+      rollback: () => setMeldungen(prev => prev ? [meldung, ...prev] : prev),
+      onSuccess: () => toast.success('Problemmeldung gelöscht'),
+      onError: () => toast.error('Konnte nicht gelöscht werden — bitte erneut versuchen'),
+    })
+  }, [loeschKandidat, email, toast])
 
   if (fehler && meldungen === null) {
     return <div className="p-4 text-sm text-red-600 dark:text-red-400">Fehler beim Laden: {fehler}</div>
@@ -75,9 +92,42 @@ export default function ProblemmeldungenTab({ email, istAdmin, onSchliessen }: P
             meldung={m}
             toggleErledigt={toggleErledigt}
             onOeffne={oeffneDeepLink}
+            onLoeschen={istAdmin ? setLoeschKandidat : undefined}
             istAdmin={istAdmin}
           />
         ))
+      )}
+      {loeschKandidat && (
+        <div
+          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40"
+          onClick={() => setLoeschKandidat(null)}
+        >
+          <div
+            className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+              Problemmeldung löschen?
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+              Diese Aktion ist nicht rückgängig zu machen. Die Meldung wird endgültig aus dem Sheet entfernt.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setLoeschKandidat(null)}
+                className="px-3 py-1.5 text-sm rounded-md border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+              >
+                Abbrechen
+              </button>
+              <button
+                onClick={bestaetigeLoeschen}
+                className="px-3 py-1.5 text-sm rounded-md bg-red-600 hover:bg-red-700 text-white cursor-pointer"
+              >
+                Endgültig löschen
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
