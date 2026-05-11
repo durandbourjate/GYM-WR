@@ -38,5 +38,5 @@ export interface SeedResponse {
  */
 export async function apiAdminSeedTestdaten(opts: { email: string; mode: SeedMode }): Promise<SeedResponse> {
   const result = await postJson<SeedResponse>('apiAdminSeedTestdaten', { email: opts.email, mode: opts.mode })
-  return result ?? { success: false, error: 'Keine Antwort vom Backend (nicht konfiguriert)' }
+  return result ?? { success: false, error: 'Keine Antwort vom Backend' }
 }

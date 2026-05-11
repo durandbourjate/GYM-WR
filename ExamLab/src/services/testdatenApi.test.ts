@@ -40,4 +40,11 @@ describe('apiAdminSeedTestdaten', () => {
     await apiAdminSeedTestdaten({ email: 'a@x.ch', mode: 'reset' })
     expect(apiClient.postJson).toHaveBeenCalledWith('apiAdminSeedTestdaten', { email: 'a@x.ch', mode: 'reset' })
   })
+
+  it('liefert Fallback wenn postJson null returnt', async () => {
+    vi.mocked(apiClient.postJson).mockResolvedValue(null)
+    const r = await apiAdminSeedTestdaten({ email: 'a@x.ch', mode: 'initial' })
+    expect(r.success).toBe(false)
+    expect(r.error).toContain('Keine Antwort')
+  })
 })

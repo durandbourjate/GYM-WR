@@ -14782,6 +14782,9 @@ function assert_(cond, msg) { if (!cond) throw new Error(msg); }
  * Body: { email: string, mode: 'initial' | 'reset' }
  * Response: { success: boolean, error?: string, statistik?: {...}, dauerMs?: number }
  *
+ * Lock-Pattern: tryLock statt waitLock — Single-Operation darf nicht parallel laufen.
+ * Bei Konflikt direktes Error-Return statt 5s-Blocking → klarere Frontend-Meldung.
+ *
  * Spec: docs/superpowers/specs/2026-05-11-cluster-f-testdaten-infrastruktur-design.md §5.1
  * Plan: docs/superpowers/plans/2026-05-11-cluster-f-testdaten-f2-backend.md
  */
@@ -14821,12 +14824,15 @@ function apiAdminSeedTestdaten_(body) {
 /**
  * Skelett — wird in Phasen F.2.b-e ausgebaut.
  * Aktuell: gibt leere Statistik zurück. Kein Side-Effect auf Sheets.
+ * Wire-Vertrag-Felder bleiben über F.2.a→F.2.e konstant.
  */
 function seedTestdaten_(mode, callerEmail) {
   return {
     mode: mode,
     callerEmail: callerEmail,
     stammdatenErgaenzt: false,
+    klasseAngelegt: false,
+    kursAngelegt: false,
     testLpAngelegt: false,
     testSuSAngelegt: 0,
     testPruefungenAngelegt: 0,
@@ -14840,14 +14846,14 @@ function seedTestdaten_(mode, callerEmail) {
 }
 
 /** ISO-Datum (YYYY-MM-DD) tageZurueck Tage vor heute. */
-function _testdatumVorTagen_(tageZurueck) {
+function testdatumVorTagen_(tageZurueck) {
   var d = new Date();
   d.setDate(d.getDate() - tageZurueck);
   return Utilities.formatDate(d, 'Europe/Zurich', 'yyyy-MM-dd');
 }
 
 /** Voller ISO-Timestamp tageZurueck Tage vor heute. */
-function _testIsoDatumVorTagen_(tageZurueck) {
+function testIsoDatumVorTagen_(tageZurueck) {
   var d = new Date();
   d.setDate(d.getDate() - tageZurueck);
   return d.toISOString();
