@@ -217,9 +217,9 @@ export const IconTKonto = (props: SVGProps<SVGSVGElement>) => (
 );
 ```
 
-### 6.5 Reserve
+### 6.5 Erweiterungs-Pattern
 
-Custom-Icon-Slot für künftige ExamLab-spezifische Konzepte (z.B. Klassendiagramm-Symbol, ER-Diagramm-Notation, etc.). Erweiterung in derselben Datei.
+Falls künftig ExamLab-spezifische Konzepte ein Custom-Icon benötigen, wird die Komponente in `CustomIcons.tsx` ergänzt — selbe Konventionen (viewBox 24×24, strokeWidth=2, currentColor). Heute keine Reserve-Komponente implementieren.
 
 ## 7. Implementation
 
@@ -302,8 +302,11 @@ Sequentiell, surface by surface, in separaten Sub-Bundles dieses Clusters:
 
 ### Phase 1: Foundation
 - `npm install lucide-react`
+- **Pre-Step: Fragetyp-Discriminator-Audit.** `Fragetyp`-Union-Type aus `src/types/` lesen und alle 20 Werte 1:1 mit dem `MAP`-Schlüssel-Set in Section 7.3 abgleichen. Drift wird hier aufgedeckt, nicht später (Bundle-3-Lehre `feedback_grep_anwesenheit_nicht_abwesenheit.md`).
+- **Pre-Step: Bundle-Größen-Baseline.** `npm run build` vor Lucide-Install, dann nach Install + 1 Test-Import → Differenz dokumentieren als Audit-Punkt.
 - `src/components/ui/icons/CustomIcons.tsx` + Tests
 - `src/components/ui/icons/FragetypIcon.tsx` + Tests
+- **Cross-Cluster-Garantie:** Phase 1 muss vor Beginn von Cluster A abgeschlossen sein, da Cluster A `IconAbc`/`IconAB` für die Lückentext-Buttons konsumiert.
 
 ### Phase 2: Header & Navigation
 - App-Header: Favoriten, Prüfen, Üben, Fragensammlung, Papierkorb, Suche, User-Menü, Einstellungen, Hilfe
@@ -318,7 +321,7 @@ Sequentiell, surface by surface, in separaten Sub-Bundles dieses Clusters:
 - Material-Panel: FileText/Link/Video/Mic statt 📄📝🔗🎬
 - Favoriten-Liste: Star/ClipboardList/Target/HelpCircle statt 📍📝🎯❓
 - Problemmeldungen: AlertCircle/Lightbulb statt 🔴💡
-- Stufen-Kontrolle: Circle (filled) in 500-Farben statt 🟢🟡🔴
+- Stufen-Kontrolle: Circle (filled) in 500-Farben statt 🟢🟡🔴 — fixe Größe `sm` (16 px / `w-4 h-4`) für inline-Status-Badges
 
 ### Phase 5: Fragetypen-Icons
 - `FragetypIcon` einbinden in:
@@ -381,7 +384,8 @@ Sequentiell, surface by surface, in separaten Sub-Bundles dieses Clusters:
 
 ### 12.4 Lint-Gates (Phase 6)
 
-- `lint:no-emoji-in-source` — grep über `src/` für gängige Emoji-Codepoints (🟢🟡🔴📄📝🎯❓💡🎬🔗📎🖹📍), fail wenn gefunden. Whitelist für gerechtfertigte Ausnahmen (z.B. in JSDoc).
+- `lint:no-emoji-in-source` — grep über `src/` für Emoji-Codepoints, fail wenn gefunden. Whitelist für gerechtfertigte Ausnahmen (z.B. in JSDoc).
+  - **Codepoint-Liste muss durch Plan-Phase-Pre-Audit ermittelt werden:** vollständiger grep durch `src/` mit Unicode-Range für Emojis (U+1F300–U+1FAFF u.a.), dann exhaustive Liste statt manueller Auswahl. Sonst Schutz-Lücken (z.B. ⭐ ⚠️ ✅ ❌ usw. bisher nicht in Beispiel-Liste aufgeführt).
 - `lint:no-inline-svg-icon` — grep über `src/components/`, `src/pages/` für `<svg`-Inline-Tags ausserhalb von `src/components/ui/icons/`, fail bei Treffer.
 
 ## 13. Offene Punkte (vor Implementation klären)
