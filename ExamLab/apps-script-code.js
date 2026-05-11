@@ -115,6 +115,30 @@ const SUS_DOMAIN = 'stud.gymhofwil.ch';
 const LERNZIELE_TAB = 'Lernziele';
 
 // === UEBEN-KONFIGURATION ===
+// ───── Testdaten-Konstanten (Cluster F) ─────
+// Single source of truth — synchron mit ExamLab/src/utils/testdaten/identifikation.ts
+const TEST_KURS_ID = 'test-kurs-01';
+const TEST_KLASSE_ID = 'test-klasse-01';
+const TEST_ID_PREFIX = 'test-';
+const TEST_LP_EMAIL = 'wr.test@gymhofwil.ch';
+const TEST_EMAIL_REGEX = /^(wr\.test|[a-z]+\.testschueler\d+)@stud\.gymhofwil\.ch$/;
+const TEST_SUS_EMAILS = [
+  'wr.test@stud.gymhofwil.ch',
+  'anna.testschueler1@stud.gymhofwil.ch', 'beat.testschueler2@stud.gymhofwil.ch',
+  'clara.testschueler3@stud.gymhofwil.ch', 'david.testschueler4@stud.gymhofwil.ch',
+  'eva.testschueler5@stud.gymhofwil.ch', 'felix.testschueler6@stud.gymhofwil.ch',
+  'greta.testschueler7@stud.gymhofwil.ch', 'hans.testschueler8@stud.gymhofwil.ch',
+  'ina.testschueler9@stud.gymhofwil.ch', 'jonas.testschueler10@stud.gymhofwil.ch',
+  'karin.testschueler11@stud.gymhofwil.ch', 'lukas.testschueler12@stud.gymhofwil.ch',
+  'mara.testschueler13@stud.gymhofwil.ch', 'noah.testschueler14@stud.gymhofwil.ch',
+  'olivia.testschueler15@stud.gymhofwil.ch', 'pia.testschueler16@stud.gymhofwil.ch',
+  'quentin.testschueler17@stud.gymhofwil.ch', 'rosa.testschueler18@stud.gymhofwil.ch',
+  'sven.testschueler19@stud.gymhofwil.ch'
+];
+const TEST_SUS_VORNAMEN = ['wr', 'Anna', 'Beat', 'Clara', 'David', 'Eva', 'Felix', 'Greta', 'Hans', 'Ina', 'Jonas', 'Karin', 'Lukas', 'Mara', 'Noah', 'Olivia', 'Pia', 'Quentin', 'Rosa', 'Sven'];
+const TEST_SUS_NACHNAMEN = ['test', 'Testschueler1', 'Testschueler2', 'Testschueler3', 'Testschueler4', 'Testschueler5', 'Testschueler6', 'Testschueler7', 'Testschueler8', 'Testschueler9', 'Testschueler10', 'Testschueler11', 'Testschueler12', 'Testschueler13', 'Testschueler14', 'Testschueler15', 'Testschueler16', 'Testschueler17', 'Testschueler18', 'Testschueler19'];
+const TEST_GRUPPE_ID = 'test-gruppe-01';
+const TEST_PRUEFUNG_1_ID = 'test-pruefung-01';
 const GRUPPEN_REGISTRY_ID = '1VH7Vu7JIKYLic2-wK2uSa2nXA7WVvStKOjUDi9cpWnI';
 // Dynamisch: Alle Tabs im Fragensammlung-Sheet ausser System-Tabs
 const FRAGENSAMMLUNG_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
@@ -1278,6 +1302,8 @@ function doPost(e) {
       return batchUpdateLueckentextMigrationEndpoint(body);
     case 'bulkSetzeLueckentextModus':
       return bulkSetzeLueckentextModusEndpoint(body);
+    case 'apiAdminSeedTestdaten':
+      return apiAdminSeedTestdaten_(body);
     case 'loescheFrage':
       return loescheFrage(body);
     case 'stelleWiederHer':
@@ -9074,7 +9100,10 @@ function uebenErstelleGruppe(body) {
   ]]);
 
   var sessionSheet = fragensammlungSS.insertSheet('Sessions');
-  sessionSheet.getRange('A1:F1').setValues([['sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis']]);
+  // Cluster F.2 Bonus-Fix: Schema-Drift behoben — Read-Code (Z.~11362) erwartet 8 Spalten.
+  sessionSheet.getRange('A1:H1').setValues([
+    ['sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis', 'anzahlFragen', 'richtig']
+  ]);
 
   // In Registry eintragen
   var registrySheet = getGruppenRegistry_();
@@ -14742,3 +14771,1125 @@ function testPreWarmKorrektur() { testPreWarmKorrektur_(); }
 // Nur einmal definieren, falls bei Codebase-Update ein Top-Level-assert_ ergänzt wird,
 // kann diese Definition entfallen.
 function assert_(cond, msg) { if (!cond) throw new Error(msg); }
+
+// ═════════════════════════════════════════════════════════════════
+//   Cluster F — Testdaten-Infrastruktur (Apps-Script Backend)
+// ═════════════════════════════════════════════════════════════════
+
+/**
+ * Public Endpoint: Testdaten seeden / zurücksetzen.
+ * Auth: nur Admins (LPInfo.rolle === 'admin').
+ * Body: { email: string, mode: 'initial' | 'reset' }
+ * Response: { success: boolean, error?: string, statistik?: {...}, dauerMs?: number }
+ *
+ * Lock-Pattern: tryLock statt waitLock — Single-Operation darf nicht parallel laufen.
+ * Bei Konflikt direktes Error-Return statt 5s-Blocking → klarere Frontend-Meldung.
+ *
+ * Spec: docs/superpowers/specs/2026-05-11-cluster-f-testdaten-infrastruktur-design.md §5.1
+ * Plan: docs/superpowers/plans/2026-05-11-cluster-f-testdaten-f2-backend.md
+ */
+function apiAdminSeedTestdaten_(body) {
+  var startMs = Date.now();
+  var email = String((body && body.email) || '').toLowerCase().trim();
+  var mode = String((body && body.mode) || 'initial');
+
+  if (!istZugelasseneLP(email)) {
+    return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  }
+  var lpInfo = getLPInfo(email);
+  if (!lpInfo || lpInfo.rolle !== 'admin') {
+    return jsonResponse({ success: false, error: 'Nur Admins dürfen Testdaten verwalten' });
+  }
+  if (mode !== 'initial' && mode !== 'reset') {
+    return jsonResponse({ success: false, error: 'Ungültiger mode: ' + mode + ' (erwartet: initial|reset)' });
+  }
+
+  var lock = LockService.getScriptLock();
+  try {
+    if (!lock.tryLock(5000)) {
+      return jsonResponse({ success: false, error: 'Testdaten-Operation läuft bereits, bitte erneut versuchen' });
+    }
+    var statistik = seedTestdaten_(mode, email);
+    try { cacheInvalidieren_(); } catch (cacheErr) { Logger.log('cacheInvalidieren_ Fehler (ignoriert): ' + cacheErr.message); }
+    var dauerMs = Date.now() - startMs;
+    return jsonResponse({ success: true, statistik: statistik, dauerMs: dauerMs });
+  } catch (e) {
+    Logger.log('apiAdminSeedTestdaten_ Fehler: ' + e.message + '\n' + (e.stack || ''));
+    return jsonResponse({ success: false, error: 'Seed-Fehler: ' + e.message });
+  } finally {
+    try { lock.releaseLock(); } catch (_e) { /* ignore */ }
+  }
+}
+
+/**
+ * Skelett — wird in Phasen F.2.b-e ausgebaut.
+ * Aktuell: gibt leere Statistik zurück. Kein Side-Effect auf Sheets.
+ * Wire-Vertrag-Felder bleiben über F.2.a→F.2.e konstant.
+ */
+function seedTestdaten_(mode, callerEmail) {
+  var geloescht = null;
+  if (mode === 'reset') {
+    geloescht = loescheAlleTestdaten_();
+    Logger.log('Reset durchgeführt: ' + JSON.stringify(geloescht));
+  }
+
+  var lp = seedTestdatenLP_();
+  var kurs = seedTestdatenKurs_();
+  var sus = seedTestdatenSuS_();
+  var pruefung = seedTestdatenPruefung_();
+  // Hardening gegen Crash zwischen Pruefung-Insert und Antworten-Insert:
+  // Trigger Antworten-Seed wenn Pruefung NEU angelegt ODER Antworten-Sheet noch leer.
+  // Die Sub-Funktion ist intern idempotent (existingAntwEmails-Check).
+  var antwortenSheetForCheck = getOrCreateAntwortenSheet(TEST_PRUEFUNG_1_ID);
+  var antwortenLeer = antwortenSheetForCheck && antwortenSheetForCheck.getLastRow() <= 1;
+  var antworten = (pruefung.angelegt > 0 || antwortenLeer)
+    ? seedTestdatenAntwortenUndKorrekturen_()
+    : { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
+
+  var gruppe = seedTestdatenGruppe_();
+  var sessions = gruppe.spreadsheetId
+    ? seedTestdatenSessionsUndFortschritt_(gruppe.spreadsheetId)
+    : { sessionsAngelegt: 0, fortschrittAngelegt: 0 };
+  installiereTestdatenRollTrigger_();
+
+  return {
+    mode: mode,
+    callerEmail: callerEmail,
+    geloeschtBeiReset: geloescht,
+    stammdatenErgaenzt: !!(kurs.kursAngelegt || kurs.susTabAngelegt),
+    klasseAngelegt: false,    // Klassen-Sheet existiert nicht — emergent
+    kursAngelegt: kurs.kursAngelegt,
+    susTabAngelegt: kurs.susTabAngelegt,
+    testLpAngelegt: lp.angelegt,
+    testSuSAngelegt: sus.angelegt,
+    testSuSVorhanden: sus.vorhanden,
+    testPruefungenAngelegt: pruefung.angelegt,
+    testAntwortenAngelegt: antworten.antwortenAngelegt,
+    testKorrekturenAngelegt: antworten.korrekturenAngelegt,
+    testUebungenAngelegt: gruppe.angelegt,
+    testSessionsAngelegt: sessions.sessionsAngelegt,
+    testFortschrittAngelegt: sessions.fortschrittAngelegt
+  };
+}
+
+/** ISO-Datum (YYYY-MM-DD) tageZurueck Tage vor heute. */
+function testdatumVorTagen_(tageZurueck) {
+  var d = new Date();
+  d.setDate(d.getDate() - tageZurueck);
+  return Utilities.formatDate(d, 'Europe/Zurich', 'yyyy-MM-dd');
+}
+
+/** Voller ISO-Timestamp tageZurueck Tage vor heute. */
+function testIsoDatumVorTagen_(tageZurueck) {
+  var d = new Date();
+  d.setDate(d.getDate() - tageZurueck);
+  return d.toISOString();
+}
+
+/**
+ * Test-LP-Profil im CONFIGS_ID Lehrpersonen-Sheet anlegen.
+ * Email: wr.test@gymhofwil.ch (rolle 'lp', kein Admin).
+ * Schema verifiziert via getLPInfo Z.425-432: email, name, kuerzel, fachschaft, rolle, apikey, aktiv.
+ * Idempotent: zweite Ausführung ist No-Op.
+ */
+function seedTestdatenLP_() {
+  var sheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
+  if (!sheet) throw new Error('Lehrpersonen-Sheet nicht in CONFIGS_ID gefunden');
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var emailCol = headers.indexOf('email');
+  if (emailCol < 0) throw new Error('Lehrpersonen-Sheet hat keine "email"-Spalte');
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][emailCol]).toLowerCase().trim() === TEST_LP_EMAIL) {
+      return { angelegt: false };
+    }
+  }
+  var zeile = new Array(data[0].length).fill('');
+  var setIf = function(name, value) {
+    var c = headers.indexOf(name);
+    if (c >= 0) zeile[c] = value;
+  };
+  setIf('email', TEST_LP_EMAIL);
+  setIf('name', 'WR Test');
+  setIf('kuerzel', 'WT');
+  setIf('fachschaft', 'WR');
+  setIf('rolle', 'lp');
+  setIf('aktiv', true);
+  sheet.appendRow(zeile);
+  return { angelegt: true };
+}
+
+/**
+ * Test-Kurs im KURSE_SHEET_ID Kurse-Sheet anlegen.
+ * Spalten verifiziert via ladeKurseEndpoint Z.1925-1939 + ladeKursDetailsEndpoint Z.1948-1949:
+ *   kursId, klassen (CSV), lpEmail, aktiv ('false' für inaktiv), name (sofern Spalte existiert).
+ * Klassen-Sheet existiert NICHT — die Test-Klasse ist emergent durch klassen='test-klasse-01'.
+ * Zusätzlich: leerer SuS-Tab mit Namen TEST_KURS_ID wird hier vorbereitet (Schueler werden in F.2.b.3 eingefügt).
+ *
+ * Idempotent.
+ */
+function seedTestdatenKurs_() {
+  var ergebnis = { kursAngelegt: false, susTabAngelegt: false };
+  var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+  var kurseSheet = kurseSS.getSheetByName('Kurse');
+  if (!kurseSheet) throw new Error('Kurse-Sheet nicht in KURSE_SHEET_ID gefunden');
+
+  var data = kurseSheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var kursIdCol = headers.indexOf('kursid');
+  if (kursIdCol < 0) throw new Error('Kurse-Sheet hat keine "kursId"-Spalte');
+
+  var hatKurs = false;
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][kursIdCol]).trim() === TEST_KURS_ID) { hatKurs = true; break; }
+  }
+
+  if (!hatKurs) {
+    var zeile = new Array(data[0].length).fill('');
+    var setIf = function(name, value) {
+      var c = headers.indexOf(String(name).toLowerCase());
+      if (c >= 0) zeile[c] = value;
+    };
+    setIf('kursid', TEST_KURS_ID);
+    setIf('klassen', TEST_KLASSE_ID);
+    setIf('lpemail', TEST_LP_EMAIL);
+    setIf('aktiv', true);
+    setIf('name', 'Testkurs WR');
+    setIf('fach', 'Wirtschaft & Recht');
+    setIf('gefaess', 'SF');
+    setIf('fachschaft', 'WR');
+    setIf('semester', 'HS25');
+    kurseSheet.appendRow(zeile);
+    ergebnis.kursAngelegt = true;
+  }
+
+  // SuS-Tab vorbereiten (Tab-Name = kursId)
+  var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+  if (!susTab) {
+    susTab = kurseSS.insertSheet(TEST_KURS_ID);
+    susTab.getRange('A1:F1').setValues([['email', 'name', 'vorname', 'klasse', 'schuelerID', 'geschlecht']]);
+    susTab.getRange('A1:F1').setFontWeight('bold');
+    ergebnis.susTabAngelegt = true;
+  }
+
+  return ergebnis;
+}
+
+/**
+ * 20 Test-SuS in KURSE_SHEET_ID Tab TEST_KURS_ID anlegen.
+ * Idempotent: prüft email-Spalte, überspringt vorhandene.
+ *
+ * Pre-Check (Spec §7 Daten-Sicherheit): falls eine TEST_SUS_EMAIL bereits in einem ANDEREN
+ * Kurs-Tab existiert (Echt-Kollision: unwahrscheinlich, aber Daten-Loss-Risiko bei späterem Reset),
+ * bricht ab mit klarem Fehler. Reset würde via TEST_EMAIL_REGEX matchen und Echt-SuS löschen.
+ */
+function seedTestdatenSuS_() {
+  var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+
+  // Pre-Check: Echt-SuS-Email-Kollision
+  var kollisionen = [];
+  var alleTabs = kurseSS.getSheets();
+  for (var t = 0; t < alleTabs.length; t++) {
+    var tab = alleTabs[t];
+    var tabName = tab.getName();
+    if (tabName === 'Kurse' || tabName === TEST_KURS_ID) continue;
+    // Perf: getLastRow() ist Metadaten-Lookup (kein values-read) — empty-Tab-Shortcut.
+    if (tab.getLastRow() < 2) continue;
+    var tabData = tab.getDataRange().getValues();
+    if (tabData.length < 2) continue;
+    var tabHeaders = tabData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var emailIdx = tabHeaders.indexOf('email');
+    if (emailIdx < 0) continue;
+    for (var r = 1; r < tabData.length; r++) {
+      var em = String(tabData[r][emailIdx] || '').toLowerCase().trim();
+      if (!em) continue;
+      if (TEST_EMAIL_REGEX.test(em)) {
+        kollisionen.push({ tab: tabName, email: em });
+      }
+    }
+  }
+  if (kollisionen.length > 0) {
+    throw new Error(
+      'Test-Email-Kollision: ' + kollisionen.length + ' Echt-SuS-Records haben Test-Pattern-Email. ' +
+      'Beispiel: ' + kollisionen[0].email + ' in Tab ' + kollisionen[0].tab + '. ' +
+      'Reset würde diese SuS löschen. Bitte erst diese Records umbenennen oder TEST_EMAIL_REGEX einschränken.'
+    );
+  }
+
+  // SuS einfügen
+  var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+  if (!susTab) throw new Error('SuS-Tab nicht gefunden (sollte durch seedTestdatenKurs_ angelegt sein)');
+  var data = susTab.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var emailCol = headers.indexOf('email');
+  if (emailCol < 0) throw new Error('SuS-Tab hat keine "email"-Spalte');
+
+  var existing = {};
+  for (var i = 1; i < data.length; i++) {
+    var em2 = String(data[i][emailCol] || '').toLowerCase().trim();
+    if (em2) existing[em2] = true;
+  }
+
+  var setIfFn = function(zeile, name, value) {
+    var c = headers.indexOf(String(name).toLowerCase());
+    if (c >= 0) zeile[c] = value;
+  };
+
+  var neueZeilen = [];
+  for (var k = 0; k < TEST_SUS_EMAILS.length; k++) {
+    var email = TEST_SUS_EMAILS[k];
+    if (existing[email]) continue;
+    var zeile = new Array(data[0].length).fill('');
+    setIfFn(zeile, 'email', email);
+    setIfFn(zeile, 'name', TEST_SUS_NACHNAMEN[k]);
+    setIfFn(zeile, 'vorname', TEST_SUS_VORNAMEN[k]);
+    setIfFn(zeile, 'klasse', TEST_KLASSE_ID);
+    // padStart benötigt Apps-Script V8-Runtime (in appsscript.json: "runtimeVersion": "V8").
+    setIfFn(zeile, 'schuelerid', 'test-' + (k + 1).toString().padStart(3, '0'));
+    setIfFn(zeile, 'geschlecht', k % 2 === 0 ? 'm' : 'w');
+    neueZeilen.push(zeile);
+  }
+
+  if (neueZeilen.length > 0) {
+    var letzteZeile = susTab.getLastRow();
+    susTab.getRange(letzteZeile + 1, 1, neueZeilen.length, data[0].length).setValues(neueZeilen);
+  }
+  return { angelegt: neueZeilen.length, vorhanden: TEST_SUS_EMAILS.length - neueZeilen.length };
+}
+
+// ─── F.2.c: Test-Prüfung + Antworten + Korrekturen ───────────────────────────
+
+/**
+ * Liefert deterministisch sortierte Frage-IDs für Test-Prüfung 1.
+ * Strategy: bis zu 5 Fragen aus jedem Pool (bwl_einfuehrung + recht_einfuehrung) → max 10.
+ * Sortiert alphabetisch nach ID (Determinismus).
+ *
+ * Schema: FRAGENSAMMLUNG_ID hat Sheets pro Fachbereich (BWL/Recht/VWL/...).
+ * Pro Sheet werden Fragen über 'thema'-Spalte gefiltert.
+ *
+ * Wichtig (Z.149-150): die 'thema'-Spalte enthält den DISPLAY-Titel (z.B. "Einführung BWL"),
+ * NICHT die Pool-ID. Pool-IDs werden via THEMEN_MAPPING in Display-Titel übersetzt.
+ * Skip-Pfad: System-Tabs (FRAGENSAMMLUNG_SYSTEM_TABS).
+ */
+function holeTestPruefungFragenIds_() {
+  var poolIds = ['bwl_einfuehrung', 'recht_einfuehrung'];
+  // Pool-ID → Display-Titel (Sheet-Wert). Fallback: Pool-ID selbst (z.B. alte Sheets ohne Migration).
+  var poolTitel = {};
+  poolIds.forEach(function(pid) {
+    poolTitel[pid] = (typeof THEMEN_MAPPING !== 'undefined' && THEMEN_MAPPING[pid]) || pid;
+  });
+
+  var fragensammlungSS = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var sheets = fragensammlungSS.getSheets();
+  var ergebnisProPool = {};
+  poolIds.forEach(function(pid) { ergebnisProPool[pid] = []; });
+
+  for (var s = 0; s < sheets.length; s++) {
+    var sh = sheets[s];
+    var sheetName = sh.getName();
+    if (FRAGENSAMMLUNG_SYSTEM_TABS.indexOf(sheetName) >= 0) continue;
+    var data = sh.getDataRange().getValues();
+    if (data.length < 2) continue;
+    var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var idCol = headers.indexOf('id');
+    var themaCol = headers.indexOf('thema');
+    if (idCol < 0 || themaCol < 0) continue;
+    for (var r = 1; r < data.length; r++) {
+      var themaWert = String(data[r][themaCol] || '').trim();
+      if (!themaWert) continue;
+      // Match: Pool-Display-Titel als PREFIX (echte Sheet-Werte erweitern den
+      // THEMEN_MAPPING-Titel mit Em-Dash-Suffix, z.B. "Einführung BWL" →
+      // "Einführung BWL – Grundlagen der Betriebswirtschaftslehre") ODER Pool-ID
+      // (Backwards-Compat für nicht-migrierte Sheets).
+      poolIds.forEach(function(pid) {
+        var titel = poolTitel[pid];
+        if (themaWert.indexOf(titel) === 0 || themaWert === pid) {
+          ergebnisProPool[pid].push(String(data[r][idCol]));
+        }
+      });
+    }
+  }
+
+  var ergebnis = [];
+  poolIds.forEach(function(pid) {
+    ergebnisProPool[pid].sort();
+    ergebnis = ergebnis.concat(ergebnisProPool[pid].slice(0, 5));
+  });
+  return ergebnis;
+}
+
+/**
+ * Test-Prüfung 1 in CONFIGS_ID/Configs anlegen.
+ * Status 'beendet' (alle 20 SuS haben abgegeben + sind korrigiert).
+ * Schema aus ladePruefung Z.2092-2123 verifiziert.
+ *
+ * Return: { angelegt, vorhanden, fragenAnzahl }
+ */
+function seedTestdatenPruefung_() {
+  var fragenIds = holeTestPruefungFragenIds_();
+  if (fragenIds.length === 0) {
+    throw new Error('Keine Pool-Fragen gefunden für Test-Prüfung — Pools "bwl_einfuehrung" / "recht_einfuehrung" sind leer oder Schema-Pfad falsch');
+  }
+
+  var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  if (!configsSheet) throw new Error('Configs-Sheet nicht gefunden');
+  var data = configsSheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var idCol = headers.indexOf('id');
+  if (idCol < 0) throw new Error('Configs-Sheet hat keine "id"-Spalte');
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][idCol]).trim() === TEST_PRUEFUNG_1_ID) {
+      return { angelegt: 0, vorhanden: 1, fragenAnzahl: fragenIds.length };
+    }
+  }
+
+  var zeile = new Array(data[0].length).fill('');
+  var setIf = function(name, value) {
+    var c = headers.indexOf(String(name).toLowerCase());
+    if (c >= 0) zeile[c] = value;
+  };
+
+  setIf('id', TEST_PRUEFUNG_1_ID);
+  setIf('titel', '[Test] Einführungsprüfung WR');
+  setIf('klasse', TEST_KLASSE_ID);
+  setIf('erlaubteKlasse', TEST_KLASSE_ID);
+  setIf('gefaess', 'SF');
+  setIf('semester', 'HS25');
+  setIf('fachbereiche', 'BWL,Recht');
+  setIf('datum', testdatumVorTagen_(14));
+  setIf('typ', 'Lernkontrolle');
+  setIf('modus', 'pruefung');
+  setIf('zeitModus', 'countdown');
+  setIf('dauerMinuten', 45);
+  setIf('gesamtpunkte', fragenIds.length * 4);
+  setIf('sebErforderlich', 'false');
+  setIf('abschnitte', JSON.stringify([{ id: 'a1', titel: 'Einführung', fragenIds: fragenIds }]));
+  setIf('zeitanzeigeTyp', 'countdown');
+  setIf('ruecknavigation', 'true');
+  setIf('autoSaveIntervallSekunden', 30);
+  setIf('heartbeatIntervallSekunden', 15);
+  setIf('zufallsreihenfolgeFragen', 'false');
+  setIf('freigeschaltet', 'true');
+  setIf('zeitverlaengerungen', JSON.stringify({}));
+  setIf('sebAusnahmen', JSON.stringify([]));
+  setIf('teilnehmer', JSON.stringify(TEST_SUS_EMAILS.map(function(e) { return { email: e }; })));
+  setIf('materialien', JSON.stringify([]));
+  setIf('beendetUm', testIsoDatumVorTagen_(14));
+  setIf('durchfuehrungId', Utilities.getUuid());
+  setIf('status', 'beendet');
+
+  configsSheet.appendRow(zeile);
+  return { angelegt: 1, vorhanden: 0, fragenAnzahl: fragenIds.length };
+}
+
+/**
+ * Liefert eine deterministische Antwort im Frontend-Antwort-Schema, abhängig von Fragetyp + SuS-Index.
+ * Schema aus autoBewerteAntwort Z.6934-6990 verifiziert.
+ *
+ * Korrektheits-Verteilung über 20 SuS:
+ *   susIndex 0-9   (10 SuS): korrekte Antwort
+ *   susIndex 10-14 (5 SuS):  teils richtig
+ *   susIndex 15-19 (5 SuS):  falsche Antwort
+ */
+function testAntwortFuerFrage_(frage, susIndex) {
+  var korrekt = susIndex < 10;
+  var teils = susIndex >= 10 && susIndex < 15;
+
+  switch (frage.typ) {
+    case 'mc': {
+      var optionen = frage.optionen || [];
+      var korrekteIds = optionen.filter(function(o) { return o.korrekt; }).map(function(o) { return o.id; });
+      var falscheIds = optionen.filter(function(o) { return !o.korrekt; }).map(function(o) { return o.id; });
+      if (korrekt) return { gewaehlteOptionen: korrekteIds };
+      if (teils) {
+        var teilsAuswahl = [];
+        if (korrekteIds.length > 0) teilsAuswahl.push(korrekteIds[0]);
+        if (falscheIds.length > 0) teilsAuswahl.push(falscheIds[0]);
+        return { gewaehlteOptionen: teilsAuswahl };
+      }
+      return { gewaehlteOptionen: falscheIds.slice(0, 1) };
+    }
+    case 'richtigfalsch': {
+      var aussagen = frage.aussagen || [];
+      var bewertungen = {};
+      // SuS-Bewertung = Soll-Wert → SuS trifft die Wahrheit (für korrekt + teils-Range).
+      for (var a = 0; a < aussagen.length; a++) {
+        var ag = aussagen[a];
+        if (korrekt) bewertungen[ag.id] = ag.korrekt;
+        else if (teils && a < Math.floor(aussagen.length * 0.6)) bewertungen[ag.id] = ag.korrekt;
+        else bewertungen[ag.id] = !ag.korrekt;
+      }
+      return { bewertungen: bewertungen };
+    }
+    case 'zuordnung': {
+      var paare = frage.paare || [];
+      var zuordnungen = {};
+      for (var z = 0; z < paare.length; z++) {
+        var p = paare[z];
+        if (korrekt) zuordnungen[p.links] = p.rechts;
+        else if (teils && z < Math.floor(paare.length * 0.6)) zuordnungen[p.links] = p.rechts;
+        else zuordnungen[p.links] = (paare[(z + 1) % paare.length] || p).rechts;
+      }
+      return { zuordnungen: zuordnungen };
+    }
+    case 'lueckentext': {
+      var luecken = frage.luecken || [];
+      var eintraege = {};
+      for (var l = 0; l < luecken.length; l++) {
+        var lu = luecken[l];
+        var korrektAntw = lu.korrekt || (lu.korrekteAntworten && lu.korrekteAntworten[0]) || '';
+        if (korrekt) eintraege[lu.id] = korrektAntw;
+        else if (teils && l < Math.floor(luecken.length * 0.6)) eintraege[lu.id] = korrektAntw;
+        else eintraege[lu.id] = String(korrektAntw).substring(0, Math.max(1, Math.floor(String(korrektAntw).length / 2)));
+      }
+      return { eintraege: eintraege };
+    }
+    case 'berechnung': {
+      var ergebnisse = frage.ergebnisse || [];
+      var antwErgebnisse = {};
+      for (var e = 0; e < ergebnisse.length; e++) {
+        var er = ergebnisse[e];
+        if (korrekt) antwErgebnisse[er.id] = String(er.korrekt);
+        else if (teils && e < Math.floor(ergebnisse.length * 0.6)) antwErgebnisse[er.id] = String(er.korrekt);
+        else antwErgebnisse[er.id] = String(Number(er.korrekt) + 1);
+      }
+      return { ergebnisse: antwErgebnisse };
+    }
+    case 'freitext':
+      return { text: korrekt ? '[Test] Ausführliche Antwort mit korrekten Argumenten.' : '[Test] Kurze Antwort.' };
+    default:
+      return {};
+  }
+}
+
+/**
+ * Bewertet eine Antwort manuell für Korrektur-Sheet-Eintrag.
+ * Auto-Typen: nutzt autoBewerteAntwort.
+ * Freitext: feste KI-Bewertung mit Anteil-Punkten.
+ */
+function testBewertungFuerAntwort_(frage, antwort, susIndex) {
+  var autoTypen = ['mc', 'richtigfalsch', 'zuordnung', 'lueckentext', 'berechnung'];
+  if (autoTypen.indexOf(frage.typ) >= 0) {
+    var auto = autoBewerteAntwort(frage, antwort);
+    return {
+      punkte: auto.punkte,
+      maxPunkte: Number(frage.punkte) || 4,
+      begruendung: auto.begruendung,
+      quelle: 'auto'
+    };
+  }
+  var anteil = susIndex < 10 ? 1.0 : (susIndex < 15 ? 0.6 : 0.2);
+  var maxP = Number(frage.punkte) || 4;
+  return {
+    punkte: Math.round(anteil * maxP * 10) / 10,
+    maxPunkte: maxP,
+    begruendung: '[Test-KI-Bewertung] Anteil ' + (anteil * 100) + '%',
+    quelle: 'ki'
+  };
+}
+
+/**
+ * Für Test-Prüfung 1 alle 20 SuS-Antworten + Korrekturen anlegen.
+ * Nutzt bestehende getOrCreateAntwortenSheet (Z.1688) + getOrCreateKorrekturSheet (Z.7121) Helpers.
+ *
+ * Antworten: 1 Row pro SuS, alle Frage-Antworten als JSON-Object in `antworten`-Spalte.
+ * Korrekturen: 1 Row pro (SuS × Frage) mit 13 Spalten (Schema aus batchKorrektur Z.7084).
+ *
+ * Idempotent: bestehende Rows werden nicht überschrieben (Pre-Check via email).
+ */
+function seedTestdatenAntwortenUndKorrekturen_() {
+  var fragenIds = holeTestPruefungFragenIds_();
+  if (fragenIds.length === 0) return { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
+
+  // Single ladeFragen-Call statt doppelt (holeFragenMeta_ wäre redundant —
+  // typ + punkte werden aus fragen[] direkt gelesen).
+  var fragen = ladeFragen(fragenIds);
+  var fragenMap = {};
+  for (var fi = 0; fi < fragen.length; fi++) fragenMap[fragen[fi].id] = fragen[fi];
+
+  // Antworten-Sheet
+  var antwortenSheet = getOrCreateAntwortenSheet(TEST_PRUEFUNG_1_ID);
+  if (!antwortenSheet) throw new Error('getOrCreateAntwortenSheet returnte null für Test-Prüfung');
+  var antwortenData = antwortenSheet.getDataRange().getValues();
+  var antwortenHeaders = antwortenData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var emailColAntw = antwortenHeaders.indexOf('email');
+  var existingAntwEmails = {};
+  for (var ar = 1; ar < antwortenData.length; ar++) {
+    var em = String(antwortenData[ar][emailColAntw] || '').toLowerCase().trim();
+    if (em) existingAntwEmails[em] = true;
+  }
+
+  var antwortenZeilen = [];
+  var korrekturZeilen = [];
+  var jetztIso = testIsoDatumVorTagen_(13);
+
+  for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
+    var email = TEST_SUS_EMAILS[s];
+    if (existingAntwEmails[email]) continue;
+
+    var name = TEST_SUS_VORNAMEN[s] + ' ' + TEST_SUS_NACHNAMEN[s];
+    var susAntworten = {};
+
+    for (var k = 0; k < fragenIds.length; k++) {
+      var frageId = fragenIds[k];
+      var frage = fragenMap[frageId];
+      if (!frage) continue;
+      var antwort = testAntwortFuerFrage_(frage, s);
+      susAntworten[frageId] = antwort;
+
+      var bewertung = testBewertungFuerAntwort_(frage, antwort, s);
+      korrekturZeilen.push({
+        email: email,
+        name: name,
+        frageId: frageId,
+        fragenTyp: frage.typ,
+        maxPunkte: bewertung.maxPunkte,
+        kiPunkte: bewertung.punkte,
+        lpPunkte: '',
+        kiBegruendung: bewertung.begruendung,
+        kiFeedback: '',
+        lpKommentar: '',
+        quelle: bewertung.quelle,
+        geprueft: bewertung.quelle === 'auto' ? 'true' : 'false',
+        status: bewertung.quelle === 'auto' ? 'auto-bewertet' : 'ki-bewertet'
+      });
+    }
+
+    var antwZeile = new Array(antwortenHeaders.length).fill('');
+    var setAntw = function(colName, value) {
+      var c = antwortenHeaders.indexOf(String(colName).toLowerCase());
+      if (c >= 0) antwZeile[c] = value;
+    };
+    setAntw('email', email);
+    setAntw('name', name);
+    setAntw('version', 1);
+    setAntw('antworten', JSON.stringify(susAntworten));
+    setAntw('letzterSave', jetztIso);
+    setAntw('istAbgabe', 'true');
+    setAntw('letzterHeartbeat', jetztIso);
+    setAntw('heartbeats', JSON.stringify([jetztIso]));
+    setAntw('beantworteteFragen', fragenIds.length);
+    setAntw('gesamtFragen', fragenIds.length);
+    antwortenZeilen.push(antwZeile);
+  }
+
+  if (antwortenZeilen.length > 0) {
+    var letzteAntw = antwortenSheet.getLastRow();
+    antwortenSheet.getRange(letzteAntw + 1, 1, antwortenZeilen.length, antwortenHeaders.length).setValues(antwortenZeilen);
+  }
+
+  if (korrekturZeilen.length > 0) {
+    var korrekturSheet = getOrCreateKorrekturSheet(TEST_PRUEFUNG_1_ID);
+    if (!korrekturSheet) throw new Error('getOrCreateKorrekturSheet returnte null');
+    var korrekturHeaders = ['email', 'name', 'frageId', 'fragenTyp', 'maxPunkte', 'kiPunkte', 'lpPunkte', 'kiBegruendung', 'kiFeedback', 'lpKommentar', 'quelle', 'geprueft', 'status'];
+
+    var existingKorrData = korrekturSheet.getDataRange().getValues();
+    if (existingKorrData.length > 1) {
+      Logger.log('Korrektur-Sheet hat bereits ' + (existingKorrData.length - 1) + ' Rows, kein Re-Insert');
+    } else {
+      korrekturSheet.clear();
+      korrekturSheet.getRange(1, 1, 1, korrekturHeaders.length).setValues([korrekturHeaders]).setFontWeight('bold');
+      var rows = korrekturZeilen.map(function(z) {
+        return korrekturHeaders.map(function(h) { return z[h] !== undefined ? z[h] : ''; });
+      });
+      korrekturSheet.getRange(2, 1, rows.length, korrekturHeaders.length).setValues(rows);
+      // Cache-Invalidate inkludiert (setKorrekturStatus Z.7139-7152).
+      setKorrekturStatus(korrekturSheet, 'fertig', korrekturZeilen.length, korrekturZeilen.length);
+    }
+  }
+
+  return {
+    antwortenAngelegt: antwortenZeilen.length,
+    korrekturenAngelegt: korrekturZeilen.length
+  };
+}
+
+// ─── F.2.d: Test-Übungs-Gruppe + Sessions + Mastery + Roll-Trigger ────────────
+
+/**
+ * Test-Übungs-Gruppe anlegen: neues Spreadsheet im Drive, 5 Sheets, Registry-Eintrag.
+ * Idempotent via GRUPPEN_REGISTRY/Gruppen-Sheet-Check gegen TEST_GRUPPE_ID.
+ *
+ * GRUPPEN_REGISTRY Schema (verifiziert Z.402-421 + Z.9111):
+ *   id | name | typ | adminEmail | fragensammlungSheetId | analytikSheetId
+ * Sheet-Struktur analog uebenErstelleGruppe Z.9081-9106 (Fragen/Mitglieder/Auftraege/Fortschritt/Sessions).
+ * Sessions-Init: 8 Spalten (Bonus-Fix bereits aus F.2.a aktiv).
+ *
+ * Mitglieder.code = '' für alle 20 SuS: bewusst leer. SuS müssen per Email-Identity
+ * einloggen (Google-OAuth-Pfad via istGruppenMitglied_ Z.360-378), nicht per Code-Flow.
+ * Code-Login (uebenLoginMitCode Z.8920-8961) erwartet code.length >= 4 — wäre für
+ * Testdaten Overhead ohne Mehrwert.
+ */
+function seedTestdatenGruppe_() {
+  var registrySheet = getGruppenRegistry_();
+  if (!registrySheet) {
+    throw new Error('GRUPPEN_REGISTRY "Gruppen"-Sheet nicht gefunden — GRUPPEN_REGISTRY_ID oder Sheet-Name prüfen');
+  }
+
+  var rData = registrySheet.getDataRange().getValues();
+  var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var gIdCol = rHeaders.indexOf('id');
+  var ssIdCol = rHeaders.indexOf('fragensammlungsheetid');
+  if (gIdCol < 0) {
+    throw new Error('GRUPPEN_REGISTRY/Gruppen hat keine "id"-Spalte — Schema in F.2.d.1 verifizieren');
+  }
+  if (ssIdCol < 0) {
+    throw new Error('GRUPPEN_REGISTRY/Gruppen hat keine "fragensammlungSheetId"-Spalte — Schema in F.2.d.1 verifizieren');
+  }
+
+  // Idempotenz: bereits vorhanden?
+  for (var i = 1; i < rData.length; i++) {
+    if (String(rData[i][gIdCol]).trim() === TEST_GRUPPE_ID) {
+      return { angelegt: 0, vorhanden: 1, spreadsheetId: String(rData[i][ssIdCol]) };
+    }
+  }
+
+  // Neues Spreadsheet anlegen
+  var neueSS = SpreadsheetApp.create('ExamLab: [Test] Übungs-Gruppe');
+  var neueSSId = neueSS.getId();
+  var jetztIso = new Date().toISOString();
+
+  // 1. Fragen-Sheet (1. Sheet, leer für Test-Gruppe — Fragen aus FRAGENSAMMLUNG sind global)
+  var fragenSheet = neueSS.getSheets()[0];
+  fragenSheet.setName('Fragen');
+  fragenSheet.getRange('A1:T1').setValues([[
+    'id', 'fach', 'thema', 'typ', 'schwierigkeit', 'taxonomie',
+    'frage', 'erklaerung', 'uebung', 'pruefungstauglich',
+    'optionen', 'korrekt', 'aussagen', 'luecken', 'toleranz',
+    'einheit', 'kategorien', 'elemente', 'reihenfolge', 'daten'
+  ]]);
+
+  // 2. Mitglieder
+  var mitgliederSheet = neueSS.insertSheet('Mitglieder');
+  mitgliederSheet.getRange('A1:E1').setValues([['email', 'name', 'rolle', 'code', 'beigetreten']]);
+  var mitgliederZeilen = [];
+  for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
+    mitgliederZeilen.push([
+      TEST_SUS_EMAILS[s],
+      TEST_SUS_VORNAMEN[s] + ' ' + TEST_SUS_NACHNAMEN[s],
+      'schueler',
+      '',
+      jetztIso
+    ]);
+  }
+  mitgliederZeilen.push([TEST_LP_EMAIL, 'WR Test', 'lehrperson', '', jetztIso]);
+  mitgliederSheet.getRange(2, 1, mitgliederZeilen.length, 5).setValues(mitgliederZeilen);
+
+  // 3. Auftraege
+  var auftraegeSheet = neueSS.insertSheet('Auftraege');
+  auftraegeSheet.getRange('A1:F1').setValues([['id', 'titel', 'fach', 'thema', 'deadline', 'aktiv']]);
+  auftraegeSheet.appendRow([
+    'test-auftrag-01',
+    '[Test] Selbstständiges Üben WR',
+    'Wirtschaft & Recht',
+    'bwl_einfuehrung,recht_einfuehrung',
+    testdatumVorTagen_(-14),
+    true
+  ]);
+
+  // 4. Fortschritt
+  var fortschrittSheet = neueSS.insertSheet('Fortschritt');
+  fortschrittSheet.getRange('A1:H1').setValues([[
+    'email', 'fragenId', 'versuche', 'richtig', 'richtigInFolge', 'mastery', 'letzterVersuch', 'sessionIds'
+  ]]);
+
+  // 5. Sessions (8 Spalten gemäß F.2.a Bonus-Fix)
+  var sessionSheet = neueSS.insertSheet('Sessions');
+  sessionSheet.getRange('A1:H1').setValues([[
+    'sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis', 'anzahlFragen', 'richtig'
+  ]]);
+
+  // Registry-Eintrag (Schema: id | name | typ | adminEmail | fragensammlungSheetId | analytikSheetId)
+  var neueRegistryZeile = new Array(rData[0].length).fill('');
+  neueRegistryZeile[gIdCol] = TEST_GRUPPE_ID;
+  neueRegistryZeile[ssIdCol] = neueSSId;
+  var nameCol = rHeaders.indexOf('name');
+  if (nameCol >= 0) neueRegistryZeile[nameCol] = '[Test] Übungs-Gruppe WR';
+  var typCol = rHeaders.indexOf('typ');
+  if (typCol >= 0) neueRegistryZeile[typCol] = 'gym';
+  var adminCol = rHeaders.indexOf('adminemail');
+  if (adminCol >= 0) neueRegistryZeile[adminCol] = TEST_LP_EMAIL;
+  registrySheet.appendRow(neueRegistryZeile);
+
+  return { angelegt: 1, vorhanden: 0, spreadsheetId: neueSSId };
+}
+
+/**
+ * Pro SuS 3-8 Sessions deterministisch über 6 Wochen verteilt.
+ * Datums-Spread: tagZurueck = ((susIndex * 3 + sessionIndex * 5) % 41) + 1 → 1-41 Tage zurück.
+ *
+ * Fortschritt-Records pro SuS × Frage mit kumulierten Mastery-Werten.
+ *
+ * Idempotent: wenn Sessions-Sheet bereits Rows hat, no-op.
+ */
+function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
+  var ss = SpreadsheetApp.openById(spreadsheetId);
+  var sessionsSheet = ss.getSheetByName('Sessions');
+  var fortschrittSheet = ss.getSheetByName('Fortschritt');
+
+  if (sessionsSheet.getLastRow() > 1) {
+    return { sessionsAngelegt: 0, fortschrittAngelegt: 0, hinweis: 'Sessions bereits vorhanden' };
+  }
+
+  var fragenIds = holeTestPruefungFragenIds_();
+  if (fragenIds.length === 0) return { sessionsAngelegt: 0, fortschrittAngelegt: 0 };
+
+  var sessionZeilen = [];
+  var fortschrittZeilen = [];
+
+  for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
+    var email = TEST_SUS_EMAILS[s];
+    var sessionsCount = 3 + (s % 6);
+    var fragenStatus = {};
+
+    for (var idx = 0; idx < sessionsCount; idx++) {
+      var tagZurueck = ((s * 3 + idx * 5) % 41) + 1;
+      var datum = testdatumVorTagen_(tagZurueck);
+      // Fortschritt.letzterVersuch nutzt ISO-with-time (analog Production-Pfad
+      // Z.~10552 mit Date.toISOString()), damit UI-Anzeige "letzte Aktivität: HH:MM"
+      // konsistent zwischen Test-Daten und Echt-Daten ist.
+      var letzterVersuchIso = testIsoDatumVorTagen_(tagZurueck);
+      var fragenInSession = 4 + (idx % 5);
+      var anteil = s < 10 ? 0.8 : (s < 15 ? 0.6 : 0.4);
+      var richtigCount = Math.floor(fragenInSession * anteil);
+      var sessionId = 'test-session-' + s + '-' + idx;
+
+      sessionZeilen.push([
+        sessionId,
+        email,
+        idx % 2 === 0 ? 'bwl_einfuehrung' : 'recht_einfuehrung',
+        'Wirtschaft & Recht',
+        datum,
+        richtigCount + '/' + fragenInSession,
+        fragenInSession,
+        richtigCount
+      ]);
+
+      for (var fi = 0; fi < fragenInSession; fi++) {
+        var frageId = fragenIds[(idx * fragenInSession + fi) % fragenIds.length];
+        if (!fragenStatus[frageId]) {
+          fragenStatus[frageId] = { versuche: 0, richtig: 0, richtigInFolge: 0, letzterVersuch: letzterVersuchIso, sessionIds: [] };
+        }
+        var st = fragenStatus[frageId];
+        st.versuche++;
+        var warRichtig = fi < richtigCount;
+        if (warRichtig) {
+          st.richtig++;
+          st.richtigInFolge++;
+        } else {
+          st.richtigInFolge = 0;
+        }
+        st.letzterVersuch = letzterVersuchIso;
+        st.sessionIds.push(sessionId);
+      }
+    }
+
+    var ids = Object.keys(fragenStatus);
+    for (var fk = 0; fk < ids.length; fk++) {
+      var st2 = fragenStatus[ids[fk]];
+      var mastery = st2.versuche === 0 ? 0 : Math.round((st2.richtig / st2.versuche) * 100);
+      fortschrittZeilen.push([
+        email, ids[fk], st2.versuche, st2.richtig, st2.richtigInFolge,
+        mastery, st2.letzterVersuch, st2.sessionIds.join(',')
+      ]);
+    }
+  }
+
+  if (sessionZeilen.length > 0) {
+    sessionsSheet.getRange(2, 1, sessionZeilen.length, 8).setValues(sessionZeilen);
+  }
+  if (fortschrittZeilen.length > 0) {
+    fortschrittSheet.getRange(2, 1, fortschrittZeilen.length, 8).setValues(fortschrittZeilen);
+  }
+
+  return { sessionsAngelegt: sessionZeilen.length, fortschrittAngelegt: fortschrittZeilen.length };
+}
+
+/**
+ * Weekly-Trigger: Modulo-Roll-Algorithmus (Spec §6.2):
+ *   neueTageZurueck = ((altTageZurueck - 7) % 42 + 42) % 42
+ *
+ * Verteilung bleibt 0-41 Tage zurück. UI rendert „heute" für 0-Tage-zurück sauber.
+ * Rollt Sessions.datum + Fortschritt.letzterVersuch der Test-Gruppe.
+ */
+function rolleTestdatenMasteryVor() {
+  var registrySheet = getGruppenRegistry_();
+  if (!registrySheet) {
+    Logger.log('rolleTestdatenMasteryVor: GRUPPEN_REGISTRY/Gruppen nicht gefunden, no-op');
+    return { gerolltSessions: 0, gerolltFortschritt: 0, hinweis: 'GRUPPEN_REGISTRY nicht gefunden' };
+  }
+
+  var rData = registrySheet.getDataRange().getValues();
+  var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var gIdCol = rHeaders.indexOf('id');
+  var ssIdCol = rHeaders.indexOf('fragensammlungsheetid');
+  var testSpreadsheetId = null;
+  for (var i = 1; i < rData.length; i++) {
+    if (String(rData[i][gIdCol]).trim() === TEST_GRUPPE_ID) {
+      testSpreadsheetId = String(rData[i][ssIdCol]);
+      break;
+    }
+  }
+  if (!testSpreadsheetId) {
+    Logger.log('rolleTestdatenMasteryVor: Test-Gruppe nicht gefunden, no-op');
+    return { gerolltSessions: 0, gerolltFortschritt: 0, hinweis: 'Test-Gruppe nicht gefunden' };
+  }
+
+  var heute = new Date();
+  heute.setHours(0, 0, 0, 0);
+  var heuteMs = heute.getTime();
+
+  var ss = SpreadsheetApp.openById(testSpreadsheetId);
+
+  // Sessions.datum rollen (yyyy-MM-dd, UI-Datums-Anzeige)
+  var sessions = ss.getSheetByName('Sessions');
+  var sData = sessions.getDataRange().getValues();
+  var sHeaders = sData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var sDatumCol = sHeaders.indexOf('datum');
+  var gerolltSessions = 0;
+  for (var r = 1; r < sData.length; r++) {
+    var altDatum = new Date(String(sData[r][sDatumCol]));
+    if (isNaN(altDatum.getTime())) continue;
+    var diffTage = Math.round((heuteMs - altDatum.getTime()) / (24 * 3600 * 1000));
+    var neueTage = ((diffTage - 7) % 42 + 42) % 42;
+    var neuesDatum = new Date(heuteMs - neueTage * 24 * 3600 * 1000);
+    sessions.getRange(r + 1, sDatumCol + 1).setValue(
+      Utilities.formatDate(neuesDatum, 'Europe/Zurich', 'yyyy-MM-dd')
+    );
+    gerolltSessions++;
+  }
+
+  // Fortschritt.letzterVersuch analog rollen (ISO-with-time, analog Production-Pfad
+  // — Format-Konsistenz für UI-Anzeige "letzte Aktivität: HH:MM").
+  var fortschritt = ss.getSheetByName('Fortschritt');
+  var fData = fortschritt.getDataRange().getValues();
+  var fHeaders = fData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var fDatumCol = fHeaders.indexOf('letzterversuch');
+  var gerolltFortschritt = 0;
+  if (fDatumCol >= 0) {
+    for (var rf = 1; rf < fData.length; rf++) {
+      var altF = new Date(String(fData[rf][fDatumCol]));
+      if (isNaN(altF.getTime())) continue;
+      var diffF = Math.round((heuteMs - altF.getTime()) / (24 * 3600 * 1000));
+      var neueF = ((diffF - 7) % 42 + 42) % 42;
+      fortschritt.getRange(rf + 1, fDatumCol + 1).setValue(
+        new Date(heuteMs - neueF * 24 * 3600 * 1000).toISOString()
+      );
+      gerolltFortschritt++;
+    }
+  }
+
+  Logger.log('rolleTestdatenMasteryVor: ' + gerolltSessions + ' Sessions + ' + gerolltFortschritt + ' Fortschritt-Rows gerollt');
+  return { gerolltSessions: gerolltSessions, gerolltFortschritt: gerolltFortschritt };
+}
+
+/**
+ * Installiert Weekly-Trigger (MO 03:00 Europa/Zurich).
+ * Pattern analog installiereAutoHardDeleteTrigger_ Z.4385: idempotent via deleteTrigger.
+ */
+function installiereTestdatenRollTrigger_() {
+  var triggers = ScriptApp.getProjectTriggers();
+  var alteEntfernt = 0;
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'rolleTestdatenMasteryVor') {
+      ScriptApp.deleteTrigger(triggers[i]);
+      alteEntfernt++;
+    }
+  }
+  ScriptApp.newTrigger('rolleTestdatenMasteryVor')
+    .timeBased()
+    .everyWeeks(1)
+    .onWeekDay(ScriptApp.WeekDay.MONDAY)
+    .atHour(3)
+    .create();
+  Logger.log('Testdaten-Roll-Trigger installiert (MO 03:00). Alte entfernt: ' + alteEntfernt);
+  return { installiert: 1, alteEntfernt: alteEntfernt };
+}
+
+/** Public Wrapper für GAS-Editor-Run-Knopf (Trigger-Permission-Grant Schritt). */
+function installiereTestdatenRollTrigger() {
+  return installiereTestdatenRollTrigger_();
+}
+
+// ─── F.2.e: Reset (loescheAlleTestdaten_) ────────────────────────────────────
+
+/**
+ * Löscht alle Test-Records aus allen Storage-Pfaden.
+ * Filter-Logik analog Frontend istTestdaten (single source of truth).
+ *
+ * Wichtig: WIR LÖSCHEN NUR IM test-kurs-01-Tab, NICHT über alle Kurs-Tabs.
+ * Echt-SuS mit Test-Pattern-Email werden durch Pre-Check (seedTestdatenSuS_) verhindert.
+ *
+ * Reihenfolge (abhängige Daten zuerst):
+ *  1. Antworten + Korrektur-Tabs (im ANTWORTEN_MASTER_ID)
+ *  2. Test-Prüfung in Configs
+ *  3. Test-Spreadsheet trashen + Registry-Eintrag entfernen
+ *  4. SuS-Tab in KURSE_SHEET_ID
+ *  5. Test-Kurs in Kurse-Sheet
+ *  6. Test-LP in Lehrpersonen-Sheet
+ *
+ * Return: Counters pro Bereich.
+ */
+function loescheAlleTestdaten_() {
+  var counter = {
+    antwortenTabsGeloescht: 0,
+    korrekturTabsGeloescht: 0,
+    pruefungenGeloescht: 0,
+    testSpreadsheetGetrasht: false,
+    registryGeloescht: 0,
+    susTabGeloescht: false,
+    kurseGeloescht: 0,
+    lpGeloescht: 0,
+    fehler: []
+  };
+
+  // 1. Antworten- + Korrektur-Tabs für Test-Prüfung (Tab-Name beginnt mit 'Antworten_test-' bzw. 'Korrektur_test-')
+  try {
+    if (ANTWORTEN_MASTER_ID) {
+      var antwortenSS = SpreadsheetApp.openById(ANTWORTEN_MASTER_ID);
+      var alleTabs = antwortenSS.getSheets();
+      for (var t = 0; t < alleTabs.length; t++) {
+        var name = alleTabs[t].getName();
+        if (name.indexOf('Antworten_test-') === 0) {
+          antwortenSS.deleteSheet(alleTabs[t]);
+          counter.antwortenTabsGeloescht++;
+        } else if (name.indexOf('Korrektur_test-') === 0) {
+          antwortenSS.deleteSheet(alleTabs[t]);
+          counter.korrekturTabsGeloescht++;
+        }
+      }
+    }
+  } catch (e) {
+    counter.fehler.push({ schritt: 1, name: 'antwortenKorrekturTabs', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 1 Fehler: ' + e.message);
+  }
+
+  // 2. Test-Prüfung in Configs
+  try {
+    var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    counter.pruefungenGeloescht = loescheTestZeilen_(configsSheet, { idCol: 'id', idPrefix: TEST_ID_PREFIX });
+  } catch (e) {
+    counter.fehler.push({ schritt: 2, name: 'pruefungenConfigs', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 2 Fehler: ' + e.message);
+  }
+
+  // 3. Test-Spreadsheet + Registry-Eintrag (Gruppen-Sheet, Spalte fragensammlungSheetId)
+  // Hardening: Registry-Row nur löschen wenn Trash erfolgreich oder File bereits weg.
+  // Sonst bleibt Registry-Row stehen → nächster Reset kann Trash retry'en (kein stale-File).
+  try {
+    var registrySheet = getGruppenRegistry_();
+    if (registrySheet) {
+      var rData = registrySheet.getDataRange().getValues();
+      var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+      var gIdCol = rHeaders.indexOf('id');
+      var gSsCol = rHeaders.indexOf('fragensammlungsheetid');
+      if (gIdCol >= 0 && gSsCol >= 0) {
+        for (var rr = rData.length - 1; rr >= 1; rr--) {
+          if (String(rData[rr][gIdCol]).trim() === TEST_GRUPPE_ID) {
+            var ssId = String(rData[rr][gSsCol]);
+            var trashOk = false;
+            var fileAlreadyGone = false;
+            try {
+              DriveApp.getFileById(ssId).setTrashed(true);
+              trashOk = true;
+              counter.testSpreadsheetGetrasht = true;
+            } catch (e) {
+              // File-already-trashed/deleted → Registry-Cleanup trotzdem durchziehen.
+              var msg = String(e && e.message || '');
+              if (msg.indexOf('No item with the given ID') >= 0 || msg.indexOf('not found') >= 0) {
+                fileAlreadyGone = true;
+                Logger.log('Trash skipped — File bereits weg: ' + ssId);
+              } else {
+                Logger.log('Trash failed für ' + ssId + ': ' + msg);
+              }
+            }
+            if (trashOk || fileAlreadyGone) {
+              registrySheet.deleteRow(rr + 1);
+              counter.registryGeloescht++;
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    counter.fehler.push({ schritt: 3, name: 'testSpreadsheetUndRegistry', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 3 Fehler: ' + e.message);
+  }
+
+  // 4. SuS-Tab in KURSE_SHEET_ID
+  try {
+    var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+    var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+    if (susTab) {
+      kurseSS.deleteSheet(susTab);
+      counter.susTabGeloescht = true;
+    }
+  } catch (e) {
+    counter.fehler.push({ schritt: 4, name: 'susTabKurseSheet', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 4 Fehler: ' + e.message);
+  }
+
+  // 5. Test-Kurs in Kurse-Sheet
+  try {
+    var kurseSS5 = SpreadsheetApp.openById(KURSE_SHEET_ID);
+    var kurseSheet = kurseSS5.getSheetByName('Kurse');
+    counter.kurseGeloescht = loescheTestZeilen_(kurseSheet, { idCol: 'kursId', idExact: TEST_KURS_ID });
+  } catch (e) {
+    counter.fehler.push({ schritt: 5, name: 'kurseRowKurseSheet', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 5 Fehler: ' + e.message);
+  }
+
+  // 6. Test-LP in Lehrpersonen-Sheet
+  try {
+    var lpSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
+    counter.lpGeloescht = loescheTestZeilen_(lpSheet, { emailExact: TEST_LP_EMAIL });
+  } catch (e) {
+    counter.fehler.push({ schritt: 6, name: 'lpRowLehrpersonen', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 6 Fehler: ' + e.message);
+  }
+
+  return counter;
+}
+
+/**
+ * Generic Helper: löscht alle Test-Zeilen aus einem Sheet (OR-Filter).
+ * filter:
+ *   - idCol + idExact: exakter ID-Match
+ *   - idCol + idPrefix: Prefix-Match
+ *   - emailExact: exakte Email
+ *   - emailCol (default 'email'): Email-Spalte für TEST_EMAIL_REGEX
+ *
+ * Iteriert von unten nach oben (deleteRow ändert Indizes).
+ */
+function loescheTestZeilen_(sheet, filter) {
+  if (!sheet) return 0;
+  var data = sheet.getDataRange().getValues();
+  if (data.length < 2) return 0;
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+
+  var idColIdx = filter.idCol ? headers.indexOf(String(filter.idCol).toLowerCase()) : -1;
+  var emailColIdx = headers.indexOf(filter.emailCol ? String(filter.emailCol).toLowerCase() : 'email');
+
+  var matches = function(row) {
+    if (idColIdx >= 0) {
+      var idVal = String(row[idColIdx] || '').trim();
+      if (filter.idExact && idVal === filter.idExact) return true;
+      if (filter.idPrefix && idVal.indexOf(filter.idPrefix) === 0) return true;
+    }
+    if (emailColIdx >= 0) {
+      var em = String(row[emailColIdx] || '').toLowerCase().trim();
+      if (filter.emailExact && em === String(filter.emailExact).toLowerCase()) return true;
+      if (!filter.emailExact && !filter.idExact && !filter.idPrefix && TEST_EMAIL_REGEX.test(em)) return true;
+    }
+    return false;
+  };
+
+  var deleted = 0;
+  for (var r = data.length - 1; r >= 1; r--) {
+    if (matches(data[r])) {
+      sheet.deleteRow(r + 1);
+      deleted++;
+    }
+  }
+  return deleted;
+}
