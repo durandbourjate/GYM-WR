@@ -8,9 +8,9 @@
 
 ## Letzter Stand auf main
 
-### Foundation Bundle G P1 + E ✅ AUF PREVIEW (2026-05-11)
+### Foundation Bundle G P1 + E ✅ MERGED (2026-05-11)
 
-Erstes Implementations-Bundle der Post-Test-Sweep-Roadmap. **Reine Additionen, keine UI-Migration.** Branch `feature/foundation-g1-e-bundle` zu preview gemerged.
+Erstes Implementations-Bundle der Post-Test-Sweep-Roadmap. **Reine Additionen, keine UI-Migration.** Branch `feature/foundation-g1-e-bundle` → preview → main (Fast-Forward `316dfc3 → 0228f4d`). Branch lokal+remote gelöscht.
 
 | Commit | Inhalt |
 |---|---|
