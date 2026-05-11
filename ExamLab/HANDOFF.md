@@ -8,9 +8,9 @@
 
 ## Letzter Stand auf main
 
-### Cluster F.1 Frontend-Foundation ✅ AUF PREVIEW (2026-05-11)
+### Cluster F.1 Frontend-Foundation ✅ MERGED (2026-05-11)
 
-Erste Sub-Phase aus Cluster-F-Master-Plan (Testdaten-Infrastruktur). **Reine Additionen** — kein Backend-Call, keine UI, kein Read-Pfad-Touch. Branch `feature/cluster-f-testdaten`.
+Erste Sub-Phase aus Cluster-F-Master-Plan (Testdaten-Infrastruktur). **Reine Additionen** — kein Backend-Call, keine UI, kein Read-Pfad-Touch. Branch `feature/cluster-f-testdaten` → preview → main (`ecd0370 → cac64fe`).
 
 | Commit | Inhalt |
 |---|---|
