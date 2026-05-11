@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type ComponentType } from 'react'
 import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
+import { tabsFuerSurface } from '../../utils/tabRegistry'
 import HilfeEinstieg from './hilfe/HilfeEinstieg'
 import HilfeUeben from './hilfe/HilfeUeben'
 import HilfePruefung from './hilfe/HilfePruefung'
@@ -16,24 +17,24 @@ interface Props {
   onSchliessen: () => void
 }
 
-type HilfeKategorie = 'einstieg' | 'ueben' | 'pruefung' | 'fragen' | 'zusammenarbeit' | 'ki' | 'durchfuehrung' | 'korrektur' | 'bloom' | 'faq'
-
-const KATEGORIEN: { key: HilfeKategorie; label: string }[] = [
-  { key: 'einstieg', label: 'Erste Schritte' },
-  { key: 'ueben', label: 'Üben' },
-  { key: 'pruefung', label: 'Prüfung erstellen' },
-  { key: 'fragen', label: 'Fragen & Fragensammlung' },
-  { key: 'zusammenarbeit', label: 'Zusammenarbeit' },
-  { key: 'ki', label: 'KI-Assistent' },
-  { key: 'durchfuehrung', label: 'Durchführung' },
-  { key: 'korrektur', label: 'Korrektur & Feedback' },
-  { key: 'bloom', label: 'Bloom-Taxonomie' },
-  { key: 'faq', label: 'FAQ' },
-]
+const KOMPONENTEN: Record<string, ComponentType> = {
+  einstieg: HilfeEinstieg,
+  fragen: HilfeFragen,
+  pruefung: HilfePruefung,
+  durchfuehrung: HilfeDurchfuehrung,
+  korrektur: HilfeKorrektur,
+  ueben: HilfeUeben,
+  ki: HilfeKI,
+  bloom: HilfeBloom,
+  zusammenarbeit: HilfeZusammenarbeit,
+  faq: HilfeFAQ,
+}
 
 /** Hilfe-/Anleitungsseite für Lehrpersonen */
 export default function HilfeSeite({ onSchliessen }: Props) {
-  const [kategorie, setKategorie] = useState<HilfeKategorie>('einstieg')
+  const tabs = tabsFuerSurface('hilfe', { istAdmin: false })
+  const [kategorie, setKategorie] = useState<string>('einstieg')
+  const AktiveKomponente = KOMPONENTEN[kategorie]
   const panelRef = useRef<HTMLDivElement>(null)
   useFocusTrap(panelRef)
 
@@ -66,35 +67,30 @@ export default function HilfeSeite({ onSchliessen }: Props) {
         </div>
 
         {/* Navigation */}
-        <div className="px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex gap-1 overflow-x-auto shrink-0">
-          {KATEGORIEN.map((k) => (
+        <div
+          data-testid="hilfe-nav"
+          className="px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex gap-1 overflow-x-auto shrink-0"
+        >
+          {tabs.map((t) => (
             <button
-              key={k.key}
-              onClick={() => setKategorie(k.key)}
+              key={t.id}
+              onClick={() => setKategorie(t.id)}
+              aria-pressed={kategorie === t.id}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-colors cursor-pointer
-                ${kategorie === k.key
+                ${kategorie === t.id
                   ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800'
                   : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }
               `}
             >
-              {k.label}
+              {t.titel}
             </button>
           ))}
         </div>
 
         {/* Inhalt */}
         <div className="flex-1 overflow-auto px-6 py-5">
-          {kategorie === 'einstieg' && <HilfeEinstieg />}
-          {kategorie === 'ueben' && <HilfeUeben />}
-          {kategorie === 'pruefung' && <HilfePruefung />}
-          {kategorie === 'fragen' && <HilfeFragen />}
-          {kategorie === 'zusammenarbeit' && <HilfeZusammenarbeit />}
-          {kategorie === 'ki' && <HilfeKI />}
-          {kategorie === 'durchfuehrung' && <HilfeDurchfuehrung />}
-          {kategorie === 'korrektur' && <HilfeKorrektur />}
-          {kategorie === 'bloom' && <HilfeBloom />}
-          {kategorie === 'faq' && <HilfeFAQ />}
+          {AktiveKomponente ? <AktiveKomponente /> : null}
         </div>
       </div>
     </ResizableSidebar>
