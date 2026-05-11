@@ -8,6 +8,35 @@
 
 ## Letzter Stand auf main
 
+### Cluster F.1 Frontend-Foundation ✅ AUF PREVIEW (2026-05-11)
+
+Erste Sub-Phase aus Cluster-F-Master-Plan (Testdaten-Infrastruktur). **Reine Additionen** — kein Backend-Call, keine UI, kein Read-Pfad-Touch. Branch `feature/cluster-f-testdaten`.
+
+| Commit | Inhalt |
+|---|---|
+| (constants) | `src/utils/testdaten/identifikation.ts`: `TEST_KURS_ID`/`TEST_KLASSE_ID`/`TEST_ID_PREFIX`/`TEST_EMAIL_REGEX`/`TEST_LP_EMAIL` + 20 `TEST_SUS_EMAILS` + `istTestEmail`-Helper + 7 Tests |
+| (filter) | `src/utils/testdaten/filter.ts`: `istTestdaten(record)` + `filtereTestdatenWennDeaktiviert<T>(records, sichtbar)` Pure-Functions + 10 Tests |
+| (type) | `LPProfil.testdatenSichtbar?: boolean` additiv ergänzt |
+
+**Verifikation:** vitest **1561** (1544 → 1561, +17 neu), tsc clean, 5× lint clean, build grün.
+
+**Master-Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-11-cluster-f-testdaten.md`
+
+**Audit-Befunde aus Plan-Phase (für F.2-F.4):**
+- **Pruefung-Persistenz = REFERENCE** (nur `fragenIds: string[]`). Test-Prüfungen referenzieren existierende Fragen, keine Test-Frage-Records nötig.
+- **Mastery = pro-Gruppen-Sheet** mit 5 fixen Sheets (`Fragen`/`Mitglieder`/`Auftraege`/`Fortschritt`/`Sessions`). Testkurs braucht eigene Übungs-Gruppe.
+- **Schema-Drift Sessions-Sheet**: Init-Code (apps-script-code.js:9004) schreibt 6 Spalten, Read-Code erwartet 7 (`+ anzahlfragen, richtig`). Latent-Bug — Bonus-Fix in F.2 geplant.
+- **Keine `seedXxx`-Patterns existing** — F.2 baut from scratch.
+- **LockService-Pattern etabliert** (8 Verwendungen, 5000ms Timeout).
+- **Weekly-Trigger-Pattern fehlt** — F.2 muss neuen Installer schreiben.
+
+**Nächste Sub-Phasen (separate Sessions empfohlen):**
+- **F.2** Backend (Apps-Script): seedTestdaten + apiAdminSeedTestdaten + Roll-Trigger + LockService + Sessions-Schema-Fix. User-Action: Apps-Script-Deploy.
+- **F.3** UI Components: TestBadge + useTestBadgeVisible-Hook + TestdatenTab + Tab-Registry-Integration.
+- **F.4** Read-Pfad-Integration: Filter in 8-15 Frontend-Stores/Hooks/Services + Test-Badge in Listen.
+
+---
+
 ### Foundation Bundle G P1 + E ✅ MERGED (2026-05-11)
 
 Erstes Implementations-Bundle der Post-Test-Sweep-Roadmap. **Reine Additionen, keine UI-Migration.** Branch `feature/foundation-g1-e-bundle` → preview → main (Fast-Forward `316dfc3 → 0228f4d`). Branch lokal+remote gelöscht.
