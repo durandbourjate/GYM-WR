@@ -8,6 +8,42 @@
 
 ## Letzter Stand auf main
 
+### Cluster E.1 — HilfeSeite konsumiert Tab-Registry ✅ MERGED (2026-05-11)
+
+Erstes Konsumenten-Bundle aus Cluster-E Phase 3. HilfeSeite konsumiert `tabsFuerSurface('hilfe', { istAdmin: false })` aus zentraler Tab-Registry statt hardcoded `KATEGORIEN`-Array. Bringt Workflow-Order (erstellen → durchführen → korrigieren) automatisch aus Registry. Branch `cluster-e/e1-tab-registry` → preview → main (`a7b98d8 → 51fed82`). EinstellungenPanel-Migration explizit out-of-scope (ID-Konflikt `kiKalibrierung`↔`ki-kalibrierung` + `testdaten`-Tab-UI fehlt, abh. Cluster F.3).
+
+| Commit | Inhalt |
+|---|---|
+| `00ce9d7` | Plan-Commit (Bundle-Doku) |
+| `feb3c22` | TDD-red: HilfeSeite.test.tsx mit 3 Tests (Workflow-Order via `data-testid="hilfe-nav"` + `within`-Selector, Default-Tab aria-pressed, Click-Toggle) |
+| `f0e97d6` | TDD-green: HilfeSeite-Refactor — `KATEGORIEN`-Array + `HilfeKategorie`-Type entfernt, `KOMPONENTEN: Record<string, ComponentType>`-Map (10 Komponenten) + `tabsFuerSurface`-Konsum, `data-testid="hilfe-nav"` + `aria-pressed` für Testbarkeit/a11y, 10× Conditional-Render → single `<AktiveKomponente />` |
+| `51fed82` | Drift-Schutz: Test in `tabRegistry.test.ts` pinned 10 Hilfe-IDs (Hash-Link-Stabilität) + JSDoc-Comment im HilfeSeite-Inhalt-Block über defensive `?? null`-Fallback |
+
+**Verifikation:** vitest **1574** (1570 Baseline + 3 HilfeSeite + 1 tabRegistry-drift), tsc clean, 5 audit-lints clean (as-any 0, musterloesung Baseline, no-alert 0, no-tests-dir clean, wire-contract 61/0), build 3.51s, **wire-contract 61/0**.
+
+**Browser-E2E mit echtem LP-Login `wr` auf preview ✅ (2026-05-11):**
+- Workflow-Order live verifiziert: Erste Schritte → Fragen & Fragensammlung → Prüfung erstellen → Durchführung → Korrektur & Feedback → Üben → KI-Assistent → Bloom-Taxonomie → Zusammenarbeit → FAQ
+- Default-Tab beim Öffnen: „Erste Schritte" aria-pressed=true, alle anderen false
+- Click-Toggle: echter Mouse-Click auf „Prüfung erstellen" → state switched korrekt
+- 0 Console-Errors, 0 Warnings
+- Lesson SW + HTTP-Cache: SW unregister + caches.delete reichte NICHT — HTTP-Cache lieferte alte index.html mit altem main-script-Hash. Cache-Buster (`?nocache=...`) forced Fresh-Fetch. → **Pattern für künftige Bundles dokumentieren**
+
+**Code-Review (subagent-driven-development workflow):**
+- Tasks 1+2: Spec-Reviewer ✅ + Code-Quality-Reviewer ✅ APPROVED FOR MERGE
+- Task 3: Combined Spec+Quality ✅ APPROVED
+- Final-Reviewer Bundle: **APPROVED FOR MERGE** (0 Critical, 0 Important, 6 Minor als E.2-Follow-ups: `KOMPONENTEN`-Keys typed-from-Registry via `TAB_REGISTRY as const`, `useState`-default-derive, `tabsFuerSurface`-istAdmin-context-thread)
+
+**Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-11-cluster-e-1-tab-registry-konsumenten.md`
+
+**Out-of-Scope (für spätere Sub-Bundles aus Cluster E):**
+- Typografie-Migration (Phase 2 / E.2)
+- Favoriten-Backend-Sync (Phase 4 / E.3)
+- Star-Toggle in Tab-Headers (Phase 5 / E.4)
+- Favoriten-Picker-Erweiterung um Tab-Surfaces (Phase 5 / E.5)
+- EinstellungenPanel-Migration auf Registry (pre-req: kiKalibrierung-Rename + testdaten-UI von F.3)
+
+---
+
 ### Cluster A — Bug-Fixes Fragensammlung + Problemmeldungen ✅ MERGED (2026-05-11)
 
 Branch `feature/cluster-a-bugfixes` → preview → main (`cac64fe → 8525329`). Branch lokal+remote gelöscht. Apps-Script deployt (User-Action), Bug 6c live mit Yannick-Admin + Backend-Delete von "jaja du"-Problemmeldung verifiziert.
