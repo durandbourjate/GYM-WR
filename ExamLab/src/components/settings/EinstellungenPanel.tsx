@@ -3,6 +3,7 @@ import { TabBar } from '../ui/TabBar'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 import { useAuthStore } from '../../store/authStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
+import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import LernzielTab from './LernzielTab'
 import FavoritenTab from './FavoritenTab'
 import AdminSettings from '../ueben/admin/AdminSettings'
@@ -33,11 +34,15 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
 
   const [tab, setTab] = useState<EinstellungenTab>(initialTab ?? (admin ? 'admin' : 'profil'))
 
-  // Stammdaten + Profil laden (Actions sind stabile Zustand-Referenzen)
+  // Stammdaten + Profil + Gruppen laden (Actions sind stabile Zustand-Referenzen).
+  // Bug 4: Gruppen werden hier proaktiv geladen, damit der Übungen-Tab (AdminSettings)
+  // bei Tab-Wechsel sofort den Gruppen-Dropdown gefüllt zeigt.
+  // Idempotenz-Guard im Store verhindert doppeltes Laden.
   useEffect(() => {
     if (user?.email) {
       ladeStammdaten(user.email)
       ladeLPProfil(user.email)
+      useUebenGruppenStore.getState().ladeGruppen(user.email)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email])

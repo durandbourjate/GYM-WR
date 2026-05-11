@@ -30,6 +30,11 @@ export const useUebenGruppenStore = create<UebenGruppenState>((set, get) => ({
   ladeStatus: 'idle',
 
   ladeGruppen: async (email: string, opts?: { force?: boolean }) => {
+    // Idempotenz-Guard: kein Re-Fetch wenn bereits am Laden oder fertig (außer force)
+    const state = get()
+    if (state.ladeStatus === 'laden') return
+    if (state.ladeStatus === 'fertig' && !opts?.force) return
+
     set({ ladeStatus: 'laden' })
 
     try {
