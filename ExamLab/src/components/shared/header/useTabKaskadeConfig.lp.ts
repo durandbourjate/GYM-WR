@@ -97,7 +97,6 @@ export function baueLPConfigAusRoute(
       label: 'Fragensammlung',
       onClick: () => navigate('/fragensammlung'),
       l2: [
-        { id: 'fragensammlung', label: 'Fragensammlung', onClick: () => navigate('/fragensammlung') },
         { id: 'papierkorb', label: 'Papierkorb', onClick: () => navigate('/papierkorb') },
       ],
     },
