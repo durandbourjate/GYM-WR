@@ -21,7 +21,7 @@ Sechs konkrete Bugs aus dem Test-Sweep vom 11.05.2026 beheben. Alle wurden im Au
 
 | # | Entscheidung | Begründung |
 |---|---|---|
-| 1 | **Optimistic Delete mit Error-Recovery** (Pattern c). Bei Backend-Fehler: Eintrag wieder einfügen + Toast/Banner mit Retry. | Beste UX, sichtbare Fehler statt silent failure. |
+| 1 | **Optimistic Delete mit Error-Recovery** Bei Backend-Fehler: Eintrag wieder einfügen + Toast/Banner mit Retry. | Beste UX, sichtbare Fehler statt silent failure. (Aus Brainstorming-Phase: gewählt aus 3 Patterns — a=heute mit silent fail, b=pessimistisch synchron, c=optimistic mit Rollback. c gewinnt UX + Sichtbarkeit.) |
 | 2 | **Entwürfe-Header übernimmt Themen-Header-Style** (sticky, bg-slate-100, border-bottom). | User-Feedback, visuelle Konsistenz. |
 | 3 | **Entwürfe-Section bekommt eigenen Scroll-Container** (`max-height: 40vh`, `overflow-y: auto`). | Scrolling der Hauptliste unblock, deutliche Sektion-Grenze. |
 | 4 | **`ladeGruppen()` zieht in `EinstellungenPanel`-Mount.** | Eine Mount-Quelle, alle Tabs profitieren, kein Race. |
@@ -92,7 +92,7 @@ Sechs konkrete Bugs aus dem Test-Sweep vom 11.05.2026 beheben. Alle wurden im Au
 
 **Fix:**
 - Custom-Select-Wrapper (oder existierender `Select`-UI-Komponente prüfen) mit Brand-Styling: `focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none`.
-- Toggle-Buttons: Lucide-Icons (`IconAbc` für Freitext, `IconAB` für Lückentext aus Cluster G Custom-Icons) + Brand-Aktiv-Style (`bg-violet-100 dark:bg-violet-900 text-violet-700 dark:text-violet-300`).
+- Toggle-Buttons: Lucide-Icons (`IconAbc` für Freitext, `IconAB` für Lückentext **aus Cluster G Custom-Icons — Cluster-G-Phase-1 muss vor Cluster A merged sein**) + Brand-Aktiv-Style (`bg-violet-100 dark:bg-violet-900 text-violet-700 dark:text-violet-300`). Fallback falls Cluster G nicht merged: Lucide-`Type` (Freitext) und Lucide-`List` (Dropdown) verwenden.
 - Inaktiver Zustand: `text-slate-500 hover:text-violet-600`.
 
 **Betroffene Dateien:** `src/components/fragetypen/LueckentextFrage.tsx`, ggf. neue `src/components/ui/Select.tsx` falls noch nicht existent.
@@ -106,9 +106,9 @@ Sechs konkrete Bugs aus dem Test-Sweep vom 11.05.2026 beheben. Alle wurden im Au
 **Root-Cause-Hypothese (Plan-Phase verifiziert):** Datenmodell-Mismatch zwischen Send-Path und Load-Path. Send schreibt vermutlich Feld `text` ins Backend, Load liest `comment` oder umgekehrt.
 
 **Fix:**
-- Plan-Phase: Backend-Schema lesen (Apps-Script-Code für Problemmeldungen).
-- Frontend-Type für Problemmeldung mit Backend-Schema abgleichen.
+- **Plan-Phase 0 (Pre-Audit):** Backend-Schema (`apps-script-code.js` für Problemmeldungs-CRUD) lesen + Frontend-Type abgleichen. **Verbindlich** vor Implementation — Spec-Fix bleibt vage weil Datenmodell nicht aus Source greifbar.
 - Field-Name harmonisieren (vermutlich `text`), Migration falls heute Mix.
+- Daten-Backfill prüfen: existieren Problemmeldungen in DB ohne Text-Feld? Wenn ja, Display zeigt „(Kein Text)" statt Crash.
 
 **Betroffene Dateien:** `src/components/settings/problemmeldungen/ProblemmeldungZeile.tsx`, `src/services/problemmeldungenApi.ts`, Apps-Script-Endpoint.
 
@@ -119,8 +119,9 @@ Sechs konkrete Bugs aus dem Test-Sweep vom 11.05.2026 beheben. Alle wurden im Au
 **Root-Cause:** `useDeepLink`-Hook ist unvollständig — entweder kein Navigation-Trigger oder silent error.
 
 **Fix:**
+- **Plan-Phase Pre-Audit:** Aktuelles `ziel`-Schema im Problemmeldung-Type prüfen. Spec nimmt `{ screen, params }` an — könnte heute simpler sein (z.B. nur `frageId`). Plan-Phase greppt und passt Hook-Signatur entsprechend an.
 - `useDeepLink` implementiert Navigation via React-Router (oder Zustand-basiertem Routing falls in Verwendung).
-- Problemmeldung hat `ziel`-Feld mit Format `{ screen, params }` — Hook navigiert dahin.
+- Problemmeldung hat `ziel`-Feld — Hook navigiert dahin.
 - Falls Ziel nicht mehr existiert (Frage gelöscht, etc.) → Toast „Verknüpfter Inhalt nicht mehr verfügbar".
 
 **Betroffene Dateien:** `src/hooks/useDeepLink.ts` (oder Pfad finden), `src/components/settings/problemmeldungen/ProblemmeldungZeile.tsx`.
@@ -143,7 +144,7 @@ Sechs konkrete Bugs aus dem Test-Sweep vom 11.05.2026 beheben. Alle wurden im Au
 ### 5.1 Generischer Optimistic-Delete-Helper (`src/utils/optimisticDelete.ts` — neu)
 
 ```ts
-export async function optimisticDelete<T>({
+export async function optimisticDelete({
   optimisticRemove,
   backendCall,
   rollback,
@@ -153,19 +154,21 @@ export async function optimisticDelete<T>({
   optimisticRemove: () => void;
   backendCall: () => Promise<void>;
   rollback: () => void;
-  onSuccess: (toast: ToastApi) => void;
-  onError: (toast: ToastApi, err: Error) => void;
+  onSuccess: () => void;        // Caller injiziert Toast-Aufruf
+  onError: (err: Error) => void; // Caller injiziert Toast-Aufruf mit Retry
 }) {
   optimisticRemove();
   try {
     await backendCall();
-    onSuccess(toast);
+    onSuccess();
   } catch (err) {
     rollback();
-    onError(toast, err as Error);
+    onError(err as Error);
   }
 }
 ```
+
+Toast-API wird vom Caller bereitgestellt (z.B. via `useToast()`-Hook), nicht im Helper importiert — bleibt entkoppelt von Toast-Library.
 
 Wird von Bug 1 (Entwurf-Löschen) und Bug 6c (Problemmeldung-Löschen) genutzt. Pattern: einmal definieren, mehrmals verwenden.
 
