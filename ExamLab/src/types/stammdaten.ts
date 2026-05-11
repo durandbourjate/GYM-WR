@@ -40,7 +40,7 @@ export interface Stammdaten {
 export interface AppOrt {
   id: string                          // Unique ID (generiert)
   titel: string                       // z.B. "SF WR 29c — Analyse"
-  screen: 'pruefung' | 'uebung' | 'fragensammlung'
+  screen: 'pruefung' | 'uebung' | 'fragensammlung' | 'einstellungen' | 'hilfe'
   params: Record<string, string>      // z.B. { configId: 'abc', tab: 'analyse' }
   erstelltAm: string                  // ISO timestamp
 }

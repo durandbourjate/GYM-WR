@@ -6,7 +6,7 @@ import { persist } from 'zustand/middleware'
  * Ersetzt das alte AppOrt-basierte System aus lpNavigationStore.
  */
 export interface Favorit {
-  typ: 'ort' | 'pruefung' | 'uebung' | 'frage'
+  typ: 'ort' | 'pruefung' | 'uebung' | 'frage' | 'einstellungen-tab' | 'hilfe-tab'
   ziel: string       // Route-Pfad ('/fragensammlung') oder Config-ID ('abc123')
   label: string      // Anzeigename
   icon?: string      // Emoji optional
