@@ -15066,16 +15066,28 @@ function seedTestdatenSuS_() {
  *
  * Schema: FRAGENSAMMLUNG_ID hat Sheets pro Fachbereich (BWL/Recht/VWL/...).
  * Pro Sheet werden Fragen über 'thema'-Spalte gefiltert.
+ *
+ * Wichtig (Z.149-150): die 'thema'-Spalte enthält den DISPLAY-Titel (z.B. "Einführung BWL"),
+ * NICHT die Pool-ID. Pool-IDs werden via THEMEN_MAPPING in Display-Titel übersetzt.
+ * Skip-Pfad: System-Tabs (FRAGENSAMMLUNG_SYSTEM_TABS).
  */
 function holeTestPruefungFragenIds_() {
-  var pools = ['bwl_einfuehrung', 'recht_einfuehrung'];
+  var poolIds = ['bwl_einfuehrung', 'recht_einfuehrung'];
+  // Pool-ID → Display-Titel (Sheet-Wert). Fallback: Pool-ID selbst (z.B. alte Sheets ohne Migration).
+  var poolTitel = {};
+  poolIds.forEach(function(pid) {
+    poolTitel[pid] = (typeof THEMEN_MAPPING !== 'undefined' && THEMEN_MAPPING[pid]) || pid;
+  });
+
   var fragensammlungSS = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var sheets = fragensammlungSS.getSheets();
   var ergebnisProPool = {};
-  pools.forEach(function(p) { ergebnisProPool[p] = []; });
+  poolIds.forEach(function(pid) { ergebnisProPool[pid] = []; });
 
   for (var s = 0; s < sheets.length; s++) {
     var sh = sheets[s];
+    var sheetName = sh.getName();
+    if (FRAGENSAMMLUNG_SYSTEM_TABS.indexOf(sheetName) >= 0) continue;
     var data = sh.getDataRange().getValues();
     if (data.length < 2) continue;
     var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
@@ -15083,17 +15095,21 @@ function holeTestPruefungFragenIds_() {
     var themaCol = headers.indexOf('thema');
     if (idCol < 0 || themaCol < 0) continue;
     for (var r = 1; r < data.length; r++) {
-      var thema = String(data[r][themaCol] || '').trim();
-      if (ergebnisProPool[thema] !== undefined) {
-        ergebnisProPool[thema].push(String(data[r][idCol]));
-      }
+      var themaWert = String(data[r][themaCol] || '').trim();
+      if (!themaWert) continue;
+      // Match Pool-Display-Titel ODER Pool-ID (Backwards-Compat).
+      poolIds.forEach(function(pid) {
+        if (themaWert === poolTitel[pid] || themaWert === pid) {
+          ergebnisProPool[pid].push(String(data[r][idCol]));
+        }
+      });
     }
   }
 
   var ergebnis = [];
-  pools.forEach(function(p) {
-    ergebnisProPool[p].sort();
-    ergebnis = ergebnis.concat(ergebnisProPool[p].slice(0, 5));
+  poolIds.forEach(function(pid) {
+    ergebnisProPool[pid].sort();
+    ergebnis = ergebnis.concat(ergebnisProPool[pid].slice(0, 5));
   });
   return ergebnis;
 }
