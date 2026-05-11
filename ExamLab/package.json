@@ -46,6 +46,7 @@
     "dompurify": "^3.3.3",
     "idb-keyval": "^6.2.2",
     "katex": "^0.16.44",
+    "lucide-react": "^1.14.0",
     "pdfjs-dist": "^5.5.207",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
