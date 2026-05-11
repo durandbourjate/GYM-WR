@@ -14846,6 +14846,12 @@ function seedTestdaten_(mode, callerEmail) {
     ? seedTestdatenAntwortenUndKorrekturen_()
     : { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
 
+  var gruppe = seedTestdatenGruppe_();
+  var sessions = gruppe.spreadsheetId
+    ? seedTestdatenSessionsUndFortschritt_(gruppe.spreadsheetId)
+    : { sessionsAngelegt: 0, fortschrittAngelegt: 0 };
+  installiereTestdatenRollTrigger_();
+
   return {
     mode: mode,
     callerEmail: callerEmail,
@@ -14859,10 +14865,9 @@ function seedTestdaten_(mode, callerEmail) {
     testPruefungenAngelegt: pruefung.angelegt,
     testAntwortenAngelegt: antworten.antwortenAngelegt,
     testKorrekturenAngelegt: antworten.korrekturenAngelegt,
-    testUebungenAngelegt: 0,
-    testSessionsAngelegt: 0,
-    testFortschrittAngelegt: 0,
-    hinweis: 'F.2.c — Prüfungen/Antworten/Korrekturen angelegt; Übungen/Sessions in F.2.d nachgeliefert'
+    testUebungenAngelegt: gruppe.angelegt,
+    testSessionsAngelegt: sessions.sessionsAngelegt,
+    testFortschrittAngelegt: sessions.fortschrittAngelegt
   };
 }
 
@@ -15376,4 +15381,299 @@ function seedTestdatenAntwortenUndKorrekturen_() {
     antwortenAngelegt: antwortenZeilen.length,
     korrekturenAngelegt: korrekturZeilen.length
   };
+}
+
+// ─── F.2.d: Test-Übungs-Gruppe + Sessions + Mastery + Roll-Trigger ────────────
+
+/**
+ * Test-Übungs-Gruppe anlegen: neues Spreadsheet im Drive, 5 Sheets, Registry-Eintrag.
+ * Idempotent via GRUPPEN_REGISTRY/Gruppen-Sheet-Check gegen TEST_GRUPPE_ID.
+ *
+ * GRUPPEN_REGISTRY Schema (verifiziert Z.402-421 + Z.9111):
+ *   id | name | typ | adminEmail | fragensammlungSheetId | analytikSheetId
+ * Sheet-Struktur analog uebenErstelleGruppe Z.9081-9106 (Fragen/Mitglieder/Auftraege/Fortschritt/Sessions).
+ * Sessions-Init: 8 Spalten (Bonus-Fix bereits aus F.2.a aktiv).
+ */
+function seedTestdatenGruppe_() {
+  var registrySheet = getGruppenRegistry_();
+  if (!registrySheet) {
+    throw new Error('GRUPPEN_REGISTRY "Gruppen"-Sheet nicht gefunden — GRUPPEN_REGISTRY_ID oder Sheet-Name prüfen');
+  }
+
+  var rData = registrySheet.getDataRange().getValues();
+  var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var gIdCol = rHeaders.indexOf('id');
+  var ssIdCol = rHeaders.indexOf('fragensammlungsheetid');
+  if (gIdCol < 0) {
+    throw new Error('GRUPPEN_REGISTRY/Gruppen hat keine "id"-Spalte — Schema in F.2.d.1 verifizieren');
+  }
+  if (ssIdCol < 0) {
+    throw new Error('GRUPPEN_REGISTRY/Gruppen hat keine "fragensammlungSheetId"-Spalte — Schema in F.2.d.1 verifizieren');
+  }
+
+  // Idempotenz: bereits vorhanden?
+  for (var i = 1; i < rData.length; i++) {
+    if (String(rData[i][gIdCol]).trim() === TEST_GRUPPE_ID) {
+      return { angelegt: 0, vorhanden: 1, spreadsheetId: String(rData[i][ssIdCol]) };
+    }
+  }
+
+  // Neues Spreadsheet anlegen
+  var neueSS = SpreadsheetApp.create('ExamLab: [Test] Übungs-Gruppe');
+  var neueSSId = neueSS.getId();
+  var jetztIso = new Date().toISOString();
+
+  // 1. Fragen-Sheet (1. Sheet, leer für Test-Gruppe — Fragen aus FRAGENSAMMLUNG sind global)
+  var fragenSheet = neueSS.getSheets()[0];
+  fragenSheet.setName('Fragen');
+  fragenSheet.getRange('A1:T1').setValues([[
+    'id', 'fach', 'thema', 'typ', 'schwierigkeit', 'taxonomie',
+    'frage', 'erklaerung', 'uebung', 'pruefungstauglich',
+    'optionen', 'korrekt', 'aussagen', 'luecken', 'toleranz',
+    'einheit', 'kategorien', 'elemente', 'reihenfolge', 'daten'
+  ]]);
+
+  // 2. Mitglieder
+  var mitgliederSheet = neueSS.insertSheet('Mitglieder');
+  mitgliederSheet.getRange('A1:E1').setValues([['email', 'name', 'rolle', 'code', 'beigetreten']]);
+  var mitgliederZeilen = [];
+  for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
+    mitgliederZeilen.push([
+      TEST_SUS_EMAILS[s],
+      TEST_SUS_VORNAMEN[s] + ' ' + TEST_SUS_NACHNAMEN[s],
+      'schueler',
+      '',
+      jetztIso
+    ]);
+  }
+  mitgliederZeilen.push([TEST_LP_EMAIL, 'WR Test', 'lehrperson', '', jetztIso]);
+  mitgliederSheet.getRange(2, 1, mitgliederZeilen.length, 5).setValues(mitgliederZeilen);
+
+  // 3. Auftraege
+  var auftraegeSheet = neueSS.insertSheet('Auftraege');
+  auftraegeSheet.getRange('A1:F1').setValues([['id', 'titel', 'fach', 'thema', 'deadline', 'aktiv']]);
+  auftraegeSheet.appendRow([
+    'test-auftrag-01',
+    '[Test] Selbstständiges Üben WR',
+    'Wirtschaft & Recht',
+    'bwl_einfuehrung,recht_einfuehrung',
+    testdatumVorTagen_(-14),
+    true
+  ]);
+
+  // 4. Fortschritt
+  var fortschrittSheet = neueSS.insertSheet('Fortschritt');
+  fortschrittSheet.getRange('A1:H1').setValues([[
+    'email', 'fragenId', 'versuche', 'richtig', 'richtigInFolge', 'mastery', 'letzterVersuch', 'sessionIds'
+  ]]);
+
+  // 5. Sessions (8 Spalten gemäß F.2.a Bonus-Fix)
+  var sessionSheet = neueSS.insertSheet('Sessions');
+  sessionSheet.getRange('A1:H1').setValues([[
+    'sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis', 'anzahlFragen', 'richtig'
+  ]]);
+
+  // Registry-Eintrag (Schema: id | name | typ | adminEmail | fragensammlungSheetId | analytikSheetId)
+  var neueRegistryZeile = new Array(rData[0].length).fill('');
+  neueRegistryZeile[gIdCol] = TEST_GRUPPE_ID;
+  neueRegistryZeile[ssIdCol] = neueSSId;
+  var nameCol = rHeaders.indexOf('name');
+  if (nameCol >= 0) neueRegistryZeile[nameCol] = '[Test] Übungs-Gruppe WR';
+  var typCol = rHeaders.indexOf('typ');
+  if (typCol >= 0) neueRegistryZeile[typCol] = 'gym';
+  var adminCol = rHeaders.indexOf('adminemail');
+  if (adminCol >= 0) neueRegistryZeile[adminCol] = TEST_LP_EMAIL;
+  registrySheet.appendRow(neueRegistryZeile);
+
+  return { angelegt: 1, vorhanden: 0, spreadsheetId: neueSSId };
+}
+
+/**
+ * Pro SuS 3-8 Sessions deterministisch über 6 Wochen verteilt.
+ * Datums-Spread: tagZurueck = ((susIndex * 3 + sessionIndex * 5) % 41) + 1 → 1-41 Tage zurück.
+ *
+ * Fortschritt-Records pro SuS × Frage mit kumulierten Mastery-Werten.
+ *
+ * Idempotent: wenn Sessions-Sheet bereits Rows hat, no-op.
+ */
+function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
+  var ss = SpreadsheetApp.openById(spreadsheetId);
+  var sessionsSheet = ss.getSheetByName('Sessions');
+  var fortschrittSheet = ss.getSheetByName('Fortschritt');
+
+  if (sessionsSheet.getLastRow() > 1) {
+    return { sessionsAngelegt: 0, fortschrittAngelegt: 0, hinweis: 'Sessions bereits vorhanden' };
+  }
+
+  var fragenIds = holeTestPruefungFragenIds_();
+  if (fragenIds.length === 0) return { sessionsAngelegt: 0, fortschrittAngelegt: 0 };
+
+  var sessionZeilen = [];
+  var fortschrittZeilen = [];
+
+  for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
+    var email = TEST_SUS_EMAILS[s];
+    var sessionsCount = 3 + (s % 6);
+    var fragenStatus = {};
+
+    for (var idx = 0; idx < sessionsCount; idx++) {
+      var tagZurueck = ((s * 3 + idx * 5) % 41) + 1;
+      var datum = testdatumVorTagen_(tagZurueck);
+      var fragenInSession = 4 + (idx % 5);
+      var anteil = s < 10 ? 0.8 : (s < 15 ? 0.6 : 0.4);
+      var richtigCount = Math.floor(fragenInSession * anteil);
+      var sessionId = 'test-session-' + s + '-' + idx;
+
+      sessionZeilen.push([
+        sessionId,
+        email,
+        idx % 2 === 0 ? 'bwl_einfuehrung' : 'recht_einfuehrung',
+        'Wirtschaft & Recht',
+        datum,
+        richtigCount + '/' + fragenInSession,
+        fragenInSession,
+        richtigCount
+      ]);
+
+      for (var fi = 0; fi < fragenInSession; fi++) {
+        var frageId = fragenIds[(idx * fragenInSession + fi) % fragenIds.length];
+        if (!fragenStatus[frageId]) {
+          fragenStatus[frageId] = { versuche: 0, richtig: 0, richtigInFolge: 0, letzterVersuch: datum, sessionIds: [] };
+        }
+        var st = fragenStatus[frageId];
+        st.versuche++;
+        var warRichtig = fi < richtigCount;
+        if (warRichtig) {
+          st.richtig++;
+          st.richtigInFolge++;
+        } else {
+          st.richtigInFolge = 0;
+        }
+        st.letzterVersuch = datum;
+        st.sessionIds.push(sessionId);
+      }
+    }
+
+    var ids = Object.keys(fragenStatus);
+    for (var fk = 0; fk < ids.length; fk++) {
+      var st2 = fragenStatus[ids[fk]];
+      var mastery = st2.versuche === 0 ? 0 : Math.round((st2.richtig / st2.versuche) * 100);
+      fortschrittZeilen.push([
+        email, ids[fk], st2.versuche, st2.richtig, st2.richtigInFolge,
+        mastery, st2.letzterVersuch, st2.sessionIds.join(',')
+      ]);
+    }
+  }
+
+  if (sessionZeilen.length > 0) {
+    sessionsSheet.getRange(2, 1, sessionZeilen.length, 8).setValues(sessionZeilen);
+  }
+  if (fortschrittZeilen.length > 0) {
+    fortschrittSheet.getRange(2, 1, fortschrittZeilen.length, 8).setValues(fortschrittZeilen);
+  }
+
+  return { sessionsAngelegt: sessionZeilen.length, fortschrittAngelegt: fortschrittZeilen.length };
+}
+
+/**
+ * Weekly-Trigger: Modulo-Roll-Algorithmus (Spec §6.2):
+ *   neueTageZurueck = ((altTageZurueck - 7) % 42 + 42) % 42
+ *
+ * Verteilung bleibt 0-41 Tage zurück. UI rendert „heute" für 0-Tage-zurück sauber.
+ * Rollt Sessions.datum + Fortschritt.letzterVersuch der Test-Gruppe.
+ */
+function rolleTestdatenMasteryVor() {
+  var registrySheet = getGruppenRegistry_();
+  if (!registrySheet) {
+    Logger.log('rolleTestdatenMasteryVor: GRUPPEN_REGISTRY/Gruppen nicht gefunden, no-op');
+    return { gerollt: 0, hinweis: 'GRUPPEN_REGISTRY nicht gefunden' };
+  }
+
+  var rData = registrySheet.getDataRange().getValues();
+  var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var gIdCol = rHeaders.indexOf('id');
+  var ssIdCol = rHeaders.indexOf('fragensammlungsheetid');
+  var testSpreadsheetId = null;
+  for (var i = 1; i < rData.length; i++) {
+    if (String(rData[i][gIdCol]).trim() === TEST_GRUPPE_ID) {
+      testSpreadsheetId = String(rData[i][ssIdCol]);
+      break;
+    }
+  }
+  if (!testSpreadsheetId) {
+    Logger.log('rolleTestdatenMasteryVor: Test-Gruppe nicht gefunden, no-op');
+    return { gerollt: 0, hinweis: 'Test-Gruppe nicht gefunden' };
+  }
+
+  var heute = new Date();
+  heute.setHours(0, 0, 0, 0);
+  var heuteMs = heute.getTime();
+
+  var ss = SpreadsheetApp.openById(testSpreadsheetId);
+
+  // Sessions.datum rollen
+  var sessions = ss.getSheetByName('Sessions');
+  var sData = sessions.getDataRange().getValues();
+  var sHeaders = sData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var sDatumCol = sHeaders.indexOf('datum');
+  var gerollt = 0;
+  for (var r = 1; r < sData.length; r++) {
+    var altDatum = new Date(String(sData[r][sDatumCol]));
+    if (isNaN(altDatum.getTime())) continue;
+    var diffTage = Math.round((heuteMs - altDatum.getTime()) / (24 * 3600 * 1000));
+    var neueTage = ((diffTage - 7) % 42 + 42) % 42;
+    var neuesDatum = new Date(heuteMs - neueTage * 24 * 3600 * 1000);
+    sessions.getRange(r + 1, sDatumCol + 1).setValue(
+      Utilities.formatDate(neuesDatum, 'Europe/Zurich', 'yyyy-MM-dd')
+    );
+    gerollt++;
+  }
+
+  // Fortschritt.letzterVersuch analog rollen
+  var fortschritt = ss.getSheetByName('Fortschritt');
+  var fData = fortschritt.getDataRange().getValues();
+  var fHeaders = fData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var fDatumCol = fHeaders.indexOf('letzterversuch');
+  if (fDatumCol >= 0) {
+    for (var rf = 1; rf < fData.length; rf++) {
+      var altF = new Date(String(fData[rf][fDatumCol]));
+      if (isNaN(altF.getTime())) continue;
+      var diffF = Math.round((heuteMs - altF.getTime()) / (24 * 3600 * 1000));
+      var neueF = ((diffF - 7) % 42 + 42) % 42;
+      fortschritt.getRange(rf + 1, fDatumCol + 1).setValue(
+        Utilities.formatDate(new Date(heuteMs - neueF * 24 * 3600 * 1000), 'Europe/Zurich', 'yyyy-MM-dd')
+      );
+    }
+  }
+
+  Logger.log('rolleTestdatenMasteryVor: ' + gerollt + ' Sessions gerollt');
+  return { gerollt: gerollt };
+}
+
+/**
+ * Installiert Weekly-Trigger (MO 03:00 Europa/Zurich).
+ * Pattern analog installiereAutoHardDeleteTrigger_ Z.4385: idempotent via deleteTrigger.
+ */
+function installiereTestdatenRollTrigger_() {
+  var triggers = ScriptApp.getProjectTriggers();
+  var alteEntfernt = 0;
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'rolleTestdatenMasteryVor') {
+      ScriptApp.deleteTrigger(triggers[i]);
+      alteEntfernt++;
+    }
+  }
+  ScriptApp.newTrigger('rolleTestdatenMasteryVor')
+    .timeBased()
+    .everyWeeks(1)
+    .onWeekDay(ScriptApp.WeekDay.MONDAY)
+    .atHour(3)
+    .create();
+  Logger.log('Testdaten-Roll-Trigger installiert (MO 03:00). Alte entfernt: ' + alteEntfernt);
+  return { installiert: 1, alteEntfernt: alteEntfernt };
+}
+
+/** Public Wrapper für GAS-Editor-Run-Knopf (Trigger-Permission-Grant Schritt). */
+function installiereTestdatenRollTrigger() {
+  return installiereTestdatenRollTrigger_();
 }
