@@ -15707,68 +15707,114 @@ function loescheAlleTestdaten_() {
     registryGeloescht: 0,
     susTabGeloescht: false,
     kurseGeloescht: 0,
-    lpGeloescht: 0
+    lpGeloescht: 0,
+    fehler: []
   };
 
   // 1. Antworten- + Korrektur-Tabs für Test-Prüfung (Tab-Name beginnt mit 'Antworten_test-' bzw. 'Korrektur_test-')
-  if (ANTWORTEN_MASTER_ID) {
-    var antwortenSS = SpreadsheetApp.openById(ANTWORTEN_MASTER_ID);
-    var alleTabs = antwortenSS.getSheets();
-    for (var t = 0; t < alleTabs.length; t++) {
-      var name = alleTabs[t].getName();
-      if (name.indexOf('Antworten_test-') === 0) {
-        antwortenSS.deleteSheet(alleTabs[t]);
-        counter.antwortenTabsGeloescht++;
-      } else if (name.indexOf('Korrektur_test-') === 0) {
-        antwortenSS.deleteSheet(alleTabs[t]);
-        counter.korrekturTabsGeloescht++;
-      }
-    }
-  }
-
-  // 2. Test-Prüfung in Configs
-  var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
-  counter.pruefungenGeloescht = loescheTestZeilen_(configsSheet, { idCol: 'id', idPrefix: TEST_ID_PREFIX });
-
-  // 3. Test-Spreadsheet + Registry-Eintrag (Gruppen-Sheet, Spalte fragensammlungSheetId)
-  var registrySheet = getGruppenRegistry_();
-  if (registrySheet) {
-    var rData = registrySheet.getDataRange().getValues();
-    var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
-    var gIdCol = rHeaders.indexOf('id');
-    var gSsCol = rHeaders.indexOf('fragensammlungsheetid');
-    if (gIdCol >= 0 && gSsCol >= 0) {
-      for (var rr = rData.length - 1; rr >= 1; rr--) {
-        if (String(rData[rr][gIdCol]).trim() === TEST_GRUPPE_ID) {
-          var ssId = String(rData[rr][gSsCol]);
-          try {
-            DriveApp.getFileById(ssId).setTrashed(true);
-            counter.testSpreadsheetGetrasht = true;
-          } catch (e) {
-            Logger.log('Trash failed für ' + ssId + ': ' + e.message);
-          }
-          registrySheet.deleteRow(rr + 1);
-          counter.registryGeloescht++;
+  try {
+    if (ANTWORTEN_MASTER_ID) {
+      var antwortenSS = SpreadsheetApp.openById(ANTWORTEN_MASTER_ID);
+      var alleTabs = antwortenSS.getSheets();
+      for (var t = 0; t < alleTabs.length; t++) {
+        var name = alleTabs[t].getName();
+        if (name.indexOf('Antworten_test-') === 0) {
+          antwortenSS.deleteSheet(alleTabs[t]);
+          counter.antwortenTabsGeloescht++;
+        } else if (name.indexOf('Korrektur_test-') === 0) {
+          antwortenSS.deleteSheet(alleTabs[t]);
+          counter.korrekturTabsGeloescht++;
         }
       }
     }
+  } catch (e) {
+    counter.fehler.push({ schritt: 1, name: 'antwortenKorrekturTabs', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 1 Fehler: ' + e.message);
+  }
+
+  // 2. Test-Prüfung in Configs
+  try {
+    var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+    counter.pruefungenGeloescht = loescheTestZeilen_(configsSheet, { idCol: 'id', idPrefix: TEST_ID_PREFIX });
+  } catch (e) {
+    counter.fehler.push({ schritt: 2, name: 'pruefungenConfigs', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 2 Fehler: ' + e.message);
+  }
+
+  // 3. Test-Spreadsheet + Registry-Eintrag (Gruppen-Sheet, Spalte fragensammlungSheetId)
+  // Hardening: Registry-Row nur löschen wenn Trash erfolgreich oder File bereits weg.
+  // Sonst bleibt Registry-Row stehen → nächster Reset kann Trash retry'en (kein stale-File).
+  try {
+    var registrySheet = getGruppenRegistry_();
+    if (registrySheet) {
+      var rData = registrySheet.getDataRange().getValues();
+      var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+      var gIdCol = rHeaders.indexOf('id');
+      var gSsCol = rHeaders.indexOf('fragensammlungsheetid');
+      if (gIdCol >= 0 && gSsCol >= 0) {
+        for (var rr = rData.length - 1; rr >= 1; rr--) {
+          if (String(rData[rr][gIdCol]).trim() === TEST_GRUPPE_ID) {
+            var ssId = String(rData[rr][gSsCol]);
+            var trashOk = false;
+            var fileAlreadyGone = false;
+            try {
+              DriveApp.getFileById(ssId).setTrashed(true);
+              trashOk = true;
+              counter.testSpreadsheetGetrasht = true;
+            } catch (e) {
+              // File-already-trashed/deleted → Registry-Cleanup trotzdem durchziehen.
+              var msg = String(e && e.message || '');
+              if (msg.indexOf('No item with the given ID') >= 0 || msg.indexOf('not found') >= 0) {
+                fileAlreadyGone = true;
+                Logger.log('Trash skipped — File bereits weg: ' + ssId);
+              } else {
+                Logger.log('Trash failed für ' + ssId + ': ' + msg);
+              }
+            }
+            if (trashOk || fileAlreadyGone) {
+              registrySheet.deleteRow(rr + 1);
+              counter.registryGeloescht++;
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    counter.fehler.push({ schritt: 3, name: 'testSpreadsheetUndRegistry', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 3 Fehler: ' + e.message);
   }
 
   // 4. SuS-Tab in KURSE_SHEET_ID
-  var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
-  var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
-  if (susTab) {
-    kurseSS.deleteSheet(susTab);
-    counter.susTabGeloescht = true;
+  try {
+    var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+    var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+    if (susTab) {
+      kurseSS.deleteSheet(susTab);
+      counter.susTabGeloescht = true;
+    }
+  } catch (e) {
+    counter.fehler.push({ schritt: 4, name: 'susTabKurseSheet', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 4 Fehler: ' + e.message);
   }
 
   // 5. Test-Kurs in Kurse-Sheet
-  var kurseSheet = kurseSS.getSheetByName('Kurse');
-  counter.kurseGeloescht = loescheTestZeilen_(kurseSheet, { idCol: 'kursId', idExact: TEST_KURS_ID });
+  try {
+    var kurseSS5 = SpreadsheetApp.openById(KURSE_SHEET_ID);
+    var kurseSheet = kurseSS5.getSheetByName('Kurse');
+    counter.kurseGeloescht = loescheTestZeilen_(kurseSheet, { idCol: 'kursId', idExact: TEST_KURS_ID });
+  } catch (e) {
+    counter.fehler.push({ schritt: 5, name: 'kurseRowKurseSheet', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 5 Fehler: ' + e.message);
+  }
 
   // 6. Test-LP in Lehrpersonen-Sheet
-  var lpSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
-  counter.lpGeloescht = loescheTestZeilen_(lpSheet, { emailExact: TEST_LP_EMAIL });
+  try {
+    var lpSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
+    counter.lpGeloescht = loescheTestZeilen_(lpSheet, { emailExact: TEST_LP_EMAIL });
+  } catch (e) {
+    counter.fehler.push({ schritt: 6, name: 'lpRowLehrpersonen', msg: String(e && e.message || e) });
+    Logger.log('Reset Schritt 6 Fehler: ' + e.message);
+  }
 
   return counter;
 }
