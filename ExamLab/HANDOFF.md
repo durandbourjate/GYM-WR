@@ -8,7 +8,20 @@
 
 ## Letzter Stand auf main
 
-### Cluster A — Bug-Fixes Fragensammlung + Problemmeldungen ✅ AUF PREVIEW (2026-05-11)
+### Cluster A — Bug-Fixes Fragensammlung + Problemmeldungen ✅ MERGED (2026-05-11)
+
+Branch `feature/cluster-a-bugfixes` → preview → main (`cac64fe → 8525329`). Branch lokal+remote gelöscht. Apps-Script deployt (User-Action), Bug 6c live mit Yannick-Admin + Backend-Delete von "jaja du"-Problemmeldung verifiziert.
+
+**Browser-E2E-Verifikation (8/8 Bugs):**
+- Bug 2+3 sticky Header + Scroll-Container — DOM + visuell ✅
+- Bug 4 ladeGruppen Mount — Dropdown sofort gefüllt ✅
+- Bug 6a Defensive Display — 6 Meldungen mit Text ✅
+- Bug 6b Öffnen-Button DeepLink — Navigation zur MC-Frage ✅
+- Bug 6c Trash + Confirm-Modal + Apps-Script-Delete — Live „jaja du" gelöscht ✅
+- Bug 1 + Bug 5 — Bundle-Pattern verifiziert (Live-Test bräuchte Network-Kill bzw. SuS-View)
+- 0 Console-Errors aus preview-Bundle
+
+
 
 6 Bugs (8 Sub-Issues) aus User-Test-Sweep behoben. Konsumiert G+E Foundation (Lucide-Icons + Brand-Violet). Branch `feature/cluster-a-bugfixes`.
 
