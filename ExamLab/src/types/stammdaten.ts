@@ -52,6 +52,8 @@ export interface LPProfil {
   fachschaftIds: string[]
   gefaesse: string[]
   favoriten?: AppOrt[]                // Account-verknüpfte Favoriten
+  /** Sichtbarkeit Test-Kurs in LP-Listen. Default false. Cluster F. */
+  testdatenSichtbar?: boolean
 }
 
 /** Default-Stammdaten (Gym Hofwil) — Fallback wenn Backend nicht erreichbar */
