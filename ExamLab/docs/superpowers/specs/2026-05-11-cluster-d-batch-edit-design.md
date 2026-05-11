@@ -68,8 +68,11 @@ interface FragenBulkPatch {
   gefaess?: ('SF'|'EF'|'EWR'|'GF')[];
   semester?: string[];
   lernzielIds?: string[];
-  tagsHinzufuegen?: Tag[];
-  tagsErsetzen?: Tag[];          // mutually exclusive mit tagsHinzufuegen
+  // Tags: alle drei Felder operieren auf Tag-IDs (konsistent).
+  // Plan-Phase verifiziert Tag-Datenmodell und passt ggf. an (z.B. Backend braucht
+  // ggf. Tag-Objects statt nur IDs für Auto-Anlage neuer Tags).
+  tagsHinzufuegen?: string[];    // Tag-IDs to add
+  tagsErsetzen?: string[];       // Tag-IDs (mutually exclusive mit tagsHinzufuegen + tagsEntfernen)
   tagsEntfernen?: string[];      // Tag-IDs to remove
 }
 
@@ -123,7 +126,9 @@ Icons aus Cluster G (`Pencil`, `Trash2`, `X`).
 
 ### 5.3 Batch-Modus im Frage-Editor
 
-`src/components/lp/frageneditor/FrageEditor.tsx` (oder ähnlich) bekommt Prop `batchMode?: { count: number; sichtbareCount: number }`:
+**Pfad-Hinweis (Memory-Lehre S156):** Der Frage-Editor lebt als shared-Komponente in `packages/shared/src/editor/`, mit Re-Export-Stubs in `ExamLab/src/components/lp/frageneditor/`. Plan-Phase verifiziert konkreten Modifikations-Pfad.
+
+Der Editor bekommt Prop `batchMode?: { count: number; sichtbareCount: number }`:
 
 #### Banner oben
 ```tsx
