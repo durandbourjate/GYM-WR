@@ -115,6 +115,30 @@ const SUS_DOMAIN = 'stud.gymhofwil.ch';
 const LERNZIELE_TAB = 'Lernziele';
 
 // === UEBEN-KONFIGURATION ===
+// ───── Testdaten-Konstanten (Cluster F) ─────
+// Single source of truth — synchron mit ExamLab/src/utils/testdaten/identifikation.ts
+const TEST_KURS_ID = 'test-kurs-01';
+const TEST_KLASSE_ID = 'test-klasse-01';
+const TEST_ID_PREFIX = 'test-';
+const TEST_LP_EMAIL = 'wr.test@gymhofwil.ch';
+const TEST_EMAIL_REGEX = /^(wr\.test|[a-z]+\.testschueler\d+)@stud\.gymhofwil\.ch$/;
+const TEST_SUS_EMAILS = [
+  'wr.test@stud.gymhofwil.ch',
+  'anna.testschueler1@stud.gymhofwil.ch', 'beat.testschueler2@stud.gymhofwil.ch',
+  'clara.testschueler3@stud.gymhofwil.ch', 'david.testschueler4@stud.gymhofwil.ch',
+  'eva.testschueler5@stud.gymhofwil.ch', 'felix.testschueler6@stud.gymhofwil.ch',
+  'greta.testschueler7@stud.gymhofwil.ch', 'hans.testschueler8@stud.gymhofwil.ch',
+  'ina.testschueler9@stud.gymhofwil.ch', 'jonas.testschueler10@stud.gymhofwil.ch',
+  'karin.testschueler11@stud.gymhofwil.ch', 'lukas.testschueler12@stud.gymhofwil.ch',
+  'mara.testschueler13@stud.gymhofwil.ch', 'noah.testschueler14@stud.gymhofwil.ch',
+  'olivia.testschueler15@stud.gymhofwil.ch', 'pia.testschueler16@stud.gymhofwil.ch',
+  'quentin.testschueler17@stud.gymhofwil.ch', 'rosa.testschueler18@stud.gymhofwil.ch',
+  'sven.testschueler19@stud.gymhofwil.ch'
+];
+const TEST_SUS_VORNAMEN = ['wr', 'Anna', 'Beat', 'Clara', 'David', 'Eva', 'Felix', 'Greta', 'Hans', 'Ina', 'Jonas', 'Karin', 'Lukas', 'Mara', 'Noah', 'Olivia', 'Pia', 'Quentin', 'Rosa', 'Sven'];
+const TEST_SUS_NACHNAMEN = ['test', 'Testschueler1', 'Testschueler2', 'Testschueler3', 'Testschueler4', 'Testschueler5', 'Testschueler6', 'Testschueler7', 'Testschueler8', 'Testschueler9', 'Testschueler10', 'Testschueler11', 'Testschueler12', 'Testschueler13', 'Testschueler14', 'Testschueler15', 'Testschueler16', 'Testschueler17', 'Testschueler18', 'Testschueler19'];
+const TEST_GRUPPE_ID = 'test-gruppe-01';
+const TEST_PRUEFUNG_1_ID = 'test-pruefung-01';
 const GRUPPEN_REGISTRY_ID = '1VH7Vu7JIKYLic2-wK2uSa2nXA7WVvStKOjUDi9cpWnI';
 // Dynamisch: Alle Tabs im Fragensammlung-Sheet ausser System-Tabs
 const FRAGENSAMMLUNG_SYSTEM_TABS = ['Mitglieder', 'Lernziele', 'AuditLog', 'Konfiguration', 'Meta'];
@@ -1278,6 +1302,8 @@ function doPost(e) {
       return batchUpdateLueckentextMigrationEndpoint(body);
     case 'bulkSetzeLueckentextModus':
       return bulkSetzeLueckentextModusEndpoint(body);
+    case 'apiAdminSeedTestdaten':
+      return apiAdminSeedTestdaten_(body);
     case 'loescheFrage':
       return loescheFrage(body);
     case 'stelleWiederHer':
@@ -9074,7 +9100,10 @@ function uebenErstelleGruppe(body) {
   ]]);
 
   var sessionSheet = fragensammlungSS.insertSheet('Sessions');
-  sessionSheet.getRange('A1:F1').setValues([['sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis']]);
+  // Cluster F.2 Bonus-Fix: Schema-Drift behoben — Read-Code (Z.~11362) erwartet 8 Spalten.
+  sessionSheet.getRange('A1:H1').setValues([
+    ['sessionId', 'email', 'thema', 'fach', 'datum', 'ergebnis', 'anzahlFragen', 'richtig']
+  ]);
 
   // In Registry eintragen
   var registrySheet = getGruppenRegistry_();
@@ -14742,3 +14771,84 @@ function testPreWarmKorrektur() { testPreWarmKorrektur_(); }
 // Nur einmal definieren, falls bei Codebase-Update ein Top-Level-assert_ ergänzt wird,
 // kann diese Definition entfallen.
 function assert_(cond, msg) { if (!cond) throw new Error(msg); }
+
+// ═════════════════════════════════════════════════════════════════
+//   Cluster F — Testdaten-Infrastruktur (Apps-Script Backend)
+// ═════════════════════════════════════════════════════════════════
+
+/**
+ * Public Endpoint: Testdaten seeden / zurücksetzen.
+ * Auth: nur Admins (LPInfo.rolle === 'admin').
+ * Body: { email: string, mode: 'initial' | 'reset' }
+ * Response: { success: boolean, error?: string, statistik?: {...}, dauerMs?: number }
+ *
+ * Spec: docs/superpowers/specs/2026-05-11-cluster-f-testdaten-infrastruktur-design.md §5.1
+ * Plan: docs/superpowers/plans/2026-05-11-cluster-f-testdaten-f2-backend.md
+ */
+function apiAdminSeedTestdaten_(body) {
+  var startMs = Date.now();
+  var email = String((body && body.email) || '').toLowerCase().trim();
+  var mode = String((body && body.mode) || 'initial');
+
+  if (!istZugelasseneLP(email)) {
+    return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  }
+  var lpInfo = getLPInfo(email);
+  if (!lpInfo || lpInfo.rolle !== 'admin') {
+    return jsonResponse({ success: false, error: 'Nur Admins dürfen Testdaten verwalten' });
+  }
+  if (mode !== 'initial' && mode !== 'reset') {
+    return jsonResponse({ success: false, error: 'Ungültiger mode: ' + mode + ' (erwartet: initial|reset)' });
+  }
+
+  var lock = LockService.getScriptLock();
+  try {
+    if (!lock.tryLock(5000)) {
+      return jsonResponse({ success: false, error: 'Testdaten-Operation läuft bereits, bitte erneut versuchen' });
+    }
+    var statistik = seedTestdaten_(mode, email);
+    try { cacheInvalidieren_(); } catch (cacheErr) { Logger.log('cacheInvalidieren_ Fehler (ignoriert): ' + cacheErr.message); }
+    var dauerMs = Date.now() - startMs;
+    return jsonResponse({ success: true, statistik: statistik, dauerMs: dauerMs });
+  } catch (e) {
+    Logger.log('apiAdminSeedTestdaten_ Fehler: ' + e.message + '\n' + (e.stack || ''));
+    return jsonResponse({ success: false, error: 'Seed-Fehler: ' + e.message });
+  } finally {
+    try { lock.releaseLock(); } catch (_e) { /* ignore */ }
+  }
+}
+
+/**
+ * Skelett — wird in Phasen F.2.b-e ausgebaut.
+ * Aktuell: gibt leere Statistik zurück. Kein Side-Effect auf Sheets.
+ */
+function seedTestdaten_(mode, callerEmail) {
+  return {
+    mode: mode,
+    callerEmail: callerEmail,
+    stammdatenErgaenzt: false,
+    testLpAngelegt: false,
+    testSuSAngelegt: 0,
+    testPruefungenAngelegt: 0,
+    testAntwortenAngelegt: 0,
+    testKorrekturenAngelegt: 0,
+    testUebungenAngelegt: 0,
+    testSessionsAngelegt: 0,
+    testFortschrittAngelegt: 0,
+    hinweis: 'seedTestdaten_ Skelett (F.2.a) — Implementation folgt in F.2.b-e'
+  };
+}
+
+/** ISO-Datum (YYYY-MM-DD) tageZurueck Tage vor heute. */
+function _testdatumVorTagen_(tageZurueck) {
+  var d = new Date();
+  d.setDate(d.getDate() - tageZurueck);
+  return Utilities.formatDate(d, 'Europe/Zurich', 'yyyy-MM-dd');
+}
+
+/** Voller ISO-Timestamp tageZurueck Tage vor heute. */
+function _testIsoDatumVorTagen_(tageZurueck) {
+  var d = new Date();
+  d.setDate(d.getDate() - tageZurueck);
+  return d.toISOString();
+}
