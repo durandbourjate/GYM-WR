@@ -25,11 +25,11 @@ describe('baueLPConfigAusRoute', () => {
     expect(l2.l3?.selectedIds).toEqual(['sf-wr-29c'])
   })
 
-  it('erkennt /fragensammlung → aktivL1 = fragensammlung, L2 mit Fragensammlung+Papierkorb', () => {
+  it('erkennt /fragensammlung → aktivL1 = fragensammlung, L2 nur Papierkorb (kein Self-Reference)', () => {
     const cfg = baueLPConfigAusRoute('/fragensammlung', navigate, { kurse: [], pruefungen: [], aktivePruefungen: [] })
     expect(cfg.aktivL1).toBe('fragensammlung')
     const fs = cfg.l1Tabs.find((t) => t.id === 'fragensammlung')!
-    expect(fs.l2?.map((l) => l.id)).toEqual(['fragensammlung', 'papierkorb'])
+    expect(fs.l2?.map((l) => l.id)).toEqual(['papierkorb'])
   })
 
   it('erkennt /papierkorb → aktivL1 = fragensammlung, aktivL2 = papierkorb', () => {
