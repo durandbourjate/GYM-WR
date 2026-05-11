@@ -14836,6 +14836,8 @@ function seedTestdaten_(mode, callerEmail) {
   var lp = seedTestdatenLP_();
   var kurs = seedTestdatenKurs_();
   var sus = seedTestdatenSuS_();
+  var pruefung = seedTestdatenPruefung_();
+  var antworten = pruefung.angelegt > 0 ? seedTestdatenAntwortenUndKorrekturen_() : { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
 
   return {
     mode: mode,
@@ -14847,13 +14849,13 @@ function seedTestdaten_(mode, callerEmail) {
     testLpAngelegt: lp.angelegt,
     testSuSAngelegt: sus.angelegt,
     testSuSVorhanden: sus.vorhanden,
-    testPruefungenAngelegt: 0,
-    testAntwortenAngelegt: 0,
-    testKorrekturenAngelegt: 0,
+    testPruefungenAngelegt: pruefung.angelegt,
+    testAntwortenAngelegt: antworten.antwortenAngelegt,
+    testKorrekturenAngelegt: antworten.korrekturenAngelegt,
     testUebungenAngelegt: 0,
     testSessionsAngelegt: 0,
     testFortschrittAngelegt: 0,
-    hinweis: 'F.2.b — Prüfungen/Übungen/Sessions in F.2.c-d nachgeliefert'
+    hinweis: 'F.2.c — Prüfungen/Antworten/Korrekturen angelegt; Übungen/Sessions in F.2.d nachgeliefert'
   };
 }
 
@@ -15040,4 +15042,348 @@ function seedTestdatenSuS_() {
     susTab.getRange(letzteZeile + 1, 1, neueZeilen.length, data[0].length).setValues(neueZeilen);
   }
   return { angelegt: neueZeilen.length, vorhanden: TEST_SUS_EMAILS.length - neueZeilen.length };
+}
+
+// ─── F.2.c: Test-Prüfung + Antworten + Korrekturen ───────────────────────────
+
+/**
+ * Liefert deterministisch sortierte Frage-IDs für Test-Prüfung 1.
+ * Strategy: bis zu 5 Fragen aus jedem Pool (bwl_einfuehrung + recht_einfuehrung) → max 10.
+ * Sortiert alphabetisch nach ID (Determinismus).
+ *
+ * Schema: FRAGENSAMMLUNG_ID hat Sheets pro Fachbereich (BWL/Recht/VWL/...).
+ * Pro Sheet werden Fragen über 'thema'-Spalte gefiltert.
+ */
+function holeTestPruefungFragenIds_() {
+  var pools = ['bwl_einfuehrung', 'recht_einfuehrung'];
+  var fragensammlungSS = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var sheets = fragensammlungSS.getSheets();
+  var ergebnisProPool = {};
+  pools.forEach(function(p) { ergebnisProPool[p] = []; });
+
+  for (var s = 0; s < sheets.length; s++) {
+    var sh = sheets[s];
+    var data = sh.getDataRange().getValues();
+    if (data.length < 2) continue;
+    var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var idCol = headers.indexOf('id');
+    var themaCol = headers.indexOf('thema');
+    if (idCol < 0 || themaCol < 0) continue;
+    for (var r = 1; r < data.length; r++) {
+      var thema = String(data[r][themaCol] || '').trim();
+      if (ergebnisProPool[thema] !== undefined) {
+        ergebnisProPool[thema].push(String(data[r][idCol]));
+      }
+    }
+  }
+
+  var ergebnis = [];
+  pools.forEach(function(p) {
+    ergebnisProPool[p].sort();
+    ergebnis = ergebnis.concat(ergebnisProPool[p].slice(0, 5));
+  });
+  return ergebnis;
+}
+
+/**
+ * Liefert eine FrageMeta-Map (id → {typ, punkte}) für die gegebenen Frage-IDs.
+ * Wir brauchen typ + punkte für Antwort-Schema-Generierung + Korrekturen.
+ *
+ * Wiederverwendung der existierenden ladeFragen-Funktion (parseFrage Z.2924).
+ */
+function holeFragenMeta_(fragenIds) {
+  if (!fragenIds || fragenIds.length === 0) return {};
+  var fragen = ladeFragen(fragenIds);
+  var meta = {};
+  for (var i = 0; i < fragen.length; i++) {
+    var f = fragen[i];
+    meta[f.id] = { typ: f.typ, punkte: Number(f.punkte) || 4 };
+  }
+  return meta;
+}
+
+/**
+ * Test-Prüfung 1 in CONFIGS_ID/Configs anlegen.
+ * Status 'beendet' (alle 20 SuS haben abgegeben + sind korrigiert).
+ * Schema aus ladePruefung Z.2092-2123 verifiziert.
+ *
+ * Return: { angelegt, vorhanden, fragenAnzahl }
+ */
+function seedTestdatenPruefung_() {
+  var fragenIds = holeTestPruefungFragenIds_();
+  if (fragenIds.length === 0) {
+    throw new Error('Keine Pool-Fragen gefunden für Test-Prüfung — Pools "bwl_einfuehrung" / "recht_einfuehrung" sind leer oder Schema-Pfad falsch');
+  }
+
+  var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  if (!configsSheet) throw new Error('Configs-Sheet nicht gefunden');
+  var data = configsSheet.getDataRange().getValues();
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var idCol = headers.indexOf('id');
+  if (idCol < 0) throw new Error('Configs-Sheet hat keine "id"-Spalte');
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][idCol]).trim() === TEST_PRUEFUNG_1_ID) {
+      return { angelegt: 0, vorhanden: 1, fragenAnzahl: fragenIds.length };
+    }
+  }
+
+  var zeile = new Array(data[0].length).fill('');
+  var setIf = function(name, value) {
+    var c = headers.indexOf(String(name).toLowerCase());
+    if (c >= 0) zeile[c] = value;
+  };
+
+  setIf('id', TEST_PRUEFUNG_1_ID);
+  setIf('titel', '[Test] Einführungsprüfung WR');
+  setIf('klasse', TEST_KLASSE_ID);
+  setIf('erlaubteKlasse', TEST_KLASSE_ID);
+  setIf('gefaess', 'SF');
+  setIf('semester', 'HS25');
+  setIf('fachbereiche', 'BWL,Recht');
+  setIf('datum', testdatumVorTagen_(14));
+  setIf('typ', 'Lernkontrolle');
+  setIf('modus', 'pruefung');
+  setIf('zeitModus', 'countdown');
+  setIf('dauerMinuten', 45);
+  setIf('gesamtpunkte', fragenIds.length * 4);
+  setIf('sebErforderlich', 'false');
+  setIf('abschnitte', JSON.stringify([{ id: 'a1', titel: 'Einführung', fragenIds: fragenIds }]));
+  setIf('zeitanzeigeTyp', 'countdown');
+  setIf('ruecknavigation', 'true');
+  setIf('autoSaveIntervallSekunden', 30);
+  setIf('heartbeatIntervallSekunden', 15);
+  setIf('zufallsreihenfolgeFragen', 'false');
+  setIf('freigeschaltet', 'true');
+  setIf('zeitverlaengerungen', JSON.stringify({}));
+  setIf('sebAusnahmen', JSON.stringify([]));
+  setIf('teilnehmer', JSON.stringify(TEST_SUS_EMAILS.map(function(e) { return { email: e }; })));
+  setIf('materialien', JSON.stringify([]));
+  setIf('beendetUm', testIsoDatumVorTagen_(14));
+  setIf('durchfuehrungId', Utilities.getUuid());
+  setIf('status', 'beendet');
+
+  configsSheet.appendRow(zeile);
+  return { angelegt: 1, vorhanden: 0, fragenAnzahl: fragenIds.length };
+}
+
+/**
+ * Liefert eine deterministische Antwort im Frontend-Antwort-Schema, abhängig von Fragetyp + SuS-Index.
+ * Schema aus autoBewerteAntwort Z.6934-6990 verifiziert.
+ *
+ * Korrektheits-Verteilung über 20 SuS:
+ *   susIndex 0-9   (10 SuS): korrekte Antwort
+ *   susIndex 10-14 (5 SuS):  teils richtig
+ *   susIndex 15-19 (5 SuS):  falsche Antwort
+ */
+function testAntwortFuerFrage_(frage, susIndex) {
+  var korrekt = susIndex < 10;
+  var teils = susIndex >= 10 && susIndex < 15;
+
+  switch (frage.typ) {
+    case 'mc': {
+      var optionen = frage.optionen || [];
+      var korrekteIds = optionen.filter(function(o) { return o.korrekt; }).map(function(o) { return o.id; });
+      var falscheIds = optionen.filter(function(o) { return !o.korrekt; }).map(function(o) { return o.id; });
+      if (korrekt) return { gewaehlteOptionen: korrekteIds };
+      if (teils) {
+        var teilsAuswahl = [];
+        if (korrekteIds.length > 0) teilsAuswahl.push(korrekteIds[0]);
+        if (falscheIds.length > 0) teilsAuswahl.push(falscheIds[0]);
+        return { gewaehlteOptionen: teilsAuswahl };
+      }
+      return { gewaehlteOptionen: falscheIds.slice(0, 1) };
+    }
+    case 'richtigfalsch': {
+      var aussagen = frage.aussagen || [];
+      var bewertungen = {};
+      for (var a = 0; a < aussagen.length; a++) {
+        var ag = aussagen[a];
+        if (korrekt) bewertungen[ag.id] = ag.korrekt;
+        else if (teils && a < Math.floor(aussagen.length * 0.6)) bewertungen[ag.id] = ag.korrekt;
+        else bewertungen[ag.id] = !ag.korrekt;
+      }
+      return { bewertungen: bewertungen };
+    }
+    case 'zuordnung': {
+      var paare = frage.paare || [];
+      var zuordnungen = {};
+      for (var z = 0; z < paare.length; z++) {
+        var p = paare[z];
+        if (korrekt) zuordnungen[p.links] = p.rechts;
+        else if (teils && z < Math.floor(paare.length * 0.6)) zuordnungen[p.links] = p.rechts;
+        else zuordnungen[p.links] = (paare[(z + 1) % paare.length] || p).rechts;
+      }
+      return { zuordnungen: zuordnungen };
+    }
+    case 'lueckentext': {
+      var luecken = frage.luecken || [];
+      var eintraege = {};
+      for (var l = 0; l < luecken.length; l++) {
+        var lu = luecken[l];
+        var korrektAntw = lu.korrekt || (lu.korrekteAntworten && lu.korrekteAntworten[0]) || '';
+        if (korrekt) eintraege[lu.id] = korrektAntw;
+        else if (teils && l < Math.floor(luecken.length * 0.6)) eintraege[lu.id] = korrektAntw;
+        else eintraege[lu.id] = String(korrektAntw).substring(0, Math.max(1, Math.floor(String(korrektAntw).length / 2)));
+      }
+      return { eintraege: eintraege };
+    }
+    case 'berechnung': {
+      var ergebnisse = frage.ergebnisse || [];
+      var antwErgebnisse = {};
+      for (var e = 0; e < ergebnisse.length; e++) {
+        var er = ergebnisse[e];
+        if (korrekt) antwErgebnisse[er.id] = String(er.korrekt);
+        else if (teils && e < Math.floor(ergebnisse.length * 0.6)) antwErgebnisse[er.id] = String(er.korrekt);
+        else antwErgebnisse[er.id] = String(Number(er.korrekt) + 1);
+      }
+      return { ergebnisse: antwErgebnisse };
+    }
+    case 'freitext':
+      return { text: korrekt ? '[Test] Ausführliche Antwort mit korrekten Argumenten.' : '[Test] Kurze Antwort.' };
+    default:
+      return {};
+  }
+}
+
+/**
+ * Bewertet eine Antwort manuell für Korrektur-Sheet-Eintrag.
+ * Auto-Typen: nutzt autoBewerteAntwort.
+ * Freitext: feste KI-Bewertung mit Anteil-Punkten.
+ */
+function testBewertungFuerAntwort_(frage, antwort, susIndex) {
+  var autoTypen = ['mc', 'richtigfalsch', 'zuordnung', 'lueckentext', 'berechnung'];
+  if (autoTypen.indexOf(frage.typ) >= 0) {
+    var auto = autoBewerteAntwort(frage, antwort);
+    return {
+      punkte: auto.punkte,
+      maxPunkte: Number(frage.punkte) || 4,
+      begruendung: auto.begruendung,
+      quelle: 'auto'
+    };
+  }
+  var anteil = susIndex < 10 ? 1.0 : (susIndex < 15 ? 0.6 : 0.2);
+  var maxP = Number(frage.punkte) || 4;
+  return {
+    punkte: Math.round(anteil * maxP * 10) / 10,
+    maxPunkte: maxP,
+    begruendung: '[Test-KI-Bewertung] Anteil ' + (anteil * 100) + '%',
+    quelle: 'ki'
+  };
+}
+
+/**
+ * Für Test-Prüfung 1 alle 20 SuS-Antworten + Korrekturen anlegen.
+ * Nutzt bestehende getOrCreateAntwortenSheet (Z.1688) + getOrCreateKorrekturSheet (Z.7121) Helpers.
+ *
+ * Antworten: 1 Row pro SuS, alle Frage-Antworten als JSON-Object in `antworten`-Spalte.
+ * Korrekturen: 1 Row pro (SuS × Frage) mit 13 Spalten (Schema aus batchKorrektur Z.7084).
+ *
+ * Idempotent: bestehende Rows werden nicht überschrieben (Pre-Check via email).
+ */
+function seedTestdatenAntwortenUndKorrekturen_() {
+  var fragenIds = holeTestPruefungFragenIds_();
+  if (fragenIds.length === 0) return { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
+
+  var fragenMeta = holeFragenMeta_(fragenIds);
+  var fragen = ladeFragen(fragenIds);
+  var fragenMap = {};
+  for (var fi = 0; fi < fragen.length; fi++) fragenMap[fragen[fi].id] = fragen[fi];
+
+  // Antworten-Sheet
+  var antwortenSheet = getOrCreateAntwortenSheet(TEST_PRUEFUNG_1_ID);
+  if (!antwortenSheet) throw new Error('getOrCreateAntwortenSheet returnte null für Test-Prüfung');
+  var antwortenData = antwortenSheet.getDataRange().getValues();
+  var antwortenHeaders = antwortenData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+  var emailColAntw = antwortenHeaders.indexOf('email');
+  var existingAntwEmails = {};
+  for (var ar = 1; ar < antwortenData.length; ar++) {
+    var em = String(antwortenData[ar][emailColAntw] || '').toLowerCase().trim();
+    if (em) existingAntwEmails[em] = true;
+  }
+
+  var antwortenZeilen = [];
+  var korrekturZeilen = [];
+  var jetztIso = testIsoDatumVorTagen_(13);
+
+  for (var s = 0; s < TEST_SUS_EMAILS.length; s++) {
+    var email = TEST_SUS_EMAILS[s];
+    if (existingAntwEmails[email]) continue;
+
+    var name = TEST_SUS_VORNAMEN[s] + ' ' + TEST_SUS_NACHNAMEN[s];
+    var susAntworten = {};
+
+    for (var k = 0; k < fragenIds.length; k++) {
+      var frageId = fragenIds[k];
+      var frage = fragenMap[frageId];
+      if (!frage) continue;
+      var antwort = testAntwortFuerFrage_(frage, s);
+      susAntworten[frageId] = antwort;
+
+      var bewertung = testBewertungFuerAntwort_(frage, antwort, s);
+      korrekturZeilen.push({
+        email: email,
+        name: name,
+        frageId: frageId,
+        fragenTyp: frage.typ,
+        maxPunkte: bewertung.maxPunkte,
+        kiPunkte: bewertung.punkte,
+        lpPunkte: '',
+        kiBegruendung: bewertung.begruendung,
+        kiFeedback: '',
+        lpKommentar: '',
+        quelle: bewertung.quelle,
+        geprueft: bewertung.quelle === 'auto' ? 'true' : 'false',
+        status: bewertung.quelle === 'auto' ? 'auto-bewertet' : 'ki-bewertet'
+      });
+    }
+
+    var antwZeile = new Array(antwortenHeaders.length).fill('');
+    var setAntw = function(colName, value) {
+      var c = antwortenHeaders.indexOf(String(colName).toLowerCase());
+      if (c >= 0) antwZeile[c] = value;
+    };
+    setAntw('email', email);
+    setAntw('name', name);
+    setAntw('version', 1);
+    setAntw('antworten', JSON.stringify(susAntworten));
+    setAntw('letzterSave', jetztIso);
+    setAntw('istAbgabe', 'true');
+    setAntw('letzterHeartbeat', jetztIso);
+    setAntw('heartbeats', JSON.stringify([jetztIso]));
+    setAntw('beantworteteFragen', fragenIds.length);
+    setAntw('gesamtFragen', fragenIds.length);
+    antwortenZeilen.push(antwZeile);
+  }
+
+  if (antwortenZeilen.length > 0) {
+    var letzteAntw = antwortenSheet.getLastRow();
+    antwortenSheet.getRange(letzteAntw + 1, 1, antwortenZeilen.length, antwortenHeaders.length).setValues(antwortenZeilen);
+  }
+
+  if (korrekturZeilen.length > 0) {
+    var korrekturSheet = getOrCreateKorrekturSheet(TEST_PRUEFUNG_1_ID);
+    if (!korrekturSheet) throw new Error('getOrCreateKorrekturSheet returnte null');
+    var korrekturHeaders = ['email', 'name', 'frageId', 'fragenTyp', 'maxPunkte', 'kiPunkte', 'lpPunkte', 'kiBegruendung', 'kiFeedback', 'lpKommentar', 'quelle', 'geprueft', 'status'];
+
+    var existingKorrData = korrekturSheet.getDataRange().getValues();
+    if (existingKorrData.length > 1) {
+      Logger.log('Korrektur-Sheet hat bereits ' + (existingKorrData.length - 1) + ' Rows, kein Re-Insert');
+    } else {
+      korrekturSheet.clear();
+      korrekturSheet.getRange(1, 1, 1, korrekturHeaders.length).setValues([korrekturHeaders]).setFontWeight('bold');
+      var rows = korrekturZeilen.map(function(z) {
+        return korrekturHeaders.map(function(h) { return z[h] !== undefined ? z[h] : ''; });
+      });
+      korrekturSheet.getRange(2, 1, rows.length, korrekturHeaders.length).setValues(rows);
+      korrekturSheet.getRange('Z1').setValue(JSON.stringify({
+        status: 'fertig', erledigt: korrekturZeilen.length, gesamt: korrekturZeilen.length, timestamp: jetztIso
+      }));
+    }
+  }
+
+  return {
+    antwortenAngelegt: antwortenZeilen.length,
+    korrekturenAngelegt: korrekturZeilen.length,
+    fragenJeSuS: fragenIds.length
+  };
 }
