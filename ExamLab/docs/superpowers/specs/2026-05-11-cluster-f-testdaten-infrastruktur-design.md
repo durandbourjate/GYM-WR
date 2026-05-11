@@ -87,7 +87,9 @@ Idempotent: zweite Seed-Ausführung ändert nichts.
 
 ### 4.4 Test-LP
 
-`wr.test@gymhofwil.ch` als zusätzlicher LP-Profil-Eintrag, `kursIds` enthält `'test-kurs-01'`. Yannick (`yannick.durand@gymhofwil.ch`) ist über `Stammdaten.admins[]` (default) bereits Admin — kein Extra-Eintrag nötig.
+`wr.test@gymhofwil.ch` ist ein **echtes Google-Konto**, das vom Entwickler/Tester für E2E-Tests aus LP-Sicht verwendet wird (gepaart mit dem SuS-Account `wr.test@stud.gymhofwil.ch`). Seed legt für diesen Account einen LP-Profil-Eintrag mit `kursIds: ['test-kurs-01']` an.
+
+Yannick (`yannick.durand@gymhofwil.ch`) ist über `Stammdaten.admins[]` (default) bereits Admin — kein Extra-Eintrag nötig.
 
 ### 4.5 Test-Schüler (20 Stück)
 
