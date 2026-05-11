@@ -33,7 +33,10 @@ export function baueLPConfigAusRoute(
     const kursMatch = pathname.match(/\/kurs\/([^/?]+)/)
     if (kursMatch) aktivL3 = kursMatch[1]
   } else if (pathname.startsWith('/fragensammlung')) aktivL1 = 'fragensammlung'
-  else if (pathname.startsWith('/papierkorb')) aktivL1 = 'papierkorb'
+  else if (pathname.startsWith('/papierkorb')) {
+    aktivL1 = 'fragensammlung'
+    aktivL2 = 'papierkorb'
+  }
 
   const uebungenL2: L2Tab = {
     id: 'uebungen',
@@ -89,8 +92,15 @@ export function baueLPConfigAusRoute(
         { id: 'analyse', label: 'Analyse', onClick: () => navigate('/uebung/analyse') },
       ],
     },
-    { id: 'fragensammlung', label: 'Fragensammlung', onClick: () => navigate('/fragensammlung') },
-    { id: 'papierkorb', label: 'Papierkorb', onClick: () => navigate('/papierkorb') },
+    {
+      id: 'fragensammlung',
+      label: 'Fragensammlung',
+      onClick: () => navigate('/fragensammlung'),
+      l2: [
+        { id: 'fragensammlung', label: 'Fragensammlung', onClick: () => navigate('/fragensammlung') },
+        { id: 'papierkorb', label: 'Papierkorb', onClick: () => navigate('/papierkorb') },
+      ],
+    },
   ]
 
   return { l1Tabs, aktivL1, aktivL2 }

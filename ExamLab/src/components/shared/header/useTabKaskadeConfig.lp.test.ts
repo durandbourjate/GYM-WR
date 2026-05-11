@@ -25,11 +25,23 @@ describe('baueLPConfigAusRoute', () => {
     expect(l2.l3?.selectedIds).toEqual(['sf-wr-29c'])
   })
 
-  it('erkennt /fragensammlung → aktivL1 = fragensammlung, kein L2', () => {
+  it('erkennt /fragensammlung → aktivL1 = fragensammlung, L2 mit Fragensammlung+Papierkorb', () => {
     const cfg = baueLPConfigAusRoute('/fragensammlung', navigate, { kurse: [], pruefungen: [], aktivePruefungen: [] })
     expect(cfg.aktivL1).toBe('fragensammlung')
     const fs = cfg.l1Tabs.find((t) => t.id === 'fragensammlung')!
-    expect(fs.l2).toBeUndefined()
+    expect(fs.l2?.map((l) => l.id)).toEqual(['fragensammlung', 'papierkorb'])
+  })
+
+  it('erkennt /papierkorb → aktivL1 = fragensammlung, aktivL2 = papierkorb', () => {
+    const cfg = baueLPConfigAusRoute('/papierkorb', navigate, { kurse: [], pruefungen: [], aktivePruefungen: [] })
+    expect(cfg.aktivL1).toBe('fragensammlung')
+    expect(cfg.aktivL2).toBe('papierkorb')
+  })
+
+  it('Standalone-Papierkorb-L1-Tab existiert nicht mehr (nur unter Fragensammlung)', () => {
+    const cfg = baueLPConfigAusRoute('/favoriten', navigate, { kurse: [], pruefungen: [], aktivePruefungen: [] })
+    const ids = cfg.l1Tabs.map((t) => t.id)
+    expect(ids).not.toContain('papierkorb')
   })
 
   it('/pruefung/durchfuehren mit aktiver Prüfung → L3 multi', () => {
