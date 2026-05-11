@@ -124,7 +124,9 @@ Alle mit `klasse: 'test-klasse-01'`.
 - `titel: '[Test] Einführungsprüfung'`
 - `erlaubteEmails: [<alle 20 Test-SuS-Emails>]`
 - Status: abgeschlossen + alle 20 SuS haben Antworten, alle korrigiert.
-- Frageninhalt: byte-identisch zur Echt-Einführungsprüfung (referenziert dieselben Fragesammlungs-Fragen oder embed-Kopien — abhängig von ExamLabs aktueller Pruefung-zu-Frage-Persistenz; Plan-Phase prüft).
+- Frageninhalt — Entscheidungs-Regel je nach ExamLab-Persistenz (Plan-Phase prüft, dann anwenden):
+  - **Wenn Reference-Persistenz** (Prüfung speichert nur Frage-IDs): Test-Prüfung referenziert dieselben Frage-IDs wie das Original. Keine neuen Frage-Records.
+  - **Wenn Embed-Persistenz** (Prüfung speichert Frage-Inhalt eingebettet): Test-Prüfung kopiert den Frage-Inhalt mit der Original-Frage-ID (KEINE neue `test-frage-*`-ID erzeugen, da Fragen nicht gefiltert werden — Test-IDs hier wären überflüssig + verwirrend).
 
 **Prüfung 2 (optional) — `[Test] Aktiengesellschaft – Übungsprüfung`**:
 - `id: 'test-pruefung-02'`
@@ -146,8 +148,8 @@ Alle mit `klasse: 'test-klasse-01'`.
 
 In Test-Prüfung 1+2: alle Antworten korrigiert, Mix entstanden durch natürliche Auto-/KI-/Hand-Korrektur:
 - MC, Single-Choice, Zuordnung, Wahr/Falsch → auto-korrigiert.
-- Lückentext (Dropdown), Freitext, PDF-Annotation → KI-korrigiert mit deterministischen Bewertungstext-Templates.
-- TKonto, BilanzER, Zeichnen → hand-korrigiert (synthetische LP-Bewertung, deterministisch).
+- Lückentext (Dropdown), Freitext, PDF-Annotation → KI-korrigiert mit deterministischen Bewertungstext-Templates **pro Frage-ID hardcoded** (nicht pro SuS variabel — gleiche Frage liefert gleichen Bewertungstext bei allen 20 SuS, einzig die Punktzahl variiert nach Antwort-Korrektheit).
+- TKonto, BilanzER, Zeichnen → hand-korrigiert (synthetische LP-Bewertung, deterministisch pro Frage-ID, analog).
 
 ## 5. Komponenten
 
@@ -179,6 +181,11 @@ Löscht aus allen Storage-Sheets jeden Record dessen ID mit `test-` beginnt ODER
 - `klasse === 'test-klasse-01'` → löschen
 - `userEmail` matcht `^(wr\.test|.+\.testschueler\d+)@` → löschen
 - ID-Prefix `test-` → löschen
+
+**Single Source of Truth (Backend ↔ Frontend):** Die ID-Prefixe (`test-kurs-01`, `test-klasse-01`, `test-`) und das Email-Regex `^(wr\.test|.+\.testschueler\d+)@` müssen identisch in Backend und Frontend sein. Implementierung:
+- Frontend exportiert Konstanten aus `src/utils/testdaten/identifikation.ts` (`TEST_KURS_ID`, `TEST_KLASSE_ID`, `TEST_EMAIL_REGEX`).
+- Apps-Script-Backend definiert die gleichen Konstanten an einer einzigen Stelle in `apps-script-code.js`.
+- Vitest enthält einen Test, der die Backend-Konstanten gegen die Frontend-Konstanten verifiziert (via Datei-Snapshot des Apps-Script-Source).
 
 #### `rolleTestdatenMasteryVor()` — Weekly Trigger
 
@@ -285,8 +292,8 @@ Helper-Hook: `useTestBadgeVisible(record)` — gibt boolean (record ist Test-Rec
 
 - Seed setzt Sessions mit `datum = heute − N` (N gleichverteilt 1-42).
 - Weekly Apps-Script-Trigger `rolleTestdatenMasteryVor` läuft sonntags und erhöht `datum` jeder Test-Session um +7 Tage.
-- Records die nach +7 in der Zukunft wären → an `heute` clampen.
-- Wenn Trigger ausfällt: Daten altern. Test-Tab zeigt Warnhinweis wenn ältestes Session-Datum > 60 Tage.
+- **Roll-Algorithmus:** Statt am `heute`-Datum zu clampen (was nach mehreren Wochen alle Sessions auf einem Datum verklumpen würde), wird ein Modulo-Roll im 42-Tage-Fenster verwendet: für jeden Record ist das neue `datum = heute − ((heute − altes_datum − 7 + 42) mod 42)`. Damit bleibt die ursprüngliche Verteilung 1-42 Tage zurück immer erhalten.
+- Wenn Trigger ausfällt (z.B. nicht aktiviert): Daten altern. Test-Tab zeigt Warnhinweis wenn ältestes Session-Datum > 60 Tage.
 
 ### 6.3 Onboarding-Flow
 
@@ -317,7 +324,7 @@ Helper-Hook: `useTestBadgeVisible(record)` — gibt boolean (record ist Test-Rec
 
 ## 9. Abhängigkeiten zu anderen Clustern
 
-- **Cluster E (Konsistenz):** Backend-Persistenz aller LP-Settings. `testdatenSichtbar` ist ein neues Setting im LP-Profil. Wenn andere LP-Settings noch in localStorage liegen, sollten sie mit migriert werden. Cluster E definiert die Schicht.
+- **Cluster E (Konsistenz):** Backend-Persistenz aller LP-Settings. `testdatenSichtbar` ist ein neues Setting im LP-Profil. **Scope-Begrenzung:** Cluster F migriert ausschließlich das neue Feld `testdatenSichtbar`. Eine breitere Migration anderer LP-Settings (z.B. solche die heute in localStorage liegen) ist explizit Cluster E vorbehalten und nicht Teil dieses Specs.
 - **Cluster G (Icon-System):** Tab-Icon für „Testdaten"-Tab. Badge-Styling sollte mit Cluster-G-Designsprache abgestimmt sein (insb. Farb-Token statt hardcoded `yellow-100`).
 - **Cluster B (Header-Redesign):** Wenn Testkurs in Listen erscheint, sollte Filter-Header in Fragensammlung Test-Records ebenfalls richtig anzeigen — keine separate Logik.
 
