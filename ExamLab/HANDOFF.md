@@ -60,6 +60,47 @@ Branch `feature/cluster-a-bugfixes` → preview → main (`cac64fe → 8525329`)
 
 ---
 
+### Cluster F.2 — Backend Apps-Script (Testdaten-Infrastruktur) ✅ MERGED (2026-05-11)
+
+Zweite Sub-Phase aus Cluster-F-Master-Plan. Apps-Script-Backend für Testdaten — `apiAdminSeedTestdaten`-Endpoint mit Admin-Auth + LockService, idempotenter Seed (Stammdaten + Test-LP + 20 SuS + Test-Prüfung + Antworten + Korrekturen + Test-Übungs-Gruppe + Sessions + Mastery), Reset-Funktion mit Per-Sheet-Atomarität, Weekly-Roll-Trigger MO 03:00. Branch `feature/cluster-f-testdaten-f2-backend` → preview → main (PR #1 → PR #2, `69184f88 → e8e9bb77`).
+
+| Phase | Inhalt |
+|---|---|
+| **F.2.a** Konstanten + Endpoint-Skelett + Frontend-Service (`37a9330` + `9e92bf1` Hotfix) | Apps-Script-Konstanten (TEST_KURS_ID, 20 SuS-Emails, TEST_EMAIL_REGEX), Bonus-Fix `uebenErstelleGruppe` Sessions-Init 6→8 Spalten, doPost-Case `apiAdminSeedTestdaten` mit tryLock(5s) + admin-rolle-Check via `getLPInfo()`, Frontend-Wrapper `testdatenApi.ts` + 5 Tests |
+| **F.2.b** Stammdaten + LP + 20 SuS (`3c66f98` + `abad230` Perf-Shortcut) | `seedTestdatenLP_` (CONFIGS Lehrpersonen-Sheet), `seedTestdatenKurs_` (KURSE_SHEET Kurse-Sheet + SuS-Tab), `seedTestdatenSuS_` (20 SuS mit Pre-Check Echt-Email-Kollision via TEST_EMAIL_REGEX-Scan über alle Kurs-Tabs — Spec §7) |
+| **F.2.c** Test-Prüfung + Antworten + Korrekturen (`616c23a` + `af221bd` Hotfix) | `seedTestdatenPruefung_` (Configs-Sheet, status='beendet', Pool-Fragen aus `bwl_einfuehrung`+`recht_einfuehrung`), `testAntwortFuerFrage_` (echtes Schema pro 6 Fragetypen matching `autoBewerteAntwort`), `seedTestdatenAntwortenUndKorrekturen_` (1 Row/SuS in Antworten-Tab mit JSON, 1 Row/SuS×Frage in Korrektur-Tab via `setKorrekturStatus` Cache-Invalidate) |
+| **F.2.d** Übungs-Gruppe + Sessions + Mastery + Roll-Trigger (`7630060`) | `seedTestdatenGruppe_` (neues Spreadsheet + 5 Sheets + 20 Mitglieder + Auftrag, GRUPPEN_REGISTRY Schema-Drift discovery: `fragensammlungSheetId` statt `spreadsheetId`), `seedTestdatenSessionsUndFortschritt_` (3-8 deterministische Sessions/SuS über 42-Tage-Fenster), `rolleTestdatenMasteryVor` (Modulo-Roll, Sessions yyyy-MM-dd, Fortschritt ISO-with-time), `installiereTestdatenRollTrigger_` (Weekly MO 03:00 idempotent) |
+| **F.2.e** Reset + Atomarität (`3e6d78c` + `3a9ccfd` Hotfix) | `loescheAlleTestdaten_` mit try/catch pro Sheet (Spec §6.1 atomar pro Storage) + `counter.fehler`-Array für teilbares Ergebnis, Trash-Fail-Recovery (Registry-Row nur löschen wenn Drive-File auch gone), `loescheTestZeilen_`-Generic-Helper (OR-Filter idExact/idPrefix/emailExact/Email-Regex) |
+| **F.2.d Follow-ups** (`7f05149`) | `Fortschritt.letzterVersuch` Format-Drift behoben (ISO-with-time analog Production), JSDoc-Hinweis Mitglieder.code='', `gerollt`-Counter-Split (`gerolltSessions` + `gerolltFortschritt`) |
+| **Live-Hotfix Pool-Titel** (`eb8b2e4` + `2ca826a`) | Initial-Seed crashte mit „0 Pool-Fragen" → Diagnose via `_diagFragensammlungThemen`: `thema`-Spalte enthält Display-Titel mit Em-Dash-Suffix (z.B. „Einführung BWL – Grundlagen der Betriebswirtschaftslehre"), NICHT Pool-IDs. Fix: `THEMEN_MAPPING`-Lookup + Prefix-Match. System-Tabs-Skip. |
+
+**Verifikation:** vitest **1574** (1569 → 1574, +5 testdatenApi-Tests), tsc clean, 5× lint clean (insb. `lint:wire-contract` 61/0), build grün, acorn ES2022 syntax-check apps-script-code.js exit 0.
+
+**User-Action erledigt ✅ (2026-05-11):**
+- Apps-Script-Deploy (3 Iterationen: F.2-Backend, Hotfix#1 Pool-Mapping, Hotfix#2 Prefix-Match)
+- `installiereTestdatenRollTrigger` einmal ausgeführt → Weekly-Trigger MO 03:00 für `rolleTestdatenMasteryVor` im Editor sichtbar
+- Initial-Seed via `_seedTestInitial()` → `success: true`, ~14s, alle Drive-Records erzeugt
+- Drive-Verifikation 5/5: CONFIGS Configs/Lehrpersonen, KURSE Kurse-Sheet/test-kurs-01-Tab, GRUPPEN_REGISTRY → Test-Spreadsheet `ExamLab: [Test] Übungs-Gruppe`
+- SuS-Login mit `wr.test@stud.gymhofwil.ch` → Dashboard rendert: „Hallo wr!" + Combobox „[Test] Übungs-Gruppe WR", 0 Console-Errors
+
+**Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-11-cluster-f-testdaten-f2-backend.md` (v2 nach 2× Reviewer-Loop)
+
+**Patterns + Lehren:**
+- **Plan-Phase-Klärungen-Sektion** dokumentiert 11 bewusste Abweichungen von Spec (PruefungsConfig-Ref-Persistenz, Admin-Check via `getLPInfo()`, Einführungsprüfung-Quelle, GRUPPEN_REGISTRY-Schema, etc.) — Reviewer-Verständlichkeit ohne Spec-Cross-Reading.
+- **Live-Hotfix-Loop** (3 Deploy-Iterationen) wegen `thema`-Spalten-Drift: THEMEN_MAPPING-Werte sind kürzer als Sheet-Werte (Em-Dash-Suffix). Diagnose via Helper-Function (`_diagFragensammlungThemen`) sofort den echten State zeigen lassen statt raten.
+- **`feedback_grep_anwesenheit_nicht_abwesenheit`**: Plan-Phase-Audit hatte `THEMEN_MAPPING` als Constant gesehen, aber die Drift-Direction (Pool-ID → Display-Titel mit Suffix) übersehen. 2. Datenpunkt nach Media-Phase 3.
+- **Sessions-Schema-Bonus-Fix** orthogonal zum Hauptauftrag → in F.2.a vorgezogen statt F.2.e.
+- **Pre-Check für Echt-SuS-Email-Kollision** (Spec §7 Daten-Sicherheits-Anforderung): scant alle Nicht-Test-Kurs-Tabs, bricht Seed ab bei Match → verhindert späteren Reset-Daten-Loss.
+
+**Out-of-Scope (F.3/F.4 + Spawn-Tasks):**
+- F.3 UI: TestdatenTab + TestBadge + useTestBadgeVisible-Hook + Confirm-Modal
+- F.4 Read-Pfad-Filter-Integration in 8-15 Frontend-Stores/Hooks/Services
+- Cluster E: LPProfil.testdatenSichtbar Backend-Migration
+- Spawn-Tasks: Test-Prüfung 2 (`seedTestdatenPruefung2_`), Migration existing Sessions-Sheets (6→8 Spalten), locale-spezifische Drive-Error-Patterns
+- Temporäre Editor-Helpers `_seedTestInitial`/`_seedTestReset`/`_diagFragensammlungThemen` aus Editor entfernen (User-Aufgabe nach Verifikation)
+
+---
+
 ### Cluster F.1 Frontend-Foundation ✅ MERGED (2026-05-11)
 
 Erste Sub-Phase aus Cluster-F-Master-Plan (Testdaten-Infrastruktur). **Reine Additionen** — kein Backend-Call, keine UI, kein Read-Pfad-Touch. Branch `feature/cluster-f-testdaten` → preview → main (`ecd0370 → cac64fe`).
