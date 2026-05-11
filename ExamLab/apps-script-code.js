@@ -15394,6 +15394,11 @@ function seedTestdatenAntwortenUndKorrekturen_() {
  *   id | name | typ | adminEmail | fragensammlungSheetId | analytikSheetId
  * Sheet-Struktur analog uebenErstelleGruppe Z.9081-9106 (Fragen/Mitglieder/Auftraege/Fortschritt/Sessions).
  * Sessions-Init: 8 Spalten (Bonus-Fix bereits aus F.2.a aktiv).
+ *
+ * Mitglieder.code = '' für alle 20 SuS: bewusst leer. SuS müssen per Email-Identity
+ * einloggen (Google-OAuth-Pfad via istGruppenMitglied_ Z.360-378), nicht per Code-Flow.
+ * Code-Login (uebenLoginMitCode Z.8920-8961) erwartet code.length >= 4 — wäre für
+ * Testdaten Overhead ohne Mehrwert.
  */
 function seedTestdatenGruppe_() {
   var registrySheet = getGruppenRegistry_();
@@ -15520,6 +15525,10 @@ function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
     for (var idx = 0; idx < sessionsCount; idx++) {
       var tagZurueck = ((s * 3 + idx * 5) % 41) + 1;
       var datum = testdatumVorTagen_(tagZurueck);
+      // Fortschritt.letzterVersuch nutzt ISO-with-time (analog Production-Pfad
+      // Z.~10552 mit Date.toISOString()), damit UI-Anzeige "letzte Aktivität: HH:MM"
+      // konsistent zwischen Test-Daten und Echt-Daten ist.
+      var letzterVersuchIso = testIsoDatumVorTagen_(tagZurueck);
       var fragenInSession = 4 + (idx % 5);
       var anteil = s < 10 ? 0.8 : (s < 15 ? 0.6 : 0.4);
       var richtigCount = Math.floor(fragenInSession * anteil);
@@ -15539,7 +15548,7 @@ function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
       for (var fi = 0; fi < fragenInSession; fi++) {
         var frageId = fragenIds[(idx * fragenInSession + fi) % fragenIds.length];
         if (!fragenStatus[frageId]) {
-          fragenStatus[frageId] = { versuche: 0, richtig: 0, richtigInFolge: 0, letzterVersuch: datum, sessionIds: [] };
+          fragenStatus[frageId] = { versuche: 0, richtig: 0, richtigInFolge: 0, letzterVersuch: letzterVersuchIso, sessionIds: [] };
         }
         var st = fragenStatus[frageId];
         st.versuche++;
@@ -15550,7 +15559,7 @@ function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
         } else {
           st.richtigInFolge = 0;
         }
-        st.letzterVersuch = datum;
+        st.letzterVersuch = letzterVersuchIso;
         st.sessionIds.push(sessionId);
       }
     }
@@ -15587,7 +15596,7 @@ function rolleTestdatenMasteryVor() {
   var registrySheet = getGruppenRegistry_();
   if (!registrySheet) {
     Logger.log('rolleTestdatenMasteryVor: GRUPPEN_REGISTRY/Gruppen nicht gefunden, no-op');
-    return { gerollt: 0, hinweis: 'GRUPPEN_REGISTRY nicht gefunden' };
+    return { gerolltSessions: 0, gerolltFortschritt: 0, hinweis: 'GRUPPEN_REGISTRY nicht gefunden' };
   }
 
   var rData = registrySheet.getDataRange().getValues();
@@ -15603,7 +15612,7 @@ function rolleTestdatenMasteryVor() {
   }
   if (!testSpreadsheetId) {
     Logger.log('rolleTestdatenMasteryVor: Test-Gruppe nicht gefunden, no-op');
-    return { gerollt: 0, hinweis: 'Test-Gruppe nicht gefunden' };
+    return { gerolltSessions: 0, gerolltFortschritt: 0, hinweis: 'Test-Gruppe nicht gefunden' };
   }
 
   var heute = new Date();
@@ -15612,12 +15621,12 @@ function rolleTestdatenMasteryVor() {
 
   var ss = SpreadsheetApp.openById(testSpreadsheetId);
 
-  // Sessions.datum rollen
+  // Sessions.datum rollen (yyyy-MM-dd, UI-Datums-Anzeige)
   var sessions = ss.getSheetByName('Sessions');
   var sData = sessions.getDataRange().getValues();
   var sHeaders = sData[0].map(function(h) { return String(h).toLowerCase().trim(); });
   var sDatumCol = sHeaders.indexOf('datum');
-  var gerollt = 0;
+  var gerolltSessions = 0;
   for (var r = 1; r < sData.length; r++) {
     var altDatum = new Date(String(sData[r][sDatumCol]));
     if (isNaN(altDatum.getTime())) continue;
@@ -15627,14 +15636,16 @@ function rolleTestdatenMasteryVor() {
     sessions.getRange(r + 1, sDatumCol + 1).setValue(
       Utilities.formatDate(neuesDatum, 'Europe/Zurich', 'yyyy-MM-dd')
     );
-    gerollt++;
+    gerolltSessions++;
   }
 
-  // Fortschritt.letzterVersuch analog rollen
+  // Fortschritt.letzterVersuch analog rollen (ISO-with-time, analog Production-Pfad
+  // — Format-Konsistenz für UI-Anzeige "letzte Aktivität: HH:MM").
   var fortschritt = ss.getSheetByName('Fortschritt');
   var fData = fortschritt.getDataRange().getValues();
   var fHeaders = fData[0].map(function(h) { return String(h).toLowerCase().trim(); });
   var fDatumCol = fHeaders.indexOf('letzterversuch');
+  var gerolltFortschritt = 0;
   if (fDatumCol >= 0) {
     for (var rf = 1; rf < fData.length; rf++) {
       var altF = new Date(String(fData[rf][fDatumCol]));
@@ -15642,13 +15653,14 @@ function rolleTestdatenMasteryVor() {
       var diffF = Math.round((heuteMs - altF.getTime()) / (24 * 3600 * 1000));
       var neueF = ((diffF - 7) % 42 + 42) % 42;
       fortschritt.getRange(rf + 1, fDatumCol + 1).setValue(
-        Utilities.formatDate(new Date(heuteMs - neueF * 24 * 3600 * 1000), 'Europe/Zurich', 'yyyy-MM-dd')
+        new Date(heuteMs - neueF * 24 * 3600 * 1000).toISOString()
       );
+      gerolltFortschritt++;
     }
   }
 
-  Logger.log('rolleTestdatenMasteryVor: ' + gerollt + ' Sessions gerollt');
-  return { gerollt: gerollt };
+  Logger.log('rolleTestdatenMasteryVor: ' + gerolltSessions + ' Sessions + ' + gerolltFortschritt + ' Fortschritt-Rows gerollt');
+  return { gerolltSessions: gerolltSessions, gerolltFortschritt: gerolltFortschritt };
 }
 
 /**
