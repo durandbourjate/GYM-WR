@@ -8,6 +8,29 @@
 
 ## Letzter Stand auf main
 
+### Cluster B.a — Papierkorb als L2 unter Fragensammlung ✅ MERGED (2026-05-11)
+
+Erstes Sub-Bundle aus Cluster B (Header-Redesign). Papierkorb war ein eigenständiges 5. L1-Tab im Top-Header — wird zu L2-Hover-Eintrag unter „Fragensammlung". Konsistent mit Prüfen/Üben L2-Pattern. Branch `cluster-b/papierkorb-l2` → preview → main. Single-file-refactor (`useTabKaskadeConfig.lp.ts`) + Test-Erweiterung.
+
+| Commit | Inhalt |
+|---|---|
+| `7728222` | l1Tabs-Array: Standalone-Papierkorb-L1Tab entfernt + Fragensammlung-L1Tab um `l2: [Fragensammlung-Self, Papierkorb]` ergänzt. aktivL1/L2-Resolution für `/papierkorb`-Pfad: `aktivL1='fragensammlung'`, `aktivL2='papierkorb'`. 3 neue Tests (existing-Test um L2-Erwartung erweitert + 2 neue für /papierkorb-Resolution + Standalone-Tab-Absence). |
+
+**Verifikation:** vitest **1576** (1574 Baseline + 2 net Tests, +3 -1), tsc clean, 5 audit-lints clean, build clean.
+
+**Browser-E2E mit echtem LP-Login `wr` auf preview ✅ (2026-05-11):**
+- Top-Header zeigt 4 L1-Tabs statt 5 (Favoriten, Prüfen, Üben, Fragensammlung — Papierkorb weg)
+- Hover auf Fragensammlung → L2-Bar zeigt „Fragensammlung" + „Papierkorb"
+- Click auf Papierkorb-L2 → navigiert zu `/papierkorb`, lädt Papierkorb-Seite
+- Active-State: Fragensammlung-L1 hervorgehoben + Papierkorb-L2 mit violet border
+- 0 Console-Errors, 0 Warnings
+
+**Plan-Doku:** Spec `ExamLab/docs/superpowers/specs/2026-05-11-cluster-b-header-redesign-design.md` §3 Entscheidung 3. Kein dediziertes Plan-Doc (Single-File-Cut, TDD direkt). Out-of-Scope: B.b Sticky-Collapse-Filter (Folge-Bundle), B.c Logo-Trennung (verschoben).
+
+**Bundle ist nur Data-Change in `useTabKaskadeConfig.lp.ts` (-5/+27 Z. + Tests).** Tab-Registry aus E.1 NICHT erweitert — separate Quelle für L1-Tabs.
+
+---
+
 ### Cluster E.1 — HilfeSeite konsumiert Tab-Registry ✅ MERGED (2026-05-11)
 
 Erstes Konsumenten-Bundle aus Cluster-E Phase 3. HilfeSeite konsumiert `tabsFuerSurface('hilfe', { istAdmin: false })` aus zentraler Tab-Registry statt hardcoded `KATEGORIEN`-Array. Bringt Workflow-Order (erstellen → durchführen → korrigieren) automatisch aus Registry. Branch `cluster-e/e1-tab-registry` → preview → main (`a7b98d8 → 51fed82`). EinstellungenPanel-Migration explizit out-of-scope (ID-Konflikt `kiKalibrierung`↔`ki-kalibrierung` + `testdaten`-Tab-UI fehlt, abh. Cluster F.3).
