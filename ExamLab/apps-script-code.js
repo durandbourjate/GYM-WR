@@ -746,6 +746,21 @@ function problemmeldungenColIdx_(headers, name) {
   for (var i = 0; i < headers.length; i++) {
     if (norm(headers[i]) === target) return i;
   }
+  // Cluster A Bug 6a: explizite Aliases für Headers die das externe Sende-Apps-Script
+  // möglicherweise mit anderem Namen schreibt. Defensive, damit `comment` auch dann
+  // gefunden wird wenn die Spalte z.B. 'Kommentar' oder 'Text' heißt.
+  var ALIASES = {
+    'comment': ['kommentar', 'text', 'message', 'inhalt', 'nachricht'],
+  };
+  var aliasList = ALIASES[target];
+  if (aliasList) {
+    for (var k = 0; k < aliasList.length; k++) {
+      var aliasNorm = norm(aliasList[k]);
+      for (var j = 0; j < headers.length; j++) {
+        if (norm(headers[j]) === aliasNorm) return j;
+      }
+    }
+  }
   return -1;
 }
 

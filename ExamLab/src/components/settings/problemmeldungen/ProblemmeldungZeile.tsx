@@ -57,9 +57,11 @@ export default function ProblemmeldungZeile({ meldung, toggleErledigt, onOeffne,
             )}
             {meldung.istPoolFrage && <><span>·</span><span>Pool-Frage</span></>}
           </div>
-          {meldung.comment && (
-            <p className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap break-words">{meldung.comment}</p>
-          )}
+          <p className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap break-words">
+            {meldung.comment?.trim()
+              ? meldung.comment
+              : <span className="italic text-slate-400 dark:text-slate-500">(Kein Text)</span>}
+          </p>
           {meldung.frageText && (
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 italic truncate">„{meldung.frageText}"</p>
           )}
