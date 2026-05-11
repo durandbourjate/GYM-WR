@@ -45,15 +45,19 @@ Cluster B baut auf Cluster E (Favoriten-Backend, Tab-Registry) und Cluster G (Ic
 Heute lebt der Filter-State im `useFragensammlungFilter` Hook (oder ähnlich). Cluster B fügt nur Display-State hinzu:
 
 ```ts
-// Neuer Hook für Collapse-Verhalten
-function useFilterHeaderCollapse() {
+// Neuer Hook für Collapse-Verhalten (finale API)
+function useFilterHeaderCollapse(scrollContainerRef: RefObject<HTMLElement>) {
   const [istKollabiert, setIstKollabiert] = useState(false);
-  const [istManuelExpand, setIstManuelExpand] = useState(false);
-  // Scroll-Detector
-  useEffect(() => { /* observe scroll position */ }, []);
-  return { istKollabiert: istKollabiert && !istManuelExpand, expand, kollabieren };
+  const [manuelleErweiterung, setManuelleErweiterung] = useState(false);
+  useEffect(() => { /* scroll observer auf ref.current */ }, [scrollContainerRef]);
+  return {
+    istKollabiert: istKollabiert && !manuelleErweiterung,
+    expand: () => setManuelleErweiterung(true),
+  };
 }
 ```
+
+Hook bekommt Ref auf Scroll-Container (statt querySelector) — robuster gegen Render-Order und Lazy-Mount der VirtualisierteFragenListe.
 
 ### 4.2 L2-Tab-Registry Erweiterung (Cluster E)
 
@@ -172,13 +176,20 @@ Wichtig: der korrekte Scroll-Container muss adressiert werden (Plan-Phase verifi
 function useAktiveFilterChips(): FilterChipData[] {
   const filter = useFragensammlungFilter();
   const chips: FilterChipData[] = [];
-  if (filter.fachbereich !== 'alle')   chips.push({ id: 'fach',   label: filter.fachbereich, entferne: () => filter.setFachbereich('alle') });
-  if (filter.bloom.length > 0)          chips.push({ id: 'bloom',  label: `Bloom: ${filter.bloom.join(', ')}`, entferne: () => filter.setBloom([]) });
-  if (filter.status !== 'alle')         chips.push({ id: 'status', label: filter.status, entferne: () => filter.setStatus('alle') });
-  // ... usw. für alle Filter-Dimensionen
+  if (filter.suchtext)                  chips.push({ id: 'suche',     label: `Suche: ${filter.suchtext}`,           entferne: () => filter.setSuchtext('') });
+  if (filter.fachbereich !== 'alle')    chips.push({ id: 'fach',      label: filter.fachbereich,                    entferne: () => filter.setFachbereich('alle') });
+  if (filter.thema !== 'alle')          chips.push({ id: 'thema',     label: `Thema: ${filter.thema}`,              entferne: () => filter.setThema('alle') });
+  if (filter.unterthema !== 'alle')     chips.push({ id: 'unterthema', label: `Unterthema: ${filter.unterthema}`,   entferne: () => filter.setUnterthema('alle') });
+  if (filter.fragetyp !== 'alle')       chips.push({ id: 'typ',       label: `Typ: ${filter.fragetyp}`,             entferne: () => filter.setFragetyp('alle') });
+  if (filter.bloom.length > 0)          chips.push({ id: 'bloom',     label: `Bloom: ${filter.bloom.join(', ')}`,  entferne: () => filter.setBloom([]) });
+  if (filter.status !== 'alle')         chips.push({ id: 'status',    label: filter.status,                         entferne: () => filter.setStatus('alle') });
+  if (filter.nurMitAnhang)              chips.push({ id: 'anhang',    label: 'mit Anhang',                          entferne: () => filter.setNurMitAnhang(false) });
+  if (filter.quelle !== 'alle')         chips.push({ id: 'quelle',    label: filter.quelle === 'schule' ? 'Schule' : 'Privat', entferne: () => filter.setQuelle('alle') });
   return chips;
 }
 ```
+
+(Filter-Dimensionen aus heutigem `FragenBrowserHeader.tsx`-Audit; Plan-Phase verifiziert finale Feld-Namen).
 
 ## 6. UI-Spezifikation
 
@@ -198,10 +209,7 @@ Heutiger Header bleibt strukturell — nur Brand-Farben und Typografie-Tokens au
 ### 6.3 Transition
 
 - `transition-all duration-200 ease-in-out` für Slim/Voll-Wechsel.
-- Höhe-Animation: Tailwind kann nicht direkt zwischen variabler Höhe animieren — Plan-Phase entscheidet ob:
-  - max-height-Trick (Voll → max-h-screen, Slim → max-h-12)
-  - oder separate Komponenten ohne Transition
-  - oder Framer Motion einführen (Aufwand vs Wert)
+- Höhe-Animation: **max-height-Trick** (Voll → `max-h-[400px]` oder höher, Slim → `max-h-12`). Tailwind-idiomatisch, keine neue Dependency. **Framer Motion ist Out-of-Scope** — würde nicht eingeführt nur für diese eine Komponente.
 
 ### 6.4 L2-Hover Fragensammlung
 
@@ -280,7 +288,7 @@ Logo wird klickbar:
 2. **Papierkorb L2:** Hover auf Fragensammlung-Tab → L2-Menü mit Papierkorb erscheint → Klick → Papierkorb-View öffnet.
 3. **Sticky-Collapse:** Fragensammlung mit aktiven Filtern (BWL + Bloom K2-K3 + Ungeprüft) → scroll → Slim-Bar zeigt Chips → scroll-to-top → Voll-Header zurück.
 4. **Chip-Entfernen:** Im Slim-State Chip „BWL × " klicken → Filter weg, Listen-Anzeige aktualisiert.
-5. **Erweitern-Button:** Im Slim-State „Filter erweitern" klicken → Voll-Header expandiert (auch ohne Scroll-Reset). Beim nächsten Scroll kollabiert wieder.
+5. **Erweitern-Button:** Im Slim-State „Filter erweitern" klicken → Voll-Header expandiert (auch ohne Scroll-Reset). Voll-Header bleibt sichtbar bis User entweder scroll-zurück-zum-Top macht (resettet `manuelleErweiterung`) und dann wieder runter scrollt, oder die Seite verlässt. (Hook-Logik: `manuelleErweiterung` wird nur bei `scrollTop === 0` zurückgesetzt — siehe 5.6.)
 6. **Keine aktiven Filter:** Reset-Button im Voll-Header → scroll → Slim-Bar zeigt nur „Keine Filter aktiv · 256 Fragen" + Erweitern.
 7. **Console-Errors:** 0 in allen Schritten.
 
