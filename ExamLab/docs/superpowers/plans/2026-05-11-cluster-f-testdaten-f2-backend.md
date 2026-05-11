@@ -709,7 +709,7 @@ Run: `grep -n "function parseFrage\|function ladeFragensammlung\|fachbereichZuFa
 
 Erwartet: Pool-Lookup-Logik in `ladeFragensammlung` oder vergleichbar. Schema von FRAGENSAMMLUNG_ID: ein Sheet pro Fachbereich (Tabs `VWL`, `BWL`, `Recht`, `Informatik` aus Z.8755), Frage-Spalten via `parseFrage` Z.2924.
 
-- [ ] **Step 2: Helper `_holeTestPruefungFragenIds_()` einfügen**
+- [ ] **Step 2: Helper `holeTestPruefungFragenIds_()` einfügen**
 
 ```javascript
 /**
@@ -720,7 +720,7 @@ Erwartet: Pool-Lookup-Logik in `ladeFragensammlung` oder vergleichbar. Schema vo
  * Schema: FRAGENSAMMLUNG_ID hat Sheets pro Fachbereich (BWL/Recht/VWL/...).
  * Pro Sheet werden Fragen über 'thema'-Spalte gefiltert.
  */
-function _holeTestPruefungFragenIds_() {
+function holeTestPruefungFragenIds_() {
   var pools = ['bwl_einfuehrung', 'recht_einfuehrung'];
   var fragensammlungSS = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var sheets = fragensammlungSS.getSheets();
@@ -757,7 +757,7 @@ function _holeTestPruefungFragenIds_() {
  *
  * Wiederverwendung der existierenden ladeFragen-Funktion (Z.~2820, nutzt parseFrage Z.2924).
  */
-function _holeFragenMeta_(fragenIds) {
+function holeFragenMeta_(fragenIds) {
   if (!fragenIds || fragenIds.length === 0) return {};
   var fragen = ladeFragen(fragenIds);   // existing helper
   var meta = {};
@@ -782,7 +782,7 @@ function _holeFragenMeta_(fragenIds) {
  * Return: { angelegt, vorhanden, fragenAnzahl }
  */
 function seedTestdatenPruefung_() {
-  var fragenIds = _holeTestPruefungFragenIds_();
+  var fragenIds = holeTestPruefungFragenIds_();
   if (fragenIds.length === 0) {
     throw new Error('Keine Pool-Fragen gefunden für Test-Prüfung — Pools "bwl_einfuehrung" / "recht_einfuehrung" sind leer oder Schema-Pfad falsch');
   }
@@ -858,7 +858,7 @@ function seedTestdatenPruefung_() {
  *
  * Falls Frage-Objekt unvollständig (z.B. keine Optionen): leerer Antwort-Body.
  */
-function _testAntwortFuerFrage_(frage, susIndex) {
+function testAntwortFuerFrage_(frage, susIndex) {
   var korrekt = susIndex < 10;
   var teils = susIndex >= 10 && susIndex < 15;
 
@@ -935,7 +935,7 @@ function _testAntwortFuerFrage_(frage, susIndex) {
  * Auto-Typen: nutzt autoBewerteAntwort.
  * Freitext: feste KI-Bewertung mit Anteil-Punkten.
  */
-function _testBewertungFuerAntwort_(frage, antwort, susIndex) {
+function testBewertungFuerAntwort_(frage, antwort, susIndex) {
   var autoTypen = ['mc', 'richtigfalsch', 'zuordnung', 'lueckentext', 'berechnung'];
   if (autoTypen.indexOf(frage.typ) >= 0) {
     var auto = autoBewerteAntwort(frage, antwort);
@@ -971,10 +971,10 @@ function _testBewertungFuerAntwort_(frage, antwort, susIndex) {
  * Idempotent: bestehende Rows werden nicht überschrieben (Pre-Check via email).
  */
 function seedTestdatenAntwortenUndKorrekturen_() {
-  var fragenIds = _holeTestPruefungFragenIds_();
+  var fragenIds = holeTestPruefungFragenIds_();
   if (fragenIds.length === 0) return { antwortenAngelegt: 0, korrekturenAngelegt: 0 };
 
-  var fragenMeta = _holeFragenMeta_(fragenIds);
+  var fragenMeta = holeFragenMeta_(fragenIds);
   var fragen = ladeFragen(fragenIds);
   var fragenMap = {};
   for (var fi = 0; fi < fragen.length; fi++) fragenMap[fragen[fi].id] = fragen[fi];
@@ -1006,10 +1006,10 @@ function seedTestdatenAntwortenUndKorrekturen_() {
       var frageId = fragenIds[k];
       var frage = fragenMap[frageId];
       if (!frage) continue;
-      var antwort = _testAntwortFuerFrage_(frage, s);
+      var antwort = testAntwortFuerFrage_(frage, s);
       susAntworten[frageId] = antwort;
 
-      var bewertung = _testBewertungFuerAntwort_(frage, antwort, s);
+      var bewertung = testBewertungFuerAntwort_(frage, antwort, s);
       korrekturZeilen.push({
         email: email,
         name: name,
@@ -1117,11 +1117,11 @@ git add ExamLab/apps-script-code.js
 git commit -m "$(cat <<'EOF'
 ExamLab: Testdaten Apps-Script Test-Prüfung + Antworten + Korrekturen (F.2.c)
 
-- _holeTestPruefungFragenIds_ (Pool-basierte Frage-Sammlung)
-- _holeFragenMeta_ (via existing ladeFragen)
+- holeTestPruefungFragenIds_ (Pool-basierte Frage-Sammlung)
+- holeFragenMeta_ (via existing ladeFragen)
 - seedTestdatenPruefung_ (Configs-Schema komplett laut ladePruefung Z.2092-2123, status='beendet')
-- _testAntwortFuerFrage_ (echtes Schema pro Fragetyp: mc.gewaehlteOptionen, richtigfalsch.bewertungen, ...)
-- _testBewertungFuerAntwort_ (Auto via autoBewerteAntwort, Freitext via KI-Mock)
+- testAntwortFuerFrage_ (echtes Schema pro Fragetyp: mc.gewaehlteOptionen, richtigfalsch.bewertungen, ...)
+- testBewertungFuerAntwort_ (Auto via autoBewerteAntwort, Freitext via KI-Mock)
 - seedTestdatenAntwortenUndKorrekturen_ (1 Row/SuS in Antworten-Tab, 1 Row/SuS×Frage in Korrektur-Tab)
 
 Schema-Quellen: ladePruefung Z.2035, getOrCreateAntwortenSheet Z.1688, getOrCreateKorrekturSheet Z.7121, batchKorrektur Z.7084, autoBewerteAntwort Z.6934.
@@ -1268,7 +1268,7 @@ function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
     return { sessionsAngelegt: 0, fortschrittAngelegt: 0, hinweis: 'Sessions bereits vorhanden' };
   }
 
-  var fragenIds = _holeTestPruefungFragenIds_();
+  var fragenIds = holeTestPruefungFragenIds_();
   if (fragenIds.length === 0) return { sessionsAngelegt: 0, fortschrittAngelegt: 0 };
 
   var sessionZeilen = [];
@@ -1545,7 +1545,7 @@ function loescheAlleTestdaten_() {
 
   // 2. Test-Prüfung in Configs
   var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
-  counter.pruefungenGeloescht = _loescheTestZeilen_(configsSheet, { idCol: 'id', idPrefix: TEST_ID_PREFIX });
+  counter.pruefungenGeloescht = loescheTestZeilen_(configsSheet, { idCol: 'id', idPrefix: TEST_ID_PREFIX });
 
   // 3. Test-Spreadsheet + Registry-Eintrag
   var registry = SpreadsheetApp.openById(GRUPPEN_REGISTRY_ID).getSheets()[0];
@@ -1577,11 +1577,11 @@ function loescheAlleTestdaten_() {
 
   // 5. Test-Kurs in Kurse-Sheet
   var kurseSheet = kurseSS.getSheetByName('Kurse');
-  counter.kurseGeloescht = _loescheTestZeilen_(kurseSheet, { idCol: 'kursId', idExact: TEST_KURS_ID });
+  counter.kurseGeloescht = loescheTestZeilen_(kurseSheet, { idCol: 'kursId', idExact: TEST_KURS_ID });
 
   // 6. Test-LP in Lehrpersonen-Sheet
   var lpSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
-  counter.lpGeloescht = _loescheTestZeilen_(lpSheet, { emailExact: TEST_LP_EMAIL });
+  counter.lpGeloescht = loescheTestZeilen_(lpSheet, { emailExact: TEST_LP_EMAIL });
 
   return counter;
 }
@@ -1596,7 +1596,7 @@ function loescheAlleTestdaten_() {
  *
  * Iteriert von unten nach oben (deleteRow ändert Indizes).
  */
-function _loescheTestZeilen_(sheet, filter) {
+function loescheTestZeilen_(sheet, filter) {
   if (!sheet) return 0;
   var data = sheet.getDataRange().getValues();
   if (data.length < 2) return 0;
@@ -1671,7 +1671,7 @@ git commit -m "$(cat <<'EOF'
 ExamLab: Testdaten Reset (F.2.e)
 
 - loescheAlleTestdaten_ (Antworten/Korrektur-Tabs, Pruefung, Test-Spreadsheet, SuS-Tab, Kurs, LP)
-- _loescheTestZeilen_ Generic-Helper (OR-Filter idExact/idPrefix/emailExact/Email-Regex)
+- loescheTestZeilen_ Generic-Helper (OR-Filter idExact/idPrefix/emailExact/Email-Regex)
 - seedTestdaten_ mode='reset' aktiviert (löscht vor Seed)
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
@@ -1894,7 +1894,7 @@ git push origin main
 5. **Stammdaten-Konflikt-Verhalten** ✓ Plan macht idempotent (match-and-skip) statt Fehler-Abbruch wie Spec §7 fordert — Begründung: ein versehentliches `test-klasse-01` (extrem unwahrscheinlich) sollte den Seed nicht blockieren; identisches Resultat egal ob neu angelegt oder vorhanden
 6. **Test-Prüfung 2** ✓ Out-of-Scope dieser Phase (Spec sagt „optional"), als Spawn-Task `seedTestdatenPruefung2_` notiert
 7. **Echt-SuS-Email-Pre-Check** ✓ Implementiert in `seedTestdatenSuS_` — wirft bei Kollision, verhindert späteren Daten-Loss beim Reset (Spec §7 Anforderung erfüllt)
-8. **Antwort-Schema per Fragetyp** ✓ Aus `autoBewerteAntwort` Z.6934-6990 übernommen — `_testAntwortFuerFrage_` generiert echte Auto-Bewertungs-fähige Antworten
+8. **Antwort-Schema per Fragetyp** ✓ Aus `autoBewerteAntwort` Z.6934-6990 übernommen — `testAntwortFuerFrage_` generiert echte Auto-Bewertungs-fähige Antworten
 9. **Pruefung-Status-Wert** ✓ `'beendet'` (nicht `'abgeschlossen'`) verifiziert via `speichereAntworten` Z.3154
 10. **LockService**: `tryLock(5000)` mit early-return (anstatt `waitLock` mit catch) — klarere Race-Antwort an Frontend
 11. **Wire-Contract-Linter-Richtung** ✓ Frontend-Action ohne Backend-Match → exit 1 (`--strict`); Backend-only-Cases sind erlaubt. F.2.a.5 Frontend-Wrapper landet im selben Commit wie der Backend-Case → keine Zwischen-Phase mit Mismatch
