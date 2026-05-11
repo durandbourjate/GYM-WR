@@ -35,7 +35,7 @@ Branch `feature/cluster-a-bugfixes` → preview → main (`cac64fe → 8525329`)
 | `4f36e66` | Bug 4 | `gruppenStore.ladeGruppen` Idempotenz-Guard (`ladeStatus === 'laden'/'fertig'` no-op) + Mount in `EinstellungenPanel`-useEffect |
 | `6dc4b60` | Bug 5 | LueckentextFrage: `focus:border-indigo-500` → `focus:border-violet-500` (Brand-Konsistenz) |
 | `0cc1a5d` | Bug 6a | ProblemmeldungZeile defensive Display "(Kein Text)"-Fallback + Apps-Script `problemmeldungenColIdx_` Alias-Mapping (`comment` → `kommentar`/`text`/`message`/`inhalt`/`nachricht`) |
-| (verified) | Bug 6b | Source-Audit zeigt Route + Hook + Render funktional korrekt. **Live-Test ausstehend.** |
+| (verified) | Bug 6b | Source-Audit + **Live verifiziert**: Öffnen-Button auf Problemmeldung navigiert zu `/fragensammlung/<frageId>`, MC-Frage-Editor öffnet. |
 
 **A.2 Apps-Script + Frontend (Bug 6c):**
 
@@ -45,11 +45,11 @@ Branch `feature/cluster-a-bugfixes` → preview → main (`cac64fe → 8525329`)
 
 **Verifikation:** vitest **1565** (1561 → 1565, +4 optimisticDelete-Tests), tsc clean, 5× lint clean, build grün, **wire-contract 60/0**.
 
-**⚠️ User-Action vor main-Merge:**
-- **Apps-Script-Deploy** in Apps-Script-Editor (apps-script-code.js aus diesem Branch) für `loescheProblemmeldung` + `problemmeldungenColIdx_`-alias-mapping.
-- Browser-E2E (Yannick-Admin-Login): Problemmeldungen-Tab → Trash-Icon → Confirm-Modal → Endgültig löschen → Toast-Success → Reload zeigt Meldung weg.
-- Bug 6b Live-Test (Öffnen-Button auf Problemmeldung mit `frageId`-Ziel).
-- Bug 1 Error-Pfad: Network während Delete killen → Eintrag taucht wieder auf + Toast-Error.
+**User-Action erledigt ✅:** Apps-Script deployt + Browser-E2E mit Yannick-Admin (Bug 6c "jaja du" gelöscht) + LP-View (Bug 6b Navigation, Bug 4 Dropdown, Bug 2+3 Sticky-Header) — alles live verifiziert. Cluster A komplett auf main (`fab44e4`).
+
+**Restliche optionale Live-Tests (für eigene Verifikation, kein Blocker):**
+- Bug 1 Error-Pfad: Network während Delete killen → Eintrag taucht wieder auf + Toast-Error. (Bundle-Logic verifiziert.)
+- Bug 5 SuS-View Lückentext (in Übung-Session): Focus-Ring violet. (Bundle-Pattern verifiziert.)
 
 **Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-11-cluster-a-bugfixes.md`
 
