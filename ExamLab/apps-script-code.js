@@ -15097,9 +15097,13 @@ function holeTestPruefungFragenIds_() {
     for (var r = 1; r < data.length; r++) {
       var themaWert = String(data[r][themaCol] || '').trim();
       if (!themaWert) continue;
-      // Match Pool-Display-Titel ODER Pool-ID (Backwards-Compat).
+      // Match: Pool-Display-Titel als PREFIX (echte Sheet-Werte erweitern den
+      // THEMEN_MAPPING-Titel mit Em-Dash-Suffix, z.B. "Einführung BWL" →
+      // "Einführung BWL – Grundlagen der Betriebswirtschaftslehre") ODER Pool-ID
+      // (Backwards-Compat für nicht-migrierte Sheets).
       poolIds.forEach(function(pid) {
-        if (themaWert === poolTitel[pid] || themaWert === pid) {
+        var titel = poolTitel[pid];
+        if (themaWert.indexOf(titel) === 0 || themaWert === pid) {
           ergebnisProPool[pid].push(String(data[r][idCol]));
         }
       });
