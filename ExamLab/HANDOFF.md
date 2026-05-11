@@ -8,6 +8,45 @@
 
 ## Letzter Stand auf main
 
+### Cluster A — Bug-Fixes Fragensammlung + Problemmeldungen ✅ AUF PREVIEW (2026-05-11)
+
+6 Bugs (8 Sub-Issues) aus User-Test-Sweep behoben. Konsumiert G+E Foundation (Lucide-Icons + Brand-Violet). Branch `feature/cluster-a-bugfixes`.
+
+**A.1 Frontend-Only (Bugs 1-5 + 6a + 6b):**
+
+| Commit | Bug | Fix |
+|---|---|---|
+| (helper) | — | `src/utils/optimisticDelete.ts` Pattern mit Error-Recovery + 4 Tests |
+| `32f7051` | Bug 1 | Entwurf-Löschen: getDetail-Snapshot vor Delete → bei Backend-Fehler `fuegeFragenHinzu([snapshot])` + Toast-Error (`useFragenAktionen.ts`) |
+| `9e98e7a` | Bug 2+3 | DraftsSection: sticky Header (`bg-slate-100 dark:bg-slate-800 border-b`) + `max-h-[40vh] overflow-y-auto` Body + Lucide-Chevrons + Lucide-Trash2 |
+| `4f36e66` | Bug 4 | `gruppenStore.ladeGruppen` Idempotenz-Guard (`ladeStatus === 'laden'/'fertig'` no-op) + Mount in `EinstellungenPanel`-useEffect |
+| `6dc4b60` | Bug 5 | LueckentextFrage: `focus:border-indigo-500` → `focus:border-violet-500` (Brand-Konsistenz) |
+| `0cc1a5d` | Bug 6a | ProblemmeldungZeile defensive Display "(Kein Text)"-Fallback + Apps-Script `problemmeldungenColIdx_` Alias-Mapping (`comment` → `kommentar`/`text`/`message`/`inhalt`/`nachricht`) |
+| (verified) | Bug 6b | Source-Audit zeigt Route + Hook + Render funktional korrekt. **Live-Test ausstehend.** |
+
+**A.2 Apps-Script + Frontend (Bug 6c):**
+
+| Commit | Inhalt |
+|---|---|
+| `a466754` | Apps-Script `loescheProblemmeldung` (Admin-only, LockService 5000ms, Vorbild `loescheKIFeedback:13724`) + doPost-Case + Wire-Contract +1 (60/0). Frontend-Service mit Throw-on-Fail + ProblemmeldungZeile Lucide-Trash2-Button (conditional auf `istAdmin && !isLegacy`) + ProblemmeldungenTab Confirm-Modal (z-index 1000) + optimisticDelete-Anwendung mit useToast. |
+
+**Verifikation:** vitest **1565** (1561 → 1565, +4 optimisticDelete-Tests), tsc clean, 5× lint clean, build grün, **wire-contract 60/0**.
+
+**⚠️ User-Action vor main-Merge:**
+- **Apps-Script-Deploy** in Apps-Script-Editor (apps-script-code.js aus diesem Branch) für `loescheProblemmeldung` + `problemmeldungenColIdx_`-alias-mapping.
+- Browser-E2E (Yannick-Admin-Login): Problemmeldungen-Tab → Trash-Icon → Confirm-Modal → Endgültig löschen → Toast-Success → Reload zeigt Meldung weg.
+- Bug 6b Live-Test (Öffnen-Button auf Problemmeldung mit `frageId`-Ziel).
+- Bug 1 Error-Pfad: Network während Delete killen → Eintrag taucht wieder auf + Toast-Error.
+
+**Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-11-cluster-a-bugfixes.md`
+
+**Out-of-Scope (Spec §7):**
+- Soft-Delete-Workflow für Entwürfe (Papierkorb)
+- Bulk-Lösch für Problemmeldungen
+- Problemmeldung-Status-Workflow (gelesen/in-Bearbeitung/erledigt)
+
+---
+
 ### Cluster F.1 Frontend-Foundation ✅ MERGED (2026-05-11)
 
 Erste Sub-Phase aus Cluster-F-Master-Plan (Testdaten-Infrastruktur). **Reine Additionen** — kein Backend-Call, keine UI, kein Read-Pfad-Touch. Branch `feature/cluster-f-testdaten` → preview → main (`ecd0370 → cac64fe`).
