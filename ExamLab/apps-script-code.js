@@ -14978,6 +14978,8 @@ function seedTestdatenSuS_() {
     var tab = alleTabs[t];
     var tabName = tab.getName();
     if (tabName === 'Kurse' || tabName === TEST_KURS_ID) continue;
+    // Perf: getLastRow() ist Metadaten-Lookup (kein values-read) — empty-Tab-Shortcut.
+    if (tab.getLastRow() < 2) continue;
     var tabData = tab.getDataRange().getValues();
     if (tabData.length < 2) continue;
     var tabHeaders = tabData[0].map(function(h) { return String(h).toLowerCase().trim(); });
@@ -15027,6 +15029,7 @@ function seedTestdatenSuS_() {
     setIfFn(zeile, 'name', TEST_SUS_NACHNAMEN[k]);
     setIfFn(zeile, 'vorname', TEST_SUS_VORNAMEN[k]);
     setIfFn(zeile, 'klasse', TEST_KLASSE_ID);
+    // padStart benötigt Apps-Script V8-Runtime (in appsscript.json: "runtimeVersion": "V8").
     setIfFn(zeile, 'schuelerid', 'test-' + (k + 1).toString().padStart(3, '0'));
     setIfFn(zeile, 'geschlecht', k % 2 === 0 ? 'm' : 'w');
     neueZeilen.push(zeile);
