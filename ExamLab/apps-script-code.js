@@ -14827,10 +14827,10 @@ function apiAdminSeedTestdaten_(body) {
  * Wire-Vertrag-Felder bleiben über F.2.a→F.2.e konstant.
  */
 function seedTestdaten_(mode, callerEmail) {
-  // Mode 'reset' wird in F.2.e implementiert (loescheAlleTestdaten_).
-  // Vorläufig: 'reset' verhält sich wie 'initial' (idempotent).
+  var geloescht = null;
   if (mode === 'reset') {
-    Logger.log('seedTestdaten_(reset) — loescheAlleTestdaten_ wird in F.2.e implementiert; läuft wie initial');
+    geloescht = loescheAlleTestdaten_();
+    Logger.log('Reset durchgeführt: ' + JSON.stringify(geloescht));
   }
 
   var lp = seedTestdatenLP_();
@@ -14855,6 +14855,7 @@ function seedTestdaten_(mode, callerEmail) {
   return {
     mode: mode,
     callerEmail: callerEmail,
+    geloeschtBeiReset: geloescht,
     stammdatenErgaenzt: !!(kurs.kursAngelegt || kurs.susTabAngelegt),
     klasseAngelegt: false,    // Klassen-Sheet existiert nicht — emergent
     kursAngelegt: kurs.kursAngelegt,
@@ -15676,4 +15677,141 @@ function installiereTestdatenRollTrigger_() {
 /** Public Wrapper für GAS-Editor-Run-Knopf (Trigger-Permission-Grant Schritt). */
 function installiereTestdatenRollTrigger() {
   return installiereTestdatenRollTrigger_();
+}
+
+// ─── F.2.e: Reset (loescheAlleTestdaten_) ────────────────────────────────────
+
+/**
+ * Löscht alle Test-Records aus allen Storage-Pfaden.
+ * Filter-Logik analog Frontend istTestdaten (single source of truth).
+ *
+ * Wichtig: WIR LÖSCHEN NUR IM test-kurs-01-Tab, NICHT über alle Kurs-Tabs.
+ * Echt-SuS mit Test-Pattern-Email werden durch Pre-Check (seedTestdatenSuS_) verhindert.
+ *
+ * Reihenfolge (abhängige Daten zuerst):
+ *  1. Antworten + Korrektur-Tabs (im ANTWORTEN_MASTER_ID)
+ *  2. Test-Prüfung in Configs
+ *  3. Test-Spreadsheet trashen + Registry-Eintrag entfernen
+ *  4. SuS-Tab in KURSE_SHEET_ID
+ *  5. Test-Kurs in Kurse-Sheet
+ *  6. Test-LP in Lehrpersonen-Sheet
+ *
+ * Return: Counters pro Bereich.
+ */
+function loescheAlleTestdaten_() {
+  var counter = {
+    antwortenTabsGeloescht: 0,
+    korrekturTabsGeloescht: 0,
+    pruefungenGeloescht: 0,
+    testSpreadsheetGetrasht: false,
+    registryGeloescht: 0,
+    susTabGeloescht: false,
+    kurseGeloescht: 0,
+    lpGeloescht: 0
+  };
+
+  // 1. Antworten- + Korrektur-Tabs für Test-Prüfung (Tab-Name beginnt mit 'Antworten_test-' bzw. 'Korrektur_test-')
+  if (ANTWORTEN_MASTER_ID) {
+    var antwortenSS = SpreadsheetApp.openById(ANTWORTEN_MASTER_ID);
+    var alleTabs = antwortenSS.getSheets();
+    for (var t = 0; t < alleTabs.length; t++) {
+      var name = alleTabs[t].getName();
+      if (name.indexOf('Antworten_test-') === 0) {
+        antwortenSS.deleteSheet(alleTabs[t]);
+        counter.antwortenTabsGeloescht++;
+      } else if (name.indexOf('Korrektur_test-') === 0) {
+        antwortenSS.deleteSheet(alleTabs[t]);
+        counter.korrekturTabsGeloescht++;
+      }
+    }
+  }
+
+  // 2. Test-Prüfung in Configs
+  var configsSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Configs');
+  counter.pruefungenGeloescht = loescheTestZeilen_(configsSheet, { idCol: 'id', idPrefix: TEST_ID_PREFIX });
+
+  // 3. Test-Spreadsheet + Registry-Eintrag (Gruppen-Sheet, Spalte fragensammlungSheetId)
+  var registrySheet = getGruppenRegistry_();
+  if (registrySheet) {
+    var rData = registrySheet.getDataRange().getValues();
+    var rHeaders = rData[0].map(function(h) { return String(h).toLowerCase().trim(); });
+    var gIdCol = rHeaders.indexOf('id');
+    var gSsCol = rHeaders.indexOf('fragensammlungsheetid');
+    if (gIdCol >= 0 && gSsCol >= 0) {
+      for (var rr = rData.length - 1; rr >= 1; rr--) {
+        if (String(rData[rr][gIdCol]).trim() === TEST_GRUPPE_ID) {
+          var ssId = String(rData[rr][gSsCol]);
+          try {
+            DriveApp.getFileById(ssId).setTrashed(true);
+            counter.testSpreadsheetGetrasht = true;
+          } catch (e) {
+            Logger.log('Trash failed für ' + ssId + ': ' + e.message);
+          }
+          registrySheet.deleteRow(rr + 1);
+          counter.registryGeloescht++;
+        }
+      }
+    }
+  }
+
+  // 4. SuS-Tab in KURSE_SHEET_ID
+  var kurseSS = SpreadsheetApp.openById(KURSE_SHEET_ID);
+  var susTab = kurseSS.getSheetByName(TEST_KURS_ID);
+  if (susTab) {
+    kurseSS.deleteSheet(susTab);
+    counter.susTabGeloescht = true;
+  }
+
+  // 5. Test-Kurs in Kurse-Sheet
+  var kurseSheet = kurseSS.getSheetByName('Kurse');
+  counter.kurseGeloescht = loescheTestZeilen_(kurseSheet, { idCol: 'kursId', idExact: TEST_KURS_ID });
+
+  // 6. Test-LP in Lehrpersonen-Sheet
+  var lpSheet = SpreadsheetApp.openById(CONFIGS_ID).getSheetByName('Lehrpersonen');
+  counter.lpGeloescht = loescheTestZeilen_(lpSheet, { emailExact: TEST_LP_EMAIL });
+
+  return counter;
+}
+
+/**
+ * Generic Helper: löscht alle Test-Zeilen aus einem Sheet (OR-Filter).
+ * filter:
+ *   - idCol + idExact: exakter ID-Match
+ *   - idCol + idPrefix: Prefix-Match
+ *   - emailExact: exakte Email
+ *   - emailCol (default 'email'): Email-Spalte für TEST_EMAIL_REGEX
+ *
+ * Iteriert von unten nach oben (deleteRow ändert Indizes).
+ */
+function loescheTestZeilen_(sheet, filter) {
+  if (!sheet) return 0;
+  var data = sheet.getDataRange().getValues();
+  if (data.length < 2) return 0;
+  var headers = data[0].map(function(h) { return String(h).toLowerCase().trim(); });
+
+  var idColIdx = filter.idCol ? headers.indexOf(String(filter.idCol).toLowerCase()) : -1;
+  var emailColIdx = headers.indexOf(filter.emailCol ? String(filter.emailCol).toLowerCase() : 'email');
+
+  var matches = function(row) {
+    if (idColIdx >= 0) {
+      var idVal = String(row[idColIdx] || '').trim();
+      if (filter.idExact && idVal === filter.idExact) return true;
+      if (filter.idPrefix && idVal.indexOf(filter.idPrefix) === 0) return true;
+    }
+    if (emailColIdx >= 0) {
+      var em = String(row[emailColIdx] || '').toLowerCase().trim();
+      if (filter.emailExact && em === String(filter.emailExact).toLowerCase()) return true;
+      if (!filter.emailExact && !filter.idExact && !filter.idPrefix && TEST_EMAIL_REGEX.test(em)) return true;
+    }
+    return false;
+  };
+
+  var deleted = 0;
+  for (var r = data.length - 1; r >= 1; r--) {
+    if (matches(data[r])) {
+      sheet.deleteRow(r + 1);
+      deleted++;
+    }
+  }
+  return deleted;
 }
