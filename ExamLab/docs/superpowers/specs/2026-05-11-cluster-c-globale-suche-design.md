@@ -184,7 +184,7 @@ Reihenfolge der Sektionen (Konstante):
 </li>
 ```
 
-`highlight()` wraps matched substrings in `<mark>` (Tailwind: `bg-yellow-200 dark:bg-yellow-700/50 font-semibold`).
+`highlight()` baut JSX-Array per String-Split (XSS-sicher by-construction, kein `dangerouslySetInnerHTML`): `[plainStart, <mark>match</mark>, plainEnd]`. `<mark>` mit Tailwind `bg-yellow-200 dark:bg-yellow-700/50 font-semibold`.
 
 ### 5.4 `EmptyState`
 
@@ -334,5 +334,5 @@ Klick auf Link führt in Voll-Liste der Quelle mit voraktiviertem Suchfilter:
 - **„Alle Treffer in …"-Voll-Liste-Verhalten:** existiert ein generisches `?suche=`-Pre-Fill-Pattern in jeder Surface? Plan-Phase greppt + ergänzt wo fehlt.
 - **Schüler-Datenstruktur für Suche:** wo lebt die Liste der Schüler heute? Plan-Phase findet `SchuelerStore` oder ähnlich.
 - **Cache-Refresh-Strategie:** Subscribe auf Store-Updates vs Manual-Refresh-Button. Plan-Phase entscheidet.
-- **Highlight-XSS-Schutz:** `<mark>`-Tag via `dangerouslySetInnerHTML` braucht Sanitization der User-Query-Substrings. Plan-Phase nutzt DOMPurify oder eigenes Escape.
+- **Highlight-XSS-Schutz:** `<mark>`-Tag via `dangerouslySetInnerHTML` braucht Sanitization der User-Query-Substrings. **Empfohlener Pfad:** statt `dangerouslySetInnerHTML` per String-Split + JSX-Array bauen (`[plain, <mark>match</mark>, plain]`). Sicher by-construction, kein DOMPurify nötig. Plan-Phase implementiert.
 - **Mobile-UX:** Dropdown auf kleinen Screens — Full-Screen-Modal vs Inline-Dropdown. Plan-Phase entscheidet.
