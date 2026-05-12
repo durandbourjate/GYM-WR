@@ -18,7 +18,7 @@ export default function TestdatenTab({ email }: Props) {
   const speichereLPProfil = useStammdatenStore(s => s.speichereLPProfil)
   const istAdmin = useStammdatenStore(s => s.istAdmin)
   const toastAdd = useToastStore(s => s.add)
-  const { initialisiert } = useTestdatenStatus()
+  const { initialisiert, ladestand } = useTestdatenStatus({ email })
 
   const admin = istAdmin(email)
   const sichtbar = lpProfil?.testdatenSichtbar ?? false
@@ -58,7 +58,9 @@ export default function TestdatenTab({ email }: Props) {
 
       <section>
         <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Status</h4>
-        {initialisiert ? (
+        {ladestand === 'pruefe' ? (
+          <p className="text-sm text-slate-500 dark:text-slate-400">⏳ Prüfe…</p>
+        ) : initialisiert ? (
           <p className="text-sm text-emerald-700 dark:text-emerald-300">✓ Initialisiert</p>
         ) : (
           <p className="text-sm text-slate-600 dark:text-slate-400">

@@ -8,6 +8,13 @@ vi.mock('../../../services/testdatenApi', () => ({
   apiAdminSeedTestdaten: vi.fn(),
 }))
 
+// Mock apiService für useTestdatenStatus — Default: keine Test-Prüfungen (initialisiert=false)
+vi.mock('../../../services/apiService', () => ({
+  apiService: {
+    ladeAlleConfigs: vi.fn().mockResolvedValue([]),
+  },
+}))
+
 const speichereLPProfil = vi.fn()
 const istAdminFn = vi.fn(() => false)
 const toastAdd = vi.fn()
@@ -57,18 +64,19 @@ describe('TestdatenTab — Status + Toggle', () => {
     istAdminFn.mockImplementation(() => false)
   })
 
-  it('zeigt Status „nicht initialisiert" wenn Marker fehlen', () => {
+  it('zeigt Status „nicht initialisiert" wenn keine Test-Marker vorhanden (Stammdaten + Pruefungen leer)', async () => {
     storeState.stammdaten = echteSD
     storeState.lpProfil = { email: 'lp@x.ch', kursIds: [], fachschaftIds: [], gefaesse: [] }
     render(<TestdatenTab email="lp@x.ch" />)
-    expect(screen.getByText(/Noch nicht erzeugt/)).toBeInTheDocument()
+    // Hook macht async apiService-Call → erst Loading, dann fertig
+    await waitFor(() => expect(screen.getByText(/Noch nicht erzeugt/)).toBeInTheDocument())
   })
 
-  it('zeigt Status „initialisiert" wenn Marker vorhanden', () => {
+  it('zeigt Status „initialisiert" wenn Stammdaten-Marker vorhanden', async () => {
     storeState.stammdaten = initSD
     storeState.lpProfil = { email: 'lp@x.ch', kursIds: [], fachschaftIds: [], gefaesse: [] }
     render(<TestdatenTab email="lp@x.ch" />)
-    expect(screen.getByText(/Initialisiert/)).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByText(/Initialisiert/)).toBeInTheDocument())
   })
 
   it('Toggle gespiegelt aus lpProfil.testdatenSichtbar (default false)', () => {
