@@ -822,18 +822,23 @@ Expected: FAIL.
 
 ```ts
 // src/utils/sucheAdapter.ts
-import { scoreFromMatch, findeHighlightStellen, normalizeForSuche } from './sucheEngine'
-import type { SucheTreffer } from '../types/suche'
+import { scoreFromMatch, findeHighlightStellen } from './sucheEngine'
+import type { SucheTreffer, SucheIconKey } from '../types/suche'
 import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
 import type { PruefungsConfig } from '../types/pruefung'
 import type { FrageSummary } from '../types/fragen-storage'
 
-const PLACEHOLDER_ROUTE = '#'  // wird in Phase 4 durch echte Routen ersetzt
+const PLACEHOLDER_ROUTE = '#'  // wird in Task 4.1 durch echte Routen ersetzt
 
-function tabZuTreffer(tab: TabDefinition, query: string, quelle: 'einstellungen-tab' | 'hilfe-tab'): SucheTreffer | null {
+function tabZuTreffer(
+  tab: TabDefinition,
+  query: string,
+  quelle: 'einstellungen-tab' | 'hilfe-tab',
+): SucheTreffer | null {
   const score = scoreFromMatch(tab.label, query, 'titel')
   if (score === 0) return null
+  const iconKey: SucheIconKey = quelle === 'einstellungen-tab' ? 'einstellungen' : 'hilfe'
   return {
     quelle,
     id: tab.id,
@@ -841,7 +846,7 @@ function tabZuTreffer(tab: TabDefinition, query: string, quelle: 'einstellungen-
     highlightStellen: findeHighlightStellen(tab.label, query, 'titel'),
     navigation: { route: PLACEHOLDER_ROUTE },
     score,
-    icon: tab.icon,
+    iconKey,
   }
 }
 
@@ -871,7 +876,7 @@ export function indexKurse(query: string, kurse: KursDefinition[]): SucheTreffer
       highlightStellen: findeHighlightStellen(k.id, query, 'titel'),
       navigation: { route: PLACEHOLDER_ROUTE },
       score,
-      icon: 'BookOpen',
+      iconKey: 'kurs',
     })
   }
   return treffer
@@ -895,7 +900,7 @@ function configZuTreffer(c: PruefungsConfig, query: string, quelle: 'pruefung' |
     ],
     navigation: { route: PLACEHOLDER_ROUTE },
     score,
-    icon: quelle === 'pruefung' ? 'FileText' : 'Repeat',
+    iconKey: quelle === 'pruefung' ? 'pruefung' : 'uebung',
   }
 }
 
@@ -935,7 +940,7 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
       highlightStellen: findeHighlightStellen(titel, query, 'titel'),
       navigation: { route: PLACEHOLDER_ROUTE },
       score,
-      icon: 'HelpCircle',
+      iconKey: 'frage',
     })
   }
   return treffer
@@ -1009,17 +1014,9 @@ Expected: FAIL.
 - [ ] **Step 3: Implementation**
 
 ```ts
-// in sucheEngine.ts
+// in sucheEngine.ts (append; SucheIndex-Type kommt aus types/suche.ts, hier KEINE Re-Deklaration)
 import { indexEinstellungenTabs, indexHilfeTabs, indexKurse, indexPruefungen, indexUebungen, indexFragen } from './sucheAdapter'
-
-export interface SucheIndex {
-  einstellungenTabs: TabDefinition[]
-  hilfeTabs: TabDefinition[]
-  kurse: KursDefinition[]
-  pruefungen: PruefungsConfig[]
-  uebungen: PruefungsConfig[]  // formative Subset von Configs
-  fragen: FrageSummary[]
-}
+import type { SucheIndex, SucheErgebnis, SucheTreffer } from '../types/suche'
 
 export function fuehreSucheAus(query: string, index: SucheIndex): SucheErgebnis {
   if (normalizeForSuche(query).length < 2) return LEERES_ERGEBNIS
@@ -1037,7 +1034,7 @@ export function fuehreSucheAus(query: string, index: SucheIndex): SucheErgebnis 
 }
 ```
 
-Type-Import-Korrektur in `src/types/suche.ts` (Append `SucheIndex` Type-Export) oder hier inline definieren.
+**Hinweis:** `SucheIndex` ist in `types/suche.ts` Task 1.1 vollständig definiert — hier kein Re-Export, sondern Import via `import type`.
 
 - [ ] **Step 4: Pass**
 
@@ -1047,7 +1044,7 @@ Expected: PASS (alle Tests).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add ExamLab/src/utils/sucheEngine.ts ExamLab/src/utils/sucheEngine.test.ts ExamLab/src/types/suche.ts
+git add ExamLab/src/utils/sucheEngine.ts ExamLab/src/utils/sucheEngine.test.ts
 git commit -m "Cluster C: fuehreSucheAus — Orchestrator über 6 Adapter + Gruppieren"
 ```
 
@@ -1263,7 +1260,7 @@ import { useFragensammlungStore } from '../store/fragensammlungStore'
 import { useAuthStore } from '../store/authStore'
 import { tabsFuerSurface } from '../utils/tabRegistry'
 import { filtereTestdatenWennDeaktiviert } from '../utils/testdaten/filter'
-import type { SucheIndex } from '../utils/sucheEngine'
+import type { SucheIndex } from '../types/suche'
 
 export function useSucheIndex(): SucheIndex {
   const user = useAuthStore(s => s.user)
@@ -1370,7 +1367,7 @@ const treffer: SucheTreffer = {
   highlightStellen: [{ start: 0, end: 6, feld: 'titel' }],
   navigation: { route: '/fragensammlung/f1' },
   score: 100,
-  icon: 'HelpCircle',
+  iconKey: 'frage',
 }
 
 describe('TrefferZeile', () => {
@@ -1658,7 +1655,7 @@ git commit -m "Cluster C: Routes-Builder pro Quelle + iconKey"
 - [ ] **Step 1: Test**
 
 ```tsx
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useDebouncedValue } from './useDebouncedValue'
 
@@ -2202,7 +2199,7 @@ git commit -m "Cluster C: useGlobalSucheLP gelöscht — Logik in sucheEngine + 
 ```ts
 import { describe, it, expect } from 'vitest'
 import { fuehreSucheAus } from './sucheEngine'
-import type { SucheIndex } from './sucheEngine'
+import type { SucheIndex } from '../types/suche'
 
 function syntheticIndex(): SucheIndex {
   const fragen = Array.from({ length: 1000 }, (_, i) => ({
