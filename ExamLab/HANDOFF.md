@@ -6,6 +6,108 @@
 
 ---
 
+## 📍 STAND 12.05.2026 — Wo wir gerade stehen
+
+**Letzter Merge auf main:** `ad59a5c` — HANDOFF-Eintrag Cluster C komplett.
+**Tip-Commit Code:** `5d1d046` — Cluster C Hotfix#3 deutsche Ersatzregel.
+
+**Branches:**
+- `main`: HEAD `ad59a5c`, synchronisiert mit `origin/main`
+- `preview`: HEAD `ad59a5c`, synchronisiert mit `origin/preview` (fast-forwarded auf main nach Merge)
+- `feature/cluster-c-globale-suche`: aufgeräumt — alle Commits sind in main
+
+**Test-Status:**
+- vitest: **1698 passed + 4 todo** (Baseline 1623 → +75 Cluster-C-Tests)
+- tsc -b: clean
+- 4× lint-Gates clean (as-any 0/0, no-alert 0, musterloesung Baseline, wire-contract 61/0)
+- vite build: ✅ (PWA 256 entries, 5253 KiB)
+
+**Was als letztes passiert ist:**
+1. Cluster C (globale Suche) komplett implementiert in 6 Commits (Phase 1-5)
+2. Auf preview deployed, 3 Hotfixes nach E2E-Discovery (lint as-any, Favoriten-Sync, deutsche Ersatzregel)
+3. Browser-E2E auf Staging mit echtem LP-Login: 11/11 ✅
+4. preview → main fast-forward merged + gepusht
+5. preview lokal + remote auf main aligned
+
+---
+
+## 🎯 ROADMAP — Was als nächstes ansteht (priorisiert)
+
+### Priorität 1 — Cluster D Batch-Edit (neues Feature)
+- **Status:** Spec existiert (`docs/superpowers/specs/2026-05-11-cluster-d-batch-edit-design.md`), Plan steht aus
+- **Inhalt:** Multi-Select + Floating-Bar + Apps-Script `apiBulkUpdateFragen`
+- **Blocker:** Apps-Script-Deploy auf Server (nicht nur Frontend)
+- **Geschätzter Aufwand:** 5-7 Tage (eine Code-Session pro Phase, plus Apps-Script-Deploy + Live-E2E)
+
+### Priorität 2 — Cluster E.2-E.5 (Konsistenz + Favoriten)
+- **Status:** 4 separate Specs zu schreiben (oder einer)
+- **Inhalt:** Typografie-Sweep + Favoriten-Backend-Sync + Star-Toggle + Favoriten-Picker
+- **Konsumiert:** keine externen Abhängigkeiten
+- **Geschätzter Aufwand:** 2-3 Tage pro Sub-Cluster
+
+### Priorität 3 — Cluster G Phase 2-6 (kosmetisch)
+- **Status:** Spec existiert (`docs/superpowers/specs/2026-05-11-cluster-g-icon-system-design.md`), Phase 1 in Cluster C verbaut (ICON_MAP-Pattern)
+- **Inhalt:** Emoji-Migration im UI + no-emoji-Lint + no-inline-svg-Lint
+- **Blocker:** keine — kann jederzeit gemacht werden
+- **Geschätzter Aufwand:** 1-2 Tage
+
+### Priorität 4 — Globale Suche Phase 2 (eigene Cluster)
+Aus Cluster-C-Plan Spawn-Tasks:
+
+#### Cluster C.2 Schüler-Suche
+- **Blocker:** kein `useEigeneSchueler`-Hook existiert; Spec-Phase muss konkretes LP→Schüler-Mapping greppen
+- **Aufwand:** ~80 Z. Hook-Code + Spec/Plan-Phase, ~1-2 Tage
+
+#### Cluster C.3 „Alle Treffer in"-Pre-Fill via `?suche=`
+- **Inhalt:** 5+ Surfaces brauchen `useSearchParams().get('suche')` + Pre-Fill in lokalem Filter-State
+- **Surfaces:** Dashboard, Prüfen-Liste, Üben-Liste, Fragensammlung, Übungen-Tab in Einstellungen
+- **Aufwand:** ~2 Tage
+
+#### Cluster C.4 Volltext-Suche
+- **Inhalt:** Fragetexte + Lösungen + Material-PDFs durchsuchen
+- **Blocker:** Performance-Risiko bei 1000+ Fragen — eventuell Backend-Endpoint nötig oder Client-Side-Index (lunr/MiniSearch)
+- **Aufwand:** 3-5 Tage je nach Backend-Bedarf
+
+#### Cluster C.5 Fuzzy-Match
+- **Inhalt:** `fuse.js`-Eval; Tippfehler-Toleranz
+- **Blocker:** User-Feedback abwarten ob wirklich nötig
+- **Aufwand:** 1 Tag wenn library-only, mehr bei custom
+
+### Spawn-Tasks Cluster-übergreifend (kleinere Items, kein eigener Plan)
+
+- `letzterSeedAm`-Persistenz im Apps-Script Configs-Sheet (Cluster F.3 Spec §5.2 A)
+- EinstellungenPanel-Migration auf Tab-Registry (blockiert durch `kiKalibrierung`↔`ki-kalibrierung`-ID-Konflikt → Cluster E.x)
+- Klassenlisten-Tab Filter (Cluster F.4 Out-of-Scope)
+- Live-Durchführen Schüler-Filter in BeendetPhase/AktivPhase (Cluster F.4 Out-of-Scope)
+
+---
+
+## 📋 Workflow-Reminder für nächste Session
+
+**WICHTIG bei jeder ExamLab-Session:**
+
+1. **Repo-Pfad:** `/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/`
+2. **Branch-Workflow:**
+   - Feature-Branch IMMER von `preview` (nicht main!) erstellen
+   - Nach Code-Fertigstellung → merge in `preview` → push origin
+   - **E2E-Tests nur gegen preview-Deploy** (echte Logins funktionieren nicht lokal)
+   - Nach 11/11 E2E ✅ → merge `preview` → `main` (fast-forward)
+3. **Pre-Commit-Checkliste:**
+   - `npx vitest run` (Tests grün)
+   - `npx tsc --noEmit` (Type-Check)
+   - `npm run build` (Build grün)
+   - `npm run lint:as-any && npm run lint:no-alert && npm run lint:musterloesung && npm run lint:wire-contract`
+4. **Preview-Deploy-URL für E2E:** `https://durandbourjate.github.io/GYM-WR-DUY/staging/`
+   - Cache-Reset vor Test:
+     ```js
+     navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister()))
+     caches.keys().then(ks => ks.forEach(k => caches.delete(k)))
+     ```
+   - Reload mit `?nocache=<timestamp>`-Buster
+   - **Echter LP-Login** — kein Demo-Modus (siehe Memory `feedback_echte_logins.md`)
+
+---
+
 ## Letzter Stand auf main
 
 ### Cluster C — Globale Suche (6 Quellen) ✅ MERGED (2026-05-12)

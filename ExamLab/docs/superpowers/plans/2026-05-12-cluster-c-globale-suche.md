@@ -2341,13 +2341,70 @@ Update `MEMORY.md`-Index.
 
 ---
 
-## Rückblick / Lessons-Learned (nach Fertigstellung)
+## Rückblick / Lessons-Learned (12.05.2026, post-Merge)
 
-Diese Sektion wird nach Phase 5 mit konkreten Inhalten gefüllt:
-- Was lief gut?
-- Was war überraschend?
-- Welche Architektur-Entscheidung hat sich bewährt / war suboptimal?
-- Spawn-Tasks für Phase 2 (Schüler-Suche, Pre-Fill `?suche=`, Volltext, Fuzzy)?
+### Was lief gut
+
+- **Pure-Engine + TDD pro Helper** (Phase 1): normalizeForSuche / scoreFromMatch / findeHighlightStellen / gruppiereUndLimitiere / 6 Adapter / fuehreSucheAus → 43 Tests grün beim ersten Versuch. Engine-Test-Suite war direkt nach Phase 1 fertig, was späteren Refactor (Hotfix#3 deutsche Ersatzregel) trivial machte — Tests gaben unmittelbar Feedback.
+- **Spec-Review-Loop in 2 Iterationen** zur Approval: Reviewer-Iter-1 hatte 12 Issues, Iter-2 hatte 4 (3 blocker + 1 minor). Plan-Review-Loop ebenfalls 2 Iterationen. Drei Hotfixes nach Live-E2E zeigten: Reviewer-Iterationen helfen, ersetzen Live-Verifikation aber nicht.
+- **Performance ist ein No-Brainer mit Plain Substring**: 8.2 ms bei 1000 Fragen + 100 Prüfungen + 50 Kursen — weit unter Bonus-Schwelle 50 ms. Spec/Plan-Entscheidung „YAGNI auf fuse.js" war richtig.
+- **Architektur-Entscheidung `LPGlobalSuche` als neue Komponente** statt Refactor der dumb `GlobalSuche` zahlte sich aus: SuS-Pfad blieb unverändert, kein Test-Suite-Risiko in dem Bereich, kein Pen-and-Paper-Aufwand für Discriminated-Union-Props.
+
+### Was war überraschend
+
+- **`useLPDashboardData` ist Hook-lokaler State**, nicht Store. Audit-Annahme der Spec rev1 war falsch. Plan-Phase ergänzte `configsListStore` als minimal-invasive Korrektur (Cache-Layer, kein Duplikat-State). Pattern-Lehre: bei jedem `useStore.X` in der Spec, vor Plan-Commit konkret greppen.
+- **`GlobalSuche.tsx` ist Dumb-Komponente** mit Props-Interface, versorgt aus LP + SuS-Container. Reviewer-Iter-1 entdeckte das, sonst hätte Refactor SuS gebrochen.
+- **HilfeSeite hat keine eigene URL-Route** — ist Modal mit lokalem State. Deep-Link via `?hilfe=<tabId>`-URL-Param war minimaler Patch (initialKategorie-Prop), aber Plan-Spec-Annahme war falsch.
+- **Cluster-F-Filter funktioniert über OR-Matching (id-Prefix + klasse + userEmail + kursId)**, nicht über ein `testdatenSichtbar`-Flag pro Entity. Spec hatte das undeutlich beschrieben.
+- **NFD-Diakritik-Strip ≠ deutsche Ersatzregel**: `Übung→Ubung` ist Längen-stabil, aber User erwartet `Übung→Uebung`. Hotfix#3 nach E2E.
+- **`Favoriten.tsx` lädt Configs separat** von `useLPDashboardData` (eigene `apiService.ladeAlleConfigs(...)`-Call). Plan-Patch reichte nicht, Hotfix#2 nach E2E.
+
+### Welche Architektur-Entscheidung hat sich bewährt / war suboptimal
+
+- **Bewährt:** `slotSuche?: ReactNode`-Prop in AppHeader für Komponenten-Override. Saubere Backwards-Compat (SuS-Pfad nutzt weiter dumb GlobalSuche), kein Container-Duplikat.
+- **Bewährt:** `ICON_MAP` explizit statt `import * as Icons` — Bundle-Effekt ~200KB → ~10KB, Type-sicher via `SucheIconKey`-Union.
+- **Bewährt:** 3 Sub-Hooks (`useDebouncedValue`, `useKeyboardNavigation`, `useClickOutside`) generisch + TDD-isoliert. Wiederverwendbar in anderen Cluster-Surfaces.
+- **Suboptimal:** Highlight-Indexing arbeitet jetzt auf Original-String (case-insensitive Substring) statt normalisiert. Bei Diakritik-Ersatz-Match (`uebung` → `Übung`) gibt es kein Highlight. UX-Akzeptabel, aber Inkonsistenz: Engine matched, UI markiert nicht. Future: Mapping Original↔Normalisiert für vollständiges Highlight, falls User-Feedback es einfordert.
+- **Suboptimal:** Plan-Phase-Audit war unvollständig für „alle Konsumenten von Cache-Stores". Hotfix#2 entdeckte Favoriten.tsx erst beim Live-E2E. Pattern: pro neuem Cache-Store nicht nur Producer-Pfad greppen, sondern auch alle Konsumenten-Pfade die parallel laden.
+
+### Open Items / Spawn-Tasks für Phase 2 (eigene Cluster)
+
+Diese Items sind Out-of-Scope Phase 1 und werden in eigenen Spec/Plan-Zyklen angelegt:
+
+1. **Schüler-Suche** (Spec §9, §10 Issue 3):
+   - Benötigt `useEigeneSchueler(lpEmail)`-Hook (~80 Z. Code), kein bestehender LP-Permission-Selektor existiert.
+   - Mapping LP-Email → Kurse → Gruppen → Schüler-Liste.
+   - Permission-Filter: LP sieht nur Schüler in eigenen Kursen, Admin sieht alle (über `useStammdatenStore.istAdmin`).
+   - Spec/Plan-Phase brauchen Codebase-Audit: wo lebt Schüler-Liste heute? Wahrscheinlich aus `useUebenGruppenStore.gruppen` plus Sus-Datenstruktur. Klassen-Mapping unbekannt.
+
+2. **„Alle Treffer in"-Pre-Fill via `?suche=`** (Spec §9, §10 Issue 5):
+   - 5+ Surfaces betroffen (Dashboard, Prüfen-Liste, Üben-Liste, Fragensammlung, Übungen-Tab in Einstellungen).
+   - Pro Surface: `useSearchParams().get('suche')` lesen + lokalen Filter-State pre-fillen.
+   - Aktuell „Alle Treffer in"-Link navigiert nur zur Surface, kein Filter. UX-Verbesserung Phase 2.
+
+3. **Volltext-Suche** (Spec §9):
+   - Fragetexte + Lösungen + Material-PDFs durchsuchen.
+   - Performance-Risiko bei 1000+ Fragen mit langen Texten — eventuell Backend-Endpoint nötig.
+   - Alternative: Client-side Index mit lunr/MiniSearch (Phase 2 Library-Eval).
+
+4. **Fuzzy-Match (Tippfehler-Toleranz)** (Spec §9):
+   - Aktuell Plain Substring — keine Toleranz für Tippfehler.
+   - `fuse.js` o.ä. evaluieren; Performance-Auswirkung bei 1000+ Fragen messen.
+   - User-Feedback abwarten: wird Fuzzy wirklich benötigt?
+
+### Cluster-übergreifende Spawns aus Cluster-C-Arbeit
+
+- **`letzterSeedAm`-Persistenz** im Apps-Script Configs-Sheet (war Spawn-Task aus Cluster F.3, ist Cluster-übergreifend offen).
+- **EinstellungenPanel-Migration auf Tab-Registry** (blockiert durch `kiKalibrierung`↔`ki-kalibrierung`-ID-Konflikt, eigener Sub-Cluster E.x).
+- **Klassenlisten-Tab Filter** (Cluster F.4 Out-of-Scope).
+- **Live-Durchführen Schüler-Filter** in BeendetPhase/AktivPhase (Cluster F.4 Out-of-Scope).
+
+### Lehren als Memory-Files
+
+Folgende Lehren wurden als eigene Memory-Files erstellt (siehe nächste Session):
+
+- `feedback_examlab_repo_preview_main.md` — ExamLab-Repo + preview→main-Workflow + E2E gegen preview-Deploy
+- `project_cluster_c_komplett.md` — Cluster-C-Stand für nächste Session
 
 ---
 
