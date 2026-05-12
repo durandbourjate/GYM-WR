@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useFavoritenStore } from '../../store/favoritenStore'
+import { useConfigsListStore } from '../../store/configsListStore'
 import { apiService } from '../../services/apiService'
 import { useLPNavigationStore } from '../../store/lpUIStore'
 import { useTestdatenSichtbar } from '../../hooks/useTestdatenSichtbar'
@@ -48,11 +49,15 @@ export default function Favoriten() {
     if (!user) return
     if (istDemoModus || !apiService.istKonfiguriert()) {
       setConfigs([])
+      useConfigsListStore.getState().setConfigs([])
       setLadeStatus('fertig')
       return
     }
     apiService.ladeAlleConfigs(user.email).then(result => {
-      if (result) setConfigs(result)
+      if (result) {
+        setConfigs(result)
+        useConfigsListStore.getState().setConfigs(result)
+      }
       setLadeStatus('fertig')
     })
   }, [user, istDemoModus])
