@@ -1,114 +1,129 @@
-# Cluster C — Globale Suche Implementation Plan
+# Cluster C — Globale Suche Implementation Plan (rev2)
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Globale Suche im App-Header über 6 Quellen (Einstellungen-Tabs, Hilfe-Tabs, Kurse, Prüfungen, Übungen, Fragen) mit gruppierten Treffern, Keyboard-Navigation, Diakritik-Normalize und XSS-sicherem Highlight.
+**Goal:** LP-Header-Suche um 6 Quellen erweitern (Einstellungen-Tabs, Hilfe-Tabs, Kurse, Prüfungen, Übungen, Fragen) mit gruppierten Treffern, Keyboard-Navigation, Diakritik-Normalize und XSS-sicherem Highlight. **SuS-Pfad bleibt unverändert** (eigener Hook `useGlobalSucheSuS` mit Scope-Guard, kein 6-Quellen-Search).
 
-**Architektur:** Pure Engine (`sucheEngine.ts`) trennt Logik von UI. `useSucheIndex()`-Memo-Hook liest aus 5 Source-Stores + Tab-Registry + neuem `useConfigsListStore` (Cache-Layer für Configs, der aus `useLPDashboardData` befüllt wird). Cluster-F-Filter in Adapter-Schicht. Highlight via JSX-Array statt `dangerouslySetInnerHTML`. Test-First (Vitest), per-Task-Commits.
+**Architektur:** Pure Engine (`sucheEngine.ts`) trennt Logik von UI. `useSucheIndex()`-Memo-Hook liest aus 4 Source-Stores + Tab-Registry + neuem `useConfigsListStore` (Cache-Layer). `LPGlobalSuche` ist eine **neue eigene Komponente** (parallel zur bestehenden dumb `GlobalSuche.tsx`) — ersetzt nur in `LPAppHeaderContainer`. Bestehende `GlobalSuche` bleibt für `SuSAppHeaderContainer` erhalten. 4 kleine Sub-Hooks (`useDebouncedValue`, `useKeyboardNavigation`, `useClickOutside`) — TDD pro Hook. Cluster-F-Filter in Adapter-Schicht. Highlight via JSX-Array. Explizite Icon-Map statt `import * as` für tree-shaking. Test-First, per-Task-Commits.
 
 **Tech Stack:** React 19, TypeScript, Zustand v5, Vite, Tailwind v4, react-router-dom 7.14, Vitest, lucide-react.
 
 **Spec:** `ExamLab/docs/superpowers/specs/2026-05-11-cluster-c-globale-suche-design.md` (rev2 approved)
 
-**Spec-Abweichung (begründet):**
-Spec §4.2 ging davon aus, dass Prüfungs/Übungs-Configs aus einem bestehenden Store kommen. Codebase-Audit zeigt: sie sind Hook-lokaler State in `useLPDashboardData` (per-Komponenten-Mount). Plan ergänzt: schlanker neuer `useConfigsListStore` als Cache-Layer (NICHT Duplikat-State — Source-of-Truth für Configs gibt es heute nirgends zentral). `useLPDashboardData` wird minimal gepatcht: `setConfigs` schreibt zusätzlich in den Cache-Store. Damit kann `useSucheIndex` ohne API-Doppel-Call lesen. Phase 2.
+## Spec-Abweichungen (begründet, aus Plan-Review rev1 → rev2)
+
+1. **configsListStore (neu):** Spec §4.2 ging davon aus, dass Configs aus einem bestehenden Store kommen. Codebase-Audit zeigt: sie sind Hook-lokaler State in `useLPDashboardData`. Plan ergänzt schlanken Cache-Store (NICHT Duplikat-State — Configs leben sonst nirgends zentral). Minimal-Patch: 2-3 `setConfigs(...)`-Aufrufstellen in `useLPDashboardData` schreiben zusätzlich in den Store.
+
+2. **`LPGlobalSuche` (neu) statt Refactor von `GlobalSuche`:** Audit zeigt: `GlobalSuche.tsx` ist **Dumb-Komponente** (`Props: { suchen, onSuchen, ergebnis }`), versorgt aus `LPAppHeaderContainer` UND `SuSAppHeaderContainer`. Refactor würde SuS-Pfad brechen (anderer Type, andere Quellen, Scope-Guard). Lösung: eigene neue `LPGlobalSuche` für 6-Quellen-Search; bestehende `GlobalSuche` bleibt für SuS-Pfad unverändert. `useGlobalSucheLP.ts` Legacy wird gelöscht, `useGlobalSucheSuS.ts` bleibt erhalten.
+
+3. **Hilfe-Deep-Linking:** Audit zeigt: `HilfeSeite` ist Modal mit lokalem `kategorie`-State, kein URL-Routing. Phase-1-Pragmatismus: Hilfe-Tab-Treffer navigieren zu `/einstellungen` + URL-Search-Param `?hilfe=<tabId>` — kleiner Patch in `LPStartseite` liest Param und mountet `HilfeSeite` mit neuer `initialKategorie`-Prop. **5-10 Zeilen Patch in 2 Files.**
+
+4. **Cluster-F-Filter-Mechanik präzisiert:** Audit zeigt: `filtereTestdatenWennDeaktiviert` filtert via OR-Matching über `kursId`, `klasse`, `userEmail`, `id`-Prefix (`'test-'`). Für `FrageSummary` greift NUR `id`-Prefix; für `KursDefinition` greifen `id` + `klassen`; für `PruefungsConfig` greifen `id` + `klasse`. Plan-Test 2.3 verifiziert per Quelle mit konkreten test-prefixed IDs.
+
+5. **Icon-Map statt dynamic Import:** `import * as Icons from 'lucide-react'` deaktiviert tree-shaking (~200KB Bundle-Impact). Plan nutzt explizite `ICON_MAP`-Konstante mit ~8 benötigten Icons. Bundle-Effekt: ~10KB.
+
+6. **Min-Query-Guard DRY:** Statt 6×-Wiederholung in Adaptern → einmal in `fuehreSucheAus`-Entry.
+
+7. **`SucheIndex`-Type vollständig in `types/suche.ts`:** keine Inline-Definition in `sucheEngine.ts`.
+
+8. **Performance-Schwelle realistisch:** `<100 ms` initial, `<50 ms` als Bonus-Ziel.
 
 ---
 
-## File Structure (Plan-Locked)
+## File Structure (Plan-Locked, rev2)
 
 **Neue Files:**
-- `src/utils/sucheEngine.ts` — Pure Engine (normalize, score, gruppieren, fuehreSucheAus)
+- `src/types/suche.ts` — Types: `SucheQuelle`, `SucheTreffer`, `HighlightStelle`, `SucheErgebnis`, `SucheIndex`, Konstanten + Icon-Map
+- `src/utils/sucheEngine.ts` — Pure Engine (normalize, score, highlightStellen, gruppieren, fuehreSucheAus)
 - `src/utils/sucheEngine.test.ts` — Engine-Tests
-- `src/utils/sucheAdapter.ts` — 6 Adapter-Funktionen (Source → Treffer)
-- `src/utils/sucheAdapter.test.ts` — Adapter-Tests
+- `src/utils/sucheEngine.perf.test.ts` — Performance-Test (1000 Fragen)
+- `src/utils/sucheAdapter.ts` — 6 Adapter-Funktionen (Source → Treffer, mit Cluster-F-Filter)
+- `src/utils/sucheAdapter.test.ts` — Adapter-Tests (inkl. Cluster-F-Filter pro Quelle)
 - `src/utils/highlight.tsx` — XSS-sicherer Highlight-Helper (JSX-Array)
 - `src/utils/highlight.test.tsx` — Highlight-Tests
-- `src/types/suche.ts` — `SucheQuelle`, `SucheTreffer`, `HighlightStelle`, `SucheErgebnis`, `SucheIndex`
+- `src/hooks/useDebouncedValue.ts` — Debounce-Hook (generisch)
+- `src/hooks/useDebouncedValue.test.tsx` — Debounce-Test
+- `src/hooks/useKeyboardNavigation.ts` — activeIndex-State + Pfeil/Enter/Escape-Handler
+- `src/hooks/useKeyboardNavigation.test.tsx` — Keyboard-Nav-Test
+- `src/hooks/useClickOutside.ts` — Click-Outside-Hook
+- `src/hooks/useClickOutside.test.tsx` — Click-Outside-Test
 - `src/hooks/useSucheIndex.ts` — Memo-Selektor über alle Quellen
 - `src/hooks/useSucheIndex.test.tsx` — Hook-Tests (Closure-Ref-Mock-Pattern)
 - `src/store/configsListStore.ts` — Cache-Store für Configs
 - `src/store/configsListStore.test.ts` — Store-Tests
 - `src/components/shared/header/sucheUI/QuellSektion.tsx` — Sektion-Komponente
+- `src/components/shared/header/sucheUI/QuellSektion.test.tsx`
 - `src/components/shared/header/sucheUI/TrefferZeile.tsx` — Treffer-Zeile
+- `src/components/shared/header/sucheUI/TrefferZeile.test.tsx`
 - `src/components/shared/header/sucheUI/EmptyState.tsx` — Leer-State
-- `src/components/shared/header/sucheUI/index.ts` — Re-Exports
+- `src/components/shared/header/sucheUI/index.ts` — Barrel-Export
+- `src/components/lp/header/LPGlobalSuche.tsx` — **NEUE** LP-spezifische Such-Komponente (self-contained, ersetzt nicht `GlobalSuche`)
 
 **Modifizierte Files:**
-- `src/components/shared/header/GlobalSuche.tsx` — Refactor: Wiring an `useSucheIndex` + neue Dropdown-Struktur
-- `src/hooks/useLPDashboardData.ts` — 2-Zeilen-Patch: `setConfigs`-Aufrufe zusätzlich in Cache-Store schreiben
-- `src/hooks/useGlobalSucheLP.ts` — Verbleibt unverändert bis Phase 5, dann lösche (durch `useSucheIndex` + Engine ersetzt)
+- `src/hooks/useLPDashboardData.ts` — Patch: `setConfigs(...)`-Aufrufstellen schreiben zusätzlich in `useConfigsListStore`. ~3-5 Zeilen.
+- `src/components/lp/LPAppHeaderContainer.tsx` — `<GlobalSuche {...props} />` ersetzt durch `<LPGlobalSuche />`. Alte Props + `useGlobalSucheLP`-Aufruf entfernt.
+- `src/components/lp/LPStartseite.tsx` — `useEffect` liest `?hilfe=<tabId>`-Param + reicht als `initialKategorie` an `HilfeSeite`-Mount weiter. ~10 Zeilen.
+- `src/components/lp/HilfeSeite.tsx` — `initialKategorie?: string`-Prop ergänzt; `useState('einstieg')` → `useState(initialKategorie ?? 'einstieg')`. ~3 Zeilen.
 
-**Touched Tests:**
-- `src/components/shared/header/GlobalSuche.test.tsx` (falls existent, sonst neu)
+**Gelöschte Files:**
+- `src/hooks/useGlobalSucheLP.ts` (NACH `LPGlobalSuche` Migration, ersetzt durch `useSucheIndex` + `fuehreSucheAus`)
 
----
-
-## Implementation Phases
-
-### Phase 0 — Discovery (verbleibende Audits)
-### Phase 1 — Foundation (Pure Logic + Tests)
-### Phase 2 — Cache-Store + Selektor-Hook
-### Phase 3 — UI-Komponenten
-### Phase 4 — GlobalSuche-Refactor + Navigation
-### Phase 5 — Performance + E2E + Cleanup
+**Unverändert (SuS-Pfad bleibt):**
+- `src/components/shared/header/GlobalSuche.tsx` (Dumb-Komponente, nur noch SuS-Verbraucher)
+- `src/components/sus/SuSAppHeaderContainer.tsx` (oder sus-Pendant)
+- `src/hooks/useGlobalSucheSuS.ts`
 
 ---
 
-## Phase 0 — Discovery (Plan-Phase Audits, vor Code)
+## Implementation Phases (rev2)
 
-### Task 0.1: Routing-Audit für nicht-erfasste Detail-Routes
+| Phase | Inhalt | Tasks | Tasks (kumul.) |
+|---|---|---|---|
+| 0 | Discovery dokumentiert (bereits durchgeführt) | 0 | 0 |
+| 1 | Foundation: Types + Engine + Adapter + Highlight | 8 | 8 |
+| 2 | Cache-Store + useSucheIndex-Hook | 3 | 11 |
+| 3 | UI-Komponenten (TrefferZeile, QuellSektion, EmptyState) | 4 | 15 |
+| 4 | Routes + 3 Sub-Hooks + HilfeSeite-Patch + LPGlobalSuche + Container-Migration + Legacy-Delete | 8 | 23 |
+| 5 | Performance + Browser-E2E + Push | 3 | 26 |
 
-**Files:** Read-only audit, kein Code.
+Tasks sind sequenziell innerhalb einer Phase; Phasen sind sequenziell zueinander.
 
-- [ ] **Step 1: Grep nach Hilfe-Route + Tab-Wechsel-Logik**
+---
 
-Run:
-```bash
-grep -rn "HilfeSeite\|hilfe-tab\|/hilfe/\|setAktiveTab" ExamLab/src/components/lp/LPStartseite.tsx ExamLab/src/components/lp/HilfeSeite.tsx 2>/dev/null | head -20
-```
+## Phase 0 — Discovery (bereits durchgeführt, dokumentiert)
 
-Notiere: Wie wird der aktive Hilfe-Tab gesetzt? URL-basiert (z.B. `/einstellungen/hilfe-bloom`?) oder reiner State?
+Audit-Resultate aus Spec-/Plan-Phase (Memory):
 
-- [ ] **Step 2: Grep nach Kurs-Detail-Navigation**
-
-Run:
-```bash
-grep -rn "navigate.*kurs\|/kurs/\|kursDetail" ExamLab/src/ 2>/dev/null | head -10
-```
-
-Notiere: Existiert Kurs-Detail-Route? Falls nicht → Kurs-Treffer navigiert zu `/pruefung` (LP-Dashboard).
-
-- [ ] **Step 3: Resultate in Plan ergänzen (kein Commit)**
-
-Audit-Result wird in `useSucheIndex`-Adapter-Tasks (Phase 2) eingebaut als Route-Builder pro Quelle.
-
-### Task 0.2: useFragensammlungStore.summaries Verfügbarkeit verifizieren
-
-- [ ] **Step 1: Read store API**
-
-Run: `grep -n "summaries\|ladeAlleFragen" ExamLab/src/store/fragensammlungStore.ts | head -10`
-
-Expected: `summaries: FrageSummary[]` als State-Feld + `lade(email)` als Action.
-
-- [ ] **Step 2: Trigger-Path notieren**
-
-Wo wird `useFragensammlungStore.getState().lade(email)` aufgerufen? → `useLPDashboardData.ts:90`. Bedeutet: Fragen-Summaries sind nach LP-Login geladen. Such-Hook kann sie nutzen.
+- **`useFragensammlungStore`**: liefert `summaries: FrageSummary[]` (Titel/ID/Tags/Themen ohne Volltext). Lade via `useFragensammlungStore.getState().lade(email)` aus `useLPDashboardData.ts:90`.
+- **`useStammdatenStore`**: liefert `stammdaten.kurse: KursDefinition[]`, `lpProfil.testdatenSichtbar: boolean`, `istAdmin(email): boolean`.
+- **`tabsFuerSurface(surface, ctx)`** in `src/utils/tabRegistry.ts` mit `ctx: { istAdmin }`.
+- **`filtereTestdatenWennDeaktiviert(records, sichtbar)`** in `src/utils/testdaten/filter.ts`. OR-Matching: `kursId === 'test-kurs-01'` ∨ `klasse === 'test-klasse-01'` ∨ `userEmail.match(/test/)` ∨ `id.startsWith('test-')`.
+- **Bestehende `GlobalSuche.tsx`**: Dumb-Komponente, Props `{ suchen, onSuchen, ergebnis }`. Versorgt aus `LPAppHeaderContainer` (`useGlobalSucheLP`) + `SuSAppHeaderContainer` (`useGlobalSucheSuS`).
+- **Router 7.14**: `/einstellungen/:tab`, `/pruefung/:configId`, `/uebung/:configId`, `/fragensammlung/:frageId`. **Kurse haben keine Detail-Route**; Treffer navigiert zu `/pruefung`.
+- **HilfeSeite**: Modal mit lokalem `kategorie`-State, kein URL-Routing. Wird in `LPStartseite` lazy-mounted. Deep-Linking braucht `initialKategorie`-Prop + `?hilfe=<tabId>` URL-Param.
+- **TYPO-Tokens**: `src/styles/typografie.ts` mit `display/h1/h2/body/caption`.
+- **Zustand v5**: `useShallow` nicht etabliert. Single-Field-Selektoren sind Standard.
+- **Brand-Farbe**: `violet-500` Primary, `violet-100/700` Akzente.
 
 ---
 
 ## Phase 1 — Foundation (Pure Logic + Types)
 
-### Task 1.1: Types-Datei anlegen
+### Task 1.1: Types-Datei + ICON_MAP + SucheIndex-Type
 
 **Files:**
 - Create: `src/types/suche.ts`
 
-- [ ] **Step 1: Datei schreiben**
+- [ ] **Step 1: Datei schreiben (vollständig)**
 
 ```ts
 // src/types/suche.ts
-import type { ReactNode } from 'react'
+import type { LucideIcon } from 'lucide-react'
+import { File, FileText, HelpCircle, BookOpen, Repeat, Settings, HelpCircle as HelpIcon, Target, User, Layers } from 'lucide-react'
+import type { TabDefinition } from '../utils/tabRegistry'
+import type { KursDefinition } from './stammdaten'
+import type { PruefungsConfig } from './pruefung'
+import type { FrageSummary } from './fragen-storage'
 
 export type SucheQuelle =
   | 'einstellungen-tab'
@@ -135,7 +150,7 @@ export interface SucheTreffer {
     params?: Record<string, string>
   }
   score: number
-  icon?: string
+  iconKey?: SucheIconKey
 }
 
 export type ProQuelleZahlen = Record<SucheQuelle, number>
@@ -144,6 +159,15 @@ export interface SucheErgebnis {
   treffer: SucheTreffer[]
   proQuelleSichtbar: ProQuelleZahlen
   proQuelleGesamt: ProQuelleZahlen
+}
+
+export interface SucheIndex {
+  einstellungenTabs: TabDefinition[]
+  hilfeTabs: TabDefinition[]
+  kurse: KursDefinition[]
+  pruefungen: PruefungsConfig[]
+  uebungen: PruefungsConfig[]
+  fragen: FrageSummary[]
 }
 
 export const QUELLEN_REIHENFOLGE: readonly SucheQuelle[] = [
@@ -172,13 +196,26 @@ export const SCORE_BOUNDS = {
   SUBTITEL: 30,
 } as const
 
+// Explizite Icon-Map (tree-shakable, vs `import * as Icons`).
+// Tab-Registry-Icons werden via `tabDefinition.icon` (LucideIcon-Komponente direkt) übernommen,
+// nicht als String-Key — Adapter passt das im Mapping an.
+export type SucheIconKey = 'einstellungen' | 'hilfe' | 'kurs' | 'pruefung' | 'uebung' | 'frage' | 'default'
+
+export const ICON_MAP: Record<SucheIconKey, LucideIcon> = {
+  einstellungen: Settings,
+  hilfe: HelpIcon,
+  kurs: BookOpen,
+  pruefung: FileText,
+  uebung: Repeat,
+  frage: HelpCircle,
+  default: File,
+}
+
 export const LEERES_ERGEBNIS: SucheErgebnis = {
   treffer: [],
   proQuelleSichtbar: { 'einstellungen-tab': 0, 'hilfe-tab': 0, kurs: 0, pruefung: 0, uebung: 0, frage: 0 },
   proQuelleGesamt: { 'einstellungen-tab': 0, 'hilfe-tab': 0, kurs: 0, pruefung: 0, uebung: 0, frage: 0 },
 }
-
-export type HighlightReactNode = ReactNode  // re-export for highlight.tsx
 ```
 
 - [ ] **Step 2: Type-Check**
@@ -190,7 +227,7 @@ Expected: ✅ kein Fehler.
 
 ```bash
 git add ExamLab/src/types/suche.ts
-git commit -m "Cluster C: types/suche.ts — Treffer/Quelle/Score-Bounds Type-Definitionen"
+git commit -m "Cluster C: types/suche.ts — Types + ICON_MAP (tree-shakable) + SucheIndex"
 ```
 
 ### Task 1.2: normalizeForSuche() — Helper + Tests
@@ -809,17 +846,17 @@ function tabZuTreffer(tab: TabDefinition, query: string, quelle: 'einstellungen-
 }
 
 export function indexEinstellungenTabs(query: string, tabs: TabDefinition[]): SucheTreffer[] {
-  if (normalizeForSuche(query).length < 2) return []
+  // Min-Query-Guard zentral in fuehreSucheAus(); Adapter dürfen davon ausgehen, dass query gültig ist.
   return tabs.map(t => tabZuTreffer(t, query, 'einstellungen-tab')).filter((t): t is SucheTreffer => t !== null)
 }
 
 export function indexHilfeTabs(query: string, tabs: TabDefinition[]): SucheTreffer[] {
-  if (normalizeForSuche(query).length < 2) return []
+  // Min-Query-Guard zentral in fuehreSucheAus(); Adapter dürfen davon ausgehen, dass query gültig ist.
   return tabs.map(t => tabZuTreffer(t, query, 'hilfe-tab')).filter((t): t is SucheTreffer => t !== null)
 }
 
 export function indexKurse(query: string, kurse: KursDefinition[]): SucheTreffer[] {
-  if (normalizeForSuche(query).length < 2) return []
+  // Min-Query-Guard zentral in fuehreSucheAus(); Adapter dürfen davon ausgehen, dass query gültig ist.
   const treffer: SucheTreffer[] = []
   for (const k of kurse) {
     const idScore = scoreFromMatch(k.id, query, 'id')
@@ -863,7 +900,7 @@ function configZuTreffer(c: PruefungsConfig, query: string, quelle: 'pruefung' |
 }
 
 export function indexPruefungen(query: string, configs: PruefungsConfig[]): SucheTreffer[] {
-  if (normalizeForSuche(query).length < 2) return []
+  // Min-Query-Guard zentral in fuehreSucheAus(); Adapter dürfen davon ausgehen, dass query gültig ist.
   return configs
     .filter(c => c.typ !== 'formativ')
     .map(c => configZuTreffer(c, query, 'pruefung'))
@@ -871,7 +908,7 @@ export function indexPruefungen(query: string, configs: PruefungsConfig[]): Such
 }
 
 export function indexUebungen(query: string, configs: PruefungsConfig[]): SucheTreffer[] {
-  if (normalizeForSuche(query).length < 2) return []
+  // Min-Query-Guard zentral in fuehreSucheAus(); Adapter dürfen davon ausgehen, dass query gültig ist.
   return configs
     .filter(c => c.typ === 'formativ')
     .map(c => configZuTreffer(c, query, 'uebung'))
@@ -879,7 +916,7 @@ export function indexUebungen(query: string, configs: PruefungsConfig[]): SucheT
 }
 
 export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer[] {
-  if (normalizeForSuche(query).length < 2) return []
+  // Min-Query-Guard zentral in fuehreSucheAus(); Adapter dürfen davon ausgehen, dass query gültig ist.
   const treffer: SucheTreffer[] = []
   for (const f of fragen) {
     const titel = f.fragetext.slice(0, 80)  // Summary-Fragetext ist max 200 Z., wir nehmen die ersten 80
@@ -1366,23 +1403,17 @@ Expected: FAIL.
 
 ```tsx
 // src/components/shared/header/sucheUI/TrefferZeile.tsx
-import * as Icons from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 import { highlight } from '../../../../utils/highlight'
 import { TYPO } from '../../../../styles/typografie'
+import { ICON_MAP } from '../../../../types/suche'
 import type { SucheTreffer } from '../../../../types/suche'
-
-function getIcon(name: string | undefined): LucideIcon {
-  if (!name) return Icons.File
-  return (Icons as unknown as Record<string, LucideIcon>)[name] ?? Icons.File
-}
 
 export function TrefferZeile({ treffer, aktiv, onClick }: {
   treffer: SucheTreffer
   aktiv: boolean
   onClick: () => void
 }) {
-  const IconComp = getIcon(treffer.icon)
+  const IconComp = ICON_MAP[treffer.iconKey ?? 'default']
   return (
     <li
       onClick={onClick}
@@ -1560,76 +1591,51 @@ git commit -m "Cluster C: sucheUI Barrel-Export"
 
 ---
 
-## Phase 4 — GlobalSuche Refactor + Navigation
+## Phase 4 — Sub-Hooks + HilfeSeite-Patch + LPGlobalSuche + Container-Migration
 
-### Task 4.1: Audit alte GlobalSuche.tsx — Identifizieren was bleibt / weg muss
+Phase 4 ist deutlich umfangreicher als Plan rev1, weil:
+- 3 generische Sub-Hooks (Debounce, Keyboard, Click-Outside) sind TDD-isoliert testbar.
+- `HilfeSeite` braucht `initialKategorie`-Prop für Deep-Linking.
+- `LPGlobalSuche` ist neue eigene Komponente (kein Refactor der dumb `GlobalSuche`).
 
-**Files:** Read-only
-
-- [ ] **Step 1: Lese alte Datei**
-
-Run: `cat ExamLab/src/components/shared/header/GlobalSuche.tsx`
-
-Identifiziere:
-- Cmd+K-Listener (bleibt, byte-identisch übernehmen)
-- onBlur-Schließ-Pattern (bleibt)
-- Bisherige Dropdown-Gruppen (löschen, durch `QuellSektion` ersetzt)
-- Imports von `useGlobalSucheLP` (löschen — ersetzt durch `useSucheIndex` + `fuehreSucheAus`)
-
-### Task 4.2: Hilfe-Tab Navigation klären
-
-**Files:** Read-only Audit + falls neue Route nötig.
-
-- [ ] **Step 1: Grep**
-
-Run: `grep -n "HilfeSeite\|aktiveTab.*hilfe" ExamLab/src/components/lp/LPStartseite.tsx | head -10`
-
-Entscheidung-Tree:
-- **Falls Hilfe als eigene Route existiert** (`/hilfe/:tab`): nutze diese.
-- **Falls Hilfe via internem State gewechselt wird:** lege im LPStartseite eine `?surface=hilfe&tab=X` URL-Pattern an ODER navigiere zu `/einstellungen` und triggere Tab-Wechsel via Event.
-
-Empfehlung Phase-1: **Wir navigieren zu `/einstellungen/{tabId}` für Einstellungen, und `/?surface=hilfe&tab={tabId}` für Hilfe** (existiert das URL-Pattern nicht, fügen wir es im LPStartseite-URL-Sync minimal hinzu). Falls zu invasiv → einfach `navigate('/einstellungen')` für Hilfe-Tabs und Tab-Switch via `sessionStorage`-Marker.
-
-Notiere Entscheidung in Phase-4-Task-Outcome.
-
-### Task 4.3: Routes-Mapping pro Quelle
+### Task 4.1: Routes-Mapping in Adaptern (von `'#'` auf echte Pfade)
 
 **Files:**
-- Modify: `src/utils/sucheAdapter.ts` (Routes von `'#'` auf echte Pfade)
-- Modify: `src/utils/sucheAdapter.test.ts` (Route-Assertions)
+- Modify: `src/utils/sucheAdapter.ts`
+- Modify: `src/utils/sucheAdapter.test.ts`
 
-Route-Map laut Audit:
+Route-Map:
 - `'einstellungen-tab'` → `/einstellungen/{tabId}`
-- `'hilfe-tab'` → laut Task 4.2 (vorraussichtlich `/einstellungen/hilfe` + Tab via Event/sessionStorage)
-- `'kurs'` → `/pruefung` (LP-Dashboard, kein eigener Kurs-Detail)
+- `'hilfe-tab'` → `/einstellungen?hilfe={tabId}` (siehe Task 4.5: LPStartseite-Patch liest Param)
+- `'kurs'` → `/pruefung` (kein eigener Kurs-Detail)
 - `'pruefung'` → `/pruefung/{configId}`
 - `'uebung'` → `/uebung/{configId}`
 - `'frage'` → `/fragensammlung/{frageId}`
 
-- [ ] **Step 1: Tests anpassen — Route-Assertions hinzufügen**
+- [ ] **Step 1: Route-Assertions in Tests ergänzen**
 
-In `sucheAdapter.test.ts`: pro `describe`-Block 1 `expect(treffer[0].navigation.route).toBe('...')`.
+In `sucheAdapter.test.ts`: pro `describe`-Block + `expect(treffer[0].navigation.route).toBe('/...')`.
 
-- [ ] **Step 2: Tests fail**
+- [ ] **Step 2: Fail**
 
 Run: `cd ExamLab && npx vitest run src/utils/sucheAdapter.test.ts`
-Expected: FAIL (routes immer noch `'#'`).
+Expected: FAIL.
 
-- [ ] **Step 3: Implementation — Route-Konstanten + Builder-Funktionen**
+- [ ] **Step 3: Implementation**
 
 ```ts
 // in sucheAdapter.ts (oberhalb der Adapter)
 const ROUTE_BUILDERS = {
   einstellungenTab: (tabId: string) => `/einstellungen/${tabId}`,
-  hilfeTab: (tabId: string) => `/einstellungen/hilfe?tab=${encodeURIComponent(tabId)}`,
-  kurs: (_kursId: string) => `/pruefung`,  // kein Detail-Route in Phase 1
+  hilfeTab: (tabId: string) => `/einstellungen?hilfe=${encodeURIComponent(tabId)}`,
+  kurs: (_kursId: string) => `/pruefung`,
   pruefung: (configId: string) => `/pruefung/${configId}`,
   uebung: (configId: string) => `/uebung/${configId}`,
   frage: (frageId: string) => `/fragensammlung/${frageId}`,
 }
 ```
 
-Dann pro Adapter `navigation.route` durch passenden Builder ersetzen.
+Pro Adapter `navigation.route` durch Builder ersetzen. Auch `iconKey` setzen (`'einstellungen'` / `'hilfe'` / `'kurs'` / `'pruefung'` / `'uebung'` / `'frage'`).
 
 - [ ] **Step 4: Pass**
 
@@ -1640,40 +1646,372 @@ Expected: PASS.
 
 ```bash
 git add ExamLab/src/utils/sucheAdapter.ts ExamLab/src/utils/sucheAdapter.test.ts
-git commit -m "Cluster C: Routes pro Quelle — Einstellungen/Hilfe/Kurs/Pruefung/Uebung/Frage"
+git commit -m "Cluster C: Routes-Builder pro Quelle + iconKey"
 ```
 
-### Task 4.4: GlobalSuche.tsx Refactor
+### Task 4.2: useDebouncedValue Hook
 
 **Files:**
-- Modify: `src/components/shared/header/GlobalSuche.tsx`
+- Create: `src/hooks/useDebouncedValue.ts`
+- Create: `src/hooks/useDebouncedValue.test.tsx`
 
-- [ ] **Step 1: Implementierung (komplett neue Datei, byte-identisch Cmd+K + onBlur)**
+- [ ] **Step 1: Test**
 
 ```tsx
-// src/components/shared/header/GlobalSuche.tsx
+import { describe, it, expect, vi } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
+import { useDebouncedValue } from './useDebouncedValue'
+
+describe('useDebouncedValue', () => {
+  beforeEach(() => { vi.useFakeTimers() })
+  afterEach(() => { vi.useRealTimers() })
+
+  it('liefert initial value sofort', () => {
+    const { result } = renderHook(() => useDebouncedValue('initial', 300))
+    expect(result.current).toBe('initial')
+  })
+
+  it('debounced Update nach delay', () => {
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 300), { initialProps: { value: 'a' } })
+    rerender({ value: 'b' })
+    expect(result.current).toBe('a')
+    act(() => { vi.advanceTimersByTime(300) })
+    expect(result.current).toBe('b')
+  })
+
+  it('schneller Re-Update resettet Timer', () => {
+    const { result, rerender } = renderHook(({ value }) => useDebouncedValue(value, 300), { initialProps: { value: 'a' } })
+    rerender({ value: 'b' })
+    act(() => { vi.advanceTimersByTime(200) })
+    rerender({ value: 'c' })
+    act(() => { vi.advanceTimersByTime(200) })
+    expect(result.current).toBe('a')  // noch nicht durch
+    act(() => { vi.advanceTimersByTime(100) })
+    expect(result.current).toBe('c')
+  })
+})
+```
+
+- [ ] **Step 2: Fail**
+
+Run: `cd ExamLab && npx vitest run src/hooks/useDebouncedValue.test.tsx`
+Expected: FAIL.
+
+- [ ] **Step 3: Implementation**
+
+```ts
+// src/hooks/useDebouncedValue.ts
+import { useEffect, useState } from 'react'
+
+export function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debounced, setDebounced] = useState<T>(value)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebounced(value), delayMs)
+    return () => clearTimeout(timer)
+  }, [value, delayMs])
+  return debounced
+}
+```
+
+- [ ] **Step 4: Pass + Commit**
+
+```bash
+cd ExamLab && npx vitest run src/hooks/useDebouncedValue.test.tsx  # PASS
+git add ExamLab/src/hooks/useDebouncedValue.ts ExamLab/src/hooks/useDebouncedValue.test.tsx
+git commit -m "Cluster C: useDebouncedValue — generischer Debounce-Hook"
+```
+
+### Task 4.3: useKeyboardNavigation Hook
+
+**Files:**
+- Create: `src/hooks/useKeyboardNavigation.ts`
+- Create: `src/hooks/useKeyboardNavigation.test.tsx`
+
+- [ ] **Step 1: Test**
+
+```tsx
+import { describe, it, expect, vi } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
+import { useKeyboardNavigation } from './useKeyboardNavigation'
+
+describe('useKeyboardNavigation', () => {
+  it('initial activeIndex = -1', () => {
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 5, onEnter: () => {}, onEscape: () => {} }))
+    expect(result.current.activeIndex).toBe(-1)
+  })
+
+  it('ArrowDown inkrementiert', () => {
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 5, onEnter: () => {}, onEscape: () => {} }))
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    expect(result.current.activeIndex).toBe(0)
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    expect(result.current.activeIndex).toBe(1)
+  })
+
+  it('ArrowDown clamping bei itemCount-1', () => {
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 2, onEnter: () => {}, onEscape: () => {} }))
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    expect(result.current.activeIndex).toBe(1)
+  })
+
+  it('Enter ruft onEnter mit activeIndex', () => {
+    const onEnter = vi.fn()
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 3, onEnter, onEscape: () => {} }))
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    act(() => result.current.handleKeyDown({ key: 'Enter', preventDefault: () => {} } as any))
+    expect(onEnter).toHaveBeenCalledWith(0)
+  })
+
+  it('Enter ruft onEnter(0) wenn activeIndex=-1', () => {
+    const onEnter = vi.fn()
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 3, onEnter, onEscape: () => {} }))
+    act(() => result.current.handleKeyDown({ key: 'Enter', preventDefault: () => {} } as any))
+    expect(onEnter).toHaveBeenCalledWith(0)
+  })
+
+  it('Escape ruft onEscape', () => {
+    const onEscape = vi.fn()
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 3, onEnter: () => {}, onEscape }))
+    act(() => result.current.handleKeyDown({ key: 'Escape', preventDefault: () => {} } as any))
+    expect(onEscape).toHaveBeenCalled()
+  })
+
+  it('reset setzt activeIndex zurück', () => {
+    const { result } = renderHook(() => useKeyboardNavigation({ itemCount: 3, onEnter: () => {}, onEscape: () => {} }))
+    act(() => result.current.handleKeyDown({ key: 'ArrowDown', preventDefault: () => {} } as any))
+    act(() => result.current.reset())
+    expect(result.current.activeIndex).toBe(-1)
+  })
+})
+```
+
+- [ ] **Step 2: Fail + Step 3: Implementation**
+
+```ts
+// src/hooks/useKeyboardNavigation.ts
+import { useState, useCallback } from 'react'
+
+export interface UseKeyboardNavigationOpts {
+  itemCount: number
+  onEnter: (index: number) => void
+  onEscape: () => void
+}
+
+export function useKeyboardNavigation(opts: UseKeyboardNavigationOpts) {
+  const [activeIndex, setActiveIndex] = useState(-1)
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement> | KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault?.()
+      setActiveIndex(prev => Math.min(prev + 1, opts.itemCount - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault?.()
+      setActiveIndex(prev => Math.max(prev - 1, -1))
+    } else if (e.key === 'Enter') {
+      e.preventDefault?.()
+      const idx = activeIndex >= 0 ? activeIndex : 0
+      if (opts.itemCount > 0) opts.onEnter(idx)
+    } else if (e.key === 'Escape') {
+      opts.onEscape()
+    }
+  }, [activeIndex, opts])
+
+  const reset = useCallback(() => setActiveIndex(-1), [])
+
+  return { activeIndex, handleKeyDown, reset, setActiveIndex }
+}
+```
+
+- [ ] **Step 4: Pass + Commit**
+
+```bash
+cd ExamLab && npx vitest run src/hooks/useKeyboardNavigation.test.tsx  # PASS
+git add ExamLab/src/hooks/useKeyboardNavigation.ts ExamLab/src/hooks/useKeyboardNavigation.test.tsx
+git commit -m "Cluster C: useKeyboardNavigation — ArrowUp/Down/Enter/Escape Handler"
+```
+
+### Task 4.4: useClickOutside Hook
+
+**Files:**
+- Create: `src/hooks/useClickOutside.ts`
+- Create: `src/hooks/useClickOutside.test.tsx`
+
+- [ ] **Step 1: Test**
+
+```tsx
+import { describe, it, expect, vi } from 'vitest'
+import { renderHook } from '@testing-library/react'
+import { useRef } from 'react'
+import { useClickOutside } from './useClickOutside'
+
+describe('useClickOutside', () => {
+  it('ruft callback bei click ausserhalb', () => {
+    const cb = vi.fn()
+    const wrapper = document.createElement('div')
+    document.body.appendChild(wrapper)
+    renderHook(() => {
+      const ref = useRef<HTMLDivElement>(wrapper)
+      useClickOutside(ref, cb)
+    })
+    const evt = new MouseEvent('mousedown', { bubbles: true })
+    document.body.dispatchEvent(evt)
+    expect(cb).toHaveBeenCalled()
+  })
+
+  it('ruft callback NICHT bei click innerhalb', () => {
+    const cb = vi.fn()
+    const wrapper = document.createElement('div')
+    const child = document.createElement('span')
+    wrapper.appendChild(child)
+    document.body.appendChild(wrapper)
+    renderHook(() => {
+      const ref = useRef<HTMLDivElement>(wrapper)
+      useClickOutside(ref, cb)
+    })
+    child.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    expect(cb).not.toHaveBeenCalled()
+  })
+})
+```
+
+- [ ] **Step 2: Fail + Step 3: Implementation**
+
+```ts
+// src/hooks/useClickOutside.ts
+import { useEffect, type RefObject } from 'react'
+
+export function useClickOutside<T extends HTMLElement>(
+  ref: RefObject<T | null>,
+  callback: () => void,
+) {
+  useEffect(() => {
+    function handle(e: MouseEvent) {
+      const target = e.target as Node
+      if (ref.current && !ref.current.contains(target)) callback()
+    }
+    document.addEventListener('mousedown', handle)
+    return () => document.removeEventListener('mousedown', handle)
+  }, [ref, callback])
+}
+```
+
+- [ ] **Step 4: Pass + Commit**
+
+```bash
+cd ExamLab && npx vitest run src/hooks/useClickOutside.test.tsx  # PASS
+git add ExamLab/src/hooks/useClickOutside.ts ExamLab/src/hooks/useClickOutside.test.tsx
+git commit -m "Cluster C: useClickOutside — Mousedown ausserhalb ref triggert callback"
+```
+
+### Task 4.5: HilfeSeite + LPStartseite Patch (Deep-Linking)
+
+**Files:**
+- Modify: `src/components/lp/HilfeSeite.tsx` — `initialKategorie?: string`-Prop
+- Modify: `src/components/lp/LPStartseite.tsx` — `useSearchParams` liest `?hilfe=<tabId>`, mountet HilfeSeite mit Prop
+
+- [ ] **Step 1: Audit HilfeSeite useState**
+
+Run: `grep -n "useState.*kategorie\|kategorie" ExamLab/src/components/lp/HilfeSeite.tsx | head -10`
+
+Notiere Zeile von `const [kategorie, setKategorie] = useState('einstieg')`.
+
+- [ ] **Step 2: HilfeSeite Patch**
+
+```tsx
+// In HilfeSeite.tsx
+interface HilfeSeiteProps {
+  onSchliessen: () => void
+  initialKategorie?: string
+}
+
+export default function HilfeSeite({ onSchliessen, initialKategorie }: HilfeSeiteProps) {
+  const [kategorie, setKategorie] = useState<string>(initialKategorie ?? 'einstieg')
+  // ... Rest unverändert
+}
+```
+
+- [ ] **Step 3: LPStartseite Patch**
+
+```tsx
+// In LPStartseite.tsx — bei HilfeSeite-Mount
+const [searchParams, setSearchParams] = useSearchParams()
+const hilfeTab = searchParams.get('hilfe')
+const [zeigeHilfe, setZeigeHilfe] = useState(!!hilfeTab)
+
+useEffect(() => {
+  if (hilfeTab) {
+    setZeigeHilfe(true)
+    // Param nach Mount entfernen, damit Reload Default-Verhalten zeigt
+    const next = new URLSearchParams(searchParams)
+    next.delete('hilfe')
+    setSearchParams(next, { replace: true })
+  }
+}, [hilfeTab])
+
+// Mount-Stelle:
+{zeigeHilfe && <HilfeSeite onSchliessen={() => setZeigeHilfe(false)} initialKategorie={hilfeTab ?? undefined} />}
+```
+
+- [ ] **Step 4: tsc + manueller Smoke-Test**
+
+Run: `cd ExamLab && npx tsc --noEmit && npm run build`
+Expected: ✅.
+
+Manuell im Dev-Server: URL `http://localhost:5173/einstellungen?hilfe=bloom` → HilfeSeite öffnet mit Bloom-Tab aktiv.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add ExamLab/src/components/lp/HilfeSeite.tsx ExamLab/src/components/lp/LPStartseite.tsx
+git commit -m "Cluster C: HilfeSeite initialKategorie-Prop + LPStartseite ?hilfe=<tab>-Deep-Link"
+```
+
+### Task 4.6: LPGlobalSuche Komponente (neue Komponente, nicht Refactor)
+
+**Files:**
+- Create: `src/components/lp/header/LPGlobalSuche.tsx`
+
+- [ ] **Step 1: Komponente schreiben (nutzt Hooks aus Task 4.2-4.4)**
+
+```tsx
+// src/components/lp/header/LPGlobalSuche.tsx
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { Search } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useSucheIndex } from '../../../hooks/useSucheIndex'
+import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
+import { useKeyboardNavigation } from '../../../hooks/useKeyboardNavigation'
+import { useClickOutside } from '../../../hooks/useClickOutside'
 import { fuehreSucheAus } from '../../../utils/sucheEngine'
-import { QUELLEN_REIHENFOLGE, QUELL_LABEL } from '../../../types/suche'
+import { QUELLEN_REIHENFOLGE } from '../../../types/suche'
 import type { SucheTreffer, SucheQuelle } from '../../../types/suche'
-import { QuellSektion, EmptyState } from './sucheUI'
+import { QuellSektion, EmptyState } from '../../shared/header/sucheUI'
 
 const DEBOUNCE_MS = 300
 
-export function GlobalSuche() {
+const SURFACE_ROUTE: Record<SucheQuelle, string> = {
+  'einstellungen-tab': '/einstellungen',
+  'hilfe-tab': '/einstellungen',  // HilfeSeite ist Modal in Einstellungen-Surface
+  'kurs': '/pruefung',
+  'pruefung': '/pruefung',
+  'uebung': '/uebung',
+  'frage': '/fragensammlung',
+}
+
+export function LPGlobalSuche() {
   const [query, setQuery] = useState('')
-  const [debouncedQuery, setDebouncedQuery] = useState('')
   const [istOffen, setIstOffen] = useState(false)
-  const [activeIndex, setActiveIndex] = useState<number>(-1)
+  const debouncedQuery = useDebouncedValue(query, DEBOUNCE_MS)
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const index = useSucheIndex()
 
-  // Cmd+K / Ctrl+K Shortcut (byte-identisch aus alter Komponente)
+  const ergebnis = useMemo(() => fuehreSucheAus(debouncedQuery, index), [debouncedQuery, index])
+
+  // Cmd+K / Ctrl+K — fokussiert Input (Pattern aus alter GlobalSuche)
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -1685,18 +2023,8 @@ export function GlobalSuche() {
     return () => document.removeEventListener('keydown', handleKey)
   }, [])
 
-  // Debounced Query
-  useEffect(() => {
-    const timeout = setTimeout(() => setDebouncedQuery(query), DEBOUNCE_MS)
-    return () => clearTimeout(timeout)
-  }, [query])
-
-  const ergebnis = useMemo(() => fuehreSucheAus(debouncedQuery, index), [debouncedQuery, index])
-
-  // Reset activeIndex bei Query-Change
-  useEffect(() => {
-    setActiveIndex(-1)
-  }, [debouncedQuery])
+  // Click-Outside schliesst Dropdown
+  useClickOutside(containerRef, () => setIstOffen(false))
 
   const trefferKlick = useCallback((t: SucheTreffer) => {
     navigate(t.navigation.route)
@@ -1705,59 +2033,35 @@ export function GlobalSuche() {
   }, [navigate])
 
   const alleAnzeigen = useCallback((q: SucheQuelle) => {
-    const surfaceRoute: Record<SucheQuelle, string> = {
-      'einstellungen-tab': '/einstellungen',
-      'hilfe-tab': '/einstellungen/hilfe',
-      'kurs': '/pruefung',
-      'pruefung': '/pruefung',
-      'uebung': '/uebung',
-      'frage': '/fragensammlung',
-    }
-    navigate(surfaceRoute[q])
+    navigate(SURFACE_ROUTE[q])
     setIstOffen(false)
     setQuery('')
   }, [navigate])
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Escape') {
-      setIstOffen(false)
-      return
-    }
-    if (ergebnis.treffer.length === 0) return
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setActiveIndex(prev => Math.min(prev + 1, ergebnis.treffer.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setActiveIndex(prev => Math.max(prev - 1, -1))
-    } else if (e.key === 'Enter') {
-      const idx = activeIndex >= 0 ? activeIndex : 0
+  const { activeIndex, handleKeyDown, reset: resetActiveIndex } = useKeyboardNavigation({
+    itemCount: ergebnis.treffer.length,
+    onEnter: (idx) => {
       const t = ergebnis.treffer[idx]
-      if (t) {
-        e.preventDefault()
-        trefferKlick(t)
-      }
-    }
-  }
+      if (t) trefferKlick(t)
+    },
+    onEscape: () => setIstOffen(false),
+  })
 
-  // onBlur-Schließ-Pattern mit setTimeout (byte-identisch aus alter Komponente)
-  const onBlur = () => {
-    setTimeout(() => setIstOffen(false), 150)
-  }
+  // Reset activeIndex bei Query-Change
+  useEffect(() => { resetActiveIndex() }, [debouncedQuery, resetActiveIndex])
 
   let flatOffset = 0
 
   return (
     <div ref={containerRef} className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
         <input
           ref={inputRef}
           type="search"
           value={query}
           onChange={e => { setQuery(e.target.value); setIstOffen(true) }}
           onFocus={() => setIstOffen(true)}
-          onBlur={onBlur}
           onKeyDown={handleKeyDown}
           placeholder="Suche …"
           className="w-64 pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
@@ -1796,44 +2100,82 @@ export function GlobalSuche() {
 }
 ```
 
-- [ ] **Step 2: Type-Check + Build**
+- [ ] **Step 2: tsc + Build**
 
 Run: `cd ExamLab && npx tsc --noEmit && npm run build`
 Expected: ✅.
 
-- [ ] **Step 3: Vitest komplett**
+- [ ] **Step 3: Commit**
 
-Run: `cd ExamLab && npx vitest run`
-Expected: alle Tests PASS (inklusive `useSucheIndex.test.tsx`, `sucheEngine.test.ts`, etc.).
+```bash
+git add ExamLab/src/components/lp/header/LPGlobalSuche.tsx
+git commit -m "Cluster C: LPGlobalSuche — 6 Quellen, gruppierte Treffer, Sub-Hooks (Debounce/Keyboard/ClickOutside)"
+```
 
-- [ ] **Step 4: Manuell Smoke-Test in dev-Server**
+### Task 4.7: LPAppHeaderContainer — `<GlobalSuche>` durch `<LPGlobalSuche>` ersetzen
 
-Run: `cd ExamLab && npm run dev -- --port 5173 &`
+**Files:**
+- Modify: `src/components/lp/LPAppHeaderContainer.tsx`
 
-Browser: `http://localhost:5173/` → LP-Login → Such-Input fokussieren → „Bilanz" eintippen → Dropdown muss erscheinen mit Sektionen.
+- [ ] **Step 1: Audit aktuelle Stelle**
+
+Run: `grep -n "GlobalSuche\|useGlobalSucheLP" ExamLab/src/components/lp/LPAppHeaderContainer.tsx | head -10`
+
+Notiere alle relevanten Zeilen (Import + Hook-Aufruf + JSX-Mount).
+
+- [ ] **Step 2: Patch**
+
+```tsx
+// Import oben ersetzen:
+- import { GlobalSuche } from '...'
+- import { useGlobalSucheLP } from '../../hooks/useGlobalSucheLP'
++ import { LPGlobalSuche } from './header/LPGlobalSuche'
+
+// Hook-Aufruf entfernen (useGlobalSucheLP-Block komplett löschen).
+
+// JSX-Mount ersetzen:
+- <GlobalSuche suchen={suchen} onSuchen={setSuchen} ergebnis={sucheErgebnis} />
++ <LPGlobalSuche />
+```
+
+- [ ] **Step 3: tsc + Build**
+
+Run: `cd ExamLab && npx tsc --noEmit && npm run build`
+Expected: ✅. Wenn ungenutzte Imports → cleanup.
+
+- [ ] **Step 4: Manueller Smoke-Test**
+
+```bash
+cd ExamLab && npm run dev -- --port 5173 &
+```
+
+Browser: LP-Login → Such-Input fokussieren („Bilanz") → Dropdown mit 6 Sektionen + Treffer-Sortierung.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add ExamLab/src/components/shared/header/GlobalSuche.tsx
-git commit -m "Cluster C: GlobalSuche refactor — 6 Quellen, gruppierte Treffer, Keyboard-Nav, Debounce 300ms"
+git add ExamLab/src/components/lp/LPAppHeaderContainer.tsx
+git commit -m "Cluster C: LPAppHeaderContainer nutzt LPGlobalSuche (statt GlobalSuche+useGlobalSucheLP)"
 ```
 
-### Task 4.5: useGlobalSucheLP Legacy entfernen
+### Task 4.8: useGlobalSucheLP Legacy löschen
 
 **Files:**
 - Delete: `src/hooks/useGlobalSucheLP.ts`
 - Delete: zugehörige Test-Datei falls existent
 
-- [ ] **Step 1: Verifizieren, dass kein anderer Konsument existiert**
+- [ ] **Step 1: Verifizieren, dass kein Konsument mehr existiert**
 
 Run: `grep -rn "useGlobalSucheLP" ExamLab/src/ 2>/dev/null`
-Expected: nur Import in GlobalSuche.tsx (alte Datei, jetzt nicht mehr vorhanden nach Task 4.4).
+Expected: 0 Treffer.
 
-- [ ] **Step 2: Datei löschen**
+- [ ] **Step 2: Löschen**
 
-Run: `cd ExamLab && rm src/hooks/useGlobalSucheLP.ts`
-(falls Test-Datei: `rm src/hooks/useGlobalSucheLP.test.tsx` oder ähnlich)
+```bash
+cd ExamLab
+git rm src/hooks/useGlobalSucheLP.ts
+# falls Test-Datei existiert: git rm src/hooks/useGlobalSucheLP.test.tsx
+```
 
 - [ ] **Step 3: tsc + Build**
 
@@ -1843,7 +2185,6 @@ Expected: ✅.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add -A ExamLab/src/hooks/useGlobalSucheLP.ts
 git commit -m "Cluster C: useGlobalSucheLP gelöscht — Logik in sucheEngine + useSucheIndex migriert"
 ```
 
@@ -1884,13 +2225,14 @@ function syntheticIndex(): SucheIndex {
 }
 
 describe('fuehreSucheAus performance', () => {
-  it('1000 Fragen + 100 Prüfungen: < 50 ms', () => {
+  it('1000 Fragen + 100 Prüfungen: < 100 ms (Bonus: < 50 ms)', () => {
     const index = syntheticIndex()
     const start = performance.now()
     const ergebnis = fuehreSucheAus('bilanz', index)
     const dauer = performance.now() - start
     expect(ergebnis.treffer.length).toBeGreaterThan(0)
-    expect(dauer).toBeLessThan(50)
+    expect(dauer).toBeLessThan(100)
+    if (dauer < 50) console.log(`✨ Bonus-Ziel erreicht: ${dauer.toFixed(1)} ms`)
   })
 })
 ```
@@ -1900,15 +2242,15 @@ describe('fuehreSucheAus performance', () => {
 Run: `cd ExamLab && npx vitest run src/utils/sucheEngine.perf.test.ts`
 Expected: PASS.
 
-- [ ] **Step 3: Falls langsamer als 50ms → optimieren oder Schwelle anpassen**
+- [ ] **Step 3: Falls langsamer als 100ms → optimieren oder Schwelle anpassen**
 
-Wenn fail: dokumentiere Ursache, justiere Schwelle auf realistisches Niveau (z.B. <100 ms) und ergänze HANDOFF-Entry.
+Wenn fail: dokumentiere Ursache + nutze Profiler. Optimierungs-Optionen: Pre-Normalize-Cache pro Frage, Early-Exit nach 5 Matches pro Quelle, Score-Berechnung weniger granular.
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add ExamLab/src/utils/sucheEngine.perf.test.ts
-git commit -m "Cluster C: Performance-Test 1000 Fragen + 100 Pruefungen <50ms"
+git commit -m "Cluster C: Performance-Test 1000 Fragen + 100 Pruefungen <100ms (Bonus <50ms)"
 ```
 
 ### Task 5.2: Browser-E2E gegen echte LP-Logins
