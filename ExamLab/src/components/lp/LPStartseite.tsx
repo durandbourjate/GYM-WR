@@ -84,7 +84,7 @@ function LPStartseiteInner() {
   const { kursId: urlKursId, frageId: urlFrageId } = useParams<{ kursId?: string; frageId?: string }>()
   // Bug 4: Globale Suche navigiert auf `/fragensammlung?frage=<id>` (Query-Param,
   // nicht Path-Param). useParams sieht das nicht — daher zusätzlich aus Query lesen.
-  const [queryParams] = useSearchParams()
+  const [queryParams, setQueryParams] = useSearchParams()
   const queryFrageId = queryParams.get('frage') || undefined
   const gruppen = useUebenGruppenStore(s => s.gruppen)
   const aktiverKursId = urlKursId
@@ -111,6 +111,19 @@ function LPStartseiteInner() {
   const toggleHilfe = useLPNavigationStore(s => s.toggleHilfe)
   const toggleEinstellungen = useLPNavigationStore(s => s.toggleEinstellungen)
   const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
+
+  // Cluster C: Deep-Link aus globaler Suche `?hilfe=<tabId>` öffnet HilfeSeite mit Tab voreingestellt.
+  const [initialHilfeKategorie, setInitialHilfeKategorie] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    const hilfeParam = queryParams.get('hilfe')
+    if (hilfeParam && !zeigHilfe) {
+      setInitialHilfeKategorie(hilfeParam)
+      toggleHilfe()
+      const next = new URLSearchParams(queryParams)
+      next.delete('hilfe')
+      setQueryParams(next, { replace: true })
+    }
+  }, [queryParams, zeigHilfe, toggleHilfe, setQueryParams])
 
   // UI-State (nicht Hook-extrahiert)
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
@@ -379,7 +392,10 @@ function LPStartseiteInner() {
       {/* Hilfe Overlay (alle Modi) */}
       {zeigHilfe && (
         <Suspense fallback={<LazyFallback />}>
-          <HilfeSeite onSchliessen={toggleHilfe} />
+          <HilfeSeite
+            onSchliessen={() => { toggleHilfe(); setInitialHilfeKategorie(undefined) }}
+            initialKategorie={initialHilfeKategorie}
+          />
         </Suspense>
       )}
     </div>

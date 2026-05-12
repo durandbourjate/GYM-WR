@@ -1,0 +1,172 @@
+import { describe, it, expect } from 'vitest'
+import { normalizeForSuche, scoreFromMatch, findeHighlightStellen, gruppiereUndLimitiere, fuehreSucheAus } from './sucheEngine'
+import type { SucheTreffer, SucheIndex } from '../types/suche'
+import type { TabDefinition } from './tabRegistry'
+
+describe('normalizeForSuche', () => {
+  it('lowercase', () => {
+    expect(normalizeForSuche('Bilanz')).toBe('bilanz')
+  })
+
+  it('removes diacritics (umlauts)', () => {
+    expect(normalizeForSuche('Übung')).toBe('ubung')
+    expect(normalizeForSuche('Schäfer')).toBe('schafer')
+    expect(normalizeForSuche('für')).toBe('fur')
+  })
+
+  it('preserves base ASCII', () => {
+    expect(normalizeForSuche('hello world')).toBe('hello world')
+  })
+
+  it('handles empty', () => {
+    expect(normalizeForSuche('')).toBe('')
+  })
+
+  it('preserves spaces and punctuation', () => {
+    expect(normalizeForSuche('Frage 5: BWL')).toBe('frage 5: bwl')
+  })
+})
+
+describe('scoreFromMatch', () => {
+  it('Titel-Prefix = 100', () => {
+    expect(scoreFromMatch('bilanz analyse', 'bilanz', 'titel')).toBe(100)
+  })
+
+  it('Titel-Substring = 70', () => {
+    expect(scoreFromMatch('eine bilanz analyse', 'bilanz', 'titel')).toBe(70)
+  })
+
+  it('ID-Exact = 95', () => {
+    expect(scoreFromMatch('frg-123', 'frg-123', 'id')).toBe(95)
+  })
+
+  it('Tag/Thema = 50', () => {
+    expect(scoreFromMatch('Eigenkapital, Bilanz', 'bilanz', 'tag')).toBe(50)
+  })
+
+  it('Subtitel = 30', () => {
+    expect(scoreFromMatch('Klasse 29c · 25.06', 'klasse', 'subTitel')).toBe(30)
+  })
+
+  it('No match = 0', () => {
+    expect(scoreFromMatch('foo', 'bar', 'titel')).toBe(0)
+  })
+
+  it('case + diacritics independent', () => {
+    expect(scoreFromMatch('Übung', 'ubung', 'titel')).toBe(100)
+  })
+})
+
+describe('findeHighlightStellen', () => {
+  it('findet erste Stelle', () => {
+    expect(findeHighlightStellen('bilanz analyse', 'bilanz', 'titel')).toEqual([
+      { start: 0, end: 6, feld: 'titel' },
+    ])
+  })
+
+  it('mehrere Stellen', () => {
+    const stellen = findeHighlightStellen('bilanz und bilanz', 'bilanz', 'titel')
+    expect(stellen).toHaveLength(2)
+    expect(stellen[0]).toEqual({ start: 0, end: 6, feld: 'titel' })
+    expect(stellen[1]).toEqual({ start: 11, end: 17, feld: 'titel' })
+  })
+
+  it('case-insensitiv', () => {
+    expect(findeHighlightStellen('Bilanz', 'bilanz', 'titel')).toEqual([
+      { start: 0, end: 6, feld: 'titel' },
+    ])
+  })
+
+  it('diakritik-insensitiv (match-Länge bleibt korrekt)', () => {
+    const stellen = findeHighlightStellen('Übung 1', 'ubung', 'titel')
+    expect(stellen).toEqual([{ start: 0, end: 5, feld: 'titel' }])
+  })
+
+  it('keine Stelle bei no-match', () => {
+    expect(findeHighlightStellen('foo', 'bar', 'titel')).toEqual([])
+  })
+})
+
+const trefferStub = (q: SucheTreffer['quelle'], id: string, score: number, titel = id): SucheTreffer => ({
+  quelle: q, id, titel, score, navigation: { route: '/' },
+})
+
+describe('gruppiereUndLimitiere', () => {
+  it('limitiert auf 5 pro Quelle', () => {
+    const treffer = Array.from({ length: 8 }, (_, i) => trefferStub('frage', `f${i}`, 70))
+    const ergebnis = gruppiereUndLimitiere(treffer, { maxProQuelle: 5 })
+    expect(ergebnis.proQuelleSichtbar.frage).toBe(5)
+    expect(ergebnis.proQuelleGesamt.frage).toBe(8)
+    expect(ergebnis.treffer.filter(t => t.quelle === 'frage')).toHaveLength(5)
+  })
+
+  it('sortiert nach score absteigend', () => {
+    const treffer = [
+      trefferStub('frage', 'a', 50),
+      trefferStub('frage', 'b', 100),
+      trefferStub('frage', 'c', 70),
+    ]
+    const ergebnis = gruppiereUndLimitiere(treffer, { maxProQuelle: 5 })
+    expect(ergebnis.treffer.map(t => t.id)).toEqual(['b', 'c', 'a'])
+  })
+
+  it('tie-break alphabetisch nach titel', () => {
+    const treffer = [
+      trefferStub('frage', 'a', 70, 'Zebra'),
+      trefferStub('frage', 'b', 70, 'Apfel'),
+    ]
+    const ergebnis = gruppiereUndLimitiere(treffer, { maxProQuelle: 5 })
+    expect(ergebnis.treffer.map(t => t.titel)).toEqual(['Apfel', 'Zebra'])
+  })
+
+  it('gemischte Quellen behalten ihre eigenen Limits', () => {
+    const treffer = [
+      ...Array.from({ length: 7 }, (_, i) => trefferStub('frage', `f${i}`, 50)),
+      ...Array.from({ length: 3 }, (_, i) => trefferStub('kurs', `k${i}`, 60)),
+    ]
+    const ergebnis = gruppiereUndLimitiere(treffer, { maxProQuelle: 5 })
+    expect(ergebnis.proQuelleGesamt.frage).toBe(7)
+    expect(ergebnis.proQuelleSichtbar.frage).toBe(5)
+    expect(ergebnis.proQuelleSichtbar.kurs).toBe(3)
+  })
+
+  it('leeres Input → LEERES_ERGEBNIS-Shape', () => {
+    const ergebnis = gruppiereUndLimitiere([], { maxProQuelle: 5 })
+    expect(ergebnis.treffer).toEqual([])
+    expect(ergebnis.proQuelleGesamt.frage).toBe(0)
+  })
+})
+
+function leererIndex(): SucheIndex {
+  return {
+    einstellungenTabs: [],
+    hilfeTabs: [],
+    kurse: [],
+    pruefungen: [],
+    uebungen: [],
+    fragen: [],
+  }
+}
+
+describe('fuehreSucheAus', () => {
+  it('leere Query → keine Treffer', () => {
+    expect(fuehreSucheAus('', leererIndex()).treffer).toEqual([])
+  })
+
+  it('1 Zeichen → leer', () => {
+    expect(fuehreSucheAus('a', leererIndex()).treffer).toEqual([])
+  })
+
+  it('Multi-Quelle-Treffer', () => {
+    const tab: TabDefinition = { id: 'profil', surface: 'einstellungen', titel: 'Profil', route: '/einstellungen/profil' }
+    const index: SucheIndex = {
+      ...leererIndex(),
+      einstellungenTabs: [tab],
+      kurse: [{ id: 'sf-profil-test', name: 'SF Profil Test', fach: 'BWL', fachschaft: 'WR', gefaess: 'SF', klassen: [] }],
+    }
+    const ergebnis = fuehreSucheAus('profil', index)
+    expect(ergebnis.treffer.length).toBeGreaterThanOrEqual(2)
+    expect(ergebnis.proQuelleGesamt['einstellungen-tab']).toBe(1)
+    expect(ergebnis.proQuelleGesamt.kurs).toBe(1)
+  })
+})
