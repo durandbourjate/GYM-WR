@@ -11,8 +11,16 @@ permissions:
   id-token: write
 
 concurrency:
+  # Singleton-Lock: nur ein Pages-Deploy gleichzeitig.
+  # cancel-in-progress: true — laufende oder gequeue Builds werden gecancelt
+  # sobald ein neuerer Push kommt. Begruendung: unser Build holt main + preview
+  # immer aus den neuesten Refs (Z. checkout @main + checkout @preview), daher
+  # ist ein aelter laufender Build per Definition veraltet sobald ein neuer
+  # Push kommt. So vermeiden wir die "Canceling since a higher priority
+  # waiting request for pages exists"-Meldung — der aeltere Build cancelt
+  # sich sofort und sauber.
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
