@@ -8,6 +8,50 @@
 
 ## Letzter Stand auf main
 
+### Cluster F.3 — UI-Schicht für Testdaten ✅ MERGED (2026-05-12)
+
+Dritte Sub-Phase aus Cluster-F-Master-Plan (nach F.1 Frontend-Foundation + F.2 Apps-Script-Backend). Macht die deployte F.2-Infrastruktur endlich über die UI bedienbar — Settings-Tab „Testdaten" mit Status-Anzeige, Sichtbarkeit-Toggle für alle LPs und Admin-Aktionen (Erzeugen + Reset mit Confirm-Modal + Statistik-Anzeige). Branch `feature/cluster-f-3-ui-testdaten` → preview → main.
+
+| Commit | Inhalt |
+|---|---|
+| `bd1d55b` | Plan-Doc (Plan-Reviewer-Pass mit 10 Issues, davon 6 gefixt — u.a. Mock-Konsistenz, Toast-Fehler-Pfad, Ref-Guard gegen Doppel-Klick, Modal bleibt offen während Loading) |
+| `a1bb36c` | Task 1: `TestBadge`-Komponente (Pill bg-yellow-100/dark + className-Merge, 3 Tests) |
+| `6c7cffd` | Task 2: `useTestBadgeVisible`-Hook (record + LP-Toggle, 5 Tests) |
+| `d81f6e7` | Task 3: `useTestdatenStatus`-Hook (Inferenz aus `Stammdaten.klassen.includes('test-klasse-01')` + `kurse.some(id==='test-kurs-01')` — kein neuer Backend-Endpoint nötig, 4 Tests) |
+| `c683927` | Task 4: `ResetConfirmModal` (Standard-Modal-Pattern `fixed inset-0 z-[1000]` analog ProblemmeldungenTab Bug 6c, 5 Tests) |
+| `cd0a6d3` | Task 5: `TestdatenTab` Phase 1 (Status-Section + Sichtbarkeit-Toggle mit Toast-Pattern bei Fehler — Single-Field instant-save statt useSpeicherStatus-Pattern, 6 Tests) |
+| `67a1aae` | Task 6: `TestdatenTab` Phase 2 (Admin-Sektion mit Erzeugen/Reset-Buttons + Confirm-Wiring + Statistik-Display + `loadingRef`-Doppel-Klick-Guard + Modal bleibt offen während Reset-Loading, 10 Tests) |
+| `5f69701` | Task 7: `EinstellungenPanel`-Wiring (`EinstellungenTab`-Type um `'testdaten'` erweitert + Tab im hardcoded `tabs`-Array + Render-Conditional) |
+| (next) | Task 8: `as-any`-Lint-Fixes in Test-Mocks (Selector-Type konkretisiert auf `(s: typeof mockStore) => unknown` analog LPStartseite-Pattern + `Awaited<ReturnType<...>>` für resolveSeed/resolveReset statt `any`) |
+
+**Verifikation:** vitest **1609** (1576 Baseline + 33 neue: 3+5+4+5+6+10), tsc -b clean, 5× lint clean (as-any 0/0/0, no-alert 0, no-tests-dir clean, musterloesung Baseline, wire-contract 61/0 unverändert), vite build grün, PWA generateSW 256 entries (5241 KiB).
+
+**Plan-Pfad:** `ExamLab/docs/superpowers/plans/2026-05-12-cluster-f-3-ui-testdaten.md`
+
+**Spec-Pfad:** `ExamLab/docs/superpowers/specs/2026-05-11-cluster-f-testdaten-infrastruktur-design.md` §5.2 + §6.3
+
+**Patterns + Lehren:**
+- **Status-Inferenz aus Stammdaten** statt neuem Apps-Script-Read-Endpoint: spart Backend-Round-Trip + Deploy, weil `seedTestdatenStammdaten_` ohnehin Marker-Klasse + Marker-Kurs anlegt.
+- **Apps-Script-LPProfil-Persistenz = JSON-Blob** (`apps-script-code.js:11636/11670`): Memory-Lehre `feedback_backend_read_paths_audit` gilt **nicht** für JSON-Blob-Sheets — neue Felder wie `testdatenSichtbar` persistieren automatisch ohne Code-Change. (Audit-Befund in Plan-Phase dokumentiert, im Reviewer als Issue-2 fälschlicherweise gemeldet.)
+- **Mock-Konsistenz**: alle 3 Test-Files nutzen Pattern `(sel: (s: TypedState) => unknown) => sel(state)` analog `LPStartseite.test.tsx` — Selector-only-Aufruf reicht für die getesteten Komponenten (kein Destructuring-Aufruf).
+- **Toggle-Speicher-Pattern**: Single-Field instant-save → kein `useSpeicherStatus` + `SpeicherButton` (Multi-Field-Form-Pattern), stattdessen `optimistic-call + Toast bei Fehler`.
+- **Ref-Guard für Doppel-Klick**: State ist stale zwischen React-Render-Batches, daher `useRef(false)` als zweite Verteidigungslinie zusätzlich zu `disabled={loading}`-Prop.
+- **Modal bleibt offen während Reset-Loading**: `setModalOffen(false)` erst nach `result.success` (statt unmittelbar nach Bestätigen-Klick) — User sieht Loading-State im Modal statt verschwundenes Modal mit unsichtbarem Hintergrund-Spinner.
+
+**EinstellungenPanel-Migration auf Tab-Registry** bleibt out-of-scope (Cluster E.x reserviert wegen `kiKalibrierung`↔`ki-kalibrierung`-ID-Konflikt). F.3 hängt nur den `testdaten`-Eintrag ins hardcoded `tabs`-Array.
+
+**Out-of-Scope (F.4 + spätere Cluster):**
+- **F.4 Read-Pfad-Filter-Integration** in 8-15 Stores/Hooks (`ladeKurse`, `ladePruefungen`, `ladeUebungen`, `ladeSchueler`, `ladeAntworten`, `ladeKorrekturen`, `ladeMastery`, `ladeUebungsSessions`, alle `holeAlle*`-Pfade) — eigenes Bundle.
+- **F.4 TestBadge-Konsumenten** in Listen (Dashboard, Composer, Prüfen-Tab, Üben-Tab, Korrektur-Tab, Klassen-Liste) — eigenes Bundle.
+- **`letzterSeedAm`-Persistenz** in Apps-Script Configs-Sheet (Spec §5.2 A „zuletzt: <Datum>"-Anzeige) — separater Spawn-Task mit Apps-Script-Deploy.
+- **EinstellungenPanel-Migration auf Tab-Registry** — Cluster E.x.
+
+**User-Action ausstehend:**
+- preview-Push + Browser-E2E mit Yannick-Admin (Tab-Anzeige + Erzeugen/Reset-Flow live gegen deployten F.2-Endpoint testen) + LP-Test mit Account `wr` (Tab sichtbar, Toggle persistiert)
+- main-Merge nach Freigabe
+
+---
+
 ### Cluster B.a — Papierkorb als L2 unter Fragensammlung ✅ MERGED (2026-05-11)
 
 Erstes Sub-Bundle aus Cluster B (Header-Redesign). Papierkorb war ein eigenständiges 5. L1-Tab im Top-Header — wird zu L2-Hover-Eintrag unter „Fragensammlung". Konsistent mit Prüfen/Üben L2-Pattern. Branch `cluster-b/papierkorb-l2` → preview → main. Single-file-refactor (`useTabKaskadeConfig.lp.ts`) + Test-Erweiterung.

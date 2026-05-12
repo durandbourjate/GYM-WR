@@ -6,7 +6,7 @@ import type { Stammdaten } from '../types/stammdaten'
 const mockStore = vi.hoisted(() => ({ stammdaten: null as Stammdaten | null }))
 
 vi.mock('../store/stammdatenStore', () => ({
-  useStammdatenStore: (sel?: any) => (sel ? sel(mockStore) : mockStore),
+  useStammdatenStore: (sel: (s: typeof mockStore) => unknown) => sel(mockStore),
 }))
 
 const echteSD: Stammdaten = {

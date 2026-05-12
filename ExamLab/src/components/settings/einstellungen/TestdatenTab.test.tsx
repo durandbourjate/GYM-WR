@@ -14,16 +14,25 @@ const toastAdd = vi.fn()
 
 const storeState = { stammdaten: null as Stammdaten | null, lpProfil: null as LPProfil | null }
 
+interface MockStammdatenState {
+  stammdaten: Stammdaten | null
+  lpProfil: LPProfil | null
+  speichereLPProfil: typeof speichereLPProfil
+  istAdmin: typeof istAdminFn
+}
+
 vi.mock('../../../store/stammdatenStore', () => ({
-  useStammdatenStore: (sel?: any) => {
-    const state = { stammdaten: storeState.stammdaten, lpProfil: storeState.lpProfil, speichereLPProfil, istAdmin: istAdminFn }
-    return sel ? sel(state) : state
+  useStammdatenStore: (sel: (s: MockStammdatenState) => unknown) => {
+    const state: MockStammdatenState = { stammdaten: storeState.stammdaten, lpProfil: storeState.lpProfil, speichereLPProfil, istAdmin: istAdminFn }
+    return sel(state)
   },
 }))
 
+interface MockToastState { add: typeof toastAdd }
+
 vi.mock('../../../store/toastStore', () => ({
   useToastStore: Object.assign(
-    (sel?: any) => (sel ? sel({ add: toastAdd }) : { add: toastAdd }),
+    (sel: (s: MockToastState) => unknown) => sel({ add: toastAdd }),
     { getState: () => ({ add: toastAdd }) },
   ),
 }))
@@ -179,7 +188,7 @@ describe('TestdatenTab — Admin-Sektion', () => {
 
   it('Doppel-Klick auf Erzeugen während Loading triggert nur 1 API-Call', async () => {
     storeState.stammdaten = echteSD
-    let resolveSeed: ((r: any) => void) | undefined
+    let resolveSeed: ((r: Awaited<ReturnType<typeof apiAdminSeedTestdaten>>) => void) | undefined
     vi.mocked(apiAdminSeedTestdaten).mockImplementation(() => new Promise(r => { resolveSeed = r }))
     render(<TestdatenTab email="admin@x.ch" />)
     const btn = screen.getByRole('button', { name: /Testdaten erzeugen/ })
@@ -191,7 +200,7 @@ describe('TestdatenTab — Admin-Sektion', () => {
 
   it('Modal bleibt offen während Reset-Loading, schliesst erst nach Erfolg', async () => {
     storeState.stammdaten = initSD
-    let resolveReset: ((r: any) => void) | undefined
+    let resolveReset: ((r: Awaited<ReturnType<typeof apiAdminSeedTestdaten>>) => void) | undefined
     vi.mocked(apiAdminSeedTestdaten).mockImplementation(() => new Promise(r => { resolveReset = r }))
     render(<TestdatenTab email="admin@x.ch" />)
     fireEvent.click(screen.getByRole('button', { name: /Zurücksetzen/ }))

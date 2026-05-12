@@ -4,9 +4,8 @@ import { useTestBadgeVisible } from './useTestBadgeVisible'
 
 const mockStore = vi.hoisted(() => ({ lpProfil: null as { testdatenSichtbar?: boolean } | null }))
 
-// Mock-Pattern vereinheitlicht über alle 4 Test-Files: sel optional, gegen beide Aufruf-Varianten robust.
 vi.mock('../store/stammdatenStore', () => ({
-  useStammdatenStore: (sel?: any) => (sel ? sel(mockStore) : mockStore),
+  useStammdatenStore: (sel: (s: typeof mockStore) => unknown) => sel(mockStore),
 }))
 
 describe('useTestBadgeVisible', () => {
