@@ -43,6 +43,7 @@ const baseInputs = (overrides: Partial<UseLPConfigFilteringInputs> = {}): UseLPC
   filterGefaess: null,
   sortierung: 'datum',
   filterStatus: 'aktiv',
+  testdatenSichtbar: true, // Default für bestehende Tests: keine Test-Filter-Wirkung
   ...overrides,
 })
 
@@ -161,6 +162,40 @@ describe('useLPConfigFiltering', () => {
       )
       const { result } = renderHook(() => useLPConfigFiltering(baseInputs({ configs })))
       expect(result.current.letzteFuenf.map(c => c.id)).toEqual(['6', '5', '4', '3', '2'])
+    })
+  })
+
+  describe('Testdaten-Filter (Cluster F.4)', () => {
+    const echteConfig = baseConfig({ id: 'p1', klasse: '29c' })
+    const testConfigViaId = baseConfig({ id: 'test-p1', klasse: '29c' })
+    const testConfigViaKlasse = baseConfig({ id: 'p2', klasse: 'test-klasse-01' })
+
+    it('testdatenSichtbar=false filtert Test-Configs via id-Prefix raus', () => {
+      const { result } = renderHook(() => useLPConfigFiltering(baseInputs({
+        configs: [echteConfig, testConfigViaId], testdatenSichtbar: false, filterStatus: 'alle',
+      })))
+      expect(result.current.gefilterteConfigs.map(c => c.id)).toEqual(['p1'])
+    })
+
+    it('testdatenSichtbar=false filtert Test-Configs via klasse raus', () => {
+      const { result } = renderHook(() => useLPConfigFiltering(baseInputs({
+        configs: [echteConfig, testConfigViaKlasse], testdatenSichtbar: false, filterStatus: 'alle',
+      })))
+      expect(result.current.gefilterteConfigs.map(c => c.id)).toEqual(['p1'])
+    })
+
+    it('testdatenSichtbar=true lässt Test-Configs durch', () => {
+      const { result } = renderHook(() => useLPConfigFiltering(baseInputs({
+        configs: [echteConfig, testConfigViaId, testConfigViaKlasse], testdatenSichtbar: true, filterStatus: 'alle',
+      })))
+      expect(result.current.gefilterteConfigs.map(c => c.id).sort()).toEqual(['p1', 'p2', 'test-p1'])
+    })
+
+    it('Filter propagiert zu letzteFuenf', () => {
+      const { result } = renderHook(() => useLPConfigFiltering(baseInputs({
+        configs: [echteConfig, testConfigViaId], testdatenSichtbar: false, filterStatus: 'alle',
+      })))
+      expect(result.current.letzteFuenf.every(c => !c.id.startsWith('test-'))).toBe(true)
     })
   })
 

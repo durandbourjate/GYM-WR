@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { PruefungsConfig } from '../types/pruefung'
+import { filtereTestdatenWennDeaktiviert } from '../utils/testdaten/filter'
 
 export interface UseLPConfigFilteringInputs {
   configs: PruefungsConfig[]
@@ -9,6 +10,8 @@ export interface UseLPConfigFilteringInputs {
   filterGefaess: string | null
   sortierung: 'datum' | 'titel' | 'klasse'
   filterStatus: 'alle' | 'aktiv' | 'archiviert'
+  /** Cluster F.4: Wenn false, werden Test-Configs (id-prefix oder klasse) raus-gefiltert. */
+  testdatenSichtbar: boolean
 }
 
 export interface UseLPConfigFilteringResult {
@@ -23,7 +26,7 @@ export interface UseLPConfigFilteringResult {
 }
 
 export function useLPConfigFiltering(inputs: UseLPConfigFilteringInputs): UseLPConfigFilteringResult {
-  const { configs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus } = inputs
+  const { configs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus, testdatenSichtbar } = inputs
 
   const hatAktiveFilter = suchtext.length > 0 || filterFach.length > 0 || filterTyp !== null || filterGefaess !== null || filterStatus !== 'aktiv'
 
@@ -42,7 +45,8 @@ export function useLPConfigFiltering(inputs: UseLPConfigFilteringInputs): UseLPC
 
   // Generische Filter-Funktion für Configs (Prüfungen + Übungen)
   function filtereConfigs(basisConfigs: PruefungsConfig[]): PruefungsConfig[] {
-    let result = [...basisConfigs]
+    // Cluster F.4: Testdaten-Filter VOR allen anderen Filtern (single point of entry für alle LP-Listen)
+    let result = filtereTestdatenWennDeaktiviert([...basisConfigs], testdatenSichtbar)
     // Status-Filter (Archiv)
     if (filterStatus === 'aktiv') {
       result = result.filter(c => !c.beendetUm)

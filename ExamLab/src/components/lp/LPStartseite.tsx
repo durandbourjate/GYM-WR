@@ -7,6 +7,7 @@ import { useFavoritenStore } from '../../store/favoritenStore.ts'
 import { useLPRouteSync } from '../../hooks/useLPRouteSync.ts'
 import { useLPNavigation } from '../../hooks/useLPNavigation.ts'
 import { useLPConfigFiltering } from '../../hooks/useLPConfigFiltering.ts'
+import { useTestdatenSichtbar } from '../../hooks/useTestdatenSichtbar.ts'
 import { useLPFavoriten } from '../../hooks/useLPFavoriten.ts'
 import { useLPDashboardData } from '../../hooks/useLPDashboardData.ts'
 import { useToast } from '../../hooks/useToast'
@@ -135,6 +136,9 @@ function LPStartseiteInner() {
     reload,
   } = useLPDashboardData({ user, istDemoModus })
 
+  // Cluster F.4: Testdaten-Sichtbarkeit (LP-Profil-Toggle)
+  const testdatenSichtbar = useTestdatenSichtbar()
+
   // Filter-Hook (6 Memos + letzteFuenf + hatAktiveFilter)
   const {
     verfuegbareFachbereiche,
@@ -147,6 +151,7 @@ function LPStartseiteInner() {
     hatAktiveFilter,
   } = useLPConfigFiltering({
     configs, suchtext, filterFach, filterTyp, filterGefaess, sortierung, filterStatus,
+    testdatenSichtbar,
   })
 
   // Favoriten-Hook (4 Memos)
