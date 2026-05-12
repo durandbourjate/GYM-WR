@@ -5,33 +5,41 @@ const stammdatenStub = { kurse: [{ id: 'sf-wr-29c', name: 'SF WR 29c', fach: 'WR
 const lpProfilStubKeinTestdaten = { email: 'wr@test.ch', kursIds: ['sf-wr-29c'], testdatenSichtbar: false }
 const lpProfilStubMitTestdaten = { ...lpProfilStubKeinTestdaten, testdatenSichtbar: true }
 
-const configsStub = [
-  { id: 'p1', titel: 'Bilanz', typ: 'summativ', klasse: '29c' } as any,
-  { id: 'u1', titel: 'Übung A', typ: 'formativ', klasse: '29c' } as any,
-  { id: 'test-p2', titel: 'Test-Pruefung', typ: 'summativ', klasse: 'test-klasse-01' } as any,
+import type { PruefungsConfig } from '../types/pruefung'
+import type { FrageSummary } from '../types/fragen-storage'
+
+// Defensive: Partial-Mocks fuer PruefungsConfig + FrageSummary. Vollstaendige Typed-Stubs waeren
+// 30+ Felder pro Record; Tests benoetigen nur 4-5 Properties. Test-Cast statt produktivem Risiko.
+const configsStub: PruefungsConfig[] = [
+  { id: 'p1', titel: 'Bilanz', typ: 'summativ', klasse: '29c' } as unknown as PruefungsConfig,
+  { id: 'u1', titel: 'Übung A', typ: 'formativ', klasse: '29c' } as unknown as PruefungsConfig,
+  { id: 'test-p2', titel: 'Test-Pruefung', typ: 'summativ', klasse: 'test-klasse-01' } as unknown as PruefungsConfig,
 ]
-const fragenStub = [
-  { id: 'f1', fragetext: 'Was ist Bilanz?', tags: [], thema: 'BWL' } as any,
-  { id: 'test-f2', fragetext: 'Test-Frage', tags: [], thema: 'BWL' } as any,
+const fragenStub: FrageSummary[] = [
+  { id: 'f1', fragetext: 'Was ist Bilanz?', tags: [], thema: 'BWL' } as unknown as FrageSummary,
+  { id: 'test-f2', fragetext: 'Test-Frage', tags: [], thema: 'BWL' } as unknown as FrageSummary,
 ]
 
 let lpProfilCurrent: typeof lpProfilStubKeinTestdaten = lpProfilStubKeinTestdaten
 
+// Defensive: vi.mock Selector-Pattern erfordert any-Param (Store-State-Type variiert pro Store).
+type SelectorFn<T> = (s: unknown) => T
+
 vi.mock('../store/stammdatenStore', () => ({
-  useStammdatenStore: (sel: any) => sel({
+  useStammdatenStore: <T,>(sel: SelectorFn<T>): T => sel({
     stammdaten: stammdatenStub,
     lpProfil: lpProfilCurrent,
     istAdmin: () => false,
   }),
 }))
 vi.mock('../store/configsListStore', () => ({
-  useConfigsListStore: (sel: any) => sel({ configs: configsStub, istGeladen: true }),
+  useConfigsListStore: <T,>(sel: SelectorFn<T>): T => sel({ configs: configsStub, istGeladen: true }),
 }))
 vi.mock('../store/fragensammlungStore', () => ({
-  useFragensammlungStore: (sel: any) => sel({ summaries: fragenStub }),
+  useFragensammlungStore: <T,>(sel: SelectorFn<T>): T => sel({ summaries: fragenStub }),
 }))
 vi.mock('../store/authStore', () => ({
-  useAuthStore: (sel: any) => sel({ user: { email: 'wr@test.ch', rolle: 'lp' } }),
+  useAuthStore: <T,>(sel: SelectorFn<T>): T => sel({ user: { email: 'wr@test.ch', rolle: 'lp' } }),
 }))
 vi.mock('../utils/tabRegistry', async () => {
   const actual = await vi.importActual<typeof import('../utils/tabRegistry')>('../utils/tabRegistry')
