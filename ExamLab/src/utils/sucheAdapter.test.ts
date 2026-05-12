@@ -1,0 +1,151 @@
+import { describe, it, expect } from 'vitest'
+import {
+  indexEinstellungenTabs,
+  indexHilfeTabs,
+  indexKurse,
+  indexPruefungen,
+  indexUebungen,
+  indexFragen,
+} from './sucheAdapter'
+import type { TabDefinition } from './tabRegistry'
+import type { KursDefinition } from '../types/stammdaten'
+import type { PruefungsConfig } from '../types/pruefung'
+import type { FrageSummary } from '../types/fragen-storage'
+
+const stubTab = (id: string, titel: string, surface: 'einstellungen' | 'hilfe' = 'einstellungen'): TabDefinition => ({
+  id, surface, titel, route: `/${surface}/${id}`,
+})
+
+const stubKurs = (id: string, klassen: string[] = []): KursDefinition => ({
+  id, klassen,
+})
+
+const stubConfig = (id: string, titel: string, typ: 'summativ' | 'formativ', klasse = '29c', fach = 'BWL'): PruefungsConfig => ({
+  id, titel, typ, klasse, fach,
+  // restliche Required-Felder als Stubs (Plan-Test-Pattern)
+  fachbereiche: [fach],
+} as unknown as PruefungsConfig)
+
+const stubFrage = (id: string, fragetext: string, tags: string[] = [], thema = 'BWL'): FrageSummary => ({
+  id,
+  typ: 'mc',
+  fachbereich: 'WR' as FrageSummary['fachbereich'],
+  thema,
+  fragetext,
+  bloom: 'K1' as FrageSummary['bloom'],
+  punkte: 1,
+  tags,
+  erstelltAm: '2026-05-12',
+  hatAnhang: false,
+  hatMaterial: false,
+  fach: 'BWL',
+})
+
+describe('indexEinstellungenTabs', () => {
+  it('findet Tab per Titel', () => {
+    const tabs = [stubTab('lernziele', 'Lernziele'), stubTab('profil', 'Profil')]
+    const treffer = indexEinstellungenTabs('lern', tabs)
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].titel).toBe('Lernziele')
+    expect(treffer[0].quelle).toBe('einstellungen-tab')
+    expect(treffer[0].navigation.route).toBe('/einstellungen/lernziele')
+    expect(treffer[0].iconKey).toBe('einstellungen')
+  })
+
+  it('mehrere Tabs', () => {
+    const tabs = [stubTab('profil', 'Profil'), stubTab('lernziele', 'Lernziele')]
+    expect(indexEinstellungenTabs('zelle', tabs)).toHaveLength(0)
+  })
+})
+
+describe('indexHilfeTabs', () => {
+  it('findet Hilfe-Tab + Route-Builder mit Modal-Param', () => {
+    const tabs = [stubTab('bloom', 'Bloom-Taxonomie', 'hilfe')]
+    const treffer = indexHilfeTabs('bloom', tabs)
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].quelle).toBe('hilfe-tab')
+    expect(treffer[0].navigation.route).toBe('/einstellungen?hilfe=bloom')
+    expect(treffer[0].iconKey).toBe('hilfe')
+  })
+})
+
+describe('indexKurse', () => {
+  it('findet Kurs per ID-Substring', () => {
+    const treffer = indexKurse('29c', [stubKurs('sf-wr-29c', ['29c'])])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].quelle).toBe('kurs')
+    expect(treffer[0].navigation.route).toBe('/pruefung')
+    expect(treffer[0].iconKey).toBe('kurs')
+  })
+
+  it('matched über klassen-Tag-Score', () => {
+    const treffer = indexKurse('29a', [stubKurs('sf-wr-29c', ['29a', '29b'])])
+    expect(treffer).toHaveLength(1)
+  })
+})
+
+describe('indexPruefungen', () => {
+  it('findet summative Prüfung per Titel', () => {
+    const configs = [stubConfig('p1', 'Bilanz-Test', 'summativ')]
+    const treffer = indexPruefungen('bilanz', configs)
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].quelle).toBe('pruefung')
+    expect(treffer[0].subTitel).toContain('29c')
+    expect(treffer[0].navigation.route).toBe('/pruefung/p1')
+    expect(treffer[0].iconKey).toBe('pruefung')
+  })
+
+  it('filtert formative aus', () => {
+    const configs = [
+      stubConfig('u1', 'Übung A', 'formativ'),
+      stubConfig('p1', 'Test B', 'summativ'),
+    ]
+    const treffer = indexPruefungen('test', configs)
+    expect(treffer.map(t => t.id)).toEqual(['p1'])
+  })
+})
+
+describe('indexUebungen', () => {
+  it('findet formative Configs', () => {
+    const configs = [
+      stubConfig('u1', 'Übung A', 'formativ'),
+      stubConfig('p1', 'Test', 'summativ'),
+    ]
+    const treffer = indexUebungen('übung', configs)
+    expect(treffer.map(t => t.id)).toEqual(['u1'])
+    expect(treffer[0].navigation.route).toBe('/uebung/u1')
+    expect(treffer[0].iconKey).toBe('uebung')
+  })
+})
+
+describe('indexFragen', () => {
+  it('matched Titel (fragetext)', () => {
+    const treffer = indexFragen('bilanz', [stubFrage('f1', 'Was ist eine Bilanz?')])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].quelle).toBe('frage')
+    expect(treffer[0].navigation.route).toBe('/fragensammlung/f1')
+    expect(treffer[0].iconKey).toBe('frage')
+  })
+
+  it('matched String-Tag', () => {
+    const treffer = indexFragen('bilanz', [stubFrage('f1', 'Foo', ['Bilanz'])])
+    expect(treffer).toHaveLength(1)
+  })
+
+  it('matched ID-exakt mit ID_EXACT-Score', () => {
+    const treffer = indexFragen('frg-12345', [stubFrage('frg-12345', 'Foo')])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].score).toBe(95)
+  })
+
+  it('matched Thema', () => {
+    const treffer = indexFragen('rechnungswesen', [stubFrage('f1', 'Foo', [], 'Rechnungswesen')])
+    expect(treffer).toHaveLength(1)
+  })
+
+  it('kürzt sehr langen fragetext auf 80 Zeichen', () => {
+    const langeFrage = 'A'.repeat(150)
+    const treffer = indexFragen('aaa', [stubFrage('f1', langeFrage)])
+    expect(treffer[0].titel.length).toBeLessThanOrEqual(80)
+  })
+})
