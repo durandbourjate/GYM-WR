@@ -3,11 +3,20 @@ import { QUELLEN_REIHENFOLGE, LEERES_ERGEBNIS, SCORE_BOUNDS } from '../types/suc
 import { indexEinstellungenTabs, indexHilfeTabs, indexKurse, indexPruefungen, indexUebungen, indexFragen } from './sucheAdapter'
 
 /**
- * Normalisiert Text für Suche: Lowercase + NFD + Diakritik-Entfernung.
- * Damit „Übung" matcht „uebung" und umgekehrt.
+ * Normalisiert Text für Suche:
+ * 1. Lowercase
+ * 2. Deutsche Ersatzregel: ä→ae, ö→oe, ü→ue, ß→ss (damit "uebung" matched "Übung")
+ * 3. NFD + Diakritik-Entfernung (für andere Akzente wie é, è, ñ etc.)
  */
 export function normalizeForSuche(text: string): string {
-  return text.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
+  return text
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
 }
 
 export type MatchFeld = 'titel' | 'id' | 'tag' | 'subTitel'
@@ -29,22 +38,26 @@ export function scoreFromMatch(haystack: string, needle: string, feld: MatchFeld
 }
 
 /**
- * Findet alle Match-Positionen im normalisierten Text. Indices entsprechen
- * Original-String-Positionen (NFD-Stripping ist Längen-stabil für ASCII +
- * Diacritics).
+ * Findet alle Match-Positionen im Text. Arbeitet case-insensitive auf dem
+ * Original-String, damit Indices direkt zu Original-Zeichen passen.
+ *
+ * Hinweis: bei Diakritik-Ersatz-Match (z.B. needle "uebung" matched Original
+ * "Übung" via normalizeForSuche, aber die Strings sind nicht Substring-gleich)
+ * gibt es kein Highlight — Entry erscheint trotzdem in den Treffern, weil
+ * Score-Computation auf der normalisierten Form arbeitet.
  */
 export function findeHighlightStellen(
   text: string,
   needle: string,
   feld: 'titel' | 'subTitel',
 ): HighlightStelle[] {
-  const n = normalizeForSuche(needle)
+  const n = needle.trim().toLowerCase()
   if (!n) return []
-  const tNorm = normalizeForSuche(text)
+  const tLower = text.toLowerCase()
   const stellen: HighlightStelle[] = []
   let cursor = 0
-  while (cursor <= tNorm.length - n.length) {
-    const idx = tNorm.indexOf(n, cursor)
+  while (cursor <= tLower.length - n.length) {
+    const idx = tLower.indexOf(n, cursor)
     if (idx < 0) break
     stellen.push({ start: idx, end: idx + n.length, feld })
     cursor = idx + n.length

@@ -8,10 +8,16 @@ describe('normalizeForSuche', () => {
     expect(normalizeForSuche('Bilanz')).toBe('bilanz')
   })
 
-  it('removes diacritics (umlauts)', () => {
-    expect(normalizeForSuche('Übung')).toBe('ubung')
-    expect(normalizeForSuche('Schäfer')).toBe('schafer')
-    expect(normalizeForSuche('für')).toBe('fur')
+  it('deutsche Ersatzregel: ä/ö/ü/ß → ae/oe/ue/ss', () => {
+    expect(normalizeForSuche('Übung')).toBe('uebung')
+    expect(normalizeForSuche('Schäfer')).toBe('schaefer')
+    expect(normalizeForSuche('für')).toBe('fuer')
+    expect(normalizeForSuche('Straße')).toBe('strasse')
+  })
+
+  it('NFD-Diakritik-Entfernung (französische Akzente)', () => {
+    expect(normalizeForSuche('café')).toBe('cafe')
+    expect(normalizeForSuche('señor')).toBe('senor')
   })
 
   it('preserves base ASCII', () => {
@@ -52,8 +58,9 @@ describe('scoreFromMatch', () => {
     expect(scoreFromMatch('foo', 'bar', 'titel')).toBe(0)
   })
 
-  it('case + diacritics independent', () => {
-    expect(scoreFromMatch('Übung', 'ubung', 'titel')).toBe(100)
+  it('deutsche Ersatzregel match (uebung findet Übung)', () => {
+    expect(scoreFromMatch('Übung', 'uebung', 'titel')).toBe(100)
+    expect(scoreFromMatch('Übung', 'Übung', 'titel')).toBe(100)
   })
 })
 
@@ -77,9 +84,13 @@ describe('findeHighlightStellen', () => {
     ])
   })
 
-  it('diakritik-insensitiv (match-Länge bleibt korrekt)', () => {
-    const stellen = findeHighlightStellen('Übung 1', 'ubung', 'titel')
-    expect(stellen).toEqual([{ start: 0, end: 5, feld: 'titel' }])
+  it('Diakritik-Ersatz-Match liefert keine Highlight-Stellen (Strings sind nicht Substring-gleich)', () => {
+    // "uebung" matched "Übung" via normalizeForSuche fuer Score, aber Original-Substring-Suche findet nichts.
+    expect(findeHighlightStellen('Übung 1', 'uebung', 'titel')).toEqual([])
+  })
+
+  it('exakter Substring-Match auch mit Diakritik (Übung mit needle Übung)', () => {
+    expect(findeHighlightStellen('Übung 1', 'Übung', 'titel')).toEqual([{ start: 0, end: 5, feld: 'titel' }])
   })
 
   it('keine Stelle bei no-match', () => {
