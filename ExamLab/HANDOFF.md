@@ -8,6 +8,52 @@
 
 ## Letzter Stand auf main
 
+### Cluster C — Globale Suche (6 Quellen) ✅ MERGED (2026-05-12)
+
+LP-Header-Suche erweitert von „nur Fragensammlung" auf 6 Quellen: Einstellungen-Tabs, Hilfe-Tabs, Kurse, Prüfungen, Übungen, Fragen. Gruppierte Treffer, Keyboard-Navigation, Diakritik-Normalize (deutsche Ersatzregel + NFD), XSS-sicheres Highlight via JSX-Array. SuS-Pfad unverändert (eigener Hook, Scope-Guard). Branch `feature/cluster-c-globale-suche` → preview → main (HEAD `5d1d046`).
+
+| Phase | Inhalt |
+|---|---|
+| 1 | Foundation: `types/suche.ts` (Types + ICON_MAP tree-shake + SucheIndex) + `sucheEngine.ts` (normalize/score/highlight/gruppieren/fuehreSucheAus) + `sucheAdapter.ts` (6 Adapter: Tabs/Kurse/Prüfungen/Übungen/Fragen, mit Cluster-F-Filter inline) + `highlight.tsx` (JSX-Array, XSS-sicher) |
+| 2 | `configsListStore` (Cache-Layer für PruefungsConfig-Liste — Architektur-Anpassung weil `useLPDashboardData` Hook-lokaler State war) + `useLPDashboardData`-Patch (4 setConfigs-Stellen schreiben zusätzlich in Store) + `useSucheIndex` Memo-Selektor über 4 Stores + tabRegistry + Cluster-F-Filter pro Quelle |
+| 3 | UI-Komponenten in `components/shared/header/sucheUI/`: `EmptyState`, `TrefferZeile` (mit ICON_MAP), `QuellSektion` (mit „Alle Treffer in"-Link bei >5) + Barrel-Export |
+| 4 | 3 generische Sub-Hooks `useDebouncedValue` + `useKeyboardNavigation` + `useClickOutside` (alle TDD-tested) + `HilfeSeite` `initialKategorie`-Prop + `LPStartseite` `?hilfe=<tab>`-Deep-Link-Reader + `LPGlobalSuche` neue eigene Komponente in `components/lp/header/` + `AppHeader` `slotSuche?`-Prop für Komponenten-Override + `LPAppHeaderContainer`-Migration + `useGlobalSucheLP` Legacy-Delete |
+| 5.1 | Performance-Test: **8.2 ms** bei 1000 Fragen + 100 Prüfungen + 50 Kursen (Bonus-Ziel <50ms erreicht) |
+| Hotfix#1 | `lint:as-any` Gate (Test-Stubs auf `as unknown as` + Selector-Pattern via Generic) |
+| Hotfix#2 | `Favoriten.tsx` schreibt configs auch in configsListStore (E2E-Bug entdeckt: globale Suche fand nichts auf `/favoriten`-Route weil dort eigener lokaler `setConfigs` lief) |
+| Hotfix#3 | Deutsche Ersatzregel `ä→ae`, `ö→oe`, `ü→ue`, `ß→ss` in `normalizeForSuche` (E2E Case 5: „uebung" findet „Übung"). Plus zusätzliche NFD-Diakritik-Strip für andere Akzente (`café`, `señor`) |
+
+**Verifikation:** vitest **1700+** (Baseline 1623 + ~77 neue für Cluster C), tsc -b clean, 4× lint clean (as-any 0/0, no-alert 0, musterloesung Baseline, wire-contract 61/0), vite build grün.
+
+**Browser-E2E LIVE auf Staging-Deploy mit echtem LP-Login (12.05.2026): 11/11 ✅**
+1. Multi-Quellen `Einführung` → PRÜFUNGEN + ÜBUNGEN, Highlight, Icons
+2. Einstellungen-Tab `profil` → „Mein Profil" mit Settings-Icon
+3. Hilfe-Tab `bloom` → „Bloom-Taxonomie" mit BookOpen-Icon
+4. Frage-Treffer `test` → 32 Fragen mit HelpCircle-Icon
+5. Diakritik `uebung` → „Übungen" + „Einführungsübung" (nach Hotfix#3)
+6. Keyboard-Nav: ArrowDown → aktiv-Ring; Enter → Navigation
+7. „Alle Treffer in"-Link → Surface-Navigation
+8. Cluster-F-Toggle: indirekt via Vitest (3 Tests mit test-prefixed IDs; Live keine Test-Daten geseedet)
+9. Empty-State `BWL` → „Nichts gefunden für ‚BWL'"
+10. Console-Errors: 0
+11. Cmd+K aus Pruefungs-Detail-Surface → Input fokussiert
+
+**Patterns + Lehren:**
+- **Architektur-Anpassung Plan-Phase:** Spec rev2 ging davon aus, dass Configs in einem Store sind. Codebase-Audit zeigte: Hook-lokaler State. → schlanker `configsListStore` als Cache-Layer (kein Duplikat-State, da Configs sonst nirgends zentral).
+- **Dumb-Komponente bewahren bei Multi-Verbraucher:** `GlobalSuche.tsx` (Dumb-Komponente, 2 Container LP+SuS) NICHT refactored — eigene neue `LPGlobalSuche` parallel. SuS-Pfad unverändert. Bei künftigen Multi-Verbraucher-Komponenten erst Audit (Reviewer-Iter-1-Lehre).
+- **Plan-vs-Live-Diskrepanz:** `useLPDashboardData`-Patch reichte nicht — `Favoriten.tsx` als eigene Surface hatte separates Config-Loading. Hotfix#2 entdeckt erst beim Live-E2E. Pattern: pro neuem Cache-Store grep nach ALL `setConfigs`/`apiService.ladeAllX`-Aufrufstellen, nicht nur eine.
+- **NFD-Diakritik ≠ deutsche Ersatzregel:** `Übung→Ubung` ist Diakritik-Strip (Längen-stabil), aber User erwartet `Übung→Uebung` (deutsche Ersatzregel, Längen-ändernd). Beides nötig. Highlight-Indexing muss case-insensitive auf Original-String laufen, nicht auf normalisierter Form — sonst Out-of-Bounds (Cross-Diakritik-Match → kein Highlight, aber Score-Match).
+- **ICON_MAP explizit statt `import * as Icons`:** Bundle-Effekt ~200KB → ~10KB. Pattern für Cluster G übernehmen.
+- **slotSuche-Pattern:** AppHeader nimmt optional `slotSuche?: ReactNode` für Komponenten-Override. Pattern für rolle-spezifische UI-Variationen ohne Container-Vermehrung.
+
+**Spawn-Tasks (Phase 2 Globale Suche, eigene Cluster):**
+- Schüler-Suche (`useEigeneSchueler`-Hook nötig, kein LP-Permission-Selektor existiert heute)
+- „Alle Treffer in"-Pre-Fill via `?suche=`-Pattern in Surface-Listen (5+ Surfaces betroffen)
+- Volltext-Suche in Fragetexten / Lösungen / Material-PDFs (Backend-Endpoint)
+- Fuzzy-Match via `fuse.js` (Tippfehler-Toleranz)
+
+---
+
 ### Cluster F.4 — Read-Pfad-Filter + TestBadge-Konsumenten ✅ MERGED (2026-05-12)
 
 Vierte und letzte Sub-Phase aus Cluster-F-Master-Plan. Verbindet F.3-Toggle (`lpProfil.testdatenSichtbar`) mit allen LP-Listen-Surfaces: Test-Configs werden bei Toggle=false aus Listen entfernt, bei Toggle=true mit gelbem `<TestBadge />` markiert. Branch `feature/cluster-f-4-readpath-filter-badge` → preview → main.
