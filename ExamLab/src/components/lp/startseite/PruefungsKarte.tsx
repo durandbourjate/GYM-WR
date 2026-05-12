@@ -3,6 +3,8 @@ import { useFavoritenStore } from '../../../store/favoritenStore'
 import { formatDatum } from '../../../utils/zeit'
 import { getFachFarbe } from '../../../utils/ueben/fachFarben'
 import { bestimmePruefungsStatus, statusLabel, statusFarbe, korrekturLabel } from '../../../utils/trackerUtils'
+import TestBadge from '../../shared/TestBadge'
+import { useTestBadgeVisible } from '../../../hooks/useTestBadgeVisible'
 import type { PruefungsConfig } from '../../../types/pruefung'
 import type { TrackerPruefungSummary } from '../../../types/tracker'
 
@@ -16,6 +18,7 @@ export function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, tracker
   const toggleFavorit = useFavoritenStore(s => s.toggleFavorit)
   const istFavoritFn = useFavoritenStore(s => s.istFavorit)
   const istFav = istFavoritFn(c.id)
+  const istTestRecord = useTestBadgeVisible({ id: c.id, klasse: c.klasse })
   const [linkKopiert, setLinkKopiert] = useState(false)
   const kopiereLink = async () => {
     const screen = c.typ === 'formativ' ? 'uebung' : 'pruefung'
@@ -38,7 +41,10 @@ export function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, tracker
           {istFav ? '⭐' : '☆'}
         </button>
         <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate">{c.titel}</h3>
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate flex items-center gap-2">
+          <span className="truncate">{c.titel}</span>
+          {istTestRecord && <TestBadge />}
+        </h3>
         <div className="flex items-center gap-3 mt-1 text-sm text-slate-500 dark:text-slate-400 flex-wrap">
           <span>{c.klasse}</span>
           <span>·</span>
