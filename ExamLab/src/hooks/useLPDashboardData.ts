@@ -3,6 +3,7 @@ import { apiService } from '../services/apiService'
 import { useStammdatenStore } from '../store/stammdatenStore'
 import { useFavoritenStore } from '../store/favoritenStore'
 import { useFragensammlungStore } from '../store/fragensammlungStore'
+import { useConfigsListStore } from '../store/configsListStore'
 import { useToast } from './useToast'
 import { schreibeGespeicherteAnzahl } from '../utils/skeletonAnzahl'
 import { erstelleDemoTrackerDaten } from '../utils/trackerUtils'
@@ -57,7 +58,9 @@ export function useLPDashboardData(opts: {
 
       if (istDemoModus || !apiService.istKonfiguriert()) {
         // Demo-Daten
-        setConfigs(demoConfigs())
+        const demo = demoConfigs()
+        setConfigs(demo)
+        useConfigsListStore.getState().setConfigs(demo)
         setTrackerDaten(erstelleDemoTrackerDaten())
         setConfigsLadeStatus('fertig')
         setTrackerLadeStatus('fertig')
@@ -98,6 +101,7 @@ export function useLPDashboardData(opts: {
 
       if (configResult) {
         setConfigs(configResult)
+        useConfigsListStore.getState().setConfigs(configResult)
         setBackendFehler(false)
         // Persist Anzahl summativ/formativ für layout-akkurates Skeleton beim nächsten Login
         const summativeAnzahl = configResult.filter(c => c.typ !== 'formativ').length
@@ -118,7 +122,10 @@ export function useLPDashboardData(opts: {
               await syncEinrichtungsUebung(user.email, (msg) => toast.warning(msg))
               sessionStorage.setItem(SYNC_DONE_KEY, '1')
               const neueConfigs = await apiService.ladeAlleConfigs(user.email)
-              if (neueConfigs) setConfigs(neueConfigs)
+              if (neueConfigs) {
+                setConfigs(neueConfigs)
+                useConfigsListStore.getState().setConfigs(neueConfigs)
+              }
             } catch (err) {
               console.warn('[LP] Sync fehlgeschlagen, wird beim nächsten Mount erneut versucht:', err)
             }
@@ -154,6 +161,7 @@ export function useLPDashboardData(opts: {
       const result = await apiService.ladeAlleConfigs(user.email)
       if (result) {
         setConfigs(result)
+        useConfigsListStore.getState().setConfigs(result)
         setBackendFehler(false)
         schreibeGespeicherteAnzahl('examlab-lp-letzte-summative-anzahl', result.filter(c => c.typ !== 'formativ').length)
         schreibeGespeicherteAnzahl('examlab-lp-letzte-formative-anzahl', result.filter(c => c.typ === 'formativ').length)
@@ -162,7 +170,9 @@ export function useLPDashboardData(opts: {
       }
       setConfigsLadeStatus('fertig')
     } else {
-      setConfigs(demoConfigs())
+      const demo = demoConfigs()
+      setConfigs(demo)
+      useConfigsListStore.getState().setConfigs(demo)
       setBackendFehler(false)
       setConfigsLadeStatus('fertig')
     }
