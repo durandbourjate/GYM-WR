@@ -1,7 +1,12 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import TestdatenTab from './TestdatenTab'
+import { apiAdminSeedTestdaten } from '../../../services/testdatenApi'
 import type { Stammdaten, LPProfil } from '../../../types/stammdaten'
+
+vi.mock('../../../services/testdatenApi', () => ({
+  apiAdminSeedTestdaten: vi.fn(),
+}))
 
 const speichereLPProfil = vi.fn()
 const istAdminFn = vi.fn(() => false)
@@ -92,5 +97,108 @@ describe('TestdatenTab — Status + Toggle', () => {
     render(<TestdatenTab email="lp@x.ch" />)
     expect(screen.queryByRole('button', { name: /Erzeugen/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Zurücksetzen/ })).not.toBeInTheDocument()
+  })
+})
+
+describe('TestdatenTab — Admin-Sektion', () => {
+  beforeEach(() => {
+    speichereLPProfil.mockReset()
+    toastAdd.mockReset()
+    istAdminFn.mockImplementation(() => true)
+    storeState.lpProfil = { email: 'admin@x.ch', kursIds: [], fachschaftIds: [], gefaesse: [] }
+    vi.mocked(apiAdminSeedTestdaten).mockReset()
+  })
+
+  it('Admin nicht-initialisiert: zeigt „Testdaten erzeugen"-Button + KEIN Reset', () => {
+    storeState.stammdaten = echteSD
+    render(<TestdatenTab email="admin@x.ch" />)
+    expect(screen.getByRole('button', { name: /Testdaten erzeugen/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Zurücksetzen/ })).not.toBeInTheDocument()
+  })
+
+  it('Admin initialisiert: zeigt „Zurücksetzen"-Button + KEIN Erzeugen', () => {
+    storeState.stammdaten = initSD
+    render(<TestdatenTab email="admin@x.ch" />)
+    expect(screen.getByRole('button', { name: /Zurücksetzen/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Erzeugen/ })).not.toBeInTheDocument()
+  })
+
+  it('„Erzeugen" feuert apiAdminSeedTestdaten mit mode=initial', async () => {
+    storeState.stammdaten = echteSD
+    vi.mocked(apiAdminSeedTestdaten).mockResolvedValue({ success: true, statistik: { mode: 'initial', testSuSAngelegt: 20 }, dauerMs: 30000 })
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Testdaten erzeugen/ }))
+    await waitFor(() => expect(apiAdminSeedTestdaten).toHaveBeenCalledWith({ email: 'admin@x.ch', mode: 'initial' }))
+  })
+
+  it('„Zurücksetzen" öffnet ConfirmModal, nicht direkt API-Call', () => {
+    storeState.stammdaten = initSD
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Zurücksetzen/ }))
+    expect(screen.getByText('Testdaten zurücksetzen?')).toBeInTheDocument()
+    expect(apiAdminSeedTestdaten).not.toHaveBeenCalled()
+  })
+
+  it('Modal-Bestätigung feuert apiAdminSeedTestdaten mit mode=reset', async () => {
+    storeState.stammdaten = initSD
+    vi.mocked(apiAdminSeedTestdaten).mockResolvedValue({ success: true, statistik: { mode: 'reset' } })
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Zurücksetzen/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Endgültig zurücksetzen' }))
+    await waitFor(() => expect(apiAdminSeedTestdaten).toHaveBeenCalledWith({ email: 'admin@x.ch', mode: 'reset' }))
+  })
+
+  it('Modal „Abbrechen" macht keinen API-Call', () => {
+    storeState.stammdaten = initSD
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Zurücksetzen/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Abbrechen' }))
+    expect(apiAdminSeedTestdaten).not.toHaveBeenCalled()
+    expect(screen.queryByText('Testdaten zurücksetzen?')).not.toBeInTheDocument()
+  })
+
+  it('Erfolg zeigt Statistik nach Seed', async () => {
+    storeState.stammdaten = echteSD
+    vi.mocked(apiAdminSeedTestdaten).mockResolvedValue({
+      success: true,
+      statistik: { mode: 'initial', testSuSAngelegt: 20, testPruefungenAngelegt: 1 },
+    })
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Testdaten erzeugen/ }))
+    await waitFor(() => expect(screen.getByText(/20 SuS angelegt/)).toBeInTheDocument())
+    expect(screen.getByText(/1 Prüfungen/)).toBeInTheDocument()
+  })
+
+  it('Fehler zeigt Error-Text', async () => {
+    storeState.stammdaten = echteSD
+    vi.mocked(apiAdminSeedTestdaten).mockResolvedValue({ success: false, error: 'LockService timeout' })
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Testdaten erzeugen/ }))
+    await waitFor(() => expect(screen.getByText(/LockService timeout/)).toBeInTheDocument())
+  })
+
+  it('Doppel-Klick auf Erzeugen während Loading triggert nur 1 API-Call', async () => {
+    storeState.stammdaten = echteSD
+    let resolveSeed: ((r: any) => void) | undefined
+    vi.mocked(apiAdminSeedTestdaten).mockImplementation(() => new Promise(r => { resolveSeed = r }))
+    render(<TestdatenTab email="admin@x.ch" />)
+    const btn = screen.getByRole('button', { name: /Testdaten erzeugen/ })
+    fireEvent.click(btn)
+    fireEvent.click(btn)
+    expect(apiAdminSeedTestdaten).toHaveBeenCalledTimes(1)
+    resolveSeed?.({ success: true, statistik: { mode: 'initial' } })
+  })
+
+  it('Modal bleibt offen während Reset-Loading, schliesst erst nach Erfolg', async () => {
+    storeState.stammdaten = initSD
+    let resolveReset: ((r: any) => void) | undefined
+    vi.mocked(apiAdminSeedTestdaten).mockImplementation(() => new Promise(r => { resolveReset = r }))
+    render(<TestdatenTab email="admin@x.ch" />)
+    fireEvent.click(screen.getByRole('button', { name: /Zurücksetzen/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Endgültig zurücksetzen' }))
+    expect(screen.getByText('Testdaten zurücksetzen?')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Abbrechen' })).toBeDisabled()
+    resolveReset?.({ success: true, statistik: { mode: 'reset' } })
+    await waitFor(() => expect(screen.queryByText('Testdaten zurücksetzen?')).not.toBeInTheDocument())
   })
 })

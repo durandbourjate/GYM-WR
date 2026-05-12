@@ -1,6 +1,9 @@
+import { useRef, useState } from 'react'
 import { useStammdatenStore } from '../../../store/stammdatenStore'
 import { useToastStore } from '../../../store/toastStore'
 import { useTestdatenStatus } from '../../../hooks/useTestdatenStatus'
+import { apiAdminSeedTestdaten, type SeedResponse } from '../../../services/testdatenApi'
+import ResetConfirmModal from './testdaten/ResetConfirmModal'
 import type { LPProfil } from '../../../types/stammdaten'
 
 interface Props {
@@ -20,11 +23,31 @@ export default function TestdatenTab({ email }: Props) {
   const admin = istAdmin(email)
   const sichtbar = lpProfil?.testdatenSichtbar ?? false
 
+  const [seedResult, setSeedResult] = useState<SeedResponse | null>(null)
+  const [seedLoading, setSeedLoading] = useState(false)
+  const [modalOffen, setModalOffen] = useState(false)
+  const loadingRef = useRef(false) // Doppel-Klick-Guard (State ist stale zwischen Klicks)
+
   const onToggle = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!lpProfil) return
     const updated: LPProfil = { ...lpProfil, testdatenSichtbar: e.target.checked }
     const ok = await speichereLPProfil(updated)
     if (!ok) toastAdd('error', 'Sichtbarkeit konnte nicht gespeichert werden.')
+  }
+
+  const fuehreAus = async (mode: 'initial' | 'reset') => {
+    if (loadingRef.current) return
+    loadingRef.current = true
+    setSeedLoading(true)
+    setSeedResult(null)
+    try {
+      const result = await apiAdminSeedTestdaten({ email, mode })
+      setSeedResult(result)
+      if (result.success && mode === 'reset') setModalOffen(false)
+    } finally {
+      loadingRef.current = false
+      setSeedLoading(false)
+    }
   }
 
   return (
@@ -61,7 +84,58 @@ export default function TestdatenTab({ email }: Props) {
         </p>
       </section>
 
-      {admin && null /* Task 6: Sektion C — Admin-Aktionen */}
+      {admin && (
+        <section>
+          <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Admin-Aktionen</h4>
+          <div className="flex gap-2">
+            {!initialisiert && (
+              <button
+                type="button"
+                onClick={() => void fuehreAus('initial')}
+                disabled={seedLoading}
+                className="px-3 py-1.5 rounded text-sm bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-50"
+              >
+                {seedLoading ? 'Wird erzeugt…' : 'Testdaten erzeugen'}
+              </button>
+            )}
+            {initialisiert && (
+              <button
+                type="button"
+                onClick={() => setModalOffen(true)}
+                disabled={seedLoading}
+                className="px-3 py-1.5 rounded text-sm bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50"
+              >
+                Zurücksetzen
+              </button>
+            )}
+          </div>
+
+          {seedResult && (
+            <div className="mt-3 text-sm">
+              {seedResult.success ? (
+                <div className="text-emerald-700 dark:text-emerald-300">
+                  <p className="font-medium">Erfolg{seedResult.dauerMs ? ` (${Math.round(seedResult.dauerMs / 1000)}s)` : ''}</p>
+                  <ul className="mt-1 text-xs space-y-0.5 text-slate-600 dark:text-slate-400">
+                    {seedResult.statistik?.testSuSAngelegt !== undefined && <li>{seedResult.statistik.testSuSAngelegt} SuS angelegt</li>}
+                    {seedResult.statistik?.testPruefungenAngelegt !== undefined && <li>{seedResult.statistik.testPruefungenAngelegt} Prüfungen</li>}
+                    {seedResult.statistik?.testUebungenAngelegt !== undefined && <li>{seedResult.statistik.testUebungenAngelegt} Übungen</li>}
+                    {seedResult.statistik?.testSessionsAngelegt !== undefined && <li>{seedResult.statistik.testSessionsAngelegt} Sessions</li>}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-rose-700 dark:text-rose-300">Fehler: {seedResult.error ?? 'Unbekannt'}</p>
+              )}
+            </div>
+          )}
+
+          <ResetConfirmModal
+            offen={modalOffen}
+            loading={seedLoading}
+            onAbbrechen={() => { if (!seedLoading) setModalOffen(false) }}
+            onBestaetigen={() => void fuehreAus('reset')}
+          />
+        </section>
+      )}
     </div>
   )
 }
