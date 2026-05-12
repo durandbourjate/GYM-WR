@@ -162,7 +162,7 @@ describe('fuehreSucheAus', () => {
     const index: SucheIndex = {
       ...leererIndex(),
       einstellungenTabs: [tab],
-      kurse: [{ id: 'sf-profil-test', klassen: [] }],
+      kurse: [{ id: 'sf-profil-test', name: 'SF Profil Test', fach: 'BWL', fachschaft: 'WR', gefaess: 'SF', klassen: [] }],
     }
     const ergebnis = fuehreSucheAus('profil', index)
     expect(ergebnis.treffer.length).toBeGreaterThanOrEqual(2)

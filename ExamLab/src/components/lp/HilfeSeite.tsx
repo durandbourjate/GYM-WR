@@ -15,6 +15,8 @@ import HilfeFAQ from './hilfe/HilfeFAQ'
 
 interface Props {
   onSchliessen: () => void
+  /** Optional: voreinstellbare Kategorie (z.B. via ?hilfe=bloom Deep-Link aus globaler Suche). */
+  initialKategorie?: string
 }
 
 const KOMPONENTEN: Record<string, ComponentType> = {
@@ -31,9 +33,10 @@ const KOMPONENTEN: Record<string, ComponentType> = {
 }
 
 /** Hilfe-/Anleitungsseite für Lehrpersonen */
-export default function HilfeSeite({ onSchliessen }: Props) {
+export default function HilfeSeite({ onSchliessen, initialKategorie }: Props) {
   const tabs = tabsFuerSurface('hilfe', { istAdmin: false })
-  const [kategorie, setKategorie] = useState<string>('einstieg')
+  const startKategorie = initialKategorie && KOMPONENTEN[initialKategorie] ? initialKategorie : 'einstieg'
+  const [kategorie, setKategorie] = useState<string>(startKategorie)
   const AktiveKomponente = KOMPONENTEN[kategorie]
   const panelRef = useRef<HTMLDivElement>(null)
   useFocusTrap(panelRef)

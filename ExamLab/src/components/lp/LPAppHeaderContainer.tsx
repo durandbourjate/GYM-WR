@@ -7,14 +7,14 @@
 // bis dahin wird LPHeader.tsx weiterhin verwendet.
 
 import type React from 'react'
-import { useState, useMemo } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useThemeStore } from '../../store/themeStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useTabKaskadeConfigLP } from '../shared/header/useTabKaskadeConfig.lp'
-import { useGlobalSucheLP } from '../../hooks/useGlobalSucheLP'
 import { AppHeader } from '../shared/header/AppHeader'
+import { LPGlobalSuche } from './header/LPGlobalSuche'
 import type { FeedbackContext } from '../shared/FeedbackModal'
 import { APP_VERSION } from '../../version'
 
@@ -44,9 +44,7 @@ export function LPAppHeaderContainer({ onHilfe, onEinstellungen, onZurueck, brea
       window.matchMedia('(prefers-color-scheme: dark)').matches)
   const theme: 'light' | 'dark' = istAktuellDunkel ? 'dark' : 'light'
 
-  const navigate = useNavigate()
   const location = useLocation()
-  const [suchen, setSuchen] = useState('')
 
   const feedbackContext = useMemo<FeedbackContext>(() => ({
     rolle: 'lp',
@@ -71,17 +69,6 @@ export function LPAppHeaderContainer({ onHilfe, onEinstellungen, onZurueck, brea
     aktivePruefungen: [],
   })
 
-  // Globale Suche — Prüfungen und Kurse noch nicht angebunden (stubs im Hook).
-  const sucheErgebnis = useGlobalSucheLP(
-    suchen,
-    {
-      l1: kaskadeConfig.aktivL1 ?? null,
-      l2: kaskadeConfig.aktivL2 ?? null,
-      l3: null,
-    },
-    (path) => navigate(path),
-  )
-
   return (
     <AppHeader
       rolle="lp"
@@ -93,9 +80,7 @@ export function LPAppHeaderContainer({ onHilfe, onEinstellungen, onZurueck, brea
       onAbmelden={abmelden}
       onEinstellungen={onEinstellungen}
       kaskadeConfig={kaskadeConfig}
-      suchen={suchen}
-      onSuchen={setSuchen}
-      sucheErgebnis={sucheErgebnis}
+      slotSuche={<LPGlobalSuche />}
       onZurueck={onZurueck}
       breadcrumbs={breadcrumbs}
       aktionsButtons={aktionsButtons}

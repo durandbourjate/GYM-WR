@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 
-const stammdatenStub = { kurse: [{ id: 'sf-wr-29c', klassen: ['29c'] }], fachschaften: [], gefaesse: [] }
+const stammdatenStub = { kurse: [{ id: 'sf-wr-29c', name: 'SF WR 29c', fach: 'WR', fachschaft: 'WR', gefaess: 'SF', klassen: ['29c'] }], fachschaften: [], gefaesse: [] }
 const lpProfilStubKeinTestdaten = { email: 'wr@test.ch', kursIds: ['sf-wr-29c'], testdatenSichtbar: false }
 const lpProfilStubMitTestdaten = { ...lpProfilStubKeinTestdaten, testdatenSichtbar: true }
 

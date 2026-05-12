@@ -25,7 +25,9 @@ export function useSucheIndex(): SucheIndex {
   const configs = useConfigsListStore(s => s.configs)
   const fragen = useFragensammlungStore(s => s.summaries)
 
-  const istAdmin = istAdminFn(user?.email)
+  // istAdminFn ist im Produktiv-Store immer eine Funktion; in Test-Mocks
+  // kann sie fehlen — Fallback auf false.
+  const istAdmin = typeof istAdminFn === 'function' ? istAdminFn(user?.email) : false
   const testdatenSichtbar = lpProfil?.testdatenSichtbar ?? false
 
   return useMemo(() => {
@@ -33,9 +35,9 @@ export function useSucheIndex(): SucheIndex {
     const einstellungenTabs = tabsFuerSurface('einstellungen', ctx)
     const hilfeTabs = tabsFuerSurface('hilfe', ctx)
 
-    const kurseGefiltert = filtereTestdatenWennDeaktiviert(stammdaten.kurse, testdatenSichtbar)
-    const configsGefiltert = filtereTestdatenWennDeaktiviert(configs, testdatenSichtbar)
-    const fragenGefiltert = filtereTestdatenWennDeaktiviert(fragen, testdatenSichtbar)
+    const kurseGefiltert = filtereTestdatenWennDeaktiviert(stammdaten?.kurse ?? [], testdatenSichtbar)
+    const configsGefiltert = filtereTestdatenWennDeaktiviert(configs ?? [], testdatenSichtbar)
+    const fragenGefiltert = filtereTestdatenWennDeaktiviert(fragen ?? [], testdatenSichtbar)
 
     return {
       einstellungenTabs,

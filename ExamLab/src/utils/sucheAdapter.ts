@@ -49,18 +49,20 @@ export function indexHilfeTabs(query: string, tabs: TabDefinition[]): SucheTreff
 export function indexKurse(query: string, kurse: KursDefinition[]): SucheTreffer[] {
   const treffer: SucheTreffer[] = []
   for (const k of kurse) {
+    const titel = k.name || k.id
+    const titelScore = scoreFromMatch(titel, query, 'titel')
     const idScore = scoreFromMatch(k.id, query, 'id')
     const klassenText = k.klassen.join(' ')
     const klasseScore = klassenText ? scoreFromMatch(klassenText, query, 'tag') : 0
-    const titelSubScore = scoreFromMatch(k.id, query, 'titel')
-    const score = Math.max(idScore, klasseScore, titelSubScore)
+    const fachScore = k.fach ? scoreFromMatch(k.fach, query, 'tag') : 0
+    const score = Math.max(titelScore, idScore, klasseScore, fachScore)
     if (score === 0) continue
     treffer.push({
       quelle: 'kurs',
       id: k.id,
-      titel: k.id,
+      titel,
       subTitel: k.klassen.join(', ') || undefined,
-      highlightStellen: findeHighlightStellen(k.id, query, 'titel'),
+      highlightStellen: findeHighlightStellen(titel, query, 'titel'),
       navigation: { route: ROUTE_BUILDERS.kurs(k.id) },
       score,
       iconKey: 'kurs',

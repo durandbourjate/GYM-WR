@@ -21,9 +21,13 @@ interface Props {
   onAbmelden: () => void
   onEinstellungen?: () => void
   kaskadeConfig: TabKaskadeConfig
-  suchen: string
-  onSuchen: (s: string) => void
-  sucheErgebnis: SucheErgebnis
+  // Such-Pfad: entweder dumb-Komponente via Props (SuS-Pfad) ODER eine eigene
+  // Komponente via slotSuche (LP-Pfad mit `LPGlobalSuche` aus Cluster C).
+  suchen?: string
+  onSuchen?: (s: string) => void
+  sucheErgebnis?: SucheErgebnis
+  /** Optional: eigene Such-Komponente, ersetzt dumb GlobalSuche (Cluster C: LP-Pfad). */
+  slotSuche?: React.ReactNode
   // Detail-Modus
   onZurueck?: () => void
   breadcrumbs?: { label: string; aktion?: () => void }[]
@@ -86,7 +90,15 @@ export function AppHeader(props: Props) {
         <TabKaskade config={props.kaskadeConfig} />
         <div className="flex items-center gap-2 flex-shrink-0">
           {props.aktionsButtons}
-          <GlobalSuche suchen={props.suchen} onSuchen={props.onSuchen} ergebnis={props.sucheErgebnis} />
+          {props.slotSuche ?? (
+            props.sucheErgebnis !== undefined && props.suchen !== undefined && props.onSuchen ? (
+              <GlobalSuche
+                suchen={props.suchen}
+                onSuchen={props.onSuchen}
+                ergebnis={props.sucheErgebnis}
+              />
+            ) : null
+          )}
           <OptionenMenu
             rolle={props.rolle}
             benutzerName={props.benutzerName}

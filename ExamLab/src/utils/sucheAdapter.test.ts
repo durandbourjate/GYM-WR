@@ -17,7 +17,7 @@ const stubTab = (id: string, titel: string, surface: 'einstellungen' | 'hilfe' =
 })
 
 const stubKurs = (id: string, klassen: string[] = []): KursDefinition => ({
-  id, klassen,
+  id, name: id.toUpperCase(), fach: 'BWL', fachschaft: 'WR', gefaess: 'SF', klassen,
 })
 
 const stubConfig = (id: string, titel: string, typ: 'summativ' | 'formativ', klasse = '29c', fach = 'BWL'): PruefungsConfig => ({
