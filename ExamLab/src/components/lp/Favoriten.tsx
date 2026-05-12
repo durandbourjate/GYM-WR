@@ -4,6 +4,9 @@ import { useAuthStore } from '../../store/authStore'
 import { useFavoritenStore } from '../../store/favoritenStore'
 import { apiService } from '../../services/apiService'
 import { useLPNavigationStore } from '../../store/lpUIStore'
+import { useTestdatenSichtbar } from '../../hooks/useTestdatenSichtbar'
+import { istTestdaten, filtereTestdatenWennDeaktiviert } from '../../utils/testdaten/filter'
+import TestBadge from '../shared/TestBadge'
 import type { PruefungsConfig } from '../../types/pruefung'
 // Status direkt aus PruefungsConfig ableiten (ohne TrackerDaten)
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
@@ -20,9 +23,16 @@ export default function Favoriten() {
   const user = useAuthStore(s => s.user)
   const istDemoModus = useAuthStore(s => s.istDemoModus)
   const rawFavoriten = useFavoritenStore(s => s.favoriten)
-  const favoriten = useMemo(() =>
-    [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung),
-  [rawFavoriten])
+  const testdatenSichtbar = useTestdatenSichtbar()
+  const favoriten = useMemo(() => {
+    const sortiert = [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung)
+    if (testdatenSichtbar) return sortiert
+    // Cluster F.4: Favoriten mit typ=pruefung/uebung und Test-Ziel raus-filtern
+    return sortiert.filter(f => {
+      if (f.typ !== 'pruefung' && f.typ !== 'uebung') return true
+      return !istTestdaten({ id: f.ziel })
+    })
+  }, [rawFavoriten, testdatenSichtbar])
 
   const zeigHilfe = useLPNavigationStore(s => s.zeigHilfe)
   const zeigEinstellungen = useLPNavigationStore(s => s.zeigEinstellungen)
@@ -50,33 +60,39 @@ export default function Favoriten() {
   // Daten für Sektionen ableiten
   const heute = new Date().toISOString().split('T')[0]
 
+  // Cluster F.4: Configs vor allen Sektions-Memos filtern (single point of entry)
+  const sichtbareConfigs = useMemo(
+    () => filtereTestdatenWennDeaktiviert(configs, testdatenSichtbar),
+    [configs, testdatenSichtbar],
+  )
+
   const offeneKorrekturen = useMemo(() =>
-    configs.filter(c => {
+    sichtbareConfigs.filter(c => {
       // Beendet → Korrektur offen
       return !!c.beendetUm
     }).slice(0, 10),
-  [configs])
+  [sichtbareConfigs])
 
   const anstehendePruefungen = useMemo(() =>
-    configs
+    sichtbareConfigs
       .filter(c => c.datum && c.datum >= heute && c.typ !== 'formativ')
       .sort((a, b) => (a.datum ?? '').localeCompare(b.datum ?? ''))
       .slice(0, 5),
-  [configs, heute])
+  [sichtbareConfigs, heute])
 
   const letztePruefungen = useMemo(() =>
-    configs
+    sichtbareConfigs
       .filter(c => c.typ !== 'formativ')
       .sort((a, b) => (b.datum ?? '').localeCompare(a.datum ?? ''))
       .slice(0, 5),
-  [configs])
+  [sichtbareConfigs])
 
   const letzteUebungen = useMemo(() =>
-    configs
+    sichtbareConfigs
       .filter(c => c.typ === 'formativ')
       .sort((a, b) => (b.datum ?? '').localeCompare(a.datum ?? ''))
       .slice(0, 5),
-  [configs])
+  [sichtbareConfigs])
 
   if (ladeStatus !== 'fertig') return <LPSkeleton />
 
@@ -192,8 +208,9 @@ function ConfigListe({ configs, linkPrefix, linkSuffix = '' }: {
             className="flex items-center justify-between px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm"
           >
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
-                {c.titel || 'Unbenannt'}
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate flex items-center gap-2">
+                <span className="truncate">{c.titel || 'Unbenannt'}</span>
+                {istTestdaten({ id: c.id, klasse: c.klasse }) && <TestBadge />}
               </p>
               <p className="text-xs text-slate-400 dark:text-slate-500">
                 {c.gefaess ? `${c.gefaess} · ` : ''}{c.datum || 'Kein Datum'}
