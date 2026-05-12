@@ -8,6 +8,40 @@
 
 ## Letzter Stand auf main
 
+### Cluster F.4 — Read-Pfad-Filter + TestBadge-Konsumenten ✅ MERGED (2026-05-12)
+
+Vierte und letzte Sub-Phase aus Cluster-F-Master-Plan. Verbindet F.3-Toggle (`lpProfil.testdatenSichtbar`) mit allen LP-Listen-Surfaces: Test-Configs werden bei Toggle=false aus Listen entfernt, bei Toggle=true mit gelbem `<TestBadge />` markiert. Branch `feature/cluster-f-4-readpath-filter-badge` → preview → main.
+
+| Commit | Inhalt |
+|---|---|
+| (Plan) | Plan-Doc + Audit-Befunde (zentraler Filter-Point: `useLPConfigFiltering`) |
+| Task 1 | `useTestdatenSichtbar`-Hook (DRY-Selektor aus `stammdatenStore.lpProfil?.testdatenSichtbar`, 4 Tests) |
+| Task 2 | `useLPConfigFiltering` erweitert um `testdatenSichtbar`-Input + Filter-Step VOR allen anderen Filtern → propagiert zu allen 5 Listen (gefilterteConfigs/gefilterteUebungen/summativeConfigs/formativeConfigs/letzteFuenf). `LPStartseite`-Caller-Update. 4 neue Tests |
+| Task 3 | `PruefungsKarte` TestBadge-Slot neben Titel via `useTestBadgeVisible({ id, klasse })`, 4 Tests |
+| Task 4+5 | `Favoriten.tsx` Filter + TestBadge: `sichtbareConfigs`-Memo via `filtereTestdatenWennDeaktiviert` propagiert zu 5 Sektionen (offeneKorrekturen/anstehendePruefungen/letztePruefungen/letzteUebungen). Favoriten-Liste filtert typ=pruefung/uebung mit Test-Ziel. TestBadge in `ConfigListe`-Render-Komponente |
+
+**Verifikation:** vitest **1623** (Baseline 1611 + 12 neue: 4+4+4), tsc -b clean, 5× lint clean (as-any 0/0/0, musterloesung Baseline, wire-contract 61/0 unverändert), vite build grün, PWA 256 entries (5242 KiB).
+
+**Patterns + Lehren:**
+- **Single-Point-Filter via zentraler Hook** (`useLPConfigFiltering`): ein Filter-Add im Hook propagiert zu allen 4 Listen-Outputs. Pattern für künftige cross-cutting Filter (Datum, Status, etc.).
+- **Favoriten als separater Render-Pfad**: nicht alles geht durch useLPConfigFiltering — Favoriten-Liste und Schnell-Sektionen (offeneKorrekturen etc.) sind eigenständig in Favoriten.tsx; dort `sichtbareConfigs`-Memo als lokales Single-Point-of-Entry.
+- **TestBadge in `ConfigListe`-Render-Helper**: einmal in ConfigListe eingebaut, wirkt für alle 4 Sektionen die ConfigListe rendern.
+- **KorrekturDashboard NICHT gefiltert** (bewusste Entscheidung): wenn LP eine Test-Prüfung zum Korrigieren öffnet, sind Schüler darin Test-Schüler — Filter würde die Liste leer machen. Korrektur-Liste-Filter geschieht über `offeneKorrekturen` in Favoriten.tsx (1 Surface oben).
+
+**Out-of-Scope (Spawn-Tasks):**
+- Apps-Script server-side Filter (alles Frontend-side, keine API-Touch nötig)
+- SuS-Sicht (laut Spec §8: wr.test sieht immer alles)
+- Klassenlisten-Tab Filter (separater Surface, niedrige Priorität)
+- Live-Durchführen Schüler-Filter (BeendetPhase/AktivPhase)
+
+**Cluster-F Master-Status:**
+- F.1 Frontend-Foundation ✅ MERGED (11.05.)
+- F.2 Backend Apps-Script ✅ MERGED (11.05.)
+- F.3 UI-Schicht ✅ MERGED (12.05.)
+- **F.4 Read-Pfad-Filter + TestBadge ✅ MERGED (12.05.) — Cluster F komplett**
+
+---
+
 ### Cluster F.3 — UI-Schicht für Testdaten ✅ MERGED (2026-05-12)
 
 Dritte Sub-Phase aus Cluster-F-Master-Plan (nach F.1 Frontend-Foundation + F.2 Apps-Script-Backend). Macht die deployte F.2-Infrastruktur endlich über die UI bedienbar — Settings-Tab „Testdaten" mit Status-Anzeige, Sichtbarkeit-Toggle für alle LPs und Admin-Aktionen (Erzeugen + Reset mit Confirm-Modal + Statistik-Anzeige). Branch `feature/cluster-f-3-ui-testdaten` → preview → main.
