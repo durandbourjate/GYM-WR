@@ -14,6 +14,7 @@ import { listeProblemmeldungen } from '../../services/problemmeldungenApi'
 import type { Problemmeldung } from '../../types/problemmeldung'
 import ProfilTab from './einstellungen/ProfilTab'
 import AdminTab from './einstellungen/AdminTab'
+import TestdatenTab from './einstellungen/TestdatenTab'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -66,6 +67,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
     { key: 'problemmeldungen', label: `Problemmeldungen${offeneCount > 0 ? ` (${offeneCount})` : ''}`, sichtbar: true },
     { key: 'uebungen', label: 'Übungen', sichtbar: true },
     { key: 'fragensammlung', label: 'Fragensammlung', sichtbar: true },
+    { key: 'testdaten', label: 'Testdaten', sichtbar: true },
     { key: 'admin', label: 'Admin', sichtbar: admin },
     { key: 'kiKalibrierung', label: 'KI-Kalibrierung', sichtbar: true },
   ]
@@ -120,6 +122,9 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         )}
         {tab === 'fragensammlung' && user?.email && (
           <FragensammlungTab email={user.email} istAdmin={admin} />
+        )}
+        {tab === 'testdaten' && user?.email && (
+          <TestdatenTab email={user.email} />
         )}
       </div>
       </div>
