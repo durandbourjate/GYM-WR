@@ -552,6 +552,21 @@ function ladeAlleTagsAusSheet_() {
   return tags;
 }
 
+/**
+ * Cluster H Phase 0: Liste alle Tags.
+ * Default: nur nicht-archivierte. Admin kann inkludiereArchivierte=true setzen.
+ */
+function apiListTags(body) {
+  var lpInfo = getLPInfo(body.email);
+  if (!lpInfo) return jsonResponse({ error: 'Nicht authentifiziert' });
+
+  var alleTags = ladeAlleTagsAusSheet_();
+  var inkludiereArchivierte = body.inkludiereArchivierte === true && lpInfo.rolle === 'admin';
+  var gefiltert = inkludiereArchivierte ? alleTags : alleTags.filter(function(t) { return !t.archiviert; });
+
+  return jsonResponse({ ok: true, tags: gefiltert });
+}
+
 // === CACHE-SYSTEM (Performance-Optimierung) ===
 // Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
@@ -1323,6 +1338,10 @@ function doPost(e) {
     'ladeStammdaten', 'speichereStammdaten', 'ladeLPProfil', 'speichereLPProfil',
     'aktualisiereLernziel', 'loescheLernziel',
     'stelleWiederHer', 'hardDeleteFrage', // Bundle 3: Schreib-Pfade brauchen Cache-Invalidierung (listePapierkorb ist read-only, bleibt draussen)
+    // Cluster H Phase 0: Tag-Endpoints (Permission-Check pro Endpoint via pruefeAdminOderFehler_).
+    'apiListTags', 'apiCreateTag', 'apiUpdateTag',
+    'apiArchiveTag', 'apiMergeTags', 'apiHardDeleteTag',
+    'apiMigriereTagsZuObjects',
   ];
   if (LP_ACTIONS.indexOf(action) >= 0) {
     var lpEmail = body.email || body.callerEmail;
@@ -1340,8 +1359,11 @@ function doPost(e) {
     }
   }
 
-  // Schreibende Aktionen invalidieren den Cache (Configs, Fragensammlung, Tracker)
-  var SCHREIBENDE_ACTIONS = LP_ACTIONS.concat(['speichereAntworten']);
+  // Schreibende Aktionen invalidieren den Cache (Configs, Fragensammlung, Tracker).
+  // Cluster H Phase 0: apiListTags ist read-only und MUSS gefiltert werden, sonst Cache wird bei jedem Read invalidiert.
+  var SCHREIBENDE_ACTIONS = LP_ACTIONS
+    .filter(function(a) { return a !== 'apiListTags'; })
+    .concat(['speichereAntworten']);
   if (SCHREIBENDE_ACTIONS.indexOf(action) >= 0) {
     cacheInvalidieren_();
   }
@@ -1663,6 +1685,10 @@ function doPost(e) {
       markiereFeedbackAlsIgnoriert_(body.feedbackId);
       return jsonResponse({success:true});
     }
+
+    // Cluster H Phase 0: Tag-Endpoints
+    case 'apiListTags':
+      return apiListTags(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
