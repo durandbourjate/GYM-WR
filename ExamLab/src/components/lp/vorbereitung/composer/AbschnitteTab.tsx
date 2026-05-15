@@ -9,6 +9,7 @@ import type { BloomStufe } from '../../../../types/fragen-storage'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
 import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { berechneZeitbedarf } from '../../../../utils/zeitbedarf.ts'
+import { useTagsStore } from '../../../../store/tagsStore'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -44,6 +45,16 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
   const fragetext = frage && 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
   const vorschau = fragetext ? fragetext.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 150) : ''
   const zeit = frage ? frage.zeitbedarf ?? berechneZeitbedarf(frage.typ as 'mc' | 'freitext' | 'lueckentext' | 'zuordnung' | 'richtigfalsch' | 'berechnung' | 'visualisierung', frage.bloom as BloomStufe) : undefined
+  // Cluster H Phase 2: Tag-Namen via tagsStore-Hook (subscribed → Re-Render bei Tag-Rename).
+  // tagIds-Pfad bevorzugt, Legacy-tags-Fallback für Übergang.
+  const tagNamen = useTagsStore(s => {
+    const ids = frage?.tagIds
+    if (ids && ids.length > 0) {
+      const namen = s.getByIds(ids).map(t => t.name)
+      if (namen.length > 0) return namen
+    }
+    return (frage?.tags ?? []).map(t => (typeof t === 'string' ? t : t.name))
+  })
   return (
     <div ref={setNodeRef} style={style} className="px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors">
       <div className="flex items-center gap-2">
@@ -67,7 +78,7 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
         </div>
       </div>
       {vorschau && <p className="text-xs text-slate-700 dark:text-slate-300 mt-1.5 line-clamp-2 cursor-pointer" onClick={() => onEditFrage(frageId)}>{vorschau}</p>}
-      {frage?.thema && (<div className="flex items-center gap-2 mt-1 flex-wrap"><span className="text-[10px] text-slate-400 dark:text-slate-500">{frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}</span>{frage.tags && frage.tags.length > 0 && <>{frage.tags.slice(0, 3).map((tag) => { const tagName = typeof tag === 'string' ? tag : tag.name; return <span key={tagName} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tagName}</span> })}</>}</div>)}
+      {frage?.thema && (<div className="flex items-center gap-2 mt-1 flex-wrap"><span className="text-[10px] text-slate-400 dark:text-slate-500">{frage.thema}{frage.unterthema ? ` › ${frage.unterthema}` : ''}</span>{tagNamen.length > 0 && <>{tagNamen.slice(0, 3).map((tagName) => <span key={tagName} className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-600 rounded text-[10px] text-slate-500 dark:text-slate-400">{tagName}</span>)}</>}</div>)}
     </div>
   )
 }
