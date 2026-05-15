@@ -6,6 +6,7 @@ import {
   getCachedDetails, setCachedDetails,
   clearFragensammlungCache
 } from '../services/fragensammlungCache.ts'
+import { useTagsStore } from './tagsStore'
 
 /**
  * Progressive Loading:
@@ -77,6 +78,12 @@ export const useFragensammlungStore = create<FragensammlungStore>((set, get) => 
     if (status === 'summary_laden' || (status !== 'idle' && !force)) return
 
     set({ status: 'summary_laden' })
+    // Cluster H Phase 2: Tags parallel laden, damit getById/getByIds-Lookups
+    // direkt verfügbar sind sobald Summaries gerendert werden. Fire-and-forget
+    // (eigener Fehler-State im tagsStore), damit Summary-Load nicht blockiert.
+    void useTagsStore.getState().ladeAlleTags({ email }).catch((e) => {
+      console.warn('[Cluster H] tagsStore.ladeAlleTags fehlgeschlagen (silent):', e)
+    })
     const result = await ladeFragensammlungSummary(email)
     if (result) {
       // Duplikate entfernen
@@ -148,6 +155,11 @@ export const useFragensammlungStore = create<FragensammlungStore>((set, get) => 
     if ((status === 'fertig' || status === 'summary_fertig') && !force) return
 
     set({ status: 'summary_laden' })
+    // Cluster H Phase 2: Tags parallel laden (analog ladeSummaries) — `lade` ist
+    // der primäre Login-Pfad in authStore.anmelden.
+    void useTagsStore.getState().ladeAlleTags({ email }).catch((e) => {
+      console.warn('[Cluster H] tagsStore.ladeAlleTags fehlgeschlagen (silent):', e)
+    })
 
     // --- Stale-While-Revalidate: Cache zuerst ---
     if (!force && !_cacheInvalid) {
