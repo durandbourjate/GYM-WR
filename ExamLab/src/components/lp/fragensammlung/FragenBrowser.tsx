@@ -117,11 +117,19 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [, setBatchEditorOffen] = useState(false)
   const [, setLoeschConfirmOffen] = useState(false)
 
-  // IDs der aktuell gefilterten Fragen — für Shift-Click-Range-Toggle in KompaktZeile,
-  // „Alle anzeigen"-Button im Header und „Auf Filter beschränken" in der Selektion-Bar.
+  // IDs der aktuell gefilterten Fragen für „Alle anzeigen"-Button + „Auf Filter beschränken".
   const gefilterteIds = useMemo(
     () => filter.gefilterteFragen.map((f) => f.id),
     [filter.gefilterteFragen],
+  )
+
+  // IDs in visueller Reihenfolge der gruppierten Anzeige — für Shift-Click-Range-Toggle.
+  // Reihenfolge entspricht dem was der User in der Virtualisierten Liste sieht (Gruppen + Fragen).
+  // Hotfix#11 (15.05.2026): vorher wurde gefilterteIds verwendet, was bei sortierungs- oder gruppierungs-
+  // bedingten Diskrepanzen zur visuellen Reihenfolge unerwartete Items ins Shift-Range einbezog.
+  const sichtbareReihenfolge = useMemo(
+    () => filter.gruppierteAnzeige.flatMap((g) => g.fragen.map((f) => f.id)),
+    [filter.gruppierteAnzeige],
   )
 
   const toggleFrageInPruefung = useCallback((frageId: string): void => {
@@ -165,7 +173,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       zielAbschnittTitel={zielAbschnittTitel}
       inline={inline}
       listeRef={listeRef}
-      sichtbareIds={gefilterteIds}
+      sichtbareIds={sichtbareReihenfolge}
     />
   )
 
