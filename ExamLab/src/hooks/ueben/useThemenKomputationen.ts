@@ -8,6 +8,8 @@ import type { UebenAuthUser } from '../../types/ueben/auth'
 import { useAuthStore } from '../../store/authStore'
 import { berechneEmpfehlungen } from '../../utils/ueben/empfehlungen'
 import { poolTitel } from '../../utils/poolTitelMapping'
+import { useTagsStore } from '../../store/tagsStore'
+import { istEinrichtungsfrage } from '../../utils/frageTagNamen'
 
 export interface ThemenInfo {
   fach: string
@@ -59,6 +61,9 @@ export interface ThemenKomputationenResult {
 }
 
 export function useThemenKomputationen(inputs: ThemenKomputationenInputs): ThemenKomputationenResult {
+  // Cluster H Phase 2: Subscribe an tagsStore für Re-Compute bei Tag-Rename.
+  // istEinrichtungsfrage() liest via getState(), tagsVersion ist nur Memo-Dep-Trigger.
+  const tagsVersion = useTagsStore(s => s.tags)
   const {
     alleFragen,
     fortschritte,
@@ -89,12 +94,11 @@ export function useThemenKomputationen(inputs: ThemenKomputationenInputs): Theme
       const themaRaw = f.thema || 'Allgemein'
       const poolId = (f as { poolId?: string }).poolId || ''
       const hatUnterthema = !!(f as { unterthema?: string }).unterthema
-      const tags = (f.tags || []) as (string | { name: string })[]
 
       // Einrichtungsfragen komplett ausblenden — ausser im Demo-Modus, wo sie der einzige Inhalt sind
       const istDemo = useAuthStore.getState().istDemoModus
       if (!istDemo) {
-        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) continue
+        if (istEinrichtungsfrage(f)) continue
         if (themaRaw === 'Einrichtung' || themaRaw === 'Einrichtungstest') continue
       }
 
@@ -126,7 +130,7 @@ export function useThemenKomputationen(inputs: ThemenKomputationenInputs): Theme
       }).sort((a, b) => a.thema.localeCompare(b.thema))
     }
     return map
-  }, [alleFragen, getThemenFortschritt, sichtbareFaecher])
+  }, [alleFragen, getThemenFortschritt, sichtbareFaecher, tagsVersion])
 
   const verfuegbareFaecher = useMemo(() => Object.keys(themenMap).sort(), [themenMap])
 
