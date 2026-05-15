@@ -11,6 +11,8 @@ import { LernzieleMiniModal } from '../LernzieleAkkordeon'
 import { useUebenSettingsStore } from '../../../store/ueben/settingsStore'
 import type { ThemenStatus } from '../../../types/ueben/themenSichtbarkeit'
 import type { Frage } from '../../../types/ueben/fragen'
+import { useTagsStore } from '../../../store/tagsStore'
+import { istEinrichtungsfrage } from '../../../utils/frageTagNamen'
 
 interface ThemaEintrag {
   fach: string
@@ -27,6 +29,9 @@ export default function AdminThemensteuerung() {
   const { freischaltungen, ladeFreischaltungen, setStatus, getStatus, getAktiveThemen, getAktiveUnterthemen, setUnterthemen } = useThemenSichtbarkeitStore()
   const { fachFarben } = useUebenKontext()
   const maxAktiveThemen = useUebenSettingsStore(s => s.einstellungen?.maxAktiveThemen ?? 5)
+  // Cluster H Phase 2: Subscribe an tagsStore für Tag-Rename-Re-Render im useMemo unten.
+  // istEinrichtungsfrage() liest via getState(), die Subscription hier ist nur als Memo-Dep.
+  const tagsVersion = useTagsStore(s => s.tags)
   const [alleFragen, setAlleFragen] = useState<Frage[]>([])
   const [laden, setLaden] = useState(true)
   const [filterFach, setFilterFach] = useState<string | null>(null)
@@ -54,9 +59,8 @@ export default function AdminThemensteuerung() {
     const map: Record<string, ThemaEintrag> = {}
     const istDemo = useAuthStore.getState().istDemoModus
     for (const f of alleFragen) {
-      const tags = (f.tags || []) as (string | { name: string })[]
       if (!istDemo) {
-        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) continue
+        if (istEinrichtungsfrage(f)) continue
         if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest' || f.thema === 'Einführung') continue
       }
 
@@ -82,7 +86,7 @@ export default function AdminThemensteuerung() {
       if (diff !== 0) return diff
       return a.fach.localeCompare(b.fach) || a.thema.localeCompare(b.thema)
     })
-  }, [alleFragen, getStatus, freischaltungen, lernziele])
+  }, [alleFragen, getStatus, freischaltungen, lernziele, tagsVersion])
 
   const faecher = useMemo(() => [...new Set(themen.map(t => t.fach))].sort(), [themen])
   const gefilterteThemen = filterFach ? themen.filter(t => t.fach === filterFach) : themen
