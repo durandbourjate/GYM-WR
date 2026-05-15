@@ -32,7 +32,7 @@ import type {
   FilterbareFrage,
   GruppierteAnzeige,
 } from '../../../../hooks/useFragenFilter.ts'
-import type { Frage, FrageSummary } from '../../../../types/fragen-storage.ts'
+import type { Frage } from '../../../../types/fragen-storage.ts'
 
 /** Höhe der Sticky-Header-Lane in px (muss zur estimateSize-Headerhöhe passen). */
 const LANE_HOEHE = 36
@@ -101,11 +101,12 @@ export interface Props {
   /** Optional: externer Ref auf den Scroll-Container (für Wheel-Forwarding aus dem Header). */
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>
   /** Drafts als statisches Prefix-Element im selben Scroll-Container — scrollt natürlich
-   *  zusammen mit den Fach-Gruppen (Bug-Report 15.05.2026: Drafts nicht mehr als sticky-Header). */
-  drafts?: ReadonlyArray<Frage | FrageSummary>
+   *  zusammen mit den Fach-Gruppen (Bug-Report 15.05.2026: Drafts nicht mehr als sticky-Header).
+   *  Matching DraftsSection-Props (Frage[]). */
+  drafts?: Frage[]
   ownEmail?: string
-  onClickDraft?: (frage: Frage | FrageSummary) => void
-  onLoeschenDraft?: (frage: Frage | FrageSummary) => void
+  onClickDraft?: (frage: Frage) => void
+  onLoeschenDraft?: (frage: Frage) => void
 }
 
 export default function VirtualisierteFragenListe(p: Props) {
