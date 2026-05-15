@@ -4650,6 +4650,12 @@ function speichereFrageIntern_(frage, email) {
     sheet.appendRow(newRow);
   }
 
+  // Cache invalidieren — sonst liefern ladeFragensammlung/ladeFrageDetail beim
+  // nächsten Read stale Daten aus `alle_fragen_v<version>` (z.B. alter Status
+  // nach Editor-Save + Reload). Pre-Cluster-D-Phase-0 latenter Bug, aufgedeckt
+  // beim Live-Test des status-Feldes (15.05.2026).
+  cacheInvalidieren_();
+
   return { success: true, id: frage.id, status: status };
 }
 
