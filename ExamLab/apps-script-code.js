@@ -737,6 +737,93 @@ function apiHardDeleteTag(body) {
 }
 
 /**
+ * Cluster H Phase 0: Mergen mehrerer Tags zu einem Master. Admin-only.
+ * Schritt 1: alle Frage-Sheets durchgehen, in tagIds-Spalte mergedIds durch masterId ersetzen.
+ * Schritt 2: mergedIds als archiviert markieren.
+ */
+function apiMergeTags(body) {
+  var lpInfo = getLPInfo(body.email);
+  var fehler = pruefeAdminOderFehler_(lpInfo);
+  if (fehler) return fehler;
+
+  var masterId = String(body.masterId || '');
+  var mergedIds = body.mergedIds || [];
+  if (!masterId || mergedIds.length === 0) {
+    return jsonResponse({ error: 'masterId und mergedIds[] sind Pflicht' });
+  }
+  if (mergedIds.indexOf(masterId) >= 0) {
+    return jsonResponse({ error: 'masterId darf nicht in mergedIds sein' });
+  }
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000); // länger weil Multi-Sheet-Update
+
+  try {
+    var fachbereiche = FACHBEREICH_SHEETS;
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var fragenAktualisiert = 0;
+
+    for (var f = 0; f < fachbereiche.length; f++) {
+      var sheet = fragensammlung.getSheetByName(fachbereiche[f]);
+      if (!sheet) continue;
+      var values = sheet.getDataRange().getValues();
+      if (values.length <= 1) continue;
+      var header = values[0];
+      var tagIdsIdx = header.indexOf('tagIds');
+      if (tagIdsIdx < 0) continue;
+
+      // Sammle Updates für Batch-Schreiben
+      var updates = []; // { row: number, neuTagIds: string }
+      for (var i = 1; i < values.length; i++) {
+        var ids = String(values[i][tagIdsIdx] || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+        var modifiziert = false;
+        var neueIds = [];
+        var hasMaster = ids.indexOf(masterId) >= 0;
+
+        for (var j = 0; j < ids.length; j++) {
+          if (mergedIds.indexOf(ids[j]) >= 0) {
+            modifiziert = true;
+            if (!hasMaster && neueIds.indexOf(masterId) < 0) {
+              neueIds.push(masterId);
+              hasMaster = true;
+            }
+          } else {
+            neueIds.push(ids[j]);
+          }
+        }
+
+        if (modifiziert) {
+          updates.push({ row: i + 1, neuTagIds: neueIds.join(',') });
+          fragenAktualisiert++;
+        }
+      }
+
+      // Batch-write
+      for (var u = 0; u < updates.length; u++) {
+        sheet.getRange(updates[u].row, tagIdsIdx + 1).setValue(updates[u].neuTagIds);
+      }
+    }
+
+    // Mergte Tags archivieren
+    var tagsSheet = getOderErstelleTagsSheet_();
+    var tagsValues = tagsSheet.getDataRange().getValues();
+    var tagsHeader = tagsValues[0];
+    var idIdx = tagsHeader.indexOf('id');
+    var archivIdx = tagsHeader.indexOf('archiviert');
+    for (var k = 1; k < tagsValues.length; k++) {
+      if (mergedIds.indexOf(String(tagsValues[k][idIdx])) >= 0) {
+        tagsSheet.getRange(k + 1, archivIdx + 1).setValue(true);
+      }
+    }
+
+    cacheInvalidieren_();
+    return jsonResponse({ ok: true, fragenAktualisiert: fragenAktualisiert });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
  * Cluster H Phase 0: Tag archivieren (Soft-Delete). Admin-only.
  */
 function apiArchiveTag(body) {
@@ -1899,6 +1986,8 @@ function doPost(e) {
       return apiArchiveTag(body);
     case 'apiHardDeleteTag':
       return apiHardDeleteTag(body);
+    case 'apiMergeTags':
+      return apiMergeTags(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
