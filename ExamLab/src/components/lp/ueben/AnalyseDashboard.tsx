@@ -5,6 +5,7 @@ import { uebenFragenAdapter } from '../../../adapters/ueben/appsScriptAdapter'
 import { useUebenKontext } from '../../../hooks/ueben/useUebenKontext'
 import { useState } from 'react'
 import type { Frage } from '../../../types/ueben/fragen'
+import { istEinrichtungsfrage } from '../../../utils/frageTagNamen'
 import KursHeatmap from './analyse/KursHeatmap'
 import KlassenLuecken from './analyse/KlassenLuecken'
 import SuSUebersicht from './analyse/SuSUebersicht'
@@ -29,8 +30,7 @@ export default function AnalyseDashboard({ onSuSKlick }: AnalyseDashboardProps) 
       setLaden(true)
       const f = await uebenFragenAdapter.ladeFragen(gruppeId)
       setFragen(f.filter(fr => {
-        const tags = (fr.tags || []) as (string | { name: string })[]
-        if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) return false
+        if (istEinrichtungsfrage(fr)) return false
         if (fr.thema === 'Einrichtung' || fr.thema === 'Einrichtungstest' || fr.thema === 'Einführung') return false
         return true
       }))
