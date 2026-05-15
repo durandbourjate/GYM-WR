@@ -8,6 +8,7 @@ import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { berechneSterne, sterneText, berechneStreak, berechneLevel, berechneMeilensteine } from '../../utils/ueben/gamification'
 import { berechneMasteryMitRecency } from '../../utils/ueben/mastery'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
+import { istEinrichtungsfrage } from '../../utils/frageTagNamen'
 import type { Frage } from '../../types/ueben/fragen'
 import type { ThemenFortschritt } from '../../types/ueben/fortschritt'
 import { useEffect, useState } from 'react'
@@ -55,8 +56,7 @@ export default function SuSAnalyse() {
         const istDemo = useAuthStore.getState().istDemoModus
         setFragen(f.filter(fr => {
           if (istDemo) return true
-          const tags = (fr.tags || []) as (string | { name: string })[]
-          if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) return false
+          if (istEinrichtungsfrage(fr)) return false
           return fr.thema !== 'Einrichtung' && fr.thema !== 'Einrichtungstest'
         }))
       } catch {
