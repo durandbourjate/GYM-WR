@@ -1,6 +1,12 @@
 /**
  * Metadaten-Abschnitt: Fachbereich, Bloom, Thema, Unterthema, Lernziele, Tags, Zeitbedarf, Punkte, Semester, Gefässe, Sharing, KI-Klassifizierung.
  * Shared Version — Host-Apps übergeben pruefungsspezifische Komponenten als Props.
+ *
+ * Cluster H Phase 2 Polish P4: Das Komma-getrennte Tags-Eingabefeld wurde
+ * entfernt — der TagPicker (tagPickerSlot) übernimmt die volle Funktion.
+ * Die `tags`/`setTags`-Props bleiben erhalten, weil der KI-Klassifikations-
+ * Übernahme-Handler sie noch befüllt (Phase-3-Cleanup); die Werte landen
+ * danach nur noch via Save-Pfad als Legacy-Fallback in der Persistenz.
  */
 import { useState } from 'react'
 import type { Fachbereich, BloomStufe, FragenPerformance, Lernziel } from '../../types/fragen-core'
@@ -77,7 +83,7 @@ export default function MetadataSection({
   bloom, setBloom,
   thema, setThema,
   unterthema, setUnterthema,
-  tags, setTags,
+  tags: _tags, setTags,
   zeitbedarf, setZeitbedarf,
   zeitbedarfManuell, setZeitbedarfManuell,
   punkte, setPunkte,
@@ -239,10 +245,6 @@ export default function MetadataSection({
             min={1} max={20} className="input-field input-pflicht"
             disabled={bewertungsrasterAktiv}
             title={bewertungsrasterAktiv ? 'Punkte werden automatisch aus dem Bewertungsraster berechnet' : undefined} />
-        </Feld>
-        <Feld label="Tags (Komma-getrennt)">
-          <input type="text" value={tags} onChange={(e) => setTags(e.target.value)}
-            placeholder="z.B. Angebot, Nachfrage, BIP" className="input-field" />
         </Feld>
       </div>
 

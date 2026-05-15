@@ -89,6 +89,34 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frage])
 
+  // Cluster H Phase 2 Polish P4: Beim Speichern legacy-`tags`-Liste aus aktuellem
+  // `tagIds` neu computen — der TagPicker ist jetzt single-source-of-truth, das
+  // Komma-Feld in MetadataSection ist entfernt. `tags` bleibt parallel persistiert
+  // bis Phase-3-Cleanup (Rollback-Sicherheit). Gleiche Logik im Auto-Save-Pfad,
+  // damit auch zwischen-Saves vollständig sind.
+  const tagsAusIds = useCallback((tagIds?: string[]): string[] => {
+    if (!tagIds || tagIds.length === 0) return []
+    return useTagsStore.getState().getByIds(tagIds).map((t) => t.name)
+  }, [])
+
+  const handleSpeichern = useCallback((f: SharedFrage, meta?: SpeichernMeta) => {
+    const namen = tagsAusIds(f.tagIds)
+    const angereichert = { ...(f as unknown as Frage), tags: namen } as Frage
+    onSpeichern(angereichert, meta)
+  }, [onSpeichern, tagsAusIds])
+
+  const wrappedAutoSave: AutoSaveAdapter | undefined = useMemo(() => {
+    if (!autoSave) return undefined
+    return {
+      ...autoSave,
+      onTippe: (f: SharedFrage) => {
+        const namen = tagsAusIds(f.tagIds)
+        const angereichert = { ...(f as unknown as Frage), tags: namen } as unknown as SharedFrage
+        autoSave.onTippe(angereichert)
+      },
+    }
+  }, [autoSave, tagsAusIds])
+
   // Themen-Vorschläge: dedupliziertes, sortiertes Set aller Themen pro Fachbereich
   const ladeThemen = useCallback((fachbereich: string): string[] => {
     if (!fachbereich) return []
@@ -168,13 +196,13 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     <EditorProvider config={editorConfig} services={editorServices}>
       <SharedFragenEditor
         frage={fragePrepared as unknown as SharedFrage | null}
-        onSpeichern={(f, meta) => onSpeichern(f as unknown as Frage, meta)}
+        onSpeichern={handleSpeichern}
         onAbbrechen={onAbbrechen}
         onLoeschen={onLoeschen ? (f) => onLoeschen(f as unknown as Frage) : undefined}
         performance={performance}
         onVorherigeFrage={onVorherigeFrage}
         onNaechsteFrage={onNaechsteFrage}
-        autoSave={autoSave}
+        autoSave={wrappedAutoSave}
         tagPickerSlot={({ tagIds, onChange }) => (
           <TagPicker
             tagIds={tagIds}
