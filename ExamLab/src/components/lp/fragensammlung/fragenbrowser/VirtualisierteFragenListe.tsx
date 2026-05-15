@@ -21,7 +21,7 @@
  * zu einem `scrollToIndex(0)` — verhindert verlassen-im-Scroll bei Filter-Wechsel.
  */
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import KompaktZeile from './KompaktZeile.tsx'
 import DetailKarte from './DetailKarte.tsx'
 import DraftsSection from '../DraftsSection.tsx'
@@ -119,6 +119,22 @@ export default function VirtualisierteFragenListe(p: Props) {
     [p.gruppierteAnzeige, p.gruppierung, p.aufgeklappteGruppen],
   )
   const internalScrollRef = useRef<HTMLDivElement>(null)
+  const draftsRef = useRef<HTMLDivElement>(null)
+  // Drafts-Section ist statisches Prefix-Element im selben Scroll-Container.
+  // TanStack-Virtual berechnet Item-Positionen relativ zum Driver-Div — kennt das
+  // Vor-Content nicht. `scrollMargin` korrigiert das (in Kompakt-Modus 36px-Items
+  // wurde der Off-by-N-Bug am 15.05.2026 sichtbar). ResizeObserver hält das Maß
+  // aktuell bei aufklapp/zuklapp der Drafts-Section.
+  const [draftsHeight, setDraftsHeight] = useState(0)
+  useLayoutEffect(() => {
+    const el = draftsRef.current
+    if (!el) { setDraftsHeight(0); return }
+    const ro = new ResizeObserver(() => setDraftsHeight(el.offsetHeight))
+    ro.observe(el)
+    setDraftsHeight(el.offsetHeight) // initial
+    return () => ro.disconnect()
+  }, [p.drafts])
+
   // Callback-Ref, der die DOM-Node intern UND in einen optional übergebenen Container-Ref schreibt.
   // So bleibt `getScrollElement` zuverlässig (liest `internalScrollRef.current`) und der Aufrufer
   // (z.B. FragenBrowser) kann denselben Ref für externe Wheel-Forwarding-Logik nutzen.
@@ -131,6 +147,7 @@ export default function VirtualisierteFragenListe(p: Props) {
   const virtualizer = useVirtualizer({
     count: flatItems.length,
     getScrollElement: () => internalScrollRef.current,
+    scrollMargin: draftsHeight,
     estimateSize: (i: number) => {
       const item = flatItems[i]
       if (!item) return 80
@@ -171,12 +188,14 @@ export default function VirtualisierteFragenListe(p: Props) {
       {/* Drafts als statisches Prefix im selben Scroll-Container — User-Konzept 15.05.2026:
           „die entwürfe sollten ja wie ein fach funktionieren bezüglich scrollen". */}
       {hatDrafts && p.onClickDraft && (
-        <DraftsSection
-          drafts={drafts}
-          onClickDraft={p.onClickDraft}
-          onLoeschen={p.onLoeschenDraft}
-          ownEmail={p.ownEmail ?? ''}
-        />
+        <div ref={draftsRef}>
+          <DraftsSection
+            drafts={drafts}
+            onClickDraft={p.onClickDraft}
+            onLoeschen={p.onLoeschenDraft}
+            ownEmail={p.ownEmail ?? ''}
+          />
+        </div>
       )}
       {/* Sticky-Header-Lane: rendert den aktiven Gruppenheader als sticky-Sibling, weil
           `position: sticky` innerhalb virtualisierter (absolute-positionierter) Items
@@ -223,7 +242,9 @@ export default function VirtualisierteFragenListe(p: Props) {
                   top: 0,
                   left: 0,
                   right: 0,
-                  transform: `translateY(${vItem.start}px)`,
+                  // scrollMargin subtrahieren: vItem.start ist scroll-relativ, transform muss
+                  // driver-relativ sein. Driver liegt nach Drafts (= scrollMargin px).
+                  transform: `translateY(${vItem.start - draftsHeight}px)`,
                 }}
               >
                 <button
