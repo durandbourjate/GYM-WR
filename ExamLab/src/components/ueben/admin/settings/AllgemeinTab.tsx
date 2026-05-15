@@ -5,6 +5,7 @@ import { useAuthStore } from '../../../../store/authStore'
 import { useUebenAuthStore } from '../../../../store/ueben/authStore'
 import { uebenGruppenAdapter, uebenFragenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
 import { DEFAULT_MASTERY_SCHWELLWERTE } from '../../../../types/ueben/settings'
+import { istEinrichtungsfrage } from '../../../../utils/frageTagNamen'
 
 export default function AllgemeinTab() {
   const { einstellungen, aktualisiereEinstellungen } = useUebenSettingsStore()
@@ -25,9 +26,8 @@ export default function AllgemeinTab() {
     uebenFragenAdapter.ladeFragen(aktiveGruppe.id).then(fragen => {
       const map = new Map<string, string>()
       for (const f of fragen) {
-        const tags = (f.tags || []) as (string | { name: string })[]
         if (!istDemo) {
-          if (tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) continue
+          if (istEinrichtungsfrage(f)) continue
           if (f.thema === 'Einrichtung' || f.thema === 'Einrichtungstest' || f.thema === 'Einführung') continue
         }
         const key = `${f.fach}|${f.thema}`
