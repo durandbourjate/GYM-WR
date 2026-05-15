@@ -66,6 +66,29 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     return r.tag
   }, [user?.email, upsertTagLokal])
 
+  // Cluster H Phase 2 Polish P3: Legacy-Fallback für vorausgewählte Tags im Picker.
+  // Fragen mit `tags=["einführung"]` (Komma-Feld vor Phase-2-Migration) aber leerem
+  // `tagIds` zeigten keine Checkboxen vorausgewählt. Lookup via tagsStore.getByName
+  // (case-insensitive) und Inject als initial-tagIds — einmalig pro frage-Identity.
+  // Dep nur `[frage]` (nicht der Store), sonst läuft Tag-Save-Loop bei jedem
+  // upsertLokal. tagsStore wird beim Login parallel zu summaries geladen, also
+  // sind die Lookups beim Edit-Open verfügbar.
+  const fragePrepared = useMemo(() => {
+    if (!frage) return null
+    if (frage.tagIds && frage.tagIds.length > 0) return frage
+    const legacyNames = (frage.tags ?? [])
+      .map((t) => (typeof t === 'string' ? t : t.name))
+      .filter(Boolean) as string[]
+    if (legacyNames.length === 0) return frage
+    const tagsState = useTagsStore.getState()
+    const matched = legacyNames
+      .map((name) => tagsState.getByName(name)?.id)
+      .filter((id): id is string => Boolean(id))
+    if (matched.length === 0) return frage
+    return { ...frage, tagIds: matched } as Frage
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frage])
+
   // Themen-Vorschläge: dedupliziertes, sortiertes Set aller Themen pro Fachbereich
   const ladeThemen = useCallback((fachbereich: string): string[] => {
     if (!fachbereich) return []
@@ -144,7 +167,7 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
   return (
     <EditorProvider config={editorConfig} services={editorServices}>
       <SharedFragenEditor
-        frage={frage as unknown as SharedFrage | null}
+        frage={fragePrepared as unknown as SharedFrage | null}
         onSpeichern={(f, meta) => onSpeichern(f as unknown as Frage, meta)}
         onAbbrechen={onAbbrechen}
         onLoeschen={onLoeschen ? (f) => onLoeschen(f as unknown as Frage) : undefined}
