@@ -237,43 +237,49 @@ export default function MetadataSection({
             </select>
           </Feld>,
         )}
-        <Feld label="Thema *">
-          <input type="text" value={thema} onChange={(e) => setThema(e.target.value)}
-            placeholder="z.B. Marktgleichgewicht" className="input-field input-pflicht"
-            list={themenVorschlaege && themenVorschlaege.length > 0 ? `themen-vorschlaege-${fachbereich}` : undefined} />
-          {themenVorschlaege && themenVorschlaege.length > 0 && (
-            <datalist id={`themen-vorschlaege-${fachbereich}`}>
-              {themenVorschlaege.map((t) => (
-                <option key={t} value={t} />
-              ))}
-            </datalist>
-          )}
-        </Feld>
-        <Feld label="Zeitbedarf (Min.)">
-          <input
-            type="number"
-            value={zeitbedarf}
-            onChange={(e) => { setZeitbedarf(parseFloat(e.target.value) || 0); setZeitbedarfManuell(true) }}
-            min={0.5}
-            max={60}
-            step={0.5}
-            className="input-field"
-            title="Geschätzter Zeitbedarf in Minuten"
-          />
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-            {zeitbedarfManuell ? 'Manuell gesetzt' : 'Geschätzt (Typ + Taxonomie)'}
-          </p>
-        </Feld>
-        <Feld label="Unterthema">
-          <input type="text" value={unterthema} onChange={(e) => setUnterthema(e.target.value)}
-            placeholder="z.B. Angebot & Nachfrage" className="input-field" />
-        </Feld>
-        <Feld label={bewertungsrasterAktiv ? 'Punkte (aus Bewertungsraster)' : 'Punkte *'}>
-          <input type="number" value={punkte} onChange={(e) => setPunkte(parseInt(e.target.value) || 0)}
-            min={1} max={20} className="input-field input-pflicht"
-            disabled={bewertungsrasterAktiv}
-            title={bewertungsrasterAktiv ? 'Punkte werden automatisch aus dem Bewertungsraster berechnet' : undefined} />
-        </Feld>
+        {/* Cluster D Phase 3a Smoke-Test-Fix (C1): Thema/Zeitbedarf/Unterthema/Punkte sind nicht batch-fähig
+            → im batchMode ausblenden (analog Frage-Sections in SharedFragenEditor). */}
+        {!batchMode && (
+          <>
+            <Feld label="Thema *">
+              <input type="text" value={thema} onChange={(e) => setThema(e.target.value)}
+                placeholder="z.B. Marktgleichgewicht" className="input-field input-pflicht"
+                list={themenVorschlaege && themenVorschlaege.length > 0 ? `themen-vorschlaege-${fachbereich}` : undefined} />
+              {themenVorschlaege && themenVorschlaege.length > 0 && (
+                <datalist id={`themen-vorschlaege-${fachbereich}`}>
+                  {themenVorschlaege.map((t) => (
+                    <option key={t} value={t} />
+                  ))}
+                </datalist>
+              )}
+            </Feld>
+            <Feld label="Zeitbedarf (Min.)">
+              <input
+                type="number"
+                value={zeitbedarf}
+                onChange={(e) => { setZeitbedarf(parseFloat(e.target.value) || 0); setZeitbedarfManuell(true) }}
+                min={0.5}
+                max={60}
+                step={0.5}
+                className="input-field"
+                title="Geschätzter Zeitbedarf in Minuten"
+              />
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                {zeitbedarfManuell ? 'Manuell gesetzt' : 'Geschätzt (Typ + Taxonomie)'}
+              </p>
+            </Feld>
+            <Feld label="Unterthema">
+              <input type="text" value={unterthema} onChange={(e) => setUnterthema(e.target.value)}
+                placeholder="z.B. Angebot & Nachfrage" className="input-field" />
+            </Feld>
+            <Feld label={bewertungsrasterAktiv ? 'Punkte (aus Bewertungsraster)' : 'Punkte *'}>
+              <input type="number" value={punkte} onChange={(e) => setPunkte(parseInt(e.target.value) || 0)}
+                min={1} max={20} className="input-field input-pflicht"
+                disabled={bewertungsrasterAktiv}
+                title={bewertungsrasterAktiv ? 'Punkte werden automatisch aus dem Bewertungsraster berechnet' : undefined} />
+            </Feld>
+          </>
+        )}
       </div>
 
       {/* Cluster D Phase 0 — Lifecycle-Status (Entwurf / Sammlung). Auto-Default 'sammlung' wenn nichts gesetzt.
