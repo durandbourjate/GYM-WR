@@ -15,6 +15,7 @@ import type { Problemmeldung } from '../../types/problemmeldung'
 import ProfilTab from './einstellungen/ProfilTab'
 import AdminTab from './einstellungen/AdminTab'
 import TestdatenTab from './einstellungen/TestdatenTab'
+import { TagsTab } from '../lp/einstellungen/tags/TagsTab'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -68,6 +69,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
     { key: 'uebungen', label: 'Übungen', sichtbar: true },
     { key: 'fragensammlung', label: 'Fragensammlung', sichtbar: true },
     { key: 'testdaten', label: 'Testdaten', sichtbar: true },
+    { key: 'tags', label: 'Tags', sichtbar: true },
     { key: 'admin', label: 'Admin', sichtbar: admin },
     { key: 'kiKalibrierung', label: 'KI-Kalibrierung', sichtbar: true },
   ]
@@ -125,6 +127,9 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         )}
         {tab === 'testdaten' && user?.email && (
           <TestdatenTab email={user.email} />
+        )}
+        {tab === 'tags' && user?.email && (
+          <TagsTab email={user.email} />
         )}
       </div>
       </div>

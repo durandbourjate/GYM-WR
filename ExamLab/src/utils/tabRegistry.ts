@@ -34,6 +34,8 @@ export const TAB_REGISTRY: TabDefinition[] = [
   { id: 'uebungen',          surface: 'einstellungen', titel: 'Übungen',             route: '/einstellungen/uebungen' },
   { id: 'fragensammlung',    surface: 'einstellungen', titel: 'Fragensammlung',      route: '/einstellungen/fragensammlung' },
   { id: 'testdaten',         surface: 'einstellungen', titel: 'Testdaten',           route: '/einstellungen/testdaten' }, // Cluster F
+  { id: 'tags',              surface: 'einstellungen', titel: 'Tags',                route: '/einstellungen/tags',
+                             icon: 'Tag' }, // Cluster H Phase 2 C1
   { id: 'admin',             surface: 'einstellungen', titel: 'Admin',               route: '/einstellungen/admin',
                              sichtbar: ({ istAdmin }) => istAdmin },
   { id: 'ki-kalibrierung',   surface: 'einstellungen', titel: 'KI-Kalibrierung',     route: '/einstellungen/ki-kalibrierung' },
