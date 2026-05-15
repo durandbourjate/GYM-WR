@@ -495,6 +495,63 @@ function pruefeAdminOderFehler_(lpInfo) {
   return null;
 }
 
+// === CLUSTER H — TAGS-SHEET HELPERS ===
+var TAGS_SHEET_NAME = 'Tags';
+var TAGS_HEADER = ['id', 'name', 'farbe', 'archiviert', 'erstelltAm', 'erstelltVon'];
+
+// Cluster H Phase 0: Liste der Frage-Sheet-Namen pro Fachbereich.
+// Single Source of Truth für apiHardDeleteTag, apiMergeTags, apiMigriereTagsZuObjects + zaehleTagVerwendung_.
+// Wird ein neuer Fachbereich angelegt, hier eintragen.
+var FACHBEREICH_SHEETS = ['VWL', 'BWL', 'Recht', 'Informatik'];
+
+/**
+ * Cluster H Phase 0: Init Tags-Sheet falls nicht vorhanden.
+ * Wird beim ersten Tag-API-Call aufgerufen + von Migration.
+ */
+function getOderErstelleTagsSheet_() {
+  var configs = SpreadsheetApp.openById(CONFIGS_ID); // Konstante existiert bereits (Z.107)
+  var sheet = configs.getSheetByName(TAGS_SHEET_NAME);
+  if (!sheet) {
+    sheet = configs.insertSheet(TAGS_SHEET_NAME);
+    sheet.getRange(1, 1, 1, TAGS_HEADER.length).setValues([TAGS_HEADER]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+/**
+ * Liest alle Tag-Zeilen aus Sheet, parsed zu Tag-Objects.
+ */
+function ladeAlleTagsAusSheet_() {
+  var sheet = getOderErstelleTagsSheet_();
+  var range = sheet.getDataRange();
+  var values = range.getValues();
+  if (values.length <= 1) return []; // nur Header
+
+  var header = values[0];
+  var idIdx = header.indexOf('id');
+  var nameIdx = header.indexOf('name');
+  var farbeIdx = header.indexOf('farbe');
+  var archivIdx = header.indexOf('archiviert');
+  var erstelltAmIdx = header.indexOf('erstelltAm');
+  var erstelltVonIdx = header.indexOf('erstelltVon');
+
+  var tags = [];
+  for (var i = 1; i < values.length; i++) {
+    var row = values[i];
+    if (!row[idIdx]) continue;
+    tags.push({
+      id: String(row[idIdx]),
+      name: String(row[nameIdx] || ''),
+      farbe: String(row[farbeIdx] || 'slate'),
+      archiviert: row[archivIdx] === true || row[archivIdx] === 'TRUE',
+      erstelltAm: String(row[erstelltAmIdx] || ''),
+      erstelltVon: String(row[erstelltVonIdx] || ''),
+    });
+  }
+  return tags;
+}
+
 // === CACHE-SYSTEM (Performance-Optimierung) ===
 // Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
