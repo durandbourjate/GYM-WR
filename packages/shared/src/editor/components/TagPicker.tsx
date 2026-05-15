@@ -41,8 +41,9 @@ export function TagPicker({ tagIds, onChange, alleTags, onErstelleNeu, maxTags =
 
   const gefiltert = useMemo(() => {
     const q = suche.toLowerCase().trim()
-    if (!q) return alleTags
-    return alleTags.filter((t) => t.name.toLowerCase().includes(q))
+    const liste = q ? alleTags.filter((t) => t.name.toLowerCase().includes(q)) : alleTags
+    // Cluster H Phase 2 Polish P2: alphabetisch (de, case-insensitive) — Store-Reihenfolge ist sonst Insertion-Order.
+    return [...liste].sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }))
   }, [alleTags, suche])
 
   const exakterTreffer = gefiltert.find((t) => t.name.toLowerCase() === suche.toLowerCase().trim())

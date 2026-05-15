@@ -59,6 +59,36 @@ describe('TagPicker', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  it('Liste ist alphabetisch sortiert (de, case-insensitive)', () => {
+    // P2: Store-Reihenfolge ist zufällig (Insertion-Order). User erwartet alphabetisch.
+    const { container } = render(
+      <TagPicker
+        tagIds={[]}
+        onChange={vi.fn()}
+        alleTags={[mkTag('t1', 'Zebra'), mkTag('t2', 'apfel'), mkTag('t3', 'Ästhetik'), mkTag('t4', 'Mango')]}
+        onErstelleNeu={vi.fn()}
+      />,
+    )
+    const labels = Array.from(container.querySelectorAll('label span')).map((s) => s.textContent)
+    // erwartete Reihenfolge mit `de`, sensitivity:'base': apfel, Ästhetik, Mango, Zebra
+    expect(labels).toEqual(['apfel', 'Ästhetik', 'Mango', 'Zebra'])
+  })
+
+  it('Liste bleibt alphabetisch nach Filtern via Suche', () => {
+    const { container, getByPlaceholderText } = render(
+      <TagPicker
+        tagIds={[]}
+        onChange={vi.fn()}
+        alleTags={[mkTag('t1', 'Zebra'), mkTag('t2', 'apfel'), mkTag('t3', 'Aprikose'), mkTag('t4', 'Ananas')]}
+        onErstelleNeu={vi.fn()}
+      />,
+    )
+    fireEvent.change(getByPlaceholderText(/Tag suchen/), { target: { value: 'a' } })
+    const labels = Array.from(container.querySelectorAll('label span')).map((s) => s.textContent)
+    // Alle vier enthalten "a" (case-insensitive). Erwartet: Ananas, apfel, Aprikose, Zebra
+    expect(labels).toEqual(['Ananas', 'apfel', 'Aprikose', 'Zebra'])
+  })
+
   it('onErstelleNeu wird mit getrimmtem Namen aufgerufen', async () => {
     const onErstelle = vi.fn().mockResolvedValue(mkTag('neu', 'neuer-tag'))
     const onChange = vi.fn()
