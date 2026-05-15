@@ -309,12 +309,20 @@ export default function MetadataSection({
       )}
 
       {/* Cluster H Phase 2 — Tag-Objekt-Picker (Slot vom Host, DI-Pattern).
-          Cluster D Phase 3a — violet-Wrapper für Batch-Modus. */}
+          Cluster D Phase 3a — violet-Wrapper für Batch-Modus.
+          Cluster D Phase 3b — Im Batch-Modus liefert der Host bereits den
+          BatchTagPicker (eigener violet-Ring + "Tags"-Label + 3-Modi-Radio).
+          Wir wrappen nur im Single-Edit-Modus mit Label und nicht-violet-Container,
+          sonst Doppel-Ring/Doppel-Label. */}
       {tagPickerSlot && (
-        <div className={`mt-3 ${batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}`}>
-          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Tags</label>
-          {tagPickerSlot}
-        </div>
+        batchMode ? (
+          <div className="mt-3">{tagPickerSlot}</div>
+        ) : (
+          <div className="mt-3">
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Tags</label>
+            {tagPickerSlot}
+          </div>
+        )
       )}
 
       {/* Zeitpunkt + Gefässe.

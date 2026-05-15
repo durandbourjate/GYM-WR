@@ -228,6 +228,63 @@ describe('SharedFragenEditor — Batch-Modus (Cluster D Phase 3a)', () => {
     expect(patch.tagsErsetzen).toBeUndefined()
     expect(patch.tagsEntfernen).toBeUndefined()
   })
+
+  // --- Phase 3b BatchTagPicker-Integration ---------------------------------
+
+  it('Phase 3b: BatchTagPicker mounted im batchMode wenn tagPickerSlot gegeben', () => {
+    renderInProvider(
+      <SharedFragenEditor
+        frage={null}
+        onSpeichern={vi.fn()}
+        onAbbrechen={vi.fn()}
+        batchMode={{ count: 5, sichtbareCount: 5 }}
+        onBatchSave={vi.fn()}
+        tagPickerSlot={({ tagIds }) => (
+          <div data-testid="tagslot">tags={tagIds.join(',')}</div>
+        )}
+      />,
+    )
+    expect(screen.getByRole('radio', { name: /Hinzufügen/i })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /Ersetzen/i })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /Entfernen/i })).toBeInTheDocument()
+    expect(screen.getByTestId('tagslot')).toBeInTheDocument()
+  })
+
+  it('Phase 3b: Tag-Modus-Wechsel zu "ersetzen" landet im Patch (mit tagIds gesetzt)', () => {
+    const onBatchSave = vi.fn()
+    renderInProvider(
+      <SharedFragenEditor
+        frage={null}
+        onSpeichern={vi.fn()}
+        onAbbrechen={vi.fn()}
+        batchMode={{ count: 5, sichtbareCount: 5 }}
+        onBatchSave={onBatchSave}
+        tagPickerSlot={({ onChange }) => (
+          <button data-testid="add-tag" onClick={() => onChange(['t1', 't2'])}>add</button>
+        )}
+      />,
+    )
+    fireEvent.click(screen.getByTestId('add-tag'))
+    fireEvent.click(screen.getByRole('radio', { name: /Ersetzen/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Auf 5 Fragen anwenden/ }))
+    expect(onBatchSave).toHaveBeenCalledTimes(1)
+    expect(onBatchSave).toHaveBeenCalledWith({ tagsErsetzen: ['t1', 't2'] }, 'ersetzen')
+  })
+
+  it('Phase 3b: Single-Edit-Modus rendert KEINE BatchTagPicker-Radios (Backward-Compat)', () => {
+    renderInProvider(
+      <SharedFragenEditor
+        frage={null}
+        onSpeichern={vi.fn()}
+        onAbbrechen={vi.fn()}
+        tagPickerSlot={({ tagIds }) => (
+          <div data-testid="tagslot">tags={tagIds.join(',')}</div>
+        )}
+      />,
+    )
+    expect(screen.queryByRole('radio', { name: /Hinzufügen|Ersetzen|Entfernen/i })).toBeNull()
+    expect(screen.getByTestId('tagslot')).toBeInTheDocument()
+  })
 })
 
 describe('SharedFragenEditor — Single-Edit-Modus (Backward-Compat)', () => {

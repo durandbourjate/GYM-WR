@@ -74,6 +74,8 @@ import DefaultAnhangEditor from './components/AnhangEditor'
 import BatchEditorBanner from './BatchEditorBanner'
 import { berechnePatch } from './batchDiff'
 import type { FragenBulkPatch, TagsModus } from './batchDiff'
+// Cluster D Phase 3b — BatchTagPicker mit 3-Modi-Radio
+import BatchTagPicker from './BatchTagPicker'
 
 
 /** Optionale Metadaten die beim Speichern mitgesendet werden (KI-Kalibrierungs-Loop) */
@@ -311,8 +313,11 @@ export default function SharedFragenEditor({
    *  Tags nie angefasst hat. `berechnePatch` interpretiert leere `tagIds` als No-Op. */
   const [tagIdsDirty, setTagIdsDirty] = useState(false)
   /** Cluster D Phase 3a — Tag-Modus für Batch (Default 'hinzufuegen').
-   *  Setter kommt in Sub-Task 6 (BatchTagPicker mit 3-Modi-Radio). */
-  const [tagsModus] = useState<TagsModus>('hinzufuegen')
+   *  Phase 3b: Setter wird vom BatchTagPicker via 3-Modi-Radio bedient.
+   *  Modus-Wechsel setzt zusätzlich `tagIdsDirty=true`, sonst würde
+   *  `berechnePatch` (`tagIds.length > 0`-Check) den No-Op nicht erkennen,
+   *  wenn der User nur den Modus, nicht die IDs ändert. */
+  const [tagsModus, setTagsModus] = useState<TagsModus>('hinzufuegen')
 
   // Cluster D Phase 3a Hardening (I-2) — Dirty-Flag NUR setzen wenn der neue Wert
   // sich tatsächlich vom aktuellen unterscheidet. Sonst landet ein User-Klick auf
@@ -1277,7 +1282,19 @@ export default function SharedFragenEditor({
             lernzieleLadend={lernzieleLadend}
             themenVorschlaege={themenVorschlaege}
             zeigeLernzielResetHinweis={resetBanner > 0 ? resetBanner : undefined}
-            tagPickerSlot={tagPickerSlot?.({ tagIds, onChange: setTagIds })}
+            tagPickerSlot={
+              istBatchMode && tagPickerSlot
+                ? (
+                  <BatchTagPicker
+                    tagIds={tagIds}
+                    setTagIds={setTagIds}
+                    modus={tagsModus}
+                    setModus={(m) => { setTagsModus(m); setTagIdsDirty(true) }}
+                    tagPickerSlot={tagPickerSlot}
+                  />
+                )
+                : tagPickerSlot?.({ tagIds, onChange: setTagIds })
+            }
             status={status} setStatus={setStatus}
             batchMode={istBatchMode}
           />
