@@ -11,6 +11,8 @@ import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../types/frag
 export type FilterbareFrage = Frage | FrageSummary
 import { poolTitel } from '../utils/poolTitelMapping'
 import { schulFachbereiche } from '../utils/fachUtils'
+import { useTagsStore } from '../store/tagsStore'
+import { tagNamenFuerFrage, istEinrichtungsfrage } from '../utils/frageTagNamen'
 
 export type Sortierung = 'thema' | 'bloom' | 'punkte' | 'typ' | 'id'
 
@@ -100,6 +102,9 @@ export function useFragenFilter(
   ladeStatus: 'laden' | 'fertig',
   istDemoModus: boolean = false,
 ): FragenFilterErgebnis {
+  // Cluster H Phase 2: Subscribe an tagsStore für Re-Filter bei Tag-Rename.
+  // tagNamenFuerFrage() / istEinrichtungsfrage() lesen via getState(), tagsVersion ist Memo-Trigger.
+  const tagsVersion = useTagsStore(s => s.tags)
   // Filter
   const [suchtext, setSuchtext] = useState('')
   const [filterFachbereich, setFilterFachbereich] = useState<Fachbereich | ''>('')
@@ -155,8 +160,7 @@ export function useFragenFilter(
   const gefilterteFragen = useMemo(() => {
     return alleFragen.filter((f) => {
       // Einrichtungsfragen ausblenden — ausser im Demo-Modus, wo sie der einzige Inhalt sind
-      const tags = f.tags || []
-      if (!istDemoModus && tags.some(t => (typeof t === 'string' ? t : t.name) === 'einrichtung' || (typeof t === 'string' ? t : t.name) === 'einführung')) return false
+      if (!istDemoModus && istEinrichtungsfrage(f)) return false
 
       // Schule/Privat-Filter
       if (filterKontext === 'schule' && !SCHUL_FACHBEREICHE.has(f.fachbereich)) return false
@@ -196,12 +200,12 @@ export function useFragenFilter(
           f.thema.toLowerCase().includes(text) ||
           fragetext.toLowerCase().includes(text) ||
           (f.unterthema || '').toLowerCase().includes(text) ||
-          f.tags.some((t) => (typeof t === 'string' ? t : t.name).toLowerCase().includes(text))
+          tagNamenFuerFrage(f).some((name) => name.toLowerCase().includes(text))
         )
       }
       return true
     })
-  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, filterQuelle, filterPoolStatus, filterMitAnhang, suchtext, userEmail, filterKontext, istDemoModus])
+  }, [alleFragen, filterFachbereich, filterTyp, filterBloom, filterThema, filterUnterthema, filterQuelle, filterPoolStatus, filterMitAnhang, suchtext, userEmail, filterKontext, istDemoModus, tagsVersion])
 
   // Sortieren
   const sortierteFragen = useMemo(() => {
