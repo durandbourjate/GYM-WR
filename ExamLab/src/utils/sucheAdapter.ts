@@ -4,6 +4,7 @@ import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
 import type { PruefungsConfig } from '../types/pruefung'
 import type { FrageSummary } from '../types/fragen-storage'
+import { useTagsStore } from '../store/tagsStore'
 
 const ROUTE_BUILDERS = {
   einstellungenTab: (tab: TabDefinition) => tab.route,
@@ -114,8 +115,20 @@ export function indexUebungen(query: string, configs: PruefungsConfig[]): SucheT
     .filter((t): t is SucheTreffer => t !== null)
 }
 
-function tagsAlsText(tags: FrageSummary['tags']): string {
-  return tags.map(t => (typeof t === 'string' ? t : t.name)).join(' ')
+/**
+ * Cluster H Phase 2: Tag-Namen werden aus `frage.tagIds` via `tagsStore`-Lookup
+ * resolved. Fallback auf Legacy-`tags` (string|Tag)[] für Übergangszeit.
+ *
+ * Pure-Helper-Kontext: `tagsStore.getState()` liefert keinen Re-Index bei
+ * Tag-Rename mid-typing — pragmatisch akzeptiert, da Suche bei nächstem
+ * Render mit neuem `index` neu läuft.
+ */
+function tagsAlsText(tagIds: string[] | undefined, legacy: FrageSummary['tags']): string {
+  if (tagIds && tagIds.length > 0) {
+    const namen = useTagsStore.getState().getByIds(tagIds).map(t => t.name)
+    if (namen.length > 0) return namen.join(' ')
+  }
+  return legacy.map(t => (typeof t === 'string' ? t : t.name)).join(' ')
 }
 
 export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer[] {
@@ -124,7 +137,7 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
     const titel = f.fragetext.length > 80 ? f.fragetext.slice(0, 77) + '…' : f.fragetext
     const titelScore = scoreFromMatch(titel, query, 'titel')
     const idScore = scoreFromMatch(f.id, query, 'id')
-    const tagText = tagsAlsText(f.tags)
+    const tagText = tagsAlsText(f.tagIds, f.tags)
     const tagScore = tagText ? scoreFromMatch(tagText, query, 'tag') : 0
     const themaScore = f.thema ? scoreFromMatch(f.thema, query, 'tag') : 0
     const score = Math.max(titelScore, idScore, tagScore, themaScore)

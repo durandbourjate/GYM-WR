@@ -115,6 +115,8 @@ export interface FrageSummary {
   bloom: Core.BloomStufe
   punkte: number
   tags: (string | Tag)[]
+  /** Tag-Object-Referenzen (Cluster H Phase 1+, parallel zu legacy `tags` bis Phase 3). */
+  tagIds?: string[]
   quelle?: 'pool' | 'papier' | 'manuell' | 'ki-generiert'
   autor?: string
   erstelltVon?: string
