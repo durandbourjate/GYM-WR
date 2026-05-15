@@ -737,6 +737,164 @@ function apiHardDeleteTag(body) {
 }
 
 /**
+ * Cluster H Phase 1: Einmalige Migration String-Tags → Tag-Objects + tagIds.
+ *
+ * Idempotenz: Sheet darf nicht leer sein UND Fragen müssen tags enthalten.
+ *             Sonst Fehler (verhindert Doppel-Lauf).
+ *
+ * Atomarität: Schreibt erst alle Tag-Objects komplett, dann iteriert Frage-Updates.
+ *             Bei Crash zwischen den beiden Phasen: idempotent-Re-Run findet Tags-Sheet voll
+ *             und gibt Fehler — manueller Eingriff (Tags-Sheet leeren) nötig.
+ *             Plan-Phase-Risiko: dokumentiert, wird in Browser-E2E nicht getestet weil destruktiv.
+ *
+ * Apps-Script-Limit 6 min: Plan geht von <2000 Fragen aus. Audit zeigt keine konkreten Zahlen,
+ *                          aber Schul-Datenbestand ist vermutlich 100-500 Fragen.
+ *                          Bei Timeout: ggf. Batch-Variante in Folge-PR (siehe Spec §13).
+ */
+function apiMigriereTagsZuObjects(body) {
+  var lpInfo = getLPInfo(body.email);
+  var fehler = pruefeAdminOderFehler_(lpInfo);
+  if (fehler) return fehler;
+
+  var startTime = new Date().getTime();
+  var fachbereiche = FACHBEREICH_SHEETS;
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+
+  // ===== Schritt 1: Idempotenz-Check =====
+  var existierendeTags = ladeAlleTagsAusSheet_();
+  if (existierendeTags.length > 0) {
+    return jsonResponse({ error: 'Tags-Sheet ist nicht leer. Migration bereits gelaufen oder manueller Eingriff nötig.' });
+  }
+
+  // ===== Schritt 2: Alle Frage-Tags sammeln =====
+  var alleStringTags = []; // { name: string, fachbereich: string, frageRow: number, frageId: string }
+  var fragenSheetData = {}; // pro fachbereich die rohen Sheet-Daten
+
+  for (var f = 0; f < fachbereiche.length; f++) {
+    var fb = fachbereiche[f];
+    var sheet = fragensammlung.getSheetByName(fb);
+    if (!sheet) continue;
+    var values = sheet.getDataRange().getValues();
+    if (values.length <= 1) continue;
+    var header = values[0];
+    var tagsIdx = header.indexOf('tags');
+    var idIdx = header.indexOf('id');
+    if (tagsIdx < 0) continue;
+
+    fragenSheetData[fb] = { sheet: sheet, values: values, header: header, tagsIdx: tagsIdx, idIdx: idIdx };
+
+    for (var i = 1; i < values.length; i++) {
+      var rawTags = String(values[i][tagsIdx] || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+      for (var t = 0; t < rawTags.length; t++) {
+        alleStringTags.push({
+          name: rawTags[t],
+          fachbereich: fb,
+          frageRow: i + 1,
+          frageId: String(values[i][idIdx])
+        });
+      }
+    }
+  }
+
+  if (alleStringTags.length === 0) {
+    return jsonResponse({ error: 'Keine String-Tags gefunden. Migration nicht nötig.' });
+  }
+
+  // ===== Schritt 3: Case-insensitive Dedup =====
+  // Map: lowercase-name → { kanonName, casings: { casing → count } }
+  var dedupMap = {};
+  for (var k = 0; k < alleStringTags.length; k++) {
+    var entry = alleStringTags[k];
+    var key = entry.name.toLowerCase();
+    if (!dedupMap[key]) {
+      dedupMap[key] = { casings: {} };
+    }
+    dedupMap[key].casings[entry.name] = (dedupMap[key].casings[entry.name] || 0) + 1;
+  }
+
+  // Kanonischer Name = häufigstes Casing (Tie-Break: alphabetisch erstes)
+  for (var lkey in dedupMap) {
+    var casings = dedupMap[lkey].casings;
+    var beste = null;
+    var besteCount = 0;
+    for (var casing in casings) {
+      var count = casings[casing];
+      if (count > besteCount || (count === besteCount && (beste === null || casing < beste))) {
+        beste = casing;
+        besteCount = count;
+      }
+    }
+    dedupMap[lkey].kanonName = beste;
+  }
+
+  // ===== Schritt 4: Tag-Objects erstellen =====
+  var tagsSheet = getOderErstelleTagsSheet_();
+  var jetzt = new Date().toISOString();
+  var nameZuId = {}; // lowercase-name → tag-id
+  var neueTagsZeilen = [];
+  for (var lname in dedupMap) {
+    var id = Utilities.getUuid();
+    nameZuId[lname] = id;
+    neueTagsZeilen.push([
+      id,
+      dedupMap[lname].kanonName,
+      'slate',  // Default-Farbe
+      false,    // archiviert
+      jetzt,
+      'migration@system'
+    ]);
+  }
+  if (neueTagsZeilen.length > 0) {
+    tagsSheet.getRange(2, 1, neueTagsZeilen.length, TAGS_HEADER.length).setValues(neueTagsZeilen);
+  }
+
+  // ===== Schritt 5: Frage-Sheets aktualisieren — tagIds-Spalte hinzufügen + befüllen =====
+  var fragenAktualisiert = 0;
+  for (var f2 = 0; f2 < fachbereiche.length; f2++) {
+    var fb2 = fachbereiche[f2];
+    if (!fragenSheetData[fb2]) continue;
+    var data = fragenSheetData[fb2];
+
+    // Spalte tagIds hinzufügen falls nicht vorhanden
+    var tagIdsIdx = data.header.indexOf('tagIds');
+    if (tagIdsIdx < 0) {
+      var neueSpalteIdx = data.header.length + 1;
+      data.sheet.getRange(1, neueSpalteIdx).setValue('tagIds');
+      tagIdsIdx = neueSpalteIdx - 1; // 0-basiert für values
+    }
+
+    // Pro Zeile: tagIds-Wert berechnen aus tags-Wert
+    var updates = [];
+    for (var ii = 1; ii < data.values.length; ii++) {
+      var rawTags2 = String(data.values[ii][data.tagsIdx] || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+      var ids = rawTags2.map(function(name) { return nameZuId[name.toLowerCase()]; }).filter(Boolean);
+      updates.push({ row: ii + 1, value: ids.join(',') });
+    }
+
+    // Batch-Write
+    for (var uu = 0; uu < updates.length; uu++) {
+      data.sheet.getRange(updates[uu].row, tagIdsIdx + 1).setValue(updates[uu].value);
+      fragenAktualisiert++;
+    }
+
+    // Spalte tags zu tagsLegacy umbenennen (für Rollback-Sicherheit)
+    var tagsLegacyIdx = data.header.indexOf('tagsLegacy');
+    if (tagsLegacyIdx < 0) {
+      data.sheet.getRange(1, data.tagsIdx + 1).setValue('tagsLegacy');
+    }
+  }
+
+  cacheInvalidieren_();
+  var dauerMs = new Date().getTime() - startTime;
+  return jsonResponse({
+    ok: true,
+    neueTags: neueTagsZeilen.length,
+    fragenAktualisiert: fragenAktualisiert,
+    dauerMs: dauerMs
+  });
+}
+
+/**
  * Cluster H Phase 0: Mergen mehrerer Tags zu einem Master. Admin-only.
  * Schritt 1: alle Frage-Sheets durchgehen, in tagIds-Spalte mergedIds durch masterId ersetzen.
  * Schritt 2: mergedIds als archiviert markieren.
@@ -1988,6 +2146,8 @@ function doPost(e) {
       return apiHardDeleteTag(body);
     case 'apiMergeTags':
       return apiMergeTags(body);
+    case 'apiMigriereTagsZuObjects':
+      return apiMigriereTagsZuObjects(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
