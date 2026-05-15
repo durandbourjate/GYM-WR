@@ -567,6 +567,59 @@ function apiListTags(body) {
   return jsonResponse({ ok: true, tags: gefiltert });
 }
 
+/**
+ * Cluster H Phase 0: Neuer Tag. Case-insensitive: existiert Tag mit gleichem Lowercase-Namen,
+ * wird der existierende zurückgegeben (kein Duplikat).
+ * Nutzt LockService für concurrent-safe Create.
+ */
+function apiCreateTag(body) {
+  var lpInfo = getLPInfo(body.email);
+  if (!lpInfo) return jsonResponse({ error: 'Nicht authentifiziert' });
+
+  var name = String(body.name || '').trim();
+  if (!name) return jsonResponse({ error: 'Name ist Pflicht' });
+
+  var farbe = body.farbe || 'slate';
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+
+  try {
+    var alleTags = ladeAlleTagsAusSheet_();
+    var existierend = null;
+    for (var k = 0; k < alleTags.length; k++) {
+      if (alleTags[k].name.toLowerCase() === name.toLowerCase()) {
+        existierend = alleTags[k];
+        break;
+      }
+    }
+    if (existierend) {
+      return jsonResponse({ ok: true, tag: existierend, existierte: true });
+    }
+
+    var sheet = getOderErstelleTagsSheet_();
+    var neuerTag = {
+      id: Utilities.getUuid(),
+      name: name,
+      farbe: farbe,
+      archiviert: false,
+      erstelltAm: new Date().toISOString(),
+      erstelltVon: lpInfo.email,
+    };
+    sheet.appendRow([
+      neuerTag.id,
+      neuerTag.name,
+      neuerTag.farbe,
+      neuerTag.archiviert,
+      neuerTag.erstelltAm,
+      neuerTag.erstelltVon,
+    ]);
+    cacheInvalidieren_();
+    return jsonResponse({ ok: true, tag: neuerTag, existierte: false });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // === CACHE-SYSTEM (Performance-Optimierung) ===
 // Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
@@ -1689,6 +1742,8 @@ function doPost(e) {
     // Cluster H Phase 0: Tag-Endpoints
     case 'apiListTags':
       return apiListTags(body);
+    case 'apiCreateTag':
+      return apiCreateTag(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
