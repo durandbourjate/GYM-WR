@@ -983,6 +983,312 @@ function apiBackfillStatusDefault(body) {
   return jsonResponse({ success: true, count: totalCount, defaultWert: 'sammlung', dauerMs: dauerMs });
 }
 
+// === CLUSTER D PHASE 1b — BULK-EDIT-ENDPOINTS ===
+
+/**
+ * Cluster D Phase 1b — Partial-Update auf eine einzelne Frage.
+ * Schreibt NUR die im Patch enthaltenen Felder — andere Felder (z.B. fragetext, typDaten)
+ * bleiben unangetastet. Speziell für Bulk-Edit gedacht; NICHT speichereFrageIntern_
+ * wiederverwenden, das die ganze Row neu schreibt und nicht-im-Patch-Felder verlieren würde.
+ *
+ * Tag-Modi-Handling: alteTagIds aus tagIds-Spalte lesen, je Modus mergen, zurück schreiben.
+ *  - tagsHinzufuegen: Union (Set-Logic, dedupliziert)
+ *  - tagsErsetzen:    komplette Überschreibung
+ *  - tagsEntfernen:   Difference (alle in der entfernen-Liste werden raus)
+ *
+ * Sucht die Frage in allen getFragensammlungTabs_()-Tabs (id alleine reicht).
+ * Wirft wenn id nicht gefunden, damit der Caller fehlgeschlagene IDs zählen kann.
+ *
+ * @param {string} id
+ * @param {object} patch
+ */
+function updateFrageMitPatch_(id, patch) {
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var tabs = getFragensammlungTabs_();
+  var sheet = null;
+  var rowIdx = -1;
+  var headers = null;
+  var aktuelleRow = null;
+
+  for (var t = 0; t < tabs.length; t++) {
+    var s = fragensammlung.getSheetByName(tabs[t]);
+    if (!s) continue;
+    var lastCol = s.getLastColumn();
+    if (lastCol === 0) continue;
+    var h = s.getRange(1, 1, 1, lastCol).getValues()[0];
+    var idColIdx = h.indexOf('id');
+    if (idColIdx < 0) continue;
+    var lastRow = s.getLastRow();
+    if (lastRow < 2) continue;
+    var data = s.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    for (var r = 0; r < data.length; r++) {
+      if (String(data[r][idColIdx]) === String(id)) {
+        sheet = s;
+        rowIdx = r + 2; // 1-indexed + Header-Row
+        headers = h;
+        aktuelleRow = data[r];
+        break;
+      }
+    }
+    if (sheet) break;
+  }
+
+  if (!sheet) throw new Error('Frage nicht gefunden: ' + id);
+
+  // Owner-Check: wenn autor-Spalte existiert und nicht-eigene Frage → throw.
+  // Legacy-Fragen ohne autor-Feld werden akzeptiert (analog loescheFrageIntern_).
+  // (Email kommt aus dem Caller-Scope nicht — Owner-Check macht apiBulkUpdateFragen,
+  //  hier nur structurelle Lookup-Pure-Logic.)
+
+  var ergaenzteFelder = {};
+
+  // Skalar-Felder
+  var skalarFelder = ['fachbereich', 'bloom', 'status'];
+  for (var i = 0; i < skalarFelder.length; i++) {
+    var f = skalarFelder[i];
+    if (patch[f] !== undefined) ergaenzteFelder[f] = patch[f];
+  }
+
+  // Array-Felder werden als comma-joined gespeichert (analog speichereFrageIntern_)
+  if (patch.gefaesse !== undefined) ergaenzteFelder.gefaesse = (patch.gefaesse || []).join(',');
+  if (patch.semester !== undefined) ergaenzteFelder.semester = (patch.semester || []).join(',');
+  if (patch.lernzielIds !== undefined) ergaenzteFelder.lernzielIds = (patch.lernzielIds || []).join(',');
+
+  // Tag-Modi: alteTagIds lesen, mergen, tagIds-Spalte schreiben
+  if (patch.tagsHinzufuegen !== undefined || patch.tagsErsetzen !== undefined || patch.tagsEntfernen !== undefined) {
+    var tagIdsColIdx = headers.indexOf('tagIds');
+    if (tagIdsColIdx < 0) {
+      throw new Error('tagIds-Spalte fehlt im Sheet ' + sheet.getName() + ' — Cluster H Migration nötig');
+    }
+    var alteRaw = String(aktuelleRow[tagIdsColIdx] || '');
+    var alteTagIds = alteRaw
+      ? alteRaw.split(',').map(function(s){ return String(s).trim(); }).filter(Boolean)
+      : [];
+    var neueTagIds;
+    if (patch.tagsHinzufuegen !== undefined) {
+      var setH = {};
+      alteTagIds.forEach(function(t){ setH[t] = true; });
+      (patch.tagsHinzufuegen || []).forEach(function(t){ if (t) setH[t] = true; });
+      neueTagIds = Object.keys(setH);
+    } else if (patch.tagsErsetzen !== undefined) {
+      neueTagIds = (patch.tagsErsetzen || []).filter(Boolean);
+    } else {
+      var entferneSet = {};
+      (patch.tagsEntfernen || []).forEach(function(t){ entferneSet[t] = true; });
+      neueTagIds = alteTagIds.filter(function(t){ return !entferneSet[t]; });
+    }
+    ergaenzteFelder.tagIds = neueTagIds.join(',');
+  }
+
+  // geaendertAm immer aktualisieren
+  ergaenzteFelder.geaendertAm = new Date().toISOString();
+
+  // Fehlende Spalten automatisch hinzufügen (analog speichereFrageIntern_)
+  headers = ensureColumns(sheet, headers, ergaenzteFelder);
+
+  // Pro Patch-Feld: nur die zugehörige Zelle setzen.
+  Object.keys(ergaenzteFelder).forEach(function(field) {
+    var colIdx = headers.indexOf(field);
+    if (colIdx < 0) return; // sollte durch ensureColumns nicht passieren
+    sheet.getRange(rowIdx, colIdx + 1).setValue(ergaenzteFelder[field]);
+  });
+}
+
+/**
+ * Cluster D Phase 1b — Bulk-Update mit Patch auf mehrere Fragen.
+ * Partial-Update: schreibt nur die im Patch enthaltenen Felder.
+ *
+ * Auth: LP-only (Router-Gate via LP_ACTIONS + zusätzlich istZugelasseneLP-Check).
+ * Concurrency: LockService (waitLock 30s) schützt gegen parallele Bulk-Writes.
+ *
+ * Memory-Patterns:
+ *  - feedback_backend_read_paths_audit.md (partial-update statt full-row-write)
+ *  - feedback_service_wrapper_email_pflicht.md (email pflicht im body)
+ */
+/**
+ * Cluster D Phase 1b — Bulk-Update.
+ *
+ * Owner-Check-Semantik: bewusst KEIN per-Frage `autor === email`-Check (anders als
+ * `loescheFrageIntern_` Single-Frage-Pfad). Bulk-Edit/-Loesche ist auf LP-only
+ * gegated, Owner-Differenzierung kommt erst in Phase 2 UI (FragenSelektionBar
+ * zeigt nur eigene + geteilte Fragen). HANDOFF + Phase 2 berücksichtigen das.
+ */
+function apiBulkUpdateFragen(body) {
+  if (!body || !body.email) return jsonResponse({ success: false, error: 'email fehlt' });
+  if (!istZugelasseneLP(body.email)) return jsonResponse({ success: false, error: 'Nur fuer Lehrpersonen' });
+  if (!Array.isArray(body.ids) || body.ids.length === 0) {
+    return jsonResponse({ success: false, error: 'ids fehlt oder leer' });
+  }
+  // I-2 (Code-Review): Hard-Cap gegen 6-min-Execution-Limit + Audit-Log-Overflow (50 KB Zellen-Limit).
+  // Bei 500 IDs: ~5-10 s Execution + ~15 KB Audit-JSON, beides safe. Frontend (Phase 2) sollte
+  // höhere Batches selbst paginieren oder das UI-Limit auf 500 begrenzen.
+  if (body.ids.length > 500) {
+    return jsonResponse({ success: false, error: 'Bulk-Limit 500 ueberschritten (got ' + body.ids.length + ')' });
+  }
+  if (!body.patch || typeof body.patch !== 'object') {
+    return jsonResponse({ success: false, error: 'patch fehlt' });
+  }
+
+  // M-4 (Code-Review): Allowlist verhindert silent-drop bei Typo-Keys.
+  var ALLOWED_PATCH_KEYS = ['fachbereich','bloom','status','gefaesse','semester','lernzielIds','tagsHinzufuegen','tagsErsetzen','tagsEntfernen'];
+  var unknownKeys = Object.keys(body.patch).filter(function(k) {
+    return ALLOWED_PATCH_KEYS.indexOf(k) < 0;
+  });
+  if (unknownKeys.length > 0) {
+    return jsonResponse({ success: false, error: 'Unbekannte Patch-Felder: ' + unknownKeys.join(', ') });
+  }
+
+  // Defense in Depth: Mutually-Exclusive-Validation (Frontend macht's auch).
+  var tagModi = 0;
+  if (body.patch.tagsHinzufuegen !== undefined) tagModi++;
+  if (body.patch.tagsErsetzen !== undefined) tagModi++;
+  if (body.patch.tagsEntfernen !== undefined) tagModi++;
+  if (tagModi > 1) {
+    return jsonResponse({
+      success: false,
+      error: 'Nur einer von tagsHinzufuegen/tagsErsetzen/tagsEntfernen darf gesetzt sein',
+    });
+  }
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var affectedIds = [];
+    var failedIds = [];
+    for (var i = 0; i < body.ids.length; i++) {
+      var id = String(body.ids[i]);
+      try {
+        updateFrageMitPatch_(id, body.patch);
+        affectedIds.push(id);
+      } catch (e) {
+        console.warn('[apiBulkUpdateFragen] failed for id=' + id + ': ' + (e && e.message ? e.message : e));
+        failedIds.push(id);
+      }
+    }
+
+    cacheInvalidieren_();
+
+    var tagsModus = body.patch.tagsHinzufuegen !== undefined ? 'hinzufuegen'
+                  : body.patch.tagsErsetzen !== undefined ? 'ersetzen'
+                  : body.patch.tagsEntfernen !== undefined ? 'entfernen' : null;
+    var tagIds = body.patch.tagsHinzufuegen || body.patch.tagsErsetzen || body.patch.tagsEntfernen || null;
+
+    var auditDetails = {
+      count: affectedIds.length,
+      affectedIds: affectedIds,
+      failedIds: failedIds,
+      patch: body.patch,
+    };
+    if (tagsModus) auditDetails.tagsModus = tagsModus;
+    if (tagIds) auditDetails.tagIds = tagIds;
+    auditLog_('batchEditFragen', body.email, auditDetails);
+
+    return jsonResponse({
+      success: true,
+      erfolgreich: affectedIds.length,
+      affectedIds: affectedIds,
+      fehlgeschlagen: failedIds,
+    });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Cluster D Phase 1b — Soft-Delete-Helper für eine einzelne Frage (sucht in allen Tabs).
+ * Setzt geloescht_am + geaendertAm. Wirft wenn Frage nicht gefunden.
+ * Analog loescheFrageIntern_, aber ohne fachbereich-Pflicht-Param + ohne Owner-Check
+ * (apiBulkLoescheFragen ist LP-only; granular Owner-Check kann später ergänzt werden).
+ *
+ * @param {string} id
+ * @param {string} jetzt — ISO-Timestamp (vom Caller, damit alle IDs konsistenten Timestamp haben)
+ */
+function softDeleteFrageById_(id, jetzt) {
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var tabs = getFragensammlungTabs_();
+
+  for (var t = 0; t < tabs.length; t++) {
+    var sheet = fragensammlung.getSheetByName(tabs[t]);
+    if (!sheet) continue;
+    var lastCol = sheet.getLastColumn();
+    if (lastCol === 0) continue;
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    var idColIdx = headers.indexOf('id');
+    if (idColIdx < 0) continue;
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) continue;
+    var data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    for (var r = 0; r < data.length; r++) {
+      if (String(data[r][idColIdx]) === String(id)) {
+        var rowIndex = r + 2;
+        var rowData = { geloescht_am: jetzt, geaendertAm: jetzt };
+        // Fehlende Spalten (z.B. geloescht_am bei alten Sheets) automatisch hinzufügen.
+        headers = ensureColumns(sheet, headers, rowData);
+        Object.keys(rowData).forEach(function(field) {
+          var colIdx = headers.indexOf(field);
+          if (colIdx < 0) return;
+          sheet.getRange(rowIndex, colIdx + 1).setValue(rowData[field]);
+        });
+        return;
+      }
+    }
+  }
+  throw new Error('Frage nicht gefunden: ' + id);
+}
+
+/**
+ * Cluster D Phase 1b — Bulk Soft-Delete (Papierkorb).
+ * Setzt geloescht_am-Timestamp pro Frage. Cluster A optimisticDelete-Helper-kompatibel.
+ *
+ * Auth: LP-only (Router-Gate + istZugelasseneLP).
+ * Concurrency: LockService (waitLock 30s).
+ */
+function apiBulkLoescheFragen(body) {
+  if (!body || !body.email) return jsonResponse({ success: false, error: 'email fehlt' });
+  if (!istZugelasseneLP(body.email)) return jsonResponse({ success: false, error: 'Nur fuer Lehrpersonen' });
+  if (!Array.isArray(body.ids) || body.ids.length === 0) {
+    return jsonResponse({ success: false, error: 'ids fehlt oder leer' });
+  }
+  // I-2 (Code-Review): Hard-Cap analog apiBulkUpdateFragen.
+  if (body.ids.length > 500) {
+    return jsonResponse({ success: false, error: 'Bulk-Limit 500 ueberschritten (got ' + body.ids.length + ')' });
+  }
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var affectedIds = [];
+    var failedIds = [];
+    var jetzt = new Date().toISOString();
+    for (var i = 0; i < body.ids.length; i++) {
+      var id = String(body.ids[i]);
+      try {
+        softDeleteFrageById_(id, jetzt);
+        affectedIds.push(id);
+      } catch (e) {
+        console.warn('[apiBulkLoescheFragen] failed for id=' + id + ': ' + (e && e.message ? e.message : e));
+        failedIds.push(id);
+      }
+    }
+
+    cacheInvalidieren_();
+    auditLog_('batchLoescheFragen', body.email, {
+      count: affectedIds.length,
+      affectedIds: affectedIds,
+      failedIds: failedIds,
+    });
+
+    return jsonResponse({
+      success: true,
+      erfolgreich: affectedIds.length,
+      affectedIds: affectedIds,
+      fehlgeschlagen: failedIds,
+    });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 /**
  * Cluster H Phase 0: Mergen mehrerer Tags zu einem Master. Admin-only.
  * Schritt 1: alle Frage-Sheets durchgehen, in tagIds-Spalte mergedIds durch masterId ersetzen.
@@ -1899,6 +2205,8 @@ function doPost(e) {
     'apiMigriereTagsZuObjects',
     // Cluster D Phase 0: Backfill-Endpoint (Admin-only via pruefeAdminOderFehler_).
     'apiBackfillStatusDefault',
+    // Cluster D Phase 1b: Bulk-Edit-Endpoints (LP-only via istZugelasseneLP).
+    'apiBulkUpdateFragen', 'apiBulkLoescheFragen',
   ];
   if (LP_ACTIONS.indexOf(action) >= 0) {
     var lpEmail = body.email || body.callerEmail;
@@ -2260,6 +2568,11 @@ function doPost(e) {
       return apiMigriereTagsZuObjects(body);
     case 'apiBackfillStatusDefault':
       return apiBackfillStatusDefault(body);
+    // Cluster D Phase 1b: Bulk-Edit
+    case 'apiBulkUpdateFragen':
+      return apiBulkUpdateFragen(body);
+    case 'apiBulkLoescheFragen':
+      return apiBulkLoescheFragen(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
