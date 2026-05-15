@@ -6,22 +6,73 @@
 
 ---
 
-## 📍 STAND 15.05.2026 (späte Session) — Wo wir gerade stehen
+## 📍 STAND 16.05.2026 — Wo wir gerade stehen
 
 **Letzter Merge auf main:** `31bdf81` (Cluster H Phase 0+1+2 LIVE).
-**Letzter Push auf preview:** `9d2ecab` (Cluster D Phase 0+1a+1b+2 + 11 Hotfixes).
-**Branch:** `feature/cluster-d-batch-edit-spec-update` HEAD `9d2ecab` (= preview HEAD, FF-merged).
+**Letzter Push auf preview:** `7c6fa61` (Cluster D Phase 0+1a+1b+2+3a+3b+4 + 12 Hotfixes).
+**Branch:** `feature/cluster-d-batch-edit-spec-update` HEAD `7c6fa61` (= preview HEAD, FF-merged).
 
 **Branches:**
 - `main`: HEAD `31bdf81`, sync mit origin/main
-- `preview`: HEAD `9d2ecab` (19 commits ahead of main), sync mit origin/preview
-- `feature/cluster-d-batch-edit-spec-update`: HEAD `9d2ecab` — gleicher Stand wie preview
+- `preview`: HEAD `7c6fa61` (24 commits ahead of main), sync mit origin/preview
+- `feature/cluster-d-batch-edit-spec-update`: HEAD `7c6fa61` — gleicher Stand wie preview
 
 **Test-Status (preview):**
-- vitest: **1762 passed + 4 todo** (Baseline post-Cluster-H 1713 → +49)
-- tsc -b clean, 5× lint-Gates clean (as-any 0/0, no-alert 0, no-tests-dir 0, musterloesung 0 drift, wire-contract 71 actions/0 unmatched)
-- vite build clean (256 PWA-entries, ~5.28 MB)
-- **CI: alle letzten 3 Runs grün**
+- vitest: **1820 passed + 4 todo** (Baseline post-Cluster-D-Phase-0-2 1762 → +58)
+- tsc -b clean, 5× lint-Gates clean (as-any 1/0, no-alert 0, no-tests-dir 0, musterloesung 0 drift, wire-contract 69 actions/0 unmatched)
+- vite build clean (256 PWA-entries, ~5.30 MB)
+- **CI: alle letzten Runs grün**
+
+**Was in dieser Session (16.05.2026, autonom) passiert ist:**
+
+11. **Sub-Task 5 — Phase 3a SharedFragenEditor batchMode** (`75a9d03` + Hardening `5893f96`):
+    - `batchMode?: {count, sichtbareCount}` + `onBatchSave?: (patch, modus) => void` Pass-Through-Props
+    - `BatchEditorBanner` (violet-Banner mit count + sichtbar-Hinweis)
+    - `batchDiff.ts` Pure-Modul mit `berechnePatch(form, modus)` — undefined-Felder werden weggelassen, mutually-exclusive Tag-Modi, tagIds.length===0 ergibt No-Op
+    - `FragenBulkPatch` + `TagsModus` als Single-Source-of-Truth in `packages/shared/src/types/fragen-core.ts`; `fragenBulkApi.ts` Re-Export
+    - Dirty-Flag-Tracking für 5 neue Felder (status hatte schon eins, tagIdsDirty in Hardening)
+    - MetadataSection violet-Highlighting auf 7 batch-fähigen Feldern
+    - Non-batch-bare Felder (Fragetext/Lösung/Optionen/Lücken/Fragetyp) ausgeblendet im batchMode (UX-Win statt disabled — Sub-Editoren akzeptieren disabled nicht)
+    - 30 neue Tests (18 batchDiff + 3 Banner + 9 SharedFragenEditor.batch)
+    - **Hardening: I-1 Auto-Save-Guard, I-2 No-Op-Dirty-Prev-Check (Bloom/Semester/Gefäss/Lernziele), I-3 tagIds-Dirty-Flag** (Code-Reviewer-Findings, 3-Zeilen-Fixes je)
+
+12. **Sub-Task 6 — Phase 3b BatchTagPicker** (`9ccd6fb` + Hotfix `107ebe5`):
+    - `BatchTagPicker` Wrapper mit 3-Modi-Radio (Hinzufügen/Ersetzen/Entfernen) im SharedFragenEditor an TagPicker-Slot-Stelle
+    - `tagsModus`-State-Setter aktiviert + Modus-Wechsel setzt `tagIdsDirty=true`
+    - MetadataSection-Anpassung: im batchMode kein Label/violet-Wrap mehr (BatchTagPicker bringt beides mit)
+    - 9 neue Tests (6 BatchTagPicker + 3 SharedFragenEditor.batch)
+    - **Hotfix: `lint:as-any` Defensive-Marker** im Test-Stub (Sub-Task 5 Hardening hatte ESLint-disable ohne `Defensive`-Keyword — fail-CI-Gate, 1-Zeile-Fix)
+
+13. **Sub-Task 7 — Phase 4 Confirm-Modals + FragenBrowser-Wiring** (`7c6fa61`):
+    - `BatchConfirmModal` mit ueberschriebeneFelder + 3 farbcodierten Tag-Sektionen (emerald/red/orange) + yellow-Warnung bei nichtSichtbar
+    - `BatchLoeschConfirmModal` mit Count im Title + danger-Button + yellow-Warnung
+    - `tagsModusAusPatch`-Helper für Modus-Ableitung
+    - `FragenBrowser` Stubs aktiviert → pendingPatch/pendingTagsModus/batchEditorOffen/loeschConfirmOffen State, Editor (via PruefungFragenEditor-Pass-Through) + 2 Modals mounten, `bulkUpdateFragen`/`bulkLoescheFragen` async-Calls + `leereSelektion()` + `useFragensammlungStore.ladeAlleDetails()` Reload + Toast via `useToastStore`
+    - `batchLaeuft`-Guard gegen Double-Click
+    - `sichtbareSelektierteCount = selektierteIds ∩ gefilterteIds` Memo
+    - `PruefungFragenEditor` Pass-Through für batchMode + onBatchSave (3-Zeilen-Patch)
+    - 18 neue Tests (10 BatchConfirmModal + 5 BatchLoeschConfirmModal + 3 tagsModusAusPatch)
+    - **Wire-Vertrag verifiziert:** Apps-Script `updateFrageMitPatch_` Z.1053-1055 OVERWRITES Array-Felder als comma-joined-String — Modal stellt sie als ÜBERSCHRIEBEN dar (analog Skalar-Felder), nur Tags haben Modi.
+
+**Browser-E2E Smoke-Test (16.05.2026) — alle 3 Phasen LIVE auf Staging Deploy #1441:**
+- ✅ Fragensammlung lädt 2363 Fragen
+- ✅ Kompakt-Modus + Checkbox-Selektion (Phase 2)
+- ✅ Shift-Click-Range (1+3 → exakt 3 selektiert) — Hotfix#11 Bestätigung
+- ✅ Floating-Bar „3 Fragen ausgewählt" + Bearbeiten/Löschen/Auf Filter beschränken/X
+- ✅ Bearbeiten → SharedFragenEditor öffnet im batchMode (Phase 3a)
+- ✅ Violet-Banner „Batch-Bearbeitung von 3 Fragen" + Erklärungstext „violetter Rand" (Phase 3a)
+- ✅ Violet-Highlighting auf Fach, Bloom, Tags (Phase 3a)
+- ✅ Tags-3-Modi-Radio: Hinzufügen/Ersetzen/Entfernen (Phase 3b)
+- ✅ „Auf 3 Fragen anwenden" → Fachwechsel VWL→BWL → BatchConfirmModal (Phase 4)
+- ✅ BatchConfirmModal Wording: „Diese Felder werden ÜBERSCHRIEBEN: Fachbereich: → „BWL""
+- ✅ Löschen → BatchLoeschConfirmModal „3 Fragen löschen? ... in den Papierkorb (Soft-Delete)" (Phase 4)
+- ✅ 0 Console-Errors
+
+**Visual Concerns aus Smoke-Test (NICHT push-blocker):**
+- **C1 (Phase 3a visual):** Nicht-batch-bare MetadataSection-Felder Thema/Unterthema/Punkte/Zeitbedarf sind im batchMode SICHTBAR mit violet-Rand. Banner erklärt es („Felder ohne violetten Rand sind in Batch nicht änderbar"), aber visuell verwirrend weil Thema+Punkte selber violet-Rand haben (Pflichtfeld-Rand kollidiert mit Batch-Highlight). Pragmatisch ok, aber Spawn-Task für Cleanup: entweder Thema/Punkte/Zeitbedarf/Unterthema im batchMode ausblenden, oder den Pflichtfeld-Rand im batchMode unterdrücken.
+- **C2 (Phase 3a visual):** Status-RadioGroup hat im batchMode KEINEN violet-Rand obwohl batch-fähig. Implementer hat per inline-ternary `className` einen Wrapper-Pattern genutzt, aber im Screenshot ist sichtbar dass der Ring nicht greift. Bug — Status-Wrapper-className-Ternary fixen.
+
+**Sub-Task 8 / Phase 5 weiterhin ausstehend (User-Aktion):** vollständige 14-Cases-Verifikation mit echten Daten-Operationen (Endgültig anwenden Click + Re-Load + Audit-Log-Check), Performance-Test 1000+ Fragen, preview→main FF-Merge nach User-Freigabe.
 
 **Was in dieser Session passiert ist (15.05.2026 nachmittag-abend):**
 
