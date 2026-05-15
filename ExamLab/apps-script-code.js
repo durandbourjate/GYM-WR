@@ -481,6 +481,20 @@ function getLPInfo(email) {
   return lpMap[emailLower] || null;
 }
 
+/**
+ * Cluster H Phase 0: Zentrale Admin-Pruefung für destruktive Endpoints.
+ * Returns null wenn OK, sonst jsonResponse mit Fehler.
+ */
+function pruefeAdminOderFehler_(lpInfo) {
+  if (!lpInfo) {
+    return jsonResponse({ error: 'Nicht authentifiziert' });
+  }
+  if (lpInfo.rolle !== 'admin') {
+    return jsonResponse({ error: 'Nur fuer Admins' });
+  }
+  return null;
+}
+
 // === CACHE-SYSTEM (Performance-Optimierung) ===
 // Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
