@@ -51,12 +51,12 @@
 
 ## 🎯 ROADMAP — Was als nächstes ansteht (priorisiert)
 
-### Priorität 1 — Cluster H Phase 1+2+3 (Tag-Modell-Migration FERTIGSTELLEN)
-- **Status:** Phase 0 KOMPLETT (Backend + Frontend-API+Store auf `feature/cluster-h-tag-modell`, gepusht). Phase 1-3 ausstehend.
-- **Phase 1 (User-Aktion):** Apps-Script-Code deployen + Migration im AdminTab manuell triggern → Live-E2E (Tags-Sheet befüllt, Fragen haben tagIds, alte UI funktioniert)
+### Priorität 1 — Cluster H Phase 2+3 (Tag-Modell-Migration FERTIGSTELLEN)
+- **Status:** Phase 0+1 LIVE (15.05.2026, preview HEAD `972451f`). Apps-Script deployed, Migration getriggert: **183 Tags erstellt, 2416 Fragen aktualisiert in 3.8s**. Backend-Sheet `Tags` befüllt + Frage-Sheets haben `tagIds`-Spalte + `tags` umbenannt zu `tagsLegacy`. Alte UI funktioniert weiter (Read-Pfade lesen `tagsLegacy || tags`).
 - **Phase 2 (~1.5 Tage):** 9 Hybrid-Code-Stellen umstellen + TagPicker-Komponente (DI-Slot-Pattern) + Verwaltungs-Tab in EinstellungenPanel + 11 Browser-E2E-Cases
-- **Phase 3 (nach 2 Wochen Live):** tagsLegacy-Spalte raus, Frontend-Fallback raus
-- **Geschätzter Restaufwand:** 2-2.5 Tage Code (Phase 2) + 0.5 Tag Cleanup (Phase 3)
+- **Phase 3 (nach 2 Wochen Live):** tagsLegacy-Spalte raus via `apiCleanupTagsLegacy`-Endpoint, Frontend-Fallback raus
+- **Geschätzter Restaufwand:** 1.5 Tage Code (Phase 2) + 0.5 Tag Cleanup (Phase 3)
+- **Hotfix-Lehren (Phase 1):** Service-Wrapper email-Pflicht-Param vergessen (siehe `feedback_service_wrapper_email_pflicht.md`), Push-Frequenz zu schnell (siehe `feedback_push_konflikt_rate.md`)
 
 ### Priorität 2 — Cluster D Batch-Edit (wartet auf Cluster H Phase 2)
 - **Status:** Spec existiert (`docs/superpowers/specs/2026-05-11-cluster-d-batch-edit-design.md`), aktualisierungsbedürftig (Tag-Object-Modell statt string[], +Editor-Felder status/gefaess/semester/lernzielIds als Pre-Phase, +Minimal-Audit-Log). Plan steht aus.
