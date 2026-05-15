@@ -499,6 +499,10 @@ function pruefeAdminOderFehler_(lpInfo) {
 var TAGS_SHEET_NAME = 'Tags';
 var TAGS_HEADER = ['id', 'name', 'farbe', 'archiviert', 'erstelltAm', 'erstelltVon'];
 
+// Cluster H I4: Server-side Farbe-Validation. Mirror packages/shared/src/types/tag.ts TAG_FARBEN.
+// Bei Drift in Phase 1+: hier UND types/tag.ts UND Frontend-Color-Picker synchron halten.
+var TAG_FARBEN_VALID = ['slate', 'red', 'amber', 'emerald', 'sky', 'violet', 'pink', 'stone'];
+
 // Cluster H Phase 0: Liste der Frage-Sheet-Namen pro Fachbereich.
 // Single Source of Truth für apiHardDeleteTag, apiMergeTags, apiMigriereTagsZuObjects + zaehleTagVerwendung_.
 // Wird ein neuer Fachbereich angelegt, hier eintragen.
@@ -580,6 +584,9 @@ function apiCreateTag(body) {
   if (!name) return jsonResponse({ error: 'Name ist Pflicht' });
 
   var farbe = body.farbe || 'slate';
+  if (TAG_FARBEN_VALID.indexOf(farbe) < 0) {
+    return jsonResponse({ error: 'Ungueltige Farbe: ' + farbe });
+  }
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
 
@@ -655,6 +662,9 @@ function apiUpdateTag(body) {
           sheet.getRange(i + 1, nameIdx + 1).setValue(neuName);
         }
         if (body.farbe !== undefined) {
+          if (TAG_FARBEN_VALID.indexOf(body.farbe) < 0) {
+            return jsonResponse({ error: 'Ungueltige Farbe: ' + body.farbe });
+          }
           sheet.getRange(i + 1, farbeIdx + 1).setValue(body.farbe);
         }
         cacheInvalidieren_();
