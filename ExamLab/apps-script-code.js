@@ -674,6 +674,69 @@ function apiUpdateTag(body) {
 }
 
 /**
+ * Cluster H Phase 0: Helper - zählt Verwendung einer tagId über alle Frage-Sheets.
+ */
+function zaehleTagVerwendung_(tagId) {
+  var fachbereiche = FACHBEREICH_SHEETS; // siehe Tags-Sheet-Init-Helper-Block
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID); // Konstante existiert (Z.106)
+  var count = 0;
+  for (var f = 0; f < fachbereiche.length; f++) {
+    var sheet = fragensammlung.getSheetByName(fachbereiche[f]);
+    if (!sheet) continue;
+    var values = sheet.getDataRange().getValues();
+    if (values.length <= 1) continue;
+    var header = values[0];
+    var tagIdsIdx = header.indexOf('tagIds');
+    if (tagIdsIdx < 0) continue;
+    for (var i = 1; i < values.length; i++) {
+      var ids = String(values[i][tagIdsIdx] || '').split(',').map(function(s) { return s.trim(); });
+      if (ids.indexOf(tagId) >= 0) count++;
+    }
+  }
+  return count;
+}
+
+/**
+ * Cluster H Phase 0: Endgültig löschen. Wirft Fehler wenn Tag noch in Fragen referenced.
+ * Iteriert alle Frage-Sheets (FACHBEREICH_SHEETS) + sucht in tagIds-Spalte. Admin-only.
+ */
+function apiHardDeleteTag(body) {
+  var lpInfo = getLPInfo(body.email);
+  var fehler = pruefeAdminOderFehler_(lpInfo);
+  if (fehler) return fehler;
+
+  var id = String(body.id || '');
+  if (!id) return jsonResponse({ error: 'id ist Pflicht' });
+
+  // Prüfe Verwendung in allen Frage-Sheets
+  var verwendungsCount = zaehleTagVerwendung_(id);
+  if (verwendungsCount > 0) {
+    return jsonResponse({
+      error: 'Tag wird noch von ' + verwendungsCount + ' Fragen verwendet. Erst archivieren oder Fragen umtaggen.'
+    });
+  }
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var sheet = getOderErstelleTagsSheet_();
+    var values = sheet.getDataRange().getValues();
+    var header = values[0];
+    var idIdx = header.indexOf('id');
+    for (var i = 1; i < values.length; i++) {
+      if (values[i][idIdx] === id) {
+        sheet.deleteRow(i + 1);
+        cacheInvalidieren_();
+        return jsonResponse({ ok: true });
+      }
+    }
+    return jsonResponse({ error: 'Tag nicht gefunden' });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
  * Cluster H Phase 0: Tag archivieren (Soft-Delete). Admin-only.
  */
 function apiArchiveTag(body) {
@@ -1834,6 +1897,8 @@ function doPost(e) {
       return apiUpdateTag(body);
     case 'apiArchiveTag':
       return apiArchiveTag(body);
+    case 'apiHardDeleteTag':
+      return apiHardDeleteTag(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
