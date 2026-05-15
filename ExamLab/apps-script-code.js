@@ -708,17 +708,28 @@ function apiHardDeleteTag(body) {
   var id = String(body.id || '');
   if (!id) return jsonResponse({ error: 'id ist Pflicht' });
 
-  // Prüfe Verwendung in allen Frage-Sheets
-  var verwendungsCount = zaehleTagVerwendung_(id);
-  if (verwendungsCount > 0) {
-    return jsonResponse({
-      error: 'Tag wird noch von ' + verwendungsCount + ' Fragen verwendet. Erst archivieren oder Fragen umtaggen.'
-    });
-  }
-
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
+    // Verwendungs-Check INNERHALB des Locks, sonst TOCTOU-Race:
+    // LP-A check (count=0) → LP-B attaches Tag an Frage → LP-A delete = orphan tagId.
+    // Hinweis: Diese Lock-Sicherung schützt nur innerhalb hardDeleteTag. Vollständige
+    // Race-Sicherheit gegen speichereFrageIntern_ würde dort denselben Lock erfordern
+    // (Spawn-Task — würde alle Schreib-Operationen serialisieren).
+    var verwendungsCount = zaehleTagVerwendung_(id);
+    if (verwendungsCount > 0) {
+      // Differenzierte Fehlermeldung je nach Archiv-Status (verbessert Hinweis bei archivierten Tags).
+      var alleTags = ladeAlleTagsAusSheet_();
+      var thisTag = null;
+      for (var t2 = 0; t2 < alleTags.length; t2++) {
+        if (alleTags[t2].id === id) { thisTag = alleTags[t2]; break; }
+      }
+      var msg = thisTag && thisTag.archiviert
+        ? 'Tag ist bereits archiviert, wird aber noch von ' + verwendungsCount + ' Fragen verwendet. Bitte erst Fragen umtaggen.'
+        : 'Tag wird noch von ' + verwendungsCount + ' Fragen verwendet. Erst archivieren oder Fragen umtaggen.';
+      return jsonResponse({ error: msg });
+    }
+
     var sheet = getOderErstelleTagsSheet_();
     var values = sheet.getDataRange().getValues();
     var header = values[0];
