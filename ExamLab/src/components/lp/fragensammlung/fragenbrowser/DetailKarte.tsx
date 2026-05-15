@@ -5,6 +5,7 @@ import type { EffektivesRecht } from '../../../../types/auth.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
 import PoolBadges from './PoolBadges.tsx'
 import { useTagsStore } from '../../../../store/tagsStore'
+import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
 
 interface Props {
   frage: Frage | FrageSummary
@@ -26,14 +27,7 @@ function rechteBadge(recht?: EffektivesRecht): { label: string; farbe: string } 
 export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, onLoeschen, onDuplizieren, performance }: Props) {
   const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
   // Cluster H Phase 2: Tag-Namen via tagsStore-Hook (subscribed → Re-Render bei Tag-Rename).
-  const tagNamen = useTagsStore(s => {
-    const ids = frage.tagIds
-    if (ids && ids.length > 0) {
-      const namen = s.getByIds(ids).map(t => t.name)
-      if (namen.length > 0) return namen
-    }
-    return frage.tags.map(t => (typeof t === 'string' ? t : t.name))
-  })
+  const tagNamen = useTagsStore(s => tagNamenFromStore(frage, s))
 
   return (
     <div

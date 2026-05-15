@@ -4,7 +4,7 @@ import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
 import type { PruefungsConfig } from '../types/pruefung'
 import type { FrageSummary } from '../types/fragen-storage'
-import { useTagsStore } from '../store/tagsStore'
+import { tagNamenFuerFrage } from './frageTagNamen'
 
 const ROUTE_BUILDERS = {
   einstellungenTab: (tab: TabDefinition) => tab.route,
@@ -116,19 +116,14 @@ export function indexUebungen(query: string, configs: PruefungsConfig[]): SucheT
 }
 
 /**
- * Cluster H Phase 2: Tag-Namen werden aus `frage.tagIds` via `tagsStore`-Lookup
- * resolved. Fallback auf Legacy-`tags` (string|Tag)[] für Übergangszeit.
+ * Cluster H Phase 2: Tag-Namen für Such-Index. Nutzt `tagNamenFuerFrage`-Helper
+ * (tagIds via tagsStore + Legacy-Fallback) und joined zu String.
  *
- * Pure-Helper-Kontext: `tagsStore.getState()` liefert keinen Re-Index bei
- * Tag-Rename mid-typing — pragmatisch akzeptiert, da Suche bei nächstem
- * Render mit neuem `index` neu läuft.
+ * Pure-Helper-Kontext: `getState()` liefert keinen Re-Index bei Tag-Rename
+ * mid-typing — akzeptiert, weil Suche bei nächstem Render mit neuem `index` neu läuft.
  */
 function tagsAlsText(tagIds: string[] | undefined, legacy: FrageSummary['tags']): string {
-  if (tagIds && tagIds.length > 0) {
-    const namen = useTagsStore.getState().getByIds(tagIds).map(t => t.name)
-    if (namen.length > 0) return namen.join(' ')
-  }
-  return legacy.map(t => (typeof t === 'string' ? t : t.name)).join(' ')
+  return tagNamenFuerFrage({ tagIds, tags: legacy }).join(' ')
 }
 
 export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer[] {

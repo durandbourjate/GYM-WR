@@ -10,6 +10,7 @@ import type { FragenPerformance } from '../../../../types/tracker.ts'
 import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { berechneZeitbedarf } from '../../../../utils/zeitbedarf.ts'
 import { useTagsStore } from '../../../../store/tagsStore'
+import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -46,15 +47,7 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
   const vorschau = fragetext ? fragetext.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 150) : ''
   const zeit = frage ? frage.zeitbedarf ?? berechneZeitbedarf(frage.typ as 'mc' | 'freitext' | 'lueckentext' | 'zuordnung' | 'richtigfalsch' | 'berechnung' | 'visualisierung', frage.bloom as BloomStufe) : undefined
   // Cluster H Phase 2: Tag-Namen via tagsStore-Hook (subscribed → Re-Render bei Tag-Rename).
-  // tagIds-Pfad bevorzugt, Legacy-tags-Fallback für Übergang.
-  const tagNamen = useTagsStore(s => {
-    const ids = frage?.tagIds
-    if (ids && ids.length > 0) {
-      const namen = s.getByIds(ids).map(t => t.name)
-      if (namen.length > 0) return namen
-    }
-    return (frage?.tags ?? []).map(t => (typeof t === 'string' ? t : t.name))
-  })
+  const tagNamen = useTagsStore(s => tagNamenFromStore(frage ?? {}, s))
   return (
     <div ref={setNodeRef} style={style} className="px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors">
       <div className="flex items-center gap-2">
