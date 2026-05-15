@@ -214,7 +214,7 @@ describe('SharedFragenEditor — Batch-Modus (Cluster D Phase 3a)', () => {
     renderInProvider(
       <SharedFragenEditor
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        frage={{ id: 'f1', tagIds: ['t1', 't2'] } as any}
+        frage={{ id: 'f1', tagIds: ['t1', 't2'] } as any /* Defensive: Test-Stub mit minimalem Frage-Mock — nur tagIds-Felder relevant */}
         onSpeichern={vi.fn()}
         onAbbrechen={vi.fn()}
         batchMode={{ count: 5, sichtbareCount: 5 }}
