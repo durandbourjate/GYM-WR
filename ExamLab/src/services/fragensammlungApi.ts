@@ -96,7 +96,9 @@ export interface SpeichereFrageResult {
 /** Einzelne Frage speichern UND HTTP-Status zurückgeben (Bundle 3, draftSync.ts).
  *  Im Gegensatz zum existing `speichereFrage` (boolean-Return) liefert diese Funktion
  *  den Backend-bestimmten Auto-Save-Status und unterscheidet Fehler-Klassen für
- *  die 4-Stufen-Retry-Logik. Existing `speichereFrage` bleibt UNVERÄNDERT. */
+ *  die 4-Stufen-Retry-Logik. Existing `speichereFrage` bleibt UNVERÄNDERT.
+ *
+ *  Cluster H Phase 2: `tagIds` ist via `frage`-Spread automatisch im Payload. */
 export async function speichereFrageMitStatus(
   email: string,
   frage: Frage,
@@ -148,7 +150,12 @@ export async function speichereFrageMitStatus(
 
 /** Einzelne Frage speichern (Fragensammlung).
  *  offeneKIFeedbacks: optionale KI-Kalibrierungsdaten — werden im Payload mitgesendet,
- *  Backend kann sie für Feedback-Loop nutzen oder ignorieren. */
+ *  Backend kann sie für Feedback-Loop nutzen oder ignorieren.
+ *
+ *  Cluster H Phase 2: Das ganze `frage`-Objekt wird serialisiert; `tagIds` ist
+ *  damit automatisch im Payload (Type FrageBase.tagIds). Backend `parseFrage`
+ *  erwartet `tagIds` (CSV) seit Phase 0 Hotfix C3. Legacy `tags`-Feld wird
+ *  weiterhin mitgesendet für Rollback bis Phase 3. */
 export async function speichereFrage(
   email: string,
   frage: Frage,
