@@ -240,6 +240,11 @@ git commit -m "Cluster H Phase 0: pruefeAdminOderFehler_ Helper"
 var TAGS_SHEET_NAME = 'Tags';
 var TAGS_HEADER = ['id', 'name', 'farbe', 'archiviert', 'erstelltAm', 'erstelltVon'];
 
+// Cluster H Phase 0: Liste der Frage-Sheet-Namen pro Fachbereich.
+// Single Source of Truth für apiHardDeleteTag, apiMergeTags, apiMigriereTagsZuObjects + zaehleTagVerwendung_.
+// Wird ein neuer Fachbereich angelegt, hier eintragen.
+var FACHBEREICH_SHEETS = ['VWL', 'BWL', 'Recht', 'Informatik'];
+
 /**
  * Cluster H Phase 0: Init Tags-Sheet falls nicht vorhanden.
  * Wird beim ersten Tag-API-Call aufgerufen + von Migration.
@@ -327,7 +332,9 @@ function apiListTags(body) {
 In der `LP_ACTIONS`-Liste hinzufügen + Switch-Case in `doPost` (siehe Zeile ~1273+).
 
 ```javascript
-// LP_ACTIONS-Konstante erweitern:
+// LP_ACTIONS = Routing-Whitelist (welche Actions sind als LP überhaupt callable).
+// Permission-Check (admin vs jeder LP) erfolgt PRO ENDPOINT via pruefeAdminOderFehler_(lpInfo).
+// Alle 7 Tag-Endpoints in LP_ACTIONS, weil jeder LP zumindest Read+Create darf.
 var LP_ACTIONS = [
   'speichereFrage', /* ... bestehende ... */
   'apiListTags', 'apiCreateTag', 'apiUpdateTag',
@@ -339,7 +346,7 @@ var LP_ACTIONS = [
 case 'apiListTags': return apiListTags(body);
 ```
 
-- [ ] **Step 3: SCHREIBENDE_ACTIONS unverändert** (apiListTags ist read-only)
+- [ ] **Step 3: SCHREIBENDE_ACTIONS unverändert** (apiListTags ist read-only — siehe Task 0.7 Step 2 für korrekte Erweiterung)
 
 - [ ] **Step 4: Commit**
 
@@ -411,9 +418,14 @@ function apiCreateTag(body) {
 - [ ] **Step 2: Switch-Case + SCHREIBENDE_ACTIONS aufnehmen**
 
 ```javascript
-// SCHREIBENDE_ACTIONS erweitern:
-var SCHREIBENDE_ACTIONS = LP_ACTIONS.concat(['speichereAntworten']);
-// (alle Tag-Endpoints sind in LP_ACTIONS, also automatisch drin)
+// SCHREIBENDE_ACTIONS = Cache-Invalidierungs-Trigger.
+// apiListTags ist read-only und darf NICHT drin sein, sonst Cache wird bei jedem Read invalidiert.
+// Migration-Endpoint ist write, also drin.
+var TAG_WRITE_ACTIONS = ['apiCreateTag', 'apiUpdateTag', 'apiArchiveTag', 'apiMergeTags', 'apiHardDeleteTag', 'apiMigriereTagsZuObjects'];
+var SCHREIBENDE_ACTIONS = LP_ACTIONS
+  .filter(function(a) { return a !== 'apiListTags'; })
+  .concat(['speichereAntworten']);
+// Alternativ wenn LP_ACTIONS schon viele Read-Actions enthält: explizit auflisten statt subtrahieren.
 
 // Im Switch:
 case 'apiCreateTag': return apiCreateTag(body);
@@ -604,7 +616,7 @@ function apiHardDeleteTag(body) {
  * Helper: zählt Verwendung einer tagId über alle Frage-Sheets.
  */
 function zaehleTagVerwendung_(tagId) {
-  var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik']; // dynamisch ggf. aus Config holen
+  var fachbereiche = FACHBEREICH_SHEETS; // siehe Task 0.5
   var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_SHEET_ID); // Konstante existiert
   var count = 0;
   for (var f = 0; f < fachbereiche.length; f++) {
@@ -666,7 +678,7 @@ function apiMergeTags(body) {
   lock.waitLock(30000); // länger weil Multi-Sheet-Update
 
   try {
-    var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
+    var fachbereiche = FACHBEREICH_SHEETS;
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_SHEET_ID);
     var fragenAktualisiert = 0;
 
@@ -771,7 +783,7 @@ function apiMigriereTagsZuObjects(body) {
   if (fehler) return fehler;
 
   var startTime = new Date().getTime();
-  var fachbereiche = ['VWL', 'BWL', 'Recht', 'Informatik'];
+  var fachbereiche = FACHBEREICH_SHEETS;
   var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_SHEET_ID);
 
   // ===== Schritt 1: Idempotenz-Check =====
@@ -1267,24 +1279,33 @@ Ziel: einmalig die Migration laufen lassen, verifizieren dass Tags-Sheet befüll
 **Files:**
 - Modify: `ExamLab/src/components/settings/einstellungen/AdminTab.tsx`
 
-- [ ] **Step 1: Wartungs-Sektion mit Button hinzufügen**
+**Lint-Hinweis (Plan-Reviewer-Lehre):** `confirm()`/`alert()` würden `lint:no-alert` brechen. Wir nutzen direkt `BaseDialog` für Confirm + Toast für Result.
+
+- [ ] **Step 1: Wartungs-Sektion mit BaseDialog-Confirm + Toast**
 
 ```tsx
 // Am Ende des AdminTab-Bodies (vor dem schließenden Container):
+import { useState } from 'react';
 import { migriereTagsZuObjects } from '../../../services/tagsApi';
+import { Button } from '../../ui/Button';
+import { BaseDialog } from '../../ui/BaseDialog';
+// Pfad-Hinweis: Toast-Helper ggf. existierend (z.B. useToast); falls nicht: Inline-Result-Box wie unten.
 
-// Innerhalb des Component-Bodies:
+// Component-State:
+const [confirmOpen, setConfirmOpen] = useState(false);
 const [migrLaeuft, setMigrLaeuft] = useState(false);
 const [migrErgebnis, setMigrErgebnis] = useState<{ neueTags: number; fragenAktualisiert: number; dauerMs: number } | null>(null);
+const [migrFehler, setMigrFehler] = useState<string | null>(null);
 
-async function handleMigrationStarten() {
-  if (!confirm('Tag-Migration starten? Läuft nur einmal — Tags-Sheet muss leer sein.')) return;
+async function handleMigrationStartenOK() {
+  setConfirmOpen(false);
   setMigrLaeuft(true);
+  setMigrFehler(null);
   try {
     const r = await migriereTagsZuObjects();
     setMigrErgebnis(r);
   } catch (e) {
-    alert('Fehler: ' + String(e));
+    setMigrFehler(String(e));
   } finally {
     setMigrLaeuft(false);
   }
@@ -1297,31 +1318,42 @@ async function handleMigrationStarten() {
     Migriert alle Frage-Tags (string[]) zu Tag-Object-Referenzen (tagIds[]).
     Idempotent — kann nur einmal laufen. Tags-Sheet wird befüllt.
   </p>
-  <Button onClick={handleMigrationStarten} variant="primary" disabled={migrLaeuft} loading={migrLaeuft}>
+  <Button onClick={() => setConfirmOpen(true)} variant="primary" disabled={migrLaeuft} loading={migrLaeuft}>
     {migrLaeuft ? 'Läuft...' : 'Migration starten'}
   </Button>
   {migrErgebnis && (
-    <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 rounded">
+    <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded">
       ✅ {migrErgebnis.neueTags} Tags erstellt, {migrErgebnis.fragenAktualisiert} Fragen aktualisiert ({migrErgebnis.dauerMs}ms)
     </div>
   )}
+  {migrFehler && (
+    <div className="mt-3 p-3 bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100 rounded">
+      Fehler: {migrFehler}
+    </div>
+  )}
 </section>
+
+<BaseDialog
+  open={confirmOpen}
+  onClose={() => setConfirmOpen(false)}
+  title="Tag-Migration starten?"
+  footer={
+    <>
+      <Button onClick={() => setConfirmOpen(false)} variant="ghost">Abbrechen</Button>
+      <Button onClick={handleMigrationStartenOK} variant="primary">Migration starten</Button>
+    </>
+  }
+>
+  <p>Die Migration läuft nur einmal. Wenn das Tags-Sheet bereits befüllt ist, gibt das Backend einen Fehler zurück.</p>
+  <p className="mt-2">Wirklich starten?</p>
+</BaseDialog>
 ```
 
-**Pfad-Hinweis:** Plan-Phase verifiziert konkreten Import-Pfad zu `Button`. Audit zeigte: `ExamLab/src/components/ui/Button.tsx`.
-
-- [ ] **Step 2: Lint-Check (no-alert!)**
+- [ ] **Step 2: Pre-Commit-Checks**
 
 ```bash
-cd ExamLab && npm run lint:no-alert
-# Wenn fehlschlägt: alert/confirm durch BaseDialog ersetzen
-```
-
-**Falls lint:no-alert die `confirm()`-Verwendung blockiert:** Alternative über `BaseDialog`-Modal:
-
-```tsx
-const [confirmOpen, setConfirmOpen] = useState(false);
-// Button öffnet Modal, Modal hat „Bestätigen"-Button der `handleMigrationStartenOK` aufruft
+cd ExamLab && npm run lint:no-alert && npx tsc --noEmit
+# Erwartet: 0 alert-Treffer in AdminTab.tsx
 ```
 
 - [ ] **Step 3: Commit**
@@ -1423,11 +1455,13 @@ Alle 9 Stellen (Audit D13) ersetzen `typeof t === 'string' ? t : t.name` durch `
 // VORHER:
 {frage.tags.map(t => typeof t === 'string' ? t : t.name)}
 
-// NACHHER:
-{useTagsStore.getState().getByIds(frage.tagIds).map(t => t.name)}
-// oder mit Hook:
+// NACHHER (im Render — Hook-Form, sonst kein Re-Render bei Tag-Rename):
 const tagNamen = useTagsStore(s => s.getByIds(frage.tagIds).map(t => t.name));
+
+// Im Event-Handler / Selektor-Outside-Render: getState() OK.
 ```
+
+**Wichtige Regel:** **Im Render-Body IMMER die Hook-Form** `useTagsStore(s => ...)` nutzen. Nur in Event-Handlers, Effects oder Hilfs-Funktionen, die nicht beim Render aufgerufen werden, ist `useTagsStore.getState()` OK. Sonst sehen die 9 Call-Sites veraltete Tag-Namen nach Umbenennen, weil keine Subscription besteht.
 
 **Reihenfolge** (jede in eigenem Commit, je 5-10 Z. Änderung):
 
@@ -1533,38 +1567,51 @@ git commit -m "Cluster H Phase 2: TagFarbeChip-Komponente"
 
 ---
 
-## Task 2.5: TagPicker-Komponente (für Editor)
+## Task 2.5: TagPicker-Komponente (für Editor) — Dependency-Injection
+
+**Wichtig (Plan-Reviewer-Lehre):** TagPicker lebt in `packages/shared/`, darf aber **keine direkten Imports aus `ExamLab/src/`** machen (reverse dependency, Build-Bruch). Lösung: **Dependency-Injection** — der Picker bekommt `alleTags` und `onErstelleNeu` als Props, die der Caller (in ExamLab) aus `tagsStore` + `tagsApi` zusammenbaut. TagFarbeChip wird inline nachgebaut (oder als Slot-Prop).
 
 **Files:**
 - Create: `packages/shared/src/editor/components/TagPicker.tsx`
 - Create: `packages/shared/src/editor/components/TagPicker.test.tsx`
 
-- [ ] **Step 1: Komponente schreiben**
+- [ ] **Step 1: Komponente mit DI schreiben**
 
 ```tsx
+// packages/shared/src/editor/components/TagPicker.tsx
 import { useState, useMemo } from 'react';
-import { useTagsStore } from '@/store/tagsStore'; // Pfad-Anpassung im Plan-Detail
-import { TagFarbeChip } from '@/components/lp/einstellungen/tags/TagFarbeChip';
-import { erstelleTag } from '@/services/tagsApi';
-import type { Tag } from '@shared/types/tag';
+import type { Tag, TagFarbe } from '../../types/tag';
+
+const FARBE_KLASSEN: Record<TagFarbe, string> = {
+  slate:   'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200',
+  red:     'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-200',
+  amber:   'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-200',
+  emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-200',
+  sky:     'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-200',
+  violet:  'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-200',
+  pink:    'bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-200',
+  stone:   'bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200',
+};
 
 interface Props {
   tagIds: string[];
   onChange: (neueIds: string[]) => void;
+  /** Alle verfügbaren Tags (vom Caller aus tagsStore geliefert, nicht-archivierte) */
+  alleTags: Tag[];
+  /** Callback für Quick-Erstellen — Caller ruft tagsApi.erstelleTag + upsertLokal */
+  onErstelleNeu: (name: string) => Promise<Tag>;
   maxTags?: number;
 }
 
-export function TagPicker({ tagIds, onChange, maxTags = 8 }: Props) {
-  const tags = useTagsStore((s) => s.tags);
-  const upsertLokal = useTagsStore((s) => s.upsertLokal);
+export function TagPicker({ tagIds, onChange, alleTags, onErstelleNeu, maxTags = 8 }: Props) {
   const [suche, setSuche] = useState('');
   const [creating, setCreating] = useState(false);
 
   const gefiltert = useMemo(() => {
     const q = suche.toLowerCase().trim();
-    if (!q) return tags.filter((t) => !t.archiviert);
-    return tags.filter((t) => !t.archiviert && t.name.toLowerCase().includes(q));
-  }, [tags, suche]);
+    if (!q) return alleTags;
+    return alleTags.filter((t) => t.name.toLowerCase().includes(q));
+  }, [alleTags, suche]);
 
   const exakterTreffer = gefiltert.find((t) => t.name.toLowerCase() === suche.toLowerCase().trim());
   const istBereitsAusgewaehlt = (id: string) => tagIds.includes(id);
@@ -1581,10 +1628,9 @@ export function TagPicker({ tagIds, onChange, maxTags = 8 }: Props) {
     if (!suche.trim() || creating) return;
     setCreating(true);
     try {
-      const r = await erstelleTag({ name: suche.trim() });
-      upsertLokal(r.tag);
-      if (!istBereitsAusgewaehlt(r.tag.id) && tagIds.length < maxTags) {
-        onChange([...tagIds, r.tag.id]);
+      const neuerTag = await onErstelleNeu(suche.trim());
+      if (!istBereitsAusgewaehlt(neuerTag.id) && tagIds.length < maxTags) {
+        onChange([...tagIds, neuerTag.id]);
       }
       setSuche('');
     } finally {
@@ -1616,7 +1662,9 @@ export function TagPicker({ tagIds, onChange, maxTags = 8 }: Props) {
               onChange={() => toggleTag(t.id)}
               className="w-4 h-4"
             />
-            <TagFarbeChip farbe={t.farbe} label={t.name} size="sm" />
+            <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-xs ${FARBE_KLASSEN[t.farbe]}`}>
+              {t.name}
+            </span>
           </label>
         ))}
         {!exakterTreffer && suche.trim() && (
@@ -1637,30 +1685,68 @@ export function TagPicker({ tagIds, onChange, maxTags = 8 }: Props) {
 }
 ```
 
-- [ ] **Step 2: Tests schreiben**
+**Hinweis:** `FARBE_KLASSEN` ist in TagPicker dupliziert (war auch in `TagFarbeChip` aus Task 2.4). Wenn Re-Use gewünscht: in Phase 0 als `packages/shared/src/types/tag.ts` exportieren. Plan-Phase-Empfehlung: vorerst Duplikat akzeptieren (8 Zeilen, semantisch eindeutig), Refactor in Folge-PR wenn weitere Surfaces dazukommen.
+
+- [ ] **Step 2: Tests schreiben (DI macht Tests trivial)**
 
 ```tsx
 // TagPicker.test.tsx — minimal:
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/react';
 import { TagPicker } from './TagPicker';
-import { useTagsStore } from '@/store/tagsStore';
+import type { Tag } from '../../types/tag';
+
+const mkTag = (id: string, name: string): Tag => ({
+  id, name, farbe: 'slate', archiviert: false, erstelltAm: '', erstelltVon: '',
+});
 
 describe('TagPicker', () => {
-  it('rendert Tag-Liste aus Store', () => {
-    useTagsStore.setState({
-      tags: [{ id: 't1', name: 'aktuell', farbe: 'slate', archiviert: false, erstelltAm: '', erstelltVon: '' }],
-      geladen: true, ladend: false, fehler: null,
-    });
-    const { getByText } = render(<TagPicker tagIds={[]} onChange={vi.fn()} />);
+  it('rendert übergebene Tag-Liste', () => {
+    const { getByText } = render(
+      <TagPicker tagIds={[]} onChange={vi.fn()} alleTags={[mkTag('t1', 'aktuell')]} onErstelleNeu={vi.fn()} />
+    );
     expect(getByText('aktuell')).toBeTruthy();
   });
 
   it('Quick-Erstellen zeigt Button bei keinem Treffer', () => {
-    useTagsStore.setState({ tags: [], geladen: true, ladend: false, fehler: null });
-    const { getByPlaceholderText, queryByText } = render(<TagPicker tagIds={[]} onChange={vi.fn()} />);
+    const { getByPlaceholderText, queryByText } = render(
+      <TagPicker tagIds={[]} onChange={vi.fn()} alleTags={[]} onErstelleNeu={vi.fn()} />
+    );
     fireEvent.change(getByPlaceholderText(/Tag suchen/), { target: { value: 'neu' } });
     expect(queryByText(/"neu" anlegen/)).toBeTruthy();
+  });
+
+  it('toggleTag fügt hinzu wenn nicht ausgewählt', () => {
+    const onChange = vi.fn();
+    const { getByLabelText: _ , container } = render(
+      <TagPicker tagIds={[]} onChange={onChange} alleTags={[mkTag('t1', 'aktuell')]} onErstelleNeu={vi.fn()} />
+    );
+    const checkbox = container.querySelector('input[type="checkbox"]')!;
+    fireEvent.click(checkbox);
+    expect(onChange).toHaveBeenCalledWith(['t1']);
+  });
+
+  it('maxTags-Limit verhindert weitere Auswahl', () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <TagPicker tagIds={['t1','t2']} onChange={onChange} alleTags={[mkTag('t1','a'),mkTag('t2','b'),mkTag('t3','c')]} onErstelleNeu={vi.fn()} maxTags={2} />
+    );
+    const checkboxen = container.querySelectorAll('input[type="checkbox"]');
+    fireEvent.click(checkboxen[2]); // t3 versucht
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('onErstelleNeu wird mit getrimmtem Namen aufgerufen', async () => {
+    const onErstelle = vi.fn().mockResolvedValue(mkTag('neu', 'neuer-tag'));
+    const onChange = vi.fn();
+    const { getByPlaceholderText, getByText } = render(
+      <TagPicker tagIds={[]} onChange={onChange} alleTags={[]} onErstelleNeu={onErstelle} />
+    );
+    fireEvent.change(getByPlaceholderText(/Tag suchen/), { target: { value: '  neuer-tag  ' } });
+    fireEvent.click(getByText(/"neuer-tag" anlegen/));
+    await new Promise(r => setTimeout(r, 0));
+    expect(onErstelle).toHaveBeenCalledWith('neuer-tag');
+    expect(onChange).toHaveBeenCalledWith(['neu']);
   });
 });
 ```
@@ -1680,35 +1766,77 @@ git commit -m "Cluster H Phase 2: TagPicker-Komponente + Tests"
 
 ---
 
-## Task 2.6: Frage-Editor: TagPicker integrieren
+## Task 2.6: Frage-Editor: TagPicker integrieren (mit DI-Wiring)
 
 **Files:**
-- Modify: `packages/shared/src/editor/SharedFragenEditor.tsx` (oder die MetadataSection — Plan-Phase greppt exakt)
+- Modify: `packages/shared/src/editor/SharedFragenEditor.tsx` — neue optionale Prop `tagPickerSlot?: ReactNode`
+- Modify: `packages/shared/src/editor/sections/MetadataSection.tsx` (oder vergleichbarer Section-Container) — Slot rendern statt direktem TagPicker
+- Modify: `ExamLab/src/components/lp/frageneditor/PruefungFragenEditor.tsx` (oder das aktive Wrapper-File) — TagPicker hier mit `tagsStore`-Daten füttern und als Slot reichen
 
-- [ ] **Step 1: TagPicker einbinden**
+### Slot-Pattern erklärt
 
-In der MetadataSection (oder wo Tag-Edit hingehört):
+`SharedFragenEditor` (in `packages/shared/`) darf nicht direkt `tagsStore`/`tagsApi` aus ExamLab importieren. Lösung: TagPicker wird **außerhalb** (im ExamLab-Wrapper) instanziiert mit allen Dependencies, und als `tagPickerSlot`-Prop reingereicht. SharedFragenEditor rendert den Slot nur — kein Wissen über Tags-Store.
+
+- [ ] **Step 1: SharedFragenEditor + MetadataSection — Slot-Prop akzeptieren**
 
 ```tsx
-import { TagPicker } from './components/TagPicker';
+// packages/shared/src/editor/SharedFragenEditor.tsx
+interface Props {
+  /* bestehende Props */
+  /** Cluster H: vom Caller geliefert, weil tagsStore in App-Schicht lebt */
+  tagPickerSlot?: ReactNode;
+}
 
-// JSX:
-<div>
-  <Label>Tags</Label>
-  <TagPicker
-    tagIds={frage.tagIds || []}
-    onChange={(neueIds) => updateFrage({ tagIds: neueIds })}
-  />
-</div>
+// in JSX, dort wo bisher Tags editiert wurden (oder neu in MetadataSection):
+{tagPickerSlot && (
+  <div className="mb-4">
+    <label className="block text-sm font-medium mb-1">Tags</label>
+    {tagPickerSlot}
+  </div>
+)}
 ```
 
-- [ ] **Step 2: Tests + Commit**
+- [ ] **Step 2: ExamLab-Wrapper mit DI-Wiring**
+
+```tsx
+// ExamLab/src/components/lp/frageneditor/PruefungFragenEditor.tsx
+import SharedFragenEditor from '@shared/editor/SharedFragenEditor';
+import { TagPicker } from '@shared/editor/components/TagPicker';
+import { useTagsStore } from '../../../store/tagsStore';
+import { erstelleTag } from '../../../services/tagsApi';
+
+export default function PruefungFragenEditor(props) {
+  const alleTags = useTagsStore((s) => s.tags.filter((t) => !t.archiviert));
+  const upsertLokal = useTagsStore((s) => s.upsertLokal);
+
+  const handleErstelleNeu = async (name: string) => {
+    const r = await erstelleTag({ name });
+    upsertLokal(r.tag);
+    return r.tag;
+  };
+
+  const tagPickerSlot = (
+    <TagPicker
+      tagIds={props.frage.tagIds || []}
+      onChange={(neueIds) => props.updateFrage({ tagIds: neueIds })}
+      alleTags={alleTags}
+      onErstelleNeu={handleErstelleNeu}
+    />
+  );
+
+  return <SharedFragenEditor {...props} tagPickerSlot={tagPickerSlot} />;
+}
+```
+
+**Pfad-Hinweis:** Plan-Phase greppt aktuelle Wrapper-Datei (Audit zeigte `PruefungFragenEditor.tsx` als Wrapper). Falls Editor von mehreren Surfaces (Composer, Fragensammlung) aufgerufen wird, jeder Wrapper muss eigenes `tagPickerSlot` reichen — oder es wird ein gemeinsamer `useTagPickerSlot()`-Hook in `ExamLab/src/components/lp/frageneditor/` extrahiert.
+
+- [ ] **Step 3: Tests + Commit**
 
 ```bash
 cd ExamLab && npx vitest run
 npx tsc --noEmit
-git add packages/shared/src/editor/
-git commit -m "Cluster H Phase 2: TagPicker im Frage-Editor integriert"
+git add packages/shared/src/editor/ ExamLab/src/components/lp/frageneditor/
+git commit -m "Cluster H Phase 2: TagPicker im Frage-Editor via Slot-Pattern (DI)"
 ```
 
 ---
@@ -1811,14 +1939,15 @@ export function TagsListe() {
 }
 ```
 
-- [ ] **Step 3: useIstAdmin-Hook ggf. neu**
+- [ ] **Step 3: useIstAdmin-Hook neu**
+
+Audit + grep haben bestätigt: `useAuthStore` in `ExamLab/src/store/authStore.ts:112` exportiert bereits einen Selektor `adminRolle: lpInfo?.rolle === 'admin'` (Z.137). Hook nutzt diesen.
 
 ```ts
 // ExamLab/src/hooks/useIstAdmin.ts
-// Plan-Phase greppt exakt wie LP-Info bezogen wird
 import { useAuthStore } from '../store/authStore';
 export function useIstAdmin(): boolean {
-  return useAuthStore((s) => s.lpInfo?.rolle === 'admin');
+  return useAuthStore((s) => s.adminRolle);
 }
 ```
 
@@ -1909,9 +2038,10 @@ Nicht in dieser Session — wartet auf 2 Wochen Live-Betrieb ohne Probleme. Plan
 
 ## Task 3.1: tagsLegacy-Spalte raus (Backend)
 
-- [ ] Spalte `tagsLegacy` aus allen Frage-Sheets entfernen (manueller Sheet-Edit oder Apps-Script-Endpoint)
+- [ ] Apps-Script-Endpoint `apiCleanupTagsLegacy()` (Admin-only, einmalig) der die `tagsLegacy`-Spalte aus allen 4 (FACHBEREICH_SHEETS) Frage-Sheets entfernt. Manueller Sheet-Edit ist verboten — bei 4 Sheets × 100+ Zeilen zu fehleranfällig + nicht reversibel.
 - [ ] `parseFrage` lesen-Pfad entfernen (`row.tagsLegacy || ...`)
 - [ ] Schreib-Pfad unverändert (schreibt eh nur tagIds)
+- [ ] Apps-Script-Deploy + Admin ruft Cleanup einmalig auf
 - [ ] Commit
 
 ## Task 3.2: tags-Feld aus Frage-Type entfernen
