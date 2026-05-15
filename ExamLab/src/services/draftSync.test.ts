@@ -63,6 +63,14 @@ vi.mock('./fragensammlungApi', () => ({
   speichereFrageMitStatus: vi.fn(),
 }))
 
+// Cluster D Phase 0 Hotfix#4: Store-Mock für aktualisiereFrage-Verifikation
+const aktualisiereFrageMock = vi.fn()
+vi.mock('../store/fragensammlungStore', () => ({
+  useFragensammlungStore: {
+    getState: () => ({ aktualisiereFrage: aktualisiereFrageMock }),
+  },
+}))
+
 import { set as idbSet } from 'idb-keyval'
 import { speichereFrageMitStatus } from './fragensammlungApi'
 import { tippeFrage, finalisiere, subscribe, resetForTesting } from './draftSync'
@@ -81,6 +89,7 @@ beforeEach(() => {
   vi.mocked(speichereFrageMitStatus)
     .mockReset()
     .mockResolvedValue({ success: true, status: 'sammlung' })
+  aktualisiereFrageMock.mockReset()
   StubBroadcastChannel.reset()
   resetForTesting()
 })
@@ -179,6 +188,81 @@ describe('draftSync', () => {
     // 1 Call (kein Retry), Status auf 'server-down'
     expect(speichereFrageMitStatus).toHaveBeenCalledTimes(1)
     expect(states).toContain('server-down')
+  })
+
+  it('Case 9: Auto-Save success → fragensammlungStore.aktualisiereFrage mit Backend-resolved status (Hotfix#4)', async () => {
+    vi.mocked(speichereFrageMitStatus).mockResolvedValue({
+      success: true,
+      status: 'draft',
+      id: 'f1',
+    })
+
+    tippeFrage('a@b.ch', testFrage)
+    await vi.advanceTimersByTimeAsync(10_001)
+    await vi.runAllTimersAsync()
+
+    expect(aktualisiereFrageMock).toHaveBeenCalledTimes(1)
+    expect(aktualisiereFrageMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'f1',
+        status: 'draft',
+        pruefungstauglich: false,
+      }),
+    )
+  })
+
+  it('Case 10: Auto-Save success status=sammlung → aktualisiereFrage mit pruefungstauglich=true', async () => {
+    vi.mocked(speichereFrageMitStatus).mockResolvedValue({
+      success: true,
+      status: 'sammlung',
+      id: 'f1',
+    })
+
+    tippeFrage('a@b.ch', testFrage)
+    await vi.advanceTimersByTimeAsync(10_001)
+    await vi.runAllTimersAsync()
+
+    expect(aktualisiereFrageMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'f1',
+        status: 'sammlung',
+        pruefungstauglich: true,
+      }),
+    )
+  })
+
+  it('Case 11: finalisiere success → fragensammlungStore.aktualisiereFrage (Hotfix#4)', async () => {
+    vi.mocked(speichereFrageMitStatus).mockResolvedValue({
+      success: true,
+      status: 'sammlung',
+      id: 'f1',
+    })
+
+    const promise = finalisiere('a@b.ch', testFrage)
+    await vi.runAllTimersAsync()
+    await promise
+
+    expect(aktualisiereFrageMock).toHaveBeenCalledTimes(1)
+    expect(aktualisiereFrageMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'f1',
+        status: 'sammlung',
+        pruefungstauglich: true,
+      }),
+    )
+  })
+
+  it('Case 12: Auto-Save failure → aktualisiereFrage NICHT aufgerufen', async () => {
+    vi.mocked(speichereFrageMitStatus).mockResolvedValue({
+      success: false,
+      errorStatus: 400,
+    })
+
+    tippeFrage('a@b.ch', testFrage)
+    await vi.advanceTimersByTimeAsync(10_001)
+    await vi.runAllTimersAsync()
+
+    expect(aktualisiereFrageMock).not.toHaveBeenCalled()
   })
 
   it('Case 8: BroadcastChannel-Update von anderem Tab → in-Memory-State', async () => {

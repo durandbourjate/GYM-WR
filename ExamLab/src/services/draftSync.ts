@@ -18,6 +18,7 @@
  */
 import { set as idbSet } from 'idb-keyval'
 import { speichereFrageMitStatus } from './fragensammlungApi'
+import { useFragensammlungStore } from '../store/fragensammlungStore'
 import type { Frage } from '../types/fragen-storage'
 
 export type SyncStatus =
@@ -152,6 +153,16 @@ async function syncToServer(frageId: string, retryCount = 0): Promise<void> {
       status: newStatus,
       pruefungstauglich: result.status === 'sammlung',
     })
+    // Cluster D Phase 0 Hotfix#4: fragensammlungStore.detailCache mit Backend-resolved
+    // Frage updaten, damit Editor-reopen den frischen Status liest (sonst stale-read).
+    // result.status (Backend-Hybrid-Logic-Resolved) gewinnt vor lokalem entry.frage.status.
+    if (result.status) {
+      useFragensammlungStore.getState().aktualisiereFrage({
+        ...entry.frage,
+        status: result.status,
+        pruefungstauglich: result.status === 'sammlung',
+      } as Frage)
+    }
     broadcastUpdate(frageId, stateByFrageId.get(frageId)!.state)
     return
   }
@@ -272,6 +283,15 @@ export async function finalisiere(email: string, frage: Frage): Promise<void> {
     status: newStatus,
     pruefungstauglich: result.status === 'sammlung',
   })
+  // Cluster D Phase 0 Hotfix#4: fragensammlungStore.detailCache mit Backend-resolved
+  // Frage updaten, damit Editor-reopen den frischen Status liest (sonst stale-read).
+  if (result.status) {
+    useFragensammlungStore.getState().aktualisiereFrage({
+      ...frage,
+      status: result.status,
+      pruefungstauglich: result.status === 'sammlung',
+    } as Frage)
+  }
   broadcastUpdate(frageId, stateByFrageId.get(frageId)!.state)
 }
 
