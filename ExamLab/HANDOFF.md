@@ -51,12 +51,14 @@
 
 ## 🎯 ROADMAP — Was als nächstes ansteht (priorisiert)
 
-### Priorität 1 — Cluster H Phase 2+3 (Tag-Modell-Migration FERTIGSTELLEN)
-- **Status:** Phase 0+1 LIVE (15.05.2026, preview HEAD `972451f`). Apps-Script deployed, Migration getriggert: **183 Tags erstellt, 2416 Fragen aktualisiert in 3.8s**. Backend-Sheet `Tags` befüllt + Frage-Sheets haben `tagIds`-Spalte + `tags` umbenannt zu `tagsLegacy`. Alte UI funktioniert weiter (Read-Pfade lesen `tagsLegacy || tags`).
-- **Phase 2 (~1.5 Tage):** 9 Hybrid-Code-Stellen umstellen + TagPicker-Komponente (DI-Slot-Pattern) + Verwaltungs-Tab in EinstellungenPanel + 11 Browser-E2E-Cases
-- **Phase 3 (nach 2 Wochen Live):** tagsLegacy-Spalte raus via `apiCleanupTagsLegacy`-Endpoint, Frontend-Fallback raus
-- **Geschätzter Restaufwand:** 1.5 Tage Code (Phase 2) + 0.5 Tag Cleanup (Phase 3)
-- **Hotfix-Lehren (Phase 1):** Service-Wrapper email-Pflicht-Param vergessen (siehe `feedback_service_wrapper_email_pflicht.md`), Push-Frequenz zu schnell (siehe `feedback_push_konflikt_rate.md`)
+### Priorität 1 — Cluster H Phase 3 (Cleanup nach 2 Wochen Live)
+- **Status:** Phase 0+1+2 LIVE (15.05.2026, preview HEAD `1bd01c7`). Migration: **183 Tags + 2416 Fragen in 3.8s**. Phase 2: 9 Hybrid-Stellen auf tagsStore-Lookup, TagPicker im Editor (DI-Slot), Verwaltungs-Tab live mit Edit/Mergen/Archive/HardDelete. Browser-E2E mit echtem LP-Login: alle 4 Polish-Items + Quick-Erstellen + Edit + Mergen + Archive ✅
+- **Phase 3 ab 29.05.2026 (2 Wochen Live-Beobachtung):** tagsLegacy-Spalte raus via `apiCleanupTagsLegacy`-Endpoint, Frontend-Fallback-Code raus, `tagIds?` zu `tagIds: string[]` (required) machen
+- **Geschätzter Restaufwand:** 0.5 Tag Cleanup (Phase 3)
+- **Hotfix-Lehren (Phase 1+2):**
+  - `feedback_service_wrapper_email_pflicht.md` — Backend-Auth-Gate verlangt body.email
+  - `feedback_push_konflikt_rate.md` — Pushes nicht zu schnell hintereinander
+  - `feedback_zustand_selector_useshallow.md` — Selector mit Object/Array-Output braucht useShallow (React #185)
 
 ### Priorität 2 — Cluster D Batch-Edit (wartet auf Cluster H Phase 2)
 - **Status:** Spec existiert (`docs/superpowers/specs/2026-05-11-cluster-d-batch-edit-design.md`), aktualisierungsbedürftig (Tag-Object-Modell statt string[], +Editor-Felder status/gefaess/semester/lernzielIds als Pre-Phase, +Minimal-Audit-Log). Plan steht aus.
