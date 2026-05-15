@@ -13,7 +13,7 @@ interface TagsState {
   geladen: boolean
   ladend: boolean
   fehler: string | null
-  ladeAlleTags: (opts?: { inkludiereArchivierte?: boolean }) => Promise<void>
+  ladeAlleTags: (params: { email: string; inkludiereArchivierte?: boolean }) => Promise<void>
   upsertLokal: (tag: Tag) => void
   entferneLokal: (id: string) => void
   getById: (id: string) => Tag | undefined
@@ -27,11 +27,11 @@ export const useTagsStore = create<TagsState>((set, get) => ({
   ladend: false,
   fehler: null,
 
-  ladeAlleTags: async (opts) => {
+  ladeAlleTags: async (params) => {
     if (get().ladend) return
     set({ ladend: true, fehler: null })
     try {
-      const tags = await listeTags(opts)
+      const tags = await listeTags(params)
       set({ tags, geladen: true, ladend: false })
     } catch (e) {
       set({ fehler: String(e), ladend: false })

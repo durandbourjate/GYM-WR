@@ -38,7 +38,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
     setMigrLaeuft(true)
     setMigrFehler(null)
     try {
-      const r = await migriereTagsZuObjects()
+      const r = await migriereTagsZuObjects({ email })
       setMigrErgebnis(r)
     } catch (e) {
       setMigrFehler(e instanceof Error ? e.message : String(e))
