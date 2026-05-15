@@ -137,7 +137,9 @@ auditLog_('backfillStatus', email, {
 });
 ```
 
-**Schreibreihenfolge:** Audit-Log wird **nach** dem Sheet-Schreib-Pfad geschrieben (nicht davor), damit `affectedIds` + `failedIds` korrekt erfasst sind. Bei Komplett-Fehlschlag (Lock-Konflikt etc.) kein Audit-Eintrag — Frontend retried.
+**Schreibreihenfolge:** Audit-Log wird **nach** dem Sheet-Schreib-Pfad geschrieben (nicht davor), damit `affectedIds` + `failedIds` korrekt erfasst sind. Bei Komplett-Fehlschlag (Lock-Konflikt etc.) kein Audit-Eintrag — Frontend retried. Bei **Partial-Failure** wird Audit-Eintrag geschrieben mit befüllten `affectedIds` und `failedIds`.
+
+**Edge-Case Crash zwischen Sheet-Schreib und Audit-Log-Schreib:** Daten sind persistiert, Audit-Eintrag fehlt → akzeptiert (Toleranz, kein Roll-back). Empirisch selten, da `auditLog_` direkt nach Sheet-Schreib läuft und Apps-Script atomare Funktions-Beendigung garantiert. Plan-Phase darf das nochmal evaluieren.
 
 **Größe:** 500 UUIDs ≈ 20 KB JSON-String → Sheets-Zellen-Limit (~50 KB) gedeckelt. Bei >1000 Fragen im Patch Plan-Phase prüft Pagination (siehe §11).
 
@@ -346,7 +348,10 @@ toggle(id, { shift }) {
 ### Phase 0: `status`-Feld pre-Batch (~0.5 Tag)
 **Neu im Spec-Update 15.05.2026.** Status-Feld zuerst im Single-Edit lauffähig, bevor Batch ihn als batch-fähig zeigt.
 
-- `status: 'draft' | 'sammlung'` in `packages/shared/src/types/fragen-core.ts` `FrageBase` ergänzen (heute nur in ExamLab-Storage-Extension). Optional zunächst (`status?:`).
+**Storage-Extension-Beziehung:** `status` lebt heute nur in `ExamLab/src/types/fragen-storage.ts:27` als Storage-Extension-Feld (`status?: 'draft' | 'sammlung'`). Phase 0 macht **Hard-Cut zu FrageBase**: Feld zieht in Core (`packages/shared/src/types/fragen-core.ts`), Storage-Extension-Feld wird gleichzeitig entfernt. Single source of truth, kein Hybrid (anders als Cluster H tagsLegacy, weil status noch keine produktiven Daten in der Storage-Extension hat — Audit zeigt: nur im Type, nicht im Editor → Backfill ist die Erst-Befüllung, nicht eine Migration). Phase 0 ist atomarer Single-PR.
+
+- `status: 'draft' | 'sammlung'` in `packages/shared/src/types/fragen-core.ts` `FrageBase` ergänzen. Optional zunächst (`status?:`), nach Backfill required machen.
+- ExamLab-Storage-Extension `fragen-storage.ts:27` `status`-Feld **entfernen** (Hard-Cut, kein Hybrid).
 - Apps-Script `apiBackfillStatusDefault` als one-shot Admin-Action: alle Fragen ohne `status` → Default `'sammlung'`. Audit-Log-Eintrag `'backfillStatus'`. Analog zur Tag-Migration aus Cluster H.
 - Editor-UI: 2er-Toggle/RadioGroup `Entwurf | Sammlung` in `MetadataSection.tsx` unter `bloom` einfügen, Tailwind-Pattern aus den anderen Feldern wiederverwenden.
 - Backend-`parseFrage` + 4 Schreib-Pfade bestätigen `status` durchschleifen (analog Cluster H Phase 0 Sub-Task 2).
@@ -363,7 +368,7 @@ toggle(id, { shift }) {
 - „Alle anzeigen"-Toggle im Filter-Header.
 
 ### Phase 3: Batch-Modus im Editor (~1.5 Tag)
-- `SharedFragenEditor` `batchMode`-Prop (oder neue `BatchFragenEditor`-Wrapper-Komponente).
+- `SharedFragenEditor` `batchMode`-Prop **bevorzugt** (kleinerer Diff, alle Single-Edit-Funktionalität bleibt erhalten, Mode wird via Prop geschaltet) statt neue `BatchFragenEditor`-Wrapper-Komponente (saubere Trennung, aber doppelter Maintenance-Aufwand bei Editor-Änderungen). Plan-Phase darf entscheiden anders, aber Spec-Empfehlung ist `batchMode`-Prop.
 - Banner-Komponente.
 - Feld-Highlighting (violet Ring) auf 7 batch-fähigen Feldern (fachbereich/bloom/**status**/gefaesse/semester/tagIds/lernzielIds).
 - Tags 3-Modi-Radio mit DI-Slot-Reuse.
@@ -404,6 +409,7 @@ toggle(id, { shift }) {
 ## 9. Abhängigkeiten zu anderen Clustern
 
 - **Cluster H (Tag-Object-Modell):** ✅ **Erfüllt** (Phase 2 LIVE 15.05.2026). Konkretes Modell: `Tag` in `packages/shared/src/types/tag.ts`, `tagsStore.getByIds()`, `TagPicker`-DI-Slot in `SharedFragenEditor.tsx:184-198`, Backend-Endpoints `apiListTags`/`apiCreateTag`/`apiArchiveTag`/`apiMergeTags`. Cluster D Tag-Operations bauen direkt darauf auf.
+  - **Cluster D ist unabhängig von Cluster H Phase 3** (tagsLegacy-Cleanup, ab ~29.05.). Cluster D liest Tags ausschliesslich via `tagsStore.getByIds()` und schreibt neue `tagIds` direkt — `tagsLegacy`-Spalte wird vom Bulk-Pfad nicht angerührt. Cluster D darf sofort nach Phase-2-Live starten, muss nicht auf 29.05. warten.
 - **Cluster G (Icon-System):** Lucide-Icons für Floating-Bar (`Pencil`, `Trash2`, `X`, `Filter`). Brand-Farb-Tokens (`violet-300/500/600`). **Voraussetzung.**
 - **Cluster A (Bug-Fixes):** `optimisticDelete`-Helper aus Cluster A für Bulk-Löschen-Flow. **Voraussetzung** dass Helper-Datei existiert.
 - **Cluster B (Header-Redesign):** „Alle anzeigen"-Toggle wird in Filter-Header (ggf. auch Slim-Bar) integriert. Floating-Bar muss z-Index unter App-Header bleiben (`z-50` < App-Header `z-60`).
@@ -443,7 +449,7 @@ toggle(id, { shift }) {
 10. **Batch-Tags-Ersetzen:** Radio „Ersetzen" → Confirm warnt rot „Bestehende Tags werden bei 47 Fragen vollständig entfernt".
 11. **Batch-Tags-Entfernen:** Radio „Entfernen" + Tag „Alt-WR" wählen → Confirm zeigt orange „Tag 'Alt-WR' wird aus 47 Fragen entfernt, andere Tags bleiben".
 12. **Bulk-Löschen:** 5 wählen → „Löschen" → LoeschConfirm → bestätigen → 5 verschwinden, Toast „5 in Papierkorb".
-13. **Partial-Failure-Simulation:** Network während Bulk-Update killen → Toast „43 erfolgreich, 4 fehlgeschlagen".
+13. **Partial-Failure-Simulation:** Network während Bulk-Update killen → Toast „43 erfolgreich, 4 fehlgeschlagen". **Anmerkung:** Network-Kill ist nicht-deterministisch. Plan-Phase darf einen Backend-Test-Hook (`?simulateFailureForIds=...`) erwägen — Trade-off zwischen Test-Determinismus und Backend-Komplexität.
 14. **Audit-Log-Verifikation:** Nach jedem Bulk-Schritt Sheet `AuditLog` öffnen → Eintrag mit `action: 'batchEditFragen'`, `email`, `details.count`, `details.affectedIds`, `details.tagsModus` (wenn Tag-Op).
 
 ### 10.4 Visuelle Verifikation
