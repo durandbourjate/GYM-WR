@@ -7,6 +7,7 @@ import CRUDSectionShell from './CRUDSectionShell'
 import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
 import SpeicherButton from './SpeicherButton'
 import { migriereTagsZuObjects } from '../../../services/tagsApi'
+import { postJson } from '../../../services/apiClient'
 import Button from '../../ui/Button'
 import BaseDialog from '../../ui/BaseDialog'
 
@@ -33,6 +34,12 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
   const [migrErgebnis, setMigrErgebnis] = useState<{ neueTags: number; fragenAktualisiert: number; dauerMs: number } | null>(null)
   const [migrFehler, setMigrFehler] = useState<string | null>(null)
 
+  // Cluster D Phase 0 — Status-Backfill State (einmalige Wartungs-Aktion)
+  const [statusBackfillConfirmOpen, setStatusBackfillConfirmOpen] = useState(false)
+  const [statusBackfillLaeuft, setStatusBackfillLaeuft] = useState(false)
+  const [statusBackfillErgebnis, setStatusBackfillErgebnis] = useState<{ count: number; dauerMs: number } | null>(null)
+  const [statusBackfillFehler, setStatusBackfillFehler] = useState<string | null>(null)
+
   async function handleMigrationStartenOK() {
     setMigrConfirmOpen(false)
     setMigrLaeuft(true)
@@ -44,6 +51,26 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
       setMigrFehler(e instanceof Error ? e.message : String(e))
     } finally {
       setMigrLaeuft(false)
+    }
+  }
+
+  // Cluster D Phase 0 — Status-Backfill für Frage-Sheets ohne status-Spalte / leere Werte.
+  async function handleStatusBackfillStartenOK() {
+    setStatusBackfillConfirmOpen(false)
+    setStatusBackfillLaeuft(true)
+    setStatusBackfillFehler(null)
+    try {
+      const r = await postJson<{ success?: boolean; count?: number; dauerMs?: number; error?: string }>(
+        'apiBackfillStatusDefault',
+        { email },
+      )
+      if (!r) throw new Error('Backfill: keine Antwort vom Server')
+      if (r.success === false || r.error) throw new Error(r.error || 'Backfill fehlgeschlagen')
+      setStatusBackfillErgebnis({ count: Number(r.count ?? 0), dauerMs: Number(r.dauerMs ?? 0) })
+    } catch (e) {
+      setStatusBackfillFehler(e instanceof Error ? e.message : String(e))
+    } finally {
+      setStatusBackfillLaeuft(false)
     }
   }
 
@@ -287,6 +314,43 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
         }
       >
         <p className="text-slate-700 dark:text-slate-300">Die Migration läuft nur einmal. Wenn das Tags-Sheet bereits befüllt ist, gibt das Backend einen Fehler zurück.</p>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">Wirklich starten?</p>
+      </BaseDialog>
+
+      {/* === Cluster D Phase 0 — Status-Backfill (einmalige Wartungs-Aktion) === */}
+      <section className="mt-8 p-4 border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100">⚠ Cluster D Phase 0 — Status-Backfill (einmalig)</h3>
+        <p className="text-sm mb-3 text-slate-700 dark:text-slate-300">
+          Füllt alle Frage-Sheets mit leerer Status-Spalte (Default „sammlung") auf.
+          Idempotent — Zeilen mit bereits gesetztem Status („draft" oder „sammlung") bleiben unangetastet.
+        </p>
+        <Button onClick={() => setStatusBackfillConfirmOpen(true)} variant="primary" disabled={statusBackfillLaeuft} loading={statusBackfillLaeuft}>
+          {statusBackfillLaeuft ? 'Läuft...' : 'Status-Backfill starten'}
+        </Button>
+        {statusBackfillErgebnis && (
+          <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded">
+            ✅ {statusBackfillErgebnis.count} Fragen mit Default „sammlung" befüllt ({statusBackfillErgebnis.dauerMs}ms)
+          </div>
+        )}
+        {statusBackfillFehler && (
+          <div className="mt-3 p-3 bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100 rounded">
+            Fehler: {statusBackfillFehler}
+          </div>
+        )}
+      </section>
+
+      <BaseDialog
+        open={statusBackfillConfirmOpen}
+        onClose={() => setStatusBackfillConfirmOpen(false)}
+        title="Status-Backfill starten?"
+        footer={
+          <>
+            <Button onClick={() => setStatusBackfillConfirmOpen(false)} variant="ghost">Abbrechen</Button>
+            <Button onClick={handleStatusBackfillStartenOK} variant="primary">Backfill starten</Button>
+          </>
+        }
+      >
+        <p className="text-slate-700 dark:text-slate-300">Alle Fragen ohne expliziten Status bekommen den Default „sammlung". Bestehende „draft"-Marker bleiben unverändert.</p>
         <p className="mt-2 text-slate-700 dark:text-slate-300">Wirklich starten?</p>
       </BaseDialog>
     </div>

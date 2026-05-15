@@ -918,6 +918,67 @@ function apiMigriereTagsZuObjects(body) {
 }
 
 /**
+ * Cluster D Phase 0: Backfill — leere Status-Spalten aller Frage-Sheets mit Default 'sammlung'
+ * füllen. Idempotent: Zeilen mit bereits gesetztem Status werden übersprungen.
+ *
+ * Performance: Batch-Read + Batch-Write pro Sheet (1×getValues, 1×setValues) — analog Cluster H.
+ * Admin-only via pruefeAdminOderFehler_.
+ *
+ * @returns {{success: true, count: number, dauerMs: number}}
+ */
+function apiBackfillStatusDefault(body) {
+  var lpInfo = getLPInfo(body.email);
+  var fehler = pruefeAdminOderFehler_(lpInfo);
+  if (fehler) return fehler;
+
+  var startTime = new Date().getTime();
+  var fachbereiche = FACHBEREICH_SHEETS;
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var totalCount = 0;
+
+  for (var f = 0; f < fachbereiche.length; f++) {
+    var fb = fachbereiche[f];
+    var sheet = fragensammlung.getSheetByName(fb);
+    if (!sheet) continue;
+    var values = sheet.getDataRange().getValues();
+    if (values.length <= 1) continue;
+    var header = values[0];
+
+    // status-Spalte sicherstellen
+    var statusIdx = header.indexOf('status');
+    if (statusIdx < 0) {
+      var neueSpalteIdx = header.length + 1;
+      sheet.getRange(1, neueSpalteIdx).setValue('status');
+      statusIdx = neueSpalteIdx - 1; // 0-basiert
+      // Neue Spalte hat keine Werte → alle Zeilen zählen als "leer" → unten mit 'sammlung' füllen.
+    }
+
+    var updates = [];      // N×1: jede Frage-Zeile genau ein Wert
+    var aenderungen = 0;
+    for (var i = 1; i < values.length; i++) {
+      var rowStatus = values[i][statusIdx];
+      // Nur leer / undefined / null überschreiben. 'draft' und 'sammlung' bleiben unangetastet.
+      if (rowStatus === 'draft' || rowStatus === 'sammlung') {
+        updates.push([rowStatus]);
+      } else {
+        updates.push(['sammlung']);
+        aenderungen++;
+      }
+    }
+
+    if (updates.length > 0 && aenderungen > 0) {
+      sheet.getRange(2, statusIdx + 1, updates.length, 1).setValues(updates);
+      totalCount += aenderungen;
+    }
+  }
+
+  cacheInvalidieren_();
+  var dauerMs = new Date().getTime() - startTime;
+  auditLog_('backfillStatus', body.email, { count: totalCount, defaultWert: 'sammlung', dauerMs: dauerMs });
+  return jsonResponse({ success: true, count: totalCount, dauerMs: dauerMs });
+}
+
+/**
  * Cluster H Phase 0: Mergen mehrerer Tags zu einem Master. Admin-only.
  * Schritt 1: alle Frage-Sheets durchgehen, in tagIds-Spalte mergedIds durch masterId ersetzen.
  * Schritt 2: mergedIds als archiviert markieren.
@@ -1831,6 +1892,8 @@ function doPost(e) {
     'apiListTags', 'apiCreateTag', 'apiUpdateTag',
     'apiArchiveTag', 'apiMergeTags', 'apiHardDeleteTag',
     'apiMigriereTagsZuObjects',
+    // Cluster D Phase 0: Backfill-Endpoint (Admin-only via pruefeAdminOderFehler_).
+    'apiBackfillStatusDefault',
   ];
   if (LP_ACTIONS.indexOf(action) >= 0) {
     var lpEmail = body.email || body.callerEmail;
@@ -2190,6 +2253,8 @@ function doPost(e) {
       return apiMergeTags(body);
     case 'apiMigriereTagsZuObjects':
       return apiMigriereTagsZuObjects(body);
+    case 'apiBackfillStatusDefault':
+      return apiBackfillStatusDefault(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
@@ -4516,7 +4581,13 @@ function speichereFrageIntern_(frage, email) {
   var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
   const data = getSheetData(sheet);
 
-  const status = istVollstaendig_(frage) ? 'sammlung' : 'draft';
+  // Cluster D Phase 0: Hybrid-Logic — User-Wahl gewinnt (Editor sendet `status` nur
+  // wenn LP explizit im Status-RadioGroup geändert hat). Sonst Auto-Derivation via
+  // istVollstaendig_ (Backward-Compat zu Pre-Phase-0-Frontends + Default für Neu-Anlage).
+  var statusUserGewaehlt = frage.status === 'draft' || frage.status === 'sammlung';
+  const status = statusUserGewaehlt
+    ? frage.status
+    : (istVollstaendig_(frage) ? 'sammlung' : 'draft');
 
   const rowData = {
     id: frage.id,
@@ -5170,6 +5241,9 @@ function batchImportFragen(body) {
           poolContentHash: frage.poolContentHash || '',
           poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : '',
           lernzielIds: (frage.lernzielIds || []).join(','),
+          // Cluster D Phase 0: Status mit-übernehmen wenn vorhanden (Pool-Sync-Pfad).
+          // Sonst leer → spätere parseFrage interpretiert als 'sammlung'.
+          status: (frage.status === 'draft' || frage.status === 'sammlung') ? frage.status : '',
         };
         alleRowData.push(rowData);
       }
@@ -6346,7 +6420,9 @@ function importierePoolFragen(body) {
             poolContentHash: frage.poolContentHash || '',
             poolUpdateVerfuegbar: frage.poolUpdateVerfuegbar ? 'true' : 'false',
             poolVersion: JSON.stringify(frage.poolVersion || {}),
-            lernzielIds: (frage.lernzielIds || []).join(',')
+            lernzielIds: (frage.lernzielIds || []).join(','),
+            // Cluster D Phase 0: Status aus Pool-Frage übernehmen (default 'sammlung' wenn nicht gesetzt).
+            status: (frage.status === 'draft' || frage.status === 'sammlung') ? frage.status : 'sammlung'
           };
 
           var newRow = headers.map(function(h) { return rowData[h] || ''; });

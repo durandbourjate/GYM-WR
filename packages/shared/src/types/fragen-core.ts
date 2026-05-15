@@ -82,6 +82,15 @@ export interface FrageBase {
   poolContentHash?: string            // SHA-256 für Änderungserkennung
   poolUpdateVerfuegbar?: boolean      // true wenn Pool-Version neuer
   lernzielIds?: string[]              // Referenzen auf Lernziel-Einträge
+
+  /**
+   * Lifecycle-Status. Cluster D Phase 0: Aus der ExamLab-Storage-Extension in den Core
+   * hochgehoben — Single Source of Truth + erlaubt Editor-Edit & Batch-Edit der Sammlung/Draft-Zugehörigkeit.
+   *
+   * 'draft' = unvollständig (Drafts-Sektion). 'sammlung' = vollständig.
+   * Default 'sammlung'. Apps-Script kennt Hybrid-Logic: User-Wahl wins, sonst Auto-Derivation via istVollstaendig_.
+   */
+  status?: 'draft' | 'sammlung';
 }
 
 export type Fachbereich = 'VWL' | 'BWL' | 'Recht' | 'Informatik' | 'Allgemein';

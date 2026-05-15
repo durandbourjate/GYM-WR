@@ -21,8 +21,7 @@ export interface FrageBase extends Omit<Core.FrageBase, 'tags'> {
   tags: (string | Tag)[]
   _recht?: EffektivesRecht
   poolVersion?: PoolFrageSnapshot
-  /** Lifecycle-Status. 'draft' = unvollständig (Drafts-Sektion). 'sammlung' = vollständig. Default 'sammlung'. */
-  status?: 'draft' | 'sammlung'
+  // Cluster D Phase 0: `status` ist jetzt im Core (siehe `@shared/types/fragen-core` FrageBase).
   /** Soft-Delete-Timestamp (ISO-String). Leer = nicht gelöscht. Bundle 3. */
   geloescht_am?: string
 }

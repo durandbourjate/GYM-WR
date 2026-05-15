@@ -55,6 +55,9 @@ export interface FrageBasis {
   berechtigungen?: unknown[]
   lernzielIds?: string[]
   pruefungstauglich?: boolean
+  /** Cluster D Phase 0 — Lifecycle-Status. Wird ans Backend gesendet, das Hybrid-Logic anwendet
+   *  (User-Wahl wins, sonst Auto-Derivation via istVollstaendig_). undefined = kein expliziter User-Wunsch. */
+  status?: 'draft' | 'sammlung'
 }
 
 /** Typ-spezifische Daten — discriminated union */

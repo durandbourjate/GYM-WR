@@ -75,6 +75,12 @@ interface MetadataSectionProps {
   /** Cluster H Phase 2 — TagPicker (Tag-Objekt-Modell) als Slot, vom Host instanziiert
    *  weil tagsStore + tagsApi in App-Schicht leben (Build-Bruch sonst). */
   tagPickerSlot?: React.ReactNode
+  /** Cluster D Phase 0 — Lifecycle-Status (Single-Source-of-Truth in FrageBase). Default `'sammlung'`. */
+  status?: 'draft' | 'sammlung'
+  /** Setter für `status`. Pflicht damit Editor-Edit funktioniert. */
+  setStatus?: (s: 'draft' | 'sammlung') => void
+  /** Cluster D Batch-Edit (kommt): violetter Ring um das Status-Feld. Default false. */
+  batchMode?: boolean
 }
 
 export default function MetadataSection({
@@ -103,6 +109,9 @@ export default function MetadataSection({
   themenVorschlaege,
   zeigeLernzielResetHinweis,
   tagPickerSlot,
+  status,
+  setStatus,
+  batchMode = false,
 }: MetadataSectionProps) {
   const [statsOffen, setStatsOffen] = useState(false)
   const config = useEditorConfig()
@@ -247,6 +256,39 @@ export default function MetadataSection({
             title={bewertungsrasterAktiv ? 'Punkte werden automatisch aus dem Bewertungsraster berechnet' : undefined} />
         </Feld>
       </div>
+
+      {/* Cluster D Phase 0 — Lifecycle-Status (Entwurf / Sammlung). Auto-Default 'sammlung' wenn nichts gesetzt. */}
+      {setStatus && (
+        <div
+          className={`mt-3 ${batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}`}
+        >
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Status</label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="radio"
+                name="frage-status"
+                value="draft"
+                checked={(status ?? 'sammlung') === 'draft'}
+                onChange={() => setStatus('draft')}
+                className="border-slate-300 dark:border-slate-600"
+              />
+              <span>Entwurf</span>
+            </label>
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="radio"
+                name="frage-status"
+                value="sammlung"
+                checked={(status ?? 'sammlung') === 'sammlung'}
+                onChange={() => setStatus('sammlung')}
+                className="border-slate-300 dark:border-slate-600"
+              />
+              <span>Sammlung</span>
+            </label>
+          </div>
+        </div>
+      )}
 
       {/* Cluster H Phase 2 — Tag-Objekt-Picker (Slot vom Host, DI-Pattern) */}
       {tagPickerSlot && (

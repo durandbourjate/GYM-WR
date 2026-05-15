@@ -248,6 +248,17 @@ export default function SharedFragenEditor({
   const [tagIds, setTagIds] = useState<string[]>(frage?.tagIds ?? [])
   const [semester, setSemester] = useState<string[]>(frage?.semester ?? [])
   const [gefaesse, setGefaesse] = useState<string[]>(frage?.gefaesse ?? ['SF'])
+  /** Cluster D Phase 0 — Lifecycle-Status (Single-Source-of-Truth in FrageBase).
+   *  Default 'sammlung' für Neu-Anlagen. Apps-Script Hybrid-Logic überschreibt mit Auto-Derivation
+   *  (istVollstaendig_), wenn das Feld noch nie vom User explizit gesetzt wurde. */
+  const [status, setStatusRaw] = useState<'draft' | 'sammlung'>(frage?.status ?? 'sammlung')
+  /** Dirty-Flag: true sobald der User Status explizit ändert. Nur dann wird `status`
+   *  ans Backend mit-geschickt — sonst greift Apps-Script-Auto-Derivation (Backward-Compat). */
+  const [statusDirty, setStatusDirty] = useState<boolean>(false)
+  const setStatus = useCallback((s: 'draft' | 'sammlung') => {
+    setStatusRaw(s)
+    setStatusDirty(true)
+  }, [])
 
   // Gemeinsam
   const [fragetext, setFragetext] = useState(
@@ -797,8 +808,10 @@ export default function SharedFragenEditor({
       lernzielIds,
       geteilt,
       anhaenge,
+      // Cluster D Phase 0 — Status nur in Auto-Save mitgeben wenn dirty, sonst undef → Backend behält Auto-Derivation.
+      status: statusDirty ? status : undefined,
     } as Frage
-  }, [aktuelleFrage, thema, fachbereich, punkte, bloom, tags, tagIds, semester, gefaesse, lernzielIds, geteilt, anhaenge, frage?.fach])
+  }, [aktuelleFrage, thema, fachbereich, punkte, bloom, tags, tagIds, semester, gefaesse, lernzielIds, geteilt, anhaenge, frage?.fach, statusDirty, status])
 
   // Ref-Mirror gegen autoSave-Recreation-Trigger: autoSaveAdapter wird im Caller
   // (useFragenEditor) bei jeder autoSaveState.status-Änderung neu memoized — wäre
@@ -933,6 +946,9 @@ export default function SharedFragenEditor({
       berechtigungen: berechtigungen.length > 0 ? berechtigungen : undefined,
       lernzielIds: lernzielIds.length > 0 ? lernzielIds : undefined,
       pruefungstauglich: validation.pflichtErfuellt && validation.empfohlenErfuellt,
+      // Cluster D Phase 0 — Status nur senden wenn vom User explizit geändert.
+      // Sonst greift Apps-Script-Auto-Derivation (Backward-Compat zu Pre-Phase-0-Frontends).
+      status: statusDirty ? status : undefined,
     }
 
     // Typ-spezifische Daten zusammenstellen
@@ -1124,6 +1140,7 @@ export default function SharedFragenEditor({
             themenVorschlaege={themenVorschlaege}
             zeigeLernzielResetHinweis={resetBanner > 0 ? resetBanner : undefined}
             tagPickerSlot={tagPickerSlot?.({ tagIds, onChange: setTagIds })}
+            status={status} setStatus={setStatus}
           />
 
           {/* Fragetyp wählen — kategorisiert */}
