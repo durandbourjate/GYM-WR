@@ -5,9 +5,15 @@
  * Lädt beim Mount alle Tags via `useTagsStore.ladeAlleTags`. Admins können
  * zusätzlich archivierte Tags einblenden (Zustand wird hochgereicht in die
  * Liste, das Re-Lade-Verhalten dort getriggert).
+ *
+ * Cluster H Phase 2 Polish P1: triggert auch `fragensammlungStore.ladeSummaries`
+ * wenn Summaries noch nicht geladen sind. Sonst zeigt der Tab bei Direkt-Navigation
+ * (Bookmark) alle Tags mit „0 Fragen", weil Verwendungs-Anzahl aus Summaries
+ * berechnet wird.
  */
 import { useEffect, useState } from 'react'
 import { useTagsStore } from '../../../../store/tagsStore'
+import { useFragensammlungStore } from '../../../../store/fragensammlungStore'
 import { useIstAdmin } from '../../../../hooks/useIstAdmin'
 import { TagsListe } from './TagsListe'
 
@@ -21,12 +27,26 @@ export function TagsTab({ email }: Props) {
   const ladend = useTagsStore((s) => s.ladend)
   const fehler = useTagsStore((s) => s.fehler)
   const geladen = useTagsStore((s) => s.geladen)
+  // P1: Summaries-Status für Verwendungs-Anzeige in TagsListe.
+  const fragensammlungStatus = useFragensammlungStore((s) => s.status)
+  const ladeSummaries = useFragensammlungStore((s) => s.ladeSummaries)
   const [zeigeArchivierte, setZeigeArchivierte] = useState(false)
 
   useEffect(() => {
     void ladeAlleTags({ email, inkludiereArchivierte: istAdmin && zeigeArchivierte })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, istAdmin, zeigeArchivierte])
+
+  // P1: Summaries triggern, wenn der Tab direkt aufgerufen wird (Bookmark) und
+  // Summaries noch nicht geladen sind. Status-`idle` = noch nie geladen,
+  // `fehler` = letzter Versuch fehlgeschlagen → Retry. `summary_laden` würden
+  // wir doppelt triggern, aber `ladeSummaries` macht eigene Idempotenz-Guard.
+  useEffect(() => {
+    if (!email) return
+    if (fragensammlungStatus === 'idle' || fragensammlungStatus === 'fehler') {
+      void ladeSummaries(email)
+    }
+  }, [email, fragensammlungStatus, ladeSummaries])
 
   return (
     <div className="space-y-4">
