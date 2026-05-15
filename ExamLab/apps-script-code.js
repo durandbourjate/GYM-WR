@@ -10955,6 +10955,14 @@ function uebenSpeichereFrage(body) {
     function wert(key) {
       var val = frage[key];
       if (val === undefined || val === null) return '';
+      // Cluster H: tagIds (string[]) + tags-Legacy als CSV-String, NICHT JSON-Array.
+      // Sonst Cross-Tool-Korruption: Gym-Gruppen schreiben in dasselbe FRAGENSAMMLUNG-Sheet
+      // wie speichereFrageIntern_, parseFrage erwartet CSV via String(...).split(',').
+      // typeof Array === 'object' würde ohne Special-Case '["id1","id2"]' produzieren.
+      if (key === 'tagIds' || key === 'tags' || key === 'tagsLegacy') {
+        if (Array.isArray(val)) return val.join(',');
+        return String(val);
+      }
       if (typeof val === 'object') return JSON.stringify(val);
       return val;
     }
