@@ -863,18 +863,20 @@ function apiMigriereTagsZuObjects(body) {
       tagIdsIdx = neueSpalteIdx - 1; // 0-basiert für values
     }
 
-    // Pro Zeile: tagIds-Wert berechnen aus tags-Wert
+    // Pro Zeile: tagIds-Wert berechnen aus tags-Wert.
+    // updates ist DENSE: pro Frage-Zeile (i = 1..N) genau ein Eintrag, auch wenn ids leer ist.
+    // → erlaubt Batch-Write als rectangular N×1 Range ab Zeile 2.
     var updates = [];
     for (var ii = 1; ii < data.values.length; ii++) {
       var rawTags2 = String(data.values[ii][data.tagsIdx] || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
       var ids = rawTags2.map(function(name) { return nameZuId[name.toLowerCase()]; }).filter(Boolean);
-      updates.push({ row: ii + 1, value: ids.join(',') });
+      updates.push([ids.join(',')]); // direkt als N×1 Matrix-Row
     }
 
-    // Batch-Write
-    for (var uu = 0; uu < updates.length; uu++) {
-      data.sheet.getRange(updates[uu].row, tagIdsIdx + 1).setValue(updates[uu].value);
-      fragenAktualisiert++;
+    // Batch-Write (1 Sheets-API-Roundtrip statt N) — kritisch für 6-min-Hard-Limit.
+    if (updates.length > 0) {
+      data.sheet.getRange(2, tagIdsIdx + 1, updates.length, 1).setValues(updates);
+      fragenAktualisiert += updates.length;
     }
 
     // Spalte tags zu tagsLegacy umbenennen (für Rollback-Sicherheit)
