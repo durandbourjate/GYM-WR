@@ -926,6 +926,16 @@ function apiMergeTags(body) {
     return jsonResponse({ error: 'masterId darf nicht in mergedIds sein' });
   }
 
+  // I1: masterId-Existenz prüfen. Sonst überschreibt LP-Tippfehler bei masterId
+  // N Frage-tagIds-Spalten mit Phantom-tagId, der in keinem Tag-Object existiert.
+  var alleTagsCheck = ladeAlleTagsAusSheet_();
+  var master = null;
+  for (var ti = 0; ti < alleTagsCheck.length; ti++) {
+    if (alleTagsCheck[ti].id === masterId) { master = alleTagsCheck[ti]; break; }
+  }
+  if (!master) return jsonResponse({ error: 'masterId existiert nicht' });
+  if (master.archiviert) return jsonResponse({ error: 'masterId ist archiviert (kann nicht Master sein)' });
+
   var lock = LockService.getScriptLock();
   lock.waitLock(30000); // länger weil Multi-Sheet-Update
 
