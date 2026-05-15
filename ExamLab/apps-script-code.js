@@ -3515,7 +3515,10 @@ function parseFrage(row, fachbereich) {
     semester: (row.semester || '').split(',').map(s => s.trim()).filter(Boolean),
     gefaesse: (row.gefaesse || '').split(',').map(s => s.trim()).filter(Boolean),
     bloom: row.bloom || 'K1',
-    tags: (row.tags || '').split(',').map(s => s.trim()).filter(Boolean),
+    // Cluster H Phase 0: tagsLegacy (umbenannte Spalte nach Migration) hat Vorrang vor tags (Pre-Migration).
+    // Phase 3 entfernt beide Fallbacks und setzt nur tags = [] wenn nötig.
+    tags: (row.tagsLegacy || row.tags || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+    tagIds: (row.tagIds || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     punkte: Number(row.punkte) || 1,
     musterlosung: row.musterlosung || '',
     bewertungsraster: safeJsonParse(row.bewertungsraster, []),
@@ -4487,6 +4490,8 @@ function speichereFrageIntern_(frage, email) {
     }).join(','),
     bloom: frage.bloom || 'K1',
     tags: (frage.tags || []).join(','),
+    // Cluster H Phase 0: tagIds parallel zu tags schreiben. Phase 3 entfernt tags-Schreib-Pfad.
+    tagIds: (frage.tagIds || []).join(','),
     punkte: String(frage.punkte || 0),
     musterlosung: frage.musterlosung || '',
     bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
@@ -5103,6 +5108,8 @@ function batchImportFragen(body) {
           gefaesse: Array.isArray(frage.gefaesse) ? frage.gefaesse.join(',') : '',
           bloom: frage.bloom || 'K1',
           tags: (frage.tags || []).join(','),
+          // Cluster H Phase 0: tagIds parallel zu tags schreiben.
+          tagIds: (frage.tagIds || []).join(','),
           punkte: String(frage.punkte || 0),
           musterlosung: frage.musterlosung || '',
           bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
@@ -5616,6 +5623,8 @@ function frageZuSummary_(frage) {
     bloom: frage.bloom || 'K1',
     punkte: frage.punkte || 1,
     tags: frage.tags || [],
+    // Cluster H Phase 0: tagIds parallel zu tags im Summary.
+    tagIds: frage.tagIds || [],
     quelle: frage.quelle || 'manuell',
     autor: frage.autor || '',
     erstelltVon: frage.erstelltVon || frage.autor || '',
@@ -6277,6 +6286,8 @@ function importierePoolFragen(body) {
             gefaesse: (frage.gefaesse || []).join(','),
             bloom: frage.bloom || 'K1',
             tags: (frage.tags || []).join(','),
+            // Cluster H Phase 0: tagIds parallel zu tags schreiben.
+            tagIds: (frage.tagIds || []).join(','),
             punkte: String(frage.punkte || 0),
             musterlosung: frage.musterlosung || '',
             bewertungsraster: JSON.stringify(frage.bewertungsraster || []),
@@ -10648,7 +10659,9 @@ function parseFrageKanonisch_(row, fachbereich) {
     semester: (row.semester || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     gefaesse: (row.gefaesse || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     bloom: row.bloom || 'K1',
-    tags: (row.tags || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+    // Cluster H Phase 0: tagsLegacy (Post-Migration) hat Vorrang vor tags (Pre-Migration).
+    tags: (row.tagsLegacy || row.tags || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+    tagIds: (row.tagIds || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     punkte: Number(row.punkte) || 1,
     musterlosung: row.musterlosung || '',
     bewertungsraster: safeJsonParse_(row.bewertungsraster, []),
