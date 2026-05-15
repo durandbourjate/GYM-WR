@@ -367,8 +367,9 @@ export default function MetadataSection({
           </div>
         </div>
 
-        {/* Berechtigungen-Editor (vom Host bereitgestellt) — nicht batch-bar (kein Wrapper). */}
-        {berechtigungenEditor}
+        {/* Berechtigungen-Editor (vom Host bereitgestellt) — nicht batch-bar.
+            Cluster D Phase 3a Smoke-Test-Fix (C3): im batchMode komplett ausblenden. */}
+        {!batchMode && berechtigungenEditor}
       </div>
 
       {/* Lernziele zuordnen.
