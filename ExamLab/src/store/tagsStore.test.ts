@@ -15,35 +15,35 @@ describe('tagsStore', () => {
   })
 
   it('ladeAlleTags füllt Store', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     expect(useTagsStore.getState().tags).toHaveLength(2)
     expect(useTagsStore.getState().geladen).toBe(true)
   })
 
   it('getById findet Tag', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     const tag = useTagsStore.getState().getById('t1')
     expect(tag?.name).toBe('aktuell')
   })
 
   it('getById gibt undefined für unbekannte id', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     expect(useTagsStore.getState().getById('xxx')).toBeUndefined()
   })
 
   it('getByIds filtert orphans raus', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     const result = useTagsStore.getState().getByIds(['t1', 'orphan', 't2'])
     expect(result.map((t) => t.id)).toEqual(['t1', 't2'])
   })
 
   it('getByName ist case-insensitive', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     expect(useTagsStore.getState().getByName('AKTUELL')?.id).toBe('t1')
   })
 
   it('upsertLokal fügt neuen hinzu', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     const neu: Tag = { id: 't3', name: 'neu', farbe: 'sky', archiviert: false, erstelltAm: '2026-01-02', erstelltVon: 'a@b' }
     useTagsStore.getState().upsertLokal(neu)
     expect(useTagsStore.getState().tags).toHaveLength(3)
@@ -51,7 +51,7 @@ describe('tagsStore', () => {
   })
 
   it('upsertLokal updated existierenden', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     const aktualisiert: Tag = { id: 't1', name: 'aktualisiert', farbe: 'pink', archiviert: false, erstelltAm: '2026-01-01', erstelltVon: 'a@b' }
     useTagsStore.getState().upsertLokal(aktualisiert)
     expect(useTagsStore.getState().tags).toHaveLength(2)
@@ -59,7 +59,7 @@ describe('tagsStore', () => {
   })
 
   it('entferneLokal entfernt nach id', async () => {
-    await useTagsStore.getState().ladeAlleTags()
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     useTagsStore.getState().entferneLokal('t1')
     expect(useTagsStore.getState().tags).toHaveLength(1)
   })
