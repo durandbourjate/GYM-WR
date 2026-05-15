@@ -1,6 +1,5 @@
-export type TagFarbe = 'slate' | 'red' | 'amber' | 'emerald' | 'sky' | 'violet' | 'pink' | 'stone';
-
-export const TAG_FARBEN: TagFarbe[] = ['slate', 'red', 'amber', 'emerald', 'sky', 'violet', 'pink', 'stone'];
+export const TAG_FARBEN = ['slate', 'red', 'amber', 'emerald', 'sky', 'violet', 'pink', 'stone'] as const;
+export type TagFarbe = typeof TAG_FARBEN[number];
 
 export interface Tag {
   id: string;             // UUID v4 (vom Backend via Utilities.getUuid())

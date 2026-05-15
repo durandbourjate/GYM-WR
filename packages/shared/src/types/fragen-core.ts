@@ -37,7 +37,7 @@ export interface FrageBase {
   bloom: BloomStufe;
   /** @deprecated Cluster H Phase 3 entfernt — bis dahin koexistiert mit tagIds für Rollback */
   tags?: string[];
-  /** Tag-Object-Referenzen (Cluster H, ab Phase 1) */
+  /** Tag-Object-Referenzen (Cluster H, ab Phase 1). TODO Phase 3: zu required machen wenn `tags` entfernt wird. */
   tagIds?: string[];
 
   // Bewertung
