@@ -620,6 +620,59 @@ function apiCreateTag(body) {
   }
 }
 
+/**
+ * Cluster H Phase 0: Tag editieren (Name oder Farbe). Jeder LP.
+ */
+function apiUpdateTag(body) {
+  var lpInfo = getLPInfo(body.email);
+  if (!lpInfo) return jsonResponse({ error: 'Nicht authentifiziert' });
+
+  var id = String(body.id || '');
+  if (!id) return jsonResponse({ error: 'id ist Pflicht' });
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+
+  try {
+    var sheet = getOderErstelleTagsSheet_();
+    var values = sheet.getDataRange().getValues();
+    var header = values[0];
+    var idIdx = header.indexOf('id');
+    var nameIdx = header.indexOf('name');
+    var farbeIdx = header.indexOf('farbe');
+
+    for (var i = 1; i < values.length; i++) {
+      if (values[i][idIdx] === id) {
+        if (body.name !== undefined) {
+          var neuName = String(body.name).trim();
+          if (!neuName) return jsonResponse({ error: 'Name darf nicht leer sein' });
+          // Case-insensitive Existenz-Check (anderer Tag mit gleichem Namen)
+          for (var j = 1; j < values.length; j++) {
+            if (j !== i && String(values[j][nameIdx]).toLowerCase() === neuName.toLowerCase()) {
+              return jsonResponse({ error: 'Tag mit diesem Namen existiert bereits' });
+            }
+          }
+          sheet.getRange(i + 1, nameIdx + 1).setValue(neuName);
+        }
+        if (body.farbe !== undefined) {
+          sheet.getRange(i + 1, farbeIdx + 1).setValue(body.farbe);
+        }
+        cacheInvalidieren_();
+        // Tag neu lesen für Response
+        var alleTagsAktuell = ladeAlleTagsAusSheet_();
+        var aktualisiertTag = null;
+        for (var m = 0; m < alleTagsAktuell.length; m++) {
+          if (alleTagsAktuell[m].id === id) { aktualisiertTag = alleTagsAktuell[m]; break; }
+        }
+        return jsonResponse({ ok: true, tag: aktualisiertTag });
+      }
+    }
+    return jsonResponse({ error: 'Tag nicht gefunden' });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // === CACHE-SYSTEM (Performance-Optimierung) ===
 // Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
@@ -1744,6 +1797,8 @@ function doPost(e) {
       return apiListTags(body);
     case 'apiCreateTag':
       return apiCreateTag(body);
+    case 'apiUpdateTag':
+      return apiUpdateTag(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
