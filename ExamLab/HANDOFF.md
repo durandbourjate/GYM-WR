@@ -6,46 +6,91 @@
 
 ---
 
-## 📍 STAND 15.05.2026 — Wo wir gerade stehen
+## 📍 STAND 15.05.2026 (späte Session) — Wo wir gerade stehen
 
-**Letzter Merge auf main:** `ad59a5c` — HANDOFF-Eintrag Cluster C komplett (vom 12.05.).
-**Letzter Push auf preview:** `965f88d` — Cluster H Plan + Spec.
-**Aktueller Feature-Branch:** `feature/cluster-h-tag-modell` HEAD `ee42ed1` — Cluster H Phase 0 KOMPLETT (Backend + Frontend-API+Store, kein UI).
+**Letzter Merge auf main:** `31bdf81` (Cluster H Phase 0+1+2 LIVE).
+**Letzter Push auf preview:** `9d2ecab` (Cluster D Phase 0+1a+1b+2 + 11 Hotfixes).
+**Branch:** `feature/cluster-d-batch-edit-spec-update` HEAD `9d2ecab` (= preview HEAD, FF-merged).
 
 **Branches:**
-- `main`: HEAD `ad59a5c`, synchronisiert mit `origin/main`
-- `preview`: HEAD `965f88d` (4 commits ahead of main: CI-Fix + Cluster-H Spec + Spec-Polish + Plan + Plan-Polish)
-- `feature/cluster-h-tag-modell`: HEAD `ee42ed1` (22 commits ahead of preview, gepusht zu origin)
-- `feature/cluster-c-globale-suche`: alte Cluster-C-Branch — alle Commits in main
+- `main`: HEAD `31bdf81`, sync mit origin/main
+- `preview`: HEAD `9d2ecab` (19 commits ahead of main), sync mit origin/preview
+- `feature/cluster-d-batch-edit-spec-update`: HEAD `9d2ecab` — gleicher Stand wie preview
 
-**Test-Status (auf feature/cluster-h-tag-modell):**
-- vitest: **1706 passed + 4 todo** (Baseline 1698 → +8 Cluster-H tagsStore-Tests)
-- tsc -b: clean
-- 4× lint-Gates clean (as-any 0/0, no-alert 0, musterloesung 0 drift, wire-contract 68/0 — 7 neue Tag-Action-Pairs gematcht)
-- vite build: ✅ (PWA 256 entries, 5255 KiB)
+**Test-Status (preview):**
+- vitest: **1762 passed + 4 todo** (Baseline post-Cluster-H 1713 → +49)
+- tsc -b clean, 5× lint-Gates clean (as-any 0/0, no-alert 0, no-tests-dir 0, musterloesung 0 drift, wire-contract 71 actions/0 unmatched)
+- vite build clean (256 PWA-entries, ~5.28 MB)
+- **CI: alle letzten 3 Runs grün**
 
-**Was zwischen 12.05. und 15.05. passiert ist:**
-1. Sandbox-Worktree-Cleanup: verwaiste `useGlobalSucheLP.ts` (5.5. Spec-Phase-Entwurf, durch Cluster-C-Komponente überholt) entfernt
-2. **Roadmap-Pivot:** vor Cluster D Tag-Modell-Migration als Vor-Cluster H eingezogen — User-Entscheidung „saubere Lösung statt einfache". Cluster D wird nach Cluster H sauberer + kleiner.
-3. **Cluster H Spec geschrieben + Reviewer-approved** (`95e7a22` mit 2 Reco-Edits)
-4. **Cluster H Plan geschrieben + Reviewer-approved** (`80da653` initial, `965f88d` mit 8 Reviewer-Issue-Edits — TagPicker-DI, useIstAdmin-Pfad, FACHBEREICH_SHEETS-Konstante, BaseDialog statt confirm/alert, etc.)
-5. **Cluster H Phase 0 komplett implementiert via subagent-driven-development:**
-   - **Sub-Task 1** (3 commits) — Tag + TagFarbe Type-Definition in `packages/shared/src/types/tag.ts` + Frage.tagIds optional in `fragen-core.ts`
-   - **Sub-Task 2** (10 + 6 Fix commits) — Apps-Script Backend in `apps-script-code.js`: 5 Helpers (pruefeAdminOderFehler_, getOderErstelleTagsSheet_, ladeAlleTagsAusSheet_, zaehleTagVerwendung_, FACHBEREICH_SHEETS), 6 CRUD-Endpoints (apiListTags/Create/Update/Archive/HardDelete/MergeTags), 1 Migration (apiMigriereTagsZuObjects), parseFrage erweitert, 4 Schreib-Pfade aktualisiert. **6 Code-Quality-Fixes**: setValues-Batch (C1), TOCTOU-Lock-Härtung (C2), uebenSpeichereFrage-CSV-Fix (C3), masterId-Existenz-Check (I1), differenzierte HardDelete-Message (I3), Farbe-Validation TAG_FARBEN_VALID (I4)
-   - **Sub-Task 3** (3 commits) — Frontend in `ExamLab/src/`: tagsApi.ts mit `unwrap`-Helper-Pattern (Memory-S130), tagsStore.ts Zustand-Store, tagsStore.test.ts mit 8 Tests
-6. Branch `feature/cluster-h-tag-modell` gepusht zu origin (22 commits ahead of preview)
+**Was in dieser Session passiert ist (15.05.2026 nachmittag-abend):**
 
-**Was JETZT noch ausstehend für Cluster H:**
-- **Phase 1 (USER-Aktion):** Apps-Script-Deploy via Apps-Script-IDE (Code aus `apps-script-code.js` rein-pasten + neue Version deployen) → Migration-Button im AdminTab klicken → Live-E2E
-- **Phase 2:** Read/Write-Pfade auf `tagsStore`-Lookup umstellen (9 Hybrid-Stellen gefunden: useFragenFilter, sucheAdapter, SuSAnalyse, AnalyseDashboard, AbschnitteTab, DetailKarte, AllgemeinTab, AdminThemensteuerung, useThemenKomputationen) + TagPicker-Komponente in shared mit DI + Verwaltungs-Tab in EinstellungenPanel + Browser-E2E (11 Cases aus Spec §10.3)
-- **Phase 3:** Cleanup nach 2 Wochen Live-Betrieb (`tagsLegacy`-Spalte raus, Frontend-Fallback raus)
+1. **Cluster D Spec + Plan + Reviewer-Loop:**
+   - Spec-Update `21669a0` + Polish `382200b` (Tag-Object-Modell konkret, Phase 0 für status-Feld, 3-Modi-Tag-Ops, Audit-Log-Format)
+   - Plan geschrieben `e9fc441` (1151 Z., 8 Sub-Tasks via subagent-driven-development, 2 Reviewer-Iterationen mit 10 Issues alle behoben)
 
-**Spawn-Tasks aus Phase-0-Reviews:**
-- Lock-Serialisierung von tag-Schreib-Operationen vs `speichereFrageIntern_` (TOCTOU-Restbestand, Code-Comment Z.726-728)
-- `zaehleTagVerwendung_` so erweitern, dass Tag-Object mit zurückkommt (vermeidet doppelte I/O im HardDelete-Error-Pfad)
-- Test-Coverage für `tagsStore`: Error-Pfad, Re-entry-Guard, edge-cases (sobald 5+ Konsumenten lesen)
-- Memoisierter `useTagsByIds`-Hook im Store (statt frische Map pro Render) wenn Phase-2-Profiler Hotspot zeigt
-- I2 (Doku): Migration partial-state-recovery in Spec/Plan klarer dokumentieren
+2. **Sub-Task 1 — Phase 0 status-Feld** (`41316f0` + Hotfix#1-3 `cc8b429` + Hotfix#4 `52a9fb0`):
+   - status zu FrageBase + Editor-RadioGroup + Hybrid-Logic Z.4583 (user-set wins) + apiBackfillStatusDefault + AdminTab-UI
+   - Hotfix#1: parseFrageKanonisch_ Status-Read-Lücke (`feedback_backend_read_paths_audit.md`)
+   - Hotfix#2: maintenanceApi-Service-Wrapper (Memory unwrap-pattern)
+   - Hotfix#3: Backfill-Sheet-Iteration via getFragensammlungTabs_ statt FACHBEREICH_SHEETS (deckt auch Allgemein-Tab)
+   - Hotfix#4: draftSync.ts ruft jetzt `aktualisiereFrage` nach erfolgreichem Auto-Save (latenter Store-Sync-Bug vor Cluster D, status-Persistenz-Reproduzierungs-Pfad)
+   - **LIVE-Backfill:** 2362 Fragen / 3.2s (User confirmed)
+
+3. **Hotfix#5+#7 — DraftsSection-UX** (`cec6fe3`+`b298f00`):
+   - #5: max-h-[40vh] + overflow auf Drafts-ul gegen Page-Scroll-Block (Card overflow-hidden cropped die zu hohen 14 Drafts → kein Scroll möglich)
+   - #7: DraftsSection strukturell INSIDE VirtualisierteFragenListe-Scroll-Container (User-Konzept „Drafts wie Fach-Block scrollen, nicht als sticky-Header")
+
+4. **Hotfix#6 — Apps-Script Cache-Invalidation** (`d7d3194`):
+   - `speichereFrageIntern_` ruft jetzt `cacheInvalidieren_()` — alle Bulk-/Single-Edit-Save-Pfade beschmutzten den `alle_fragen`-Cache, andere Saves fielen lange nicht auf weil Frontend-State maskiert. Status war das erste Feld dessen Reload-Round-Trip user-sichtbar geprüft wurde.
+
+5. **Hotfix#8 — TS-Build-Type-Fix** (`afeb676`):
+   - VirtualisierteFragenListe drafts-Prop `Frage[]` statt `ReadonlyArray<Frage|FrageSummary>` (CI build error — Plan-Iteration mit zu loosen Types). Lokal `tsc --noEmit` clean, aber CI `tsc -b` strikt.
+   - **Folge-Lehre:** `npm run ci-check`-Script eingeführt (5023fc8), matched CI 1:1. Vor jedem Push obligatorisch.
+
+6. **TagPicker UX-Refactor** (`24b89c0`):
+   - User-Feedback „menü für die tags noch unbefriedigend, nimmt viel raum ein". Combobox-Stil: Pills + Such-Dropdown statt 192px immer-sichtbare Box. ~40px Footprint wenn nichts selektiert. Esc + Click-outside schliessen. Backspace bei leerem Input entfernt letzten Chip. 11 Tests.
+   - **User-Bestätigung:** „das tag menü ist gut so"
+
+7. **Hotfix#9 — Test-Timeout** (`895025f`):
+   - LPStartseite Skeleton-Suite timeout 15s (Default 5s, latent flaky weil 833 KB-Bundle). CI-Runner-Variance kippte über. Not-mein-Bug, aber bei meinem Push aufgetreten.
+
+8. **Sub-Task 2 — Phase 1a fragenSelectionStore** (`e9936b7`):
+   - Zustand-Store mit Set<string>, toggle/Shift-Range/leeresSelektion/etc. + useSelektierteIds via `useShallow` (Memory-konform).
+   - 11+2 Tests (Spec-Reviewer M3+M4 Bonus-Cases). APPROVED.
+
+9. **Sub-Task 3 — Phase 1b Bulk-API** (`26b34f6`):
+   - Frontend `fragenBulkApi.ts` mit `bulkUpdateFragen` + `bulkLoescheFragen` (unwrap-Pattern, email-Pflicht, mutually-exclusive Tag-Modi-Frontend-Validation)
+   - Backend Apps-Script: `apiBulkUpdateFragen` + `apiBulkLoescheFragen` + `updateFrageMitPatch_` (partial-update via getRange.setValue) + `softDeleteFrageById_`
+   - Code-Quality-Review applied: I-2 Hard-Cap 500 IDs, M-4 Allowlist Patch-Keys, M-5 Owner-Check-Doku
+   - 10 Tests inkl. Bonus
+
+10. **Sub-Task 4 — Phase 2 Checkbox + Floating-Bar** (`2abaa5f` + Hotfix#10 `19b4f19` + Hotfix#11 `9d2ecab`):
+    - Checkbox in KompaktZeile (links vor +-Button), 4-File-Prop-Chain für sichtbareIds
+    - FragenSelektionBar mit count + 4 Buttons (Bearbeiten/Löschen/Auf Filter beschränken/X)
+    - „Alle anzeigen auswählen (N)"-Button im Filter-Header
+    - Phase-3/4-State-Stubs `[, setBatchEditorOffen]` für Editor + LoeschConfirm
+    - **Hotfix#10: TanStack-Virtual `scrollMargin`** — Drafts-Section (830px) im Scroll-Container brach Item-Position-Berechnung im Kompakt-Modus (Detail-Modus mit 220px-Items hatte das verdeckt). ResizeObserver auf Drafts misst dynamisch, virtualizer bekommt scrollMargin, transform-translateY um draftsHeight reduziert.
+    - **Hotfix#11: Shift-Range über `gruppierteAnzeige.flatMap`** — `sichtbareIds` war gefilterteIds (Filter-Reihenfolge), brauchte aber visuelle Reihenfolge der gerenderten KompaktZeilen. Range zwischen Item 1+5 selektierte 6 IDs statt 5 weil Filter-Reihenfolge IDs dazwischen einschloss die nicht im Viewport sind. Neue Memo `sichtbareReihenfolge = gruppierteAnzeige.flatMap(g => g.fragen.map(f => f.id))`.
+    - **Browser-E2E verifiziert:** 1+5 Shift-Click → exakt 5 Items checked, Floating-Bar „5 Fragen ausgewählt" ✓
+
+**Apps-Script-Deploys** (User-aktion):
+- Nach 41316f0 (Phase 0 Backend) ✅
+- Nach 26b34f6 (Phase 1b Bulk-API) ✅
+
+**Was JETZT noch ausstehend für Cluster D:**
+- **Sub-Task 5 — Phase 3a: SharedFragenEditor batchMode-Prop + Banner + violet-Highlighting** (~1.5 Tag)
+- **Sub-Task 6 — Phase 3b: BatchTagPicker mit 3-Modi-Radio** (~0.5 Tag)
+- **Sub-Task 7 — Phase 4: BatchConfirmModal + BatchLoeschConfirmModal** (~0.5 Tag)
+- **Sub-Task 8 — Phase 5: Browser-E2E (14 Cases) + Performance + Cleanup** (~0.5 Tag)
+
+**Spawn-Tasks aus Sub-Tasks 1-4:**
+- I-1 (Sub-Task 3): `postJson` swallows Backend-Error (inherited tagsApi-Pattern, S130-known-fragility)
+- I-3 (Sub-Task 3): `updateFrageMitPatch_` re-scan-pro-ID O(n×m) Performance — bei >500-ID-Batches problematisch, Step 8.4
+- M-1 (Sub-Task 3): per-Field-setValue statt setValues-Batch — Step 8.4
+- M-11 (Sub-Task 4): DetailKarte-Checkbox-Konsistenz (heute hat nur KompaktZeile Checkbox, Spawn-Task)
+- M-4 + M-6 (Sub-Task 4): Mobile-Layout + ESC-Handler für FragenSelektionBar (Phase 3+)
+- I-1 (Sub-Task 4 Phase 2): Plan-Step 4.3 erwähnt Inline-Buttons (statt @shared/Button) — Plan-Doc-Fix dokumentiert
 
 ---
 
@@ -119,11 +164,7 @@ Aus Cluster-C-Plan Spawn-Tasks:
    - Nach Code-Fertigstellung → merge in `preview` → push origin
    - **E2E-Tests nur gegen preview-Deploy** (echte Logins funktionieren nicht lokal)
    - Nach 11/11 E2E ✅ → merge `preview` → `main` (fast-forward)
-3. **Pre-Commit-Checkliste:**
-   - `npx vitest run` (Tests grün)
-   - `npx tsc --noEmit` (Type-Check)
-   - `npm run build` (Build grün)
-   - `npm run lint:as-any && npm run lint:no-alert && npm run lint:musterloesung && npm run lint:wire-contract`
+3. **Pre-Commit-Checkliste:** **`cd ExamLab && npm run ci-check`** — matched die CI-Pipeline 1:1 (5 Lint-Gates + vitest + tsc -b + vite build). NICHT nur `tsc --noEmit` verwenden (CI nutzt strikteren `-b` Build-Mode). Memory `feedback_pre_push_ci_check.md`.
 4. **Preview-Deploy-URL für E2E:** `https://durandbourjate.github.io/GYM-WR-DUY/staging/`
    - Cache-Reset vor Test:
      ```js
