@@ -156,6 +156,78 @@ describe('SharedFragenEditor — Batch-Modus (Cluster D Phase 3a)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Auf 5 Fragen anwenden/ }))
     expect(onBatchSave).toHaveBeenCalledWith({ bloom: 'K4' }, 'hinzufuegen')
   })
+
+  // --- Hardening-Tests (Cluster D Phase 3a, post Sub-Task 5) ----------------
+
+  it('I-1: kein Auto-Save-onTippe-Call im batchMode bei Feld-Änderung', () => {
+    // Auch wenn Caller (irrtümlich) `autoSave` UND `batchMode` zusammen setzt —
+    // der Watcher darf NICHT feuern, sonst sentinel-`neu-<uuid>`-Pseudo-Draft im LS.
+    const autoSave = {
+      statusSlot: <div />,
+      onTippe: vi.fn(),
+      onSchliessenVersuch: async () => ({ darfSchliessen: true }),
+    }
+    renderInProvider(
+      <SharedFragenEditor
+        frage={null}
+        onSpeichern={vi.fn()}
+        onAbbrechen={vi.fn()}
+        batchMode={{ count: 5, sichtbareCount: 5 }}
+        onBatchSave={vi.fn()}
+        autoSave={autoSave}
+      />,
+    )
+    // Trigger Feld-Änderung (Fach) — würde im Single-Mode onTippe auslösen.
+    const fachSelect = screen.getByDisplayValue('VWL') as HTMLSelectElement
+    fireEvent.change(fachSelect, { target: { value: 'BWL' } })
+    expect(autoSave.onTippe).not.toHaveBeenCalled()
+  })
+
+  it('I-2: kein dirty-Flag wenn Bloom auf Initial-Wert "geändert" wird', () => {
+    const onBatchSave = vi.fn()
+    renderInProvider(
+      <SharedFragenEditor
+        frage={null}
+        onSpeichern={vi.fn()}
+        onAbbrechen={vi.fn()}
+        batchMode={{ count: 5, sichtbareCount: 5 }}
+        onBatchSave={onBatchSave}
+      />,
+    )
+    // Bloom-Select identifizieren (hat K3 als option)
+    const bloomSelects = screen.getAllByRole('combobox') as HTMLSelectElement[]
+    const bloomSelect = bloomSelects.find((s) =>
+      Array.from(s.options).some((o) => o.value === 'K3'),
+    )
+    expect(bloomSelect).toBeTruthy()
+    // Auf Initial-Wert „K2" setzen (Default für neue Frage) — KEIN Diff.
+    fireEvent.change(bloomSelect!, { target: { value: 'K2' } })
+    fireEvent.click(screen.getByRole('button', { name: /Auf 5 Fragen anwenden/ }))
+    // Erwartet: leerer Patch (bloom NICHT enthalten weil no-op-Change)
+    expect(onBatchSave).toHaveBeenCalledWith({}, 'hinzufuegen')
+  })
+
+  it('I-3: tagIds aus frage-Prop leaken NICHT in Patch wenn User nichts ändert', () => {
+    // frage mit pre-existing tagIds — User-Pfad: kein TagPicker-Touch.
+    // Erwartet: tagsHinzufuegen NICHT im Patch (tagIds-dirty=false).
+    const onBatchSave = vi.fn()
+    renderInProvider(
+      <SharedFragenEditor
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        frage={{ id: 'f1', tagIds: ['t1', 't2'] } as any}
+        onSpeichern={vi.fn()}
+        onAbbrechen={vi.fn()}
+        batchMode={{ count: 5, sichtbareCount: 5 }}
+        onBatchSave={onBatchSave}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Auf 5 Fragen anwenden/ }))
+    expect(onBatchSave).toHaveBeenCalledTimes(1)
+    const [patch] = onBatchSave.mock.calls[0]
+    expect(patch.tagsHinzufuegen).toBeUndefined()
+    expect(patch.tagsErsetzen).toBeUndefined()
+    expect(patch.tagsEntfernen).toBeUndefined()
+  })
 })
 
 describe('SharedFragenEditor — Single-Edit-Modus (Backward-Compat)', () => {

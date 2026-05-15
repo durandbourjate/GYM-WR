@@ -211,6 +211,19 @@ export interface SharedFragenEditorProps {
   onBatchSave?: (patch: FragenBulkPatch, tagsModus: TagsModus) => void
 }
 
+/**
+ * Cluster D Phase 3a Hardening (I-2) — Shallow-Vergleich für string[]-Setter-Wrapper.
+ * Verhindert no-op Dirty-Flag-Sets wenn der neue Wert dieselben Elemente in derselben
+ * Reihenfolge hat (Order-sensitive: semester/gefaesse/lernzielIds sind reihenfolge-relevant
+ * im FragenBulkPatch). Pure-Helper, kein Lodash-Dep.
+ */
+function arrayShallowEqual(a: readonly string[], b: readonly string[]): boolean {
+  if (a === b) return true
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false
+  return true
+}
+
 /** Generischer Vollbild-Editor für Prüfungs-/Übungsfragen. Host wrapped mit EditorProvider. */
 export default function SharedFragenEditor({
   frage, onSpeichern, onAbbrechen, onLoeschen, performance,
@@ -277,7 +290,7 @@ export default function SharedFragenEditor({
   const [punkte, setPunkte] = useState(frage?.punkte ?? 1)
   const [tags, setTags] = useState((frage?.tags ?? []).join(', '))
   /** Cluster H Phase 2 — Tag-Objekt-Referenzen (parallel zu legacy `tags`-String, bis Phase 3-Cleanup). */
-  const [tagIds, setTagIds] = useState<string[]>(frage?.tagIds ?? [])
+  const [tagIds, setTagIdsRaw] = useState<string[]>(frage?.tagIds ?? [])
   const [semester, setSemesterRaw] = useState<string[]>(frage?.semester ?? [])
   const [gefaesse, setGefaesseRaw] = useState<string[]>(frage?.gefaesse ?? ['SF'])
 
@@ -293,22 +306,38 @@ export default function SharedFragenEditor({
   const [semesterDirty, setSemesterDirty] = useState(false)
   const [gefaesseDirty, setGefaesseDirty] = useState(false)
   const [lernzielIdsDirty, setLernzielIdsDirty] = useState(false)
+  /** Cluster D Phase 3a Hardening (I-3) — tagIds-Dirty-Flag.
+   *  Verhindert Leak von Initial-`frage.tagIds` ins Batch-Patch wenn der User die
+   *  Tags nie angefasst hat. `berechnePatch` interpretiert leere `tagIds` als No-Op. */
+  const [tagIdsDirty, setTagIdsDirty] = useState(false)
   /** Cluster D Phase 3a — Tag-Modus für Batch (Default 'hinzufuegen').
    *  Setter kommt in Sub-Task 6 (BatchTagPicker mit 3-Modi-Radio). */
   const [tagsModus] = useState<TagsModus>('hinzufuegen')
 
+  // Cluster D Phase 3a Hardening (I-2) — Dirty-Flag NUR setzen wenn der neue Wert
+  // sich tatsächlich vom aktuellen unterscheidet. Sonst landet ein User-Klick auf
+  // den initialen Dropdown-Wert als no-op-Patch im Batch-Save (Audit-Log-Noise).
+  // Pattern wie setFachbereich (Z.767+ ff.).
   const setBloom = useCallback((b: BloomStufe) => {
     setBloomRaw(b)
-    setBloomDirty(true)
-  }, [])
+    if (b !== bloom) setBloomDirty(true)
+  }, [bloom])
   const setSemester: React.Dispatch<React.SetStateAction<string[]>> = useCallback((v) => {
     setSemesterRaw(v)
-    setSemesterDirty(true)
-  }, [])
+    const next = typeof v === 'function' ? (v as (prev: string[]) => string[])(semester) : v
+    if (!arrayShallowEqual(next, semester)) setSemesterDirty(true)
+  }, [semester])
   const setGefaesse: React.Dispatch<React.SetStateAction<string[]>> = useCallback((v) => {
     setGefaesseRaw(v)
-    setGefaesseDirty(true)
-  }, [])
+    const next = typeof v === 'function' ? (v as (prev: string[]) => string[])(gefaesse) : v
+    if (!arrayShallowEqual(next, gefaesse)) setGefaesseDirty(true)
+  }, [gefaesse])
+  // Cluster D Phase 3a Hardening (I-3) — Wrapped setTagIds setzt dirty-Flag.
+  // Caller-Pfad: tagPickerSlot ruft `onChange(v)` → setTagIds(v).
+  const setTagIds = useCallback((v: string[]) => {
+    setTagIdsRaw(v)
+    if (!arrayShallowEqual(v, tagIds)) setTagIdsDirty(true)
+  }, [tagIds])
   /** Cluster D Phase 0 — Lifecycle-Status (Single-Source-of-Truth in FrageBase).
    *  Default 'sammlung' für Neu-Anlagen. Apps-Script Hybrid-Logic überschreibt mit Auto-Derivation
    *  (istVollstaendig_), wenn das Feld noch nie vom User explizit gesetzt wurde. */
@@ -755,10 +784,11 @@ export default function SharedFragenEditor({
   const [zeigLernzielDialog, setZeigLernzielDialog] = useState(false)
   const [gewaehlterLernzielId, setGewaehlterLernzielId] = useState('')
   const [lernzielIds, setLernzielIdsRaw] = useState<string[]>(frage?.lernzielIds ?? [])
+  // Cluster D Phase 3a Hardening (I-2) — Prev-Check analog setBloom/setSemester/setGefaesse.
   const setLernzielIds = useCallback((v: string[]) => {
     setLernzielIdsRaw(v)
-    setLernzielIdsDirty(true)
-  }, [])
+    if (!arrayShallowEqual(v, lernzielIds)) setLernzielIdsDirty(true)
+  }, [lernzielIds])
 
   // Bundle 2 P4.2: setFachbereich-Wrapper — bei Fachwechsel Lernziele-Auswahl + Liste leeren
   // und Reset-Banner triggern. Nötig weil der nachfolgende Lade-Effect einen Early-Return-Guard
@@ -895,8 +925,15 @@ export default function SharedFragenEditor({
       istErsterRender.current = false
       return
     }
+    // Cluster D Phase 3a Hardening (I-1) — Im Batch-Modus rendert der Header keinen
+    // autoSave-Status-Slot (Guard `autoSave && !istBatchMode`). Trotzdem würde dieser
+    // Watcher bei jedem Dirty-Setter feuern und einen sentinel-`neu-<uuid>`-Pseudo-Draft
+    // im localStorage anlegen + 10s-Server-Push mit nicht-existentem Datensatz triggern.
+    // Defense-in-Depth: Auch wenn Caller (Sub-Task 7) `autoSave` im Batch nicht setzt,
+    // erlaubt der Editor-Vertrag die Kombination — daher hier hart gegen Leak schützen.
+    if (istBatchMode) return
     if (frageFuerAutoSave) autoSaveRef.current?.onTippe(frageFuerAutoSave)
-  }, [frageFuerAutoSave])
+  }, [frageFuerAutoSave, istBatchMode])
 
   // Bundle 3 P-C.3 — Schliessen-Versuch: bei autoSave erst Caller fragen, sonst direkt
   // onAbbrechen. Caller (FragenBrowser) entscheidet basierend auf Status, ob ein
@@ -939,7 +976,9 @@ export default function SharedFragenEditor({
         gefaesse: gefaesseDirty ? gefaesse : undefined,
         semester: semesterDirty ? semester : undefined,
         lernzielIds: lernzielIdsDirty ? lernzielIds : undefined,
-        tagIds,
+        // Cluster D Phase 3a Hardening (I-3) — tagIds nur ans Patch wenn dirty.
+        // Leere Liste signalisiert `berechnePatch` „No-Op trotz tagsModus" (siehe batchDiff.ts Z.52).
+        tagIds: tagIdsDirty ? tagIds : [],
       }, tagsModus)
       onBatchSave(patch, tagsModus)
       return
