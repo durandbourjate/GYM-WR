@@ -6,6 +6,9 @@ import { InlineKursEditor, InlineTextEditor } from './InlineEditoren'
 import CRUDSectionShell from './CRUDSectionShell'
 import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
 import SpeicherButton from './SpeicherButton'
+import { migriereTagsZuObjects } from '../../../services/tagsApi'
+import Button from '../../ui/Button'
+import BaseDialog from '../../ui/BaseDialog'
 
 export default function AdminTab({ email, stammdaten }: { email: string; stammdaten: Stammdaten }) {
   const { speichereStammdaten: speichereStammdatenAction } = useStammdatenStore()
@@ -23,6 +26,26 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
   const [neuesFachOffen, setNeuesFachOffen] = useState(false)
   const [neueFachschaftOffen, setNeueFachschaftOffen] = useState(false)
   const [neuesGefaessOffen, setNeuesGefaessOffen] = useState(false)
+
+  // Cluster H — Tag-Migration State (einmalige Wartungs-Aktion)
+  const [migrConfirmOpen, setMigrConfirmOpen] = useState(false)
+  const [migrLaeuft, setMigrLaeuft] = useState(false)
+  const [migrErgebnis, setMigrErgebnis] = useState<{ neueTags: number; fragenAktualisiert: number; dauerMs: number } | null>(null)
+  const [migrFehler, setMigrFehler] = useState<string | null>(null)
+
+  async function handleMigrationStartenOK() {
+    setMigrConfirmOpen(false)
+    setMigrLaeuft(true)
+    setMigrFehler(null)
+    try {
+      const r = await migriereTagsZuObjects()
+      setMigrErgebnis(r)
+    } catch (e) {
+      setMigrFehler(e instanceof Error ? e.message : String(e))
+    } finally {
+      setMigrLaeuft(false)
+    }
+  }
 
   useEffect(() => {
     setAdmins(stammdaten.admins.join('\n'))
@@ -229,6 +252,43 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
       {speicherStatus === 'fehler' && (
         <p className="text-sm text-red-600 dark:text-red-400">Fehler beim Speichern. Bitte erneut versuchen.</p>
       )}
+
+      {/* === Cluster H — Tag-Migration (einmalige Wartungs-Aktion) === */}
+      <section className="mt-8 p-4 border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100">⚠ Cluster H — Tag-Migration (einmalig)</h3>
+        <p className="text-sm mb-3 text-slate-700 dark:text-slate-300">
+          Migriert alle Frage-Tags (string[]) zu Tag-Object-Referenzen (tagIds[]).
+          Idempotent — kann nur einmal laufen. Tags-Sheet wird befüllt.
+        </p>
+        <Button onClick={() => setMigrConfirmOpen(true)} variant="primary" disabled={migrLaeuft} loading={migrLaeuft}>
+          {migrLaeuft ? 'Läuft...' : 'Migration starten'}
+        </Button>
+        {migrErgebnis && (
+          <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded">
+            ✅ {migrErgebnis.neueTags} Tags erstellt, {migrErgebnis.fragenAktualisiert} Fragen aktualisiert ({migrErgebnis.dauerMs}ms)
+          </div>
+        )}
+        {migrFehler && (
+          <div className="mt-3 p-3 bg-red-100 dark:bg-red-900/30 text-red-900 dark:text-red-100 rounded">
+            Fehler: {migrFehler}
+          </div>
+        )}
+      </section>
+
+      <BaseDialog
+        open={migrConfirmOpen}
+        onClose={() => setMigrConfirmOpen(false)}
+        title="Tag-Migration starten?"
+        footer={
+          <>
+            <Button onClick={() => setMigrConfirmOpen(false)} variant="ghost">Abbrechen</Button>
+            <Button onClick={handleMigrationStartenOK} variant="primary">Migration starten</Button>
+          </>
+        }
+      >
+        <p className="text-slate-700 dark:text-slate-300">Die Migration läuft nur einmal. Wenn das Tags-Sheet bereits befüllt ist, gibt das Backend einen Fehler zurück.</p>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">Wirklich starten?</p>
+      </BaseDialog>
     </div>
   )
 }
