@@ -5,7 +5,6 @@ import { useFragenFilter } from '../../../../hooks/useFragenFilter.ts'
 import FragenListeSkeleton from '../../skeletons/FragenListeSkeleton'
 import FragenBrowserHeader from './FragenBrowserHeader.tsx'
 import VirtualisierteFragenListe from './VirtualisierteFragenListe.tsx'
-import DraftsSection from '../DraftsSection'
 
 interface Props {
   ladeStatus: 'laden' | 'fertig'
@@ -85,17 +84,8 @@ export default function FragenBrowserBody({
         listeRef={listeRef}
       />
 
-      {/* Drafts-Sektion oberhalb der Sammlung */}
-      {ladeStatus === 'fertig' && (
-        <DraftsSection
-          drafts={drafts}
-          onClickDraft={(frage) => handleEditFrage(frage)}
-          onLoeschen={(frage) => handleFrageLoeschen(frage)}
-          ownEmail={ownEmail}
-        />
-      )}
-
-      {/* Fragen-Liste */}
+      {/* Fragen-Liste — Drafts werden als Prefix-Element im selben Scroll-Container
+          gerendert (scrollt natürlich mit, kein eigenes overflow-y-auto). */}
       <div className="flex-1 min-h-0 relative overflow-hidden">
         {ladeStatus === 'laden' && <FragenListeSkeleton />}
 
@@ -105,13 +95,13 @@ export default function FragenBrowserBody({
           </div>
         )}
 
-        {ladeStatus === 'fertig' && filter.gefilterteFragen.length === 0 && (
+        {ladeStatus === 'fertig' && filter.gefilterteFragen.length === 0 && drafts.length === 0 && (
           <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
             Keine Fragen gefunden.
           </p>
         )}
 
-        {ladeStatus === 'fertig' && filter.gefilterteFragen.length > 0 && (
+        {ladeStatus === 'fertig' && (filter.gefilterteFragen.length > 0 || drafts.length > 0) && (
           <VirtualisierteFragenListe
             gruppierteAnzeige={filter.gruppierteAnzeige}
             gruppierung={filter.gruppierung}
@@ -126,6 +116,10 @@ export default function FragenBrowserBody({
             handleFrageLoeschen={handleFrageLoeschen}
             scrollResetTrigger={`${filter.suchtext}|${filter.gruppierung}|${filter.gefilterteFragen.length}`}
             scrollContainerRef={listeRef}
+            drafts={drafts}
+            ownEmail={ownEmail}
+            onClickDraft={(frage) => handleEditFrage(frage)}
+            onLoeschenDraft={(frage) => handleFrageLoeschen(frage)}
           />
         )}
       </div>

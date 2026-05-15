@@ -80,9 +80,7 @@ export default function DraftsSection({ drafts, onClickDraft, ownEmail, onLoesch
         <span>Entwürfe ({drafts.length})</span>
       </button>
       {aufgeklappt && (
-        // max-h cap + internal scroll: verhindert dass viele Drafts den Card-Container
-        // überfüllen und die Hauptliste sowie das Page-Scroll blockieren (Bug-Report 15.05.2026).
-        <ul id="drafts-liste" className="space-y-1 px-4 py-2 max-h-[40vh] overflow-y-auto">
+        <ul id="drafts-liste" className="space-y-1 px-4 py-2">
           {drafts.map((draft) => {
             const titel = draft.thema?.trim() ? draft.thema : 'Ohne Titel'
             const istGeteilt = draft.autor && draft.autor !== ownEmail

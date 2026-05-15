@@ -24,6 +24,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { useEffect, useMemo, useRef } from 'react'
 import KompaktZeile from './KompaktZeile.tsx'
 import DetailKarte from './DetailKarte.tsx'
+import DraftsSection from '../DraftsSection.tsx'
 import { gruppenLabel as labelHelfer, gruppenLabelFarbe as farbeHelfer } from './gruppenHelfer.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
@@ -31,6 +32,7 @@ import type {
   FilterbareFrage,
   GruppierteAnzeige,
 } from '../../../../hooks/useFragenFilter.ts'
+import type { Frage, FrageSummary } from '../../../../types/fragen-storage.ts'
 
 /** Höhe der Sticky-Header-Lane in px (muss zur estimateSize-Headerhöhe passen). */
 const LANE_HOEHE = 36
@@ -98,6 +100,12 @@ export interface Props {
   scrollResetTrigger: unknown
   /** Optional: externer Ref auf den Scroll-Container (für Wheel-Forwarding aus dem Header). */
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>
+  /** Drafts als statisches Prefix-Element im selben Scroll-Container — scrollt natürlich
+   *  zusammen mit den Fach-Gruppen (Bug-Report 15.05.2026: Drafts nicht mehr als sticky-Header). */
+  drafts?: ReadonlyArray<Frage | FrageSummary>
+  ownEmail?: string
+  onClickDraft?: (frage: Frage | FrageSummary) => void
+  onLoeschenDraft?: (frage: Frage | FrageSummary) => void
 }
 
 export default function VirtualisierteFragenListe(p: Props) {
@@ -149,10 +157,22 @@ export default function VirtualisierteFragenListe(p: Props) {
     return null
   }, [flatItems, firstVisibleIndex, p.gruppierung])
 
-  if (flatItems.length === 0) return null
+  const drafts = p.drafts ?? []
+  const hatDrafts = drafts.length > 0 && !!p.onClickDraft
+  if (flatItems.length === 0 && !hatDrafts) return null
 
   return (
     <div ref={setRef} className="h-full min-h-0 overflow-y-auto relative" data-testid="virt-scroll">
+      {/* Drafts als statisches Prefix im selben Scroll-Container — User-Konzept 15.05.2026:
+          „die entwürfe sollten ja wie ein fach funktionieren bezüglich scrollen". */}
+      {hatDrafts && p.onClickDraft && (
+        <DraftsSection
+          drafts={drafts}
+          onClickDraft={p.onClickDraft}
+          onLoeschen={p.onLoeschenDraft}
+          ownEmail={p.ownEmail ?? ''}
+        />
+      )}
       {/* Sticky-Header-Lane: rendert den aktiven Gruppenheader als sticky-Sibling, weil
           `position: sticky` innerhalb virtualisierter (absolute-positionierter) Items
           nicht greift. Negativer margin-top am Inner-Container darunter kompensiert die
