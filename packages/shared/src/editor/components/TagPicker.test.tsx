@@ -12,23 +12,91 @@ const mkTag = (id: string, name: string): Tag => ({
   erstelltVon: '',
 })
 
-describe('TagPicker', () => {
-  it('rendert übergebene Tag-Liste', () => {
-    const { getByText } = render(
+function openDropdown(container: HTMLElement) {
+  const input = container.querySelector('input[type="text"]') as HTMLInputElement
+  fireEvent.focus(input)
+  return input
+}
+
+describe('TagPicker (Combobox-Stil)', () => {
+  it('rendert Dropdown-Vorschläge nach Focus', () => {
+    const { container, getByText, queryByText } = render(
       <TagPicker tagIds={[]} onChange={vi.fn()} alleTags={[mkTag('t1', 'aktuell')]} onErstelleNeu={vi.fn()} />,
     )
+    // Vor Focus: Dropdown zu, Tag nicht sichtbar.
+    expect(queryByText('aktuell')).toBeNull()
+    openDropdown(container)
     expect(getByText('aktuell')).toBeTruthy()
   })
 
-  it('Quick-Erstellen zeigt Button bei keinem Treffer', () => {
-    const { getByPlaceholderText, queryByText } = render(
-      <TagPicker tagIds={[]} onChange={vi.fn()} alleTags={[]} onErstelleNeu={vi.fn()} />,
+  it('Selektierte Tags erscheinen als Chips, nicht im Dropdown', () => {
+    const { container, getByText, queryByText } = render(
+      <TagPicker
+        tagIds={['t1']}
+        onChange={vi.fn()}
+        alleTags={[mkTag('t1', 'aktuell'), mkTag('t2', 'wirtschaft')]}
+        onErstelleNeu={vi.fn()}
+      />,
     )
-    fireEvent.change(getByPlaceholderText(/Tag suchen/), { target: { value: 'neu' } })
-    expect(queryByText(/"neu" anlegen/)).toBeTruthy()
+    // Chip „aktuell" sofort sichtbar.
+    expect(getByText('aktuell')).toBeTruthy()
+    // Dropdown geschlossen, „wirtschaft" nicht sichtbar.
+    expect(queryByText('wirtschaft')).toBeNull()
+    openDropdown(container)
+    // Nach Focus: nur unselected „wirtschaft" im Dropdown, „aktuell" bleibt nur als Chip.
+    expect(getByText('wirtschaft')).toBeTruthy()
   })
 
-  it('toggleTag fügt hinzu wenn nicht ausgewählt', () => {
+  it('Klick auf Vorschlag fügt Tag hinzu', () => {
+    const onChange = vi.fn()
+    const { container, getByText } = render(
+      <TagPicker tagIds={[]} onChange={onChange} alleTags={[mkTag('t1', 'aktuell')]} onErstelleNeu={vi.fn()} />,
+    )
+    openDropdown(container)
+    fireEvent.click(getByText('aktuell'))
+    expect(onChange).toHaveBeenCalledWith(['t1'])
+  })
+
+  it('Klick auf Chip-X entfernt Tag', () => {
+    const onChange = vi.fn()
+    const { container } = render(
+      <TagPicker
+        tagIds={['t1']}
+        onChange={onChange}
+        alleTags={[mkTag('t1', 'aktuell')]}
+        onErstelleNeu={vi.fn()}
+      />,
+    )
+    const xButton = container.querySelector('button[aria-label="Tag aktuell entfernen"]') as HTMLButtonElement
+    fireEvent.click(xButton)
+    expect(onChange).toHaveBeenCalledWith([])
+  })
+
+  it('Quick-Erstellen via Dropdown-Button bei keinem Treffer', () => {
+    const { container, queryByText } = render(
+      <TagPicker tagIds={[]} onChange={vi.fn()} alleTags={[]} onErstelleNeu={vi.fn()} />,
+    )
+    const input = openDropdown(container)
+    fireEvent.change(input, { target: { value: 'neu' } })
+    expect(queryByText(/„neu" anlegen/)).toBeTruthy()
+  })
+
+  it('Enter mit nicht-exaktem Match löst Quick-Erstellen aus', async () => {
+    const neuerTag = mkTag('neu', 'neuer-tag')
+    const onErstelle = vi.fn().mockResolvedValue(neuerTag)
+    const onChange = vi.fn()
+    const { container } = render(
+      <TagPicker tagIds={[]} onChange={onChange} alleTags={[]} onErstelleNeu={onErstelle} />,
+    )
+    const input = openDropdown(container)
+    fireEvent.change(input, { target: { value: '  neuer-tag  ' } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+    await new Promise((r) => setTimeout(r, 0))
+    expect(onErstelle).toHaveBeenCalledWith('neuer-tag')
+    expect(onChange).toHaveBeenCalledWith(['neu'])
+  })
+
+  it('Enter mit exaktem Match fügt vorhandenen Tag hinzu', () => {
     const onChange = vi.fn()
     const { container } = render(
       <TagPicker
@@ -38,14 +106,30 @@ describe('TagPicker', () => {
         onErstelleNeu={vi.fn()}
       />,
     )
-    const checkbox = container.querySelector('input[type="checkbox"]')!
-    fireEvent.click(checkbox)
+    const input = openDropdown(container)
+    fireEvent.change(input, { target: { value: 'aktuell' } })
+    fireEvent.keyDown(input, { key: 'Enter' })
     expect(onChange).toHaveBeenCalledWith(['t1'])
   })
 
-  it('maxTags-Limit verhindert weitere Auswahl', () => {
+  it('Backspace bei leerem Input entfernt letzten Chip', () => {
     const onChange = vi.fn()
     const { container } = render(
+      <TagPicker
+        tagIds={['t1', 't2']}
+        onChange={onChange}
+        alleTags={[mkTag('t1', 'a'), mkTag('t2', 'b')]}
+        onErstelleNeu={vi.fn()}
+      />,
+    )
+    const input = openDropdown(container)
+    fireEvent.keyDown(input, { key: 'Backspace' })
+    expect(onChange).toHaveBeenCalledWith(['t1'])
+  })
+
+  it('maxTags-Limit blockiert weitere Auswahl', () => {
+    const onChange = vi.fn()
+    const { container, getByText } = render(
       <TagPicker
         tagIds={['t1', 't2']}
         onChange={onChange}
@@ -54,13 +138,12 @@ describe('TagPicker', () => {
         maxTags={2}
       />,
     )
-    const checkboxen = container.querySelectorAll('input[type="checkbox"]')
-    fireEvent.click(checkboxen[2]) // t3 versucht
+    openDropdown(container)
+    fireEvent.click(getByText('c'))
     expect(onChange).not.toHaveBeenCalled()
   })
 
-  it('Liste ist alphabetisch sortiert (de, case-insensitive)', () => {
-    // P2: Store-Reihenfolge ist zufällig (Insertion-Order). User erwartet alphabetisch.
+  it('Dropdown-Liste alphabetisch sortiert (de, case-insensitive)', () => {
     const { container } = render(
       <TagPicker
         tagIds={[]}
@@ -69,36 +152,20 @@ describe('TagPicker', () => {
         onErstelleNeu={vi.fn()}
       />,
     )
-    const labels = Array.from(container.querySelectorAll('label span')).map((s) => s.textContent)
-    // erwartete Reihenfolge mit `de`, sensitivity:'base': apfel, Ästhetik, Mango, Zebra
+    openDropdown(container)
+    // Im Dropdown stehen die Tag-Namen als <span> innerhalb von <button>.
+    const buttons = Array.from(container.querySelectorAll('div.absolute button > span'))
+    const labels = buttons.map((s) => s.textContent)
     expect(labels).toEqual(['apfel', 'Ästhetik', 'Mango', 'Zebra'])
   })
 
-  it('Liste bleibt alphabetisch nach Filtern via Suche', () => {
-    const { container, getByPlaceholderText } = render(
-      <TagPicker
-        tagIds={[]}
-        onChange={vi.fn()}
-        alleTags={[mkTag('t1', 'Zebra'), mkTag('t2', 'apfel'), mkTag('t3', 'Aprikose'), mkTag('t4', 'Ananas')]}
-        onErstelleNeu={vi.fn()}
-      />,
+  it('Esc schliesst Dropdown', () => {
+    const { container, getByText, queryByText } = render(
+      <TagPicker tagIds={[]} onChange={vi.fn()} alleTags={[mkTag('t1', 'aktuell')]} onErstelleNeu={vi.fn()} />,
     )
-    fireEvent.change(getByPlaceholderText(/Tag suchen/), { target: { value: 'a' } })
-    const labels = Array.from(container.querySelectorAll('label span')).map((s) => s.textContent)
-    // Alle vier enthalten "a" (case-insensitive). Erwartet: Ananas, apfel, Aprikose, Zebra
-    expect(labels).toEqual(['Ananas', 'apfel', 'Aprikose', 'Zebra'])
-  })
-
-  it('onErstelleNeu wird mit getrimmtem Namen aufgerufen', async () => {
-    const onErstelle = vi.fn().mockResolvedValue(mkTag('neu', 'neuer-tag'))
-    const onChange = vi.fn()
-    const { getByPlaceholderText, getByText } = render(
-      <TagPicker tagIds={[]} onChange={onChange} alleTags={[]} onErstelleNeu={onErstelle} />,
-    )
-    fireEvent.change(getByPlaceholderText(/Tag suchen/), { target: { value: '  neuer-tag  ' } })
-    fireEvent.click(getByText(/"neuer-tag" anlegen/))
-    await new Promise((r) => setTimeout(r, 0))
-    expect(onErstelle).toHaveBeenCalledWith('neuer-tag')
-    expect(onChange).toHaveBeenCalledWith(['neu'])
+    openDropdown(container)
+    expect(getByText('aktuell')).toBeTruthy()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(queryByText('aktuell')).toBeNull()
   })
 })
