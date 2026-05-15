@@ -932,8 +932,8 @@ function apiMergeTags(body) {
       var tagIdsIdx = header.indexOf('tagIds');
       if (tagIdsIdx < 0) continue;
 
-      // Sammle Updates für Batch-Schreiben
-      var updates = []; // { row: number, neuTagIds: string }
+      // Sammle Updates für Batch-Schreiben (sparse — nur Zeilen mit mergedIds-Treffer).
+      var updates = []; // { rowIdx: number (0-basiert in Daten-Range), neuTagIds: string }
       for (var i = 1; i < values.length; i++) {
         var ids = String(values[i][tagIdsIdx] || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean);
         var modifiziert = false;
@@ -953,18 +953,27 @@ function apiMergeTags(body) {
         }
 
         if (modifiziert) {
-          updates.push({ row: i + 1, neuTagIds: neueIds.join(',') });
+          updates.push({ rowIdx: i - 1, neuTagIds: neueIds.join(',') });
           fragenAktualisiert++;
         }
       }
 
-      // Batch-write
-      for (var u = 0; u < updates.length; u++) {
-        sheet.getRange(updates[u].row, tagIdsIdx + 1).setValue(updates[u].neuTagIds);
+      // Batch-Write: Read-Modify-Write der gesamten tagIds-Spalte (1 Read + 1 Write pro Sheet
+      // statt N per-cell-setValue). Sparse-Updates werden in N×1-Matrix gepatcht und atomar
+      // zurückgeschrieben — auch unveränderte Zeilen werden mitgeschrieben (idempotent).
+      if (updates.length > 0) {
+        var tagIdsRange = sheet.getRange(2, tagIdsIdx + 1, values.length - 1, 1);
+        var tagIdsValues = tagIdsRange.getValues();
+        for (var u = 0; u < updates.length; u++) {
+          tagIdsValues[updates[u].rowIdx][0] = updates[u].neuTagIds;
+        }
+        tagIdsRange.setValues(tagIdsValues);
       }
     }
 
-    // Mergte Tags archivieren
+    // Mergte Tags archivieren.
+    // Per-cell setValue ist hier akzeptabel weil mergedIds.length typisch <10
+    // (LP merged 2-5 Tippfehler-Tags zu einem Master). 6-min-Limit nicht relevant.
     var tagsSheet = getOderErstelleTagsSheet_();
     var tagsValues = tagsSheet.getDataRange().getValues();
     var tagsHeader = tagsValues[0];
