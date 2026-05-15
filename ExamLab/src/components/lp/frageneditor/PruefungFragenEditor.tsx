@@ -15,6 +15,9 @@ import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
 import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
+import { TagPicker } from '@shared/editor/components/TagPicker'
+import { useTagsStore } from '../../../store/tagsStore.ts'
+import { erstelleTag } from '../../../services/tagsApi.ts'
 import { istWRFachschaft } from '../../../utils/fachUtils.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { generateZeitpunkte, zeitpunktModellAusConfig } from '../../../utils/zeitpunktUtils.ts'
@@ -49,6 +52,17 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
   const summaries = useFragensammlungStore((s) => s.summaries)
+
+  // Cluster H Phase 2 — TagPicker DI: tagsStore + tagsApi sind App-Schicht;
+  // wir reichen TagPicker als Render-Prop in den SharedFragenEditor.
+  const alleTags = useTagsStore((s) => s.tags.filter((t) => !t.archiviert))
+  const upsertTagLokal = useTagsStore((s) => s.upsertLokal)
+  const handleErstelleTag = useCallback(async (name: string) => {
+    if (!user?.email) throw new Error('Nicht eingeloggt')
+    const r = await erstelleTag({ email: user.email, name })
+    upsertTagLokal(r.tag)
+    return r.tag
+  }, [user?.email, upsertTagLokal])
 
   // Themen-Vorschläge: dedupliziertes, sortiertes Set aller Themen pro Fachbereich
   const ladeThemen = useCallback((fachbereich: string): string[] => {
@@ -136,6 +150,14 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
         onVorherigeFrage={onVorherigeFrage}
         onNaechsteFrage={onNaechsteFrage}
         autoSave={autoSave}
+        tagPickerSlot={({ tagIds, onChange }) => (
+          <TagPicker
+            tagIds={tagIds}
+            onChange={onChange}
+            alleTags={alleTags}
+            onErstelleNeu={handleErstelleTag}
+          />
+        )}
         PDFEditorComponent={PDFEditor}
         anhangEditorSlot={(props) => (
           <AnhangEditor

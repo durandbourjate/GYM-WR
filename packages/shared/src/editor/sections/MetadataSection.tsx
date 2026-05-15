@@ -66,6 +66,9 @@ interface MetadataSectionProps {
   themenVorschlaege?: string[]
   /** Counter-Increment triggert den Reset-Hinweis-Banner im LernzielWaehler für 5s. undefined = kein Hinweis. */
   zeigeLernzielResetHinweis?: number
+  /** Cluster H Phase 2 — TagPicker (Tag-Objekt-Modell) als Slot, vom Host instanziiert
+   *  weil tagsStore + tagsApi in App-Schicht leben (Build-Bruch sonst). */
+  tagPickerSlot?: React.ReactNode
 }
 
 export default function MetadataSection({
@@ -93,6 +96,7 @@ export default function MetadataSection({
   onNeuLernzielErstellen, lernzieleLadend,
   themenVorschlaege,
   zeigeLernzielResetHinweis,
+  tagPickerSlot,
 }: MetadataSectionProps) {
   const [statsOffen, setStatsOffen] = useState(false)
   const config = useEditorConfig()
@@ -241,6 +245,14 @@ export default function MetadataSection({
             placeholder="z.B. Angebot, Nachfrage, BIP" className="input-field" />
         </Feld>
       </div>
+
+      {/* Cluster H Phase 2 — Tag-Objekt-Picker (Slot vom Host, DI-Pattern) */}
+      {tagPickerSlot && (
+        <div className="mt-3">
+          <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Tags</label>
+          {tagPickerSlot}
+        </div>
+      )}
 
       {/* Zeitpunkt + Gefässe */}
       <div className="flex gap-6 mt-3">

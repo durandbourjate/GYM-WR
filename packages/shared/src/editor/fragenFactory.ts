@@ -41,6 +41,8 @@ export interface FrageBasis {
   gefaesse: string[]
   bloom: BloomStufe
   tags: (string | { id: string; text: string; farbe: string })[]
+  /** Cluster H — Tag-Object-Referenzen (parallel zu legacy `tags`-String, Phase 3 macht required). */
+  tagIds?: string[]
   punkte: number
   musterlosung: string
   bewertungsraster: Bewertungskriterium[]

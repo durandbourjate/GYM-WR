@@ -171,6 +171,20 @@ export interface SharedFragenEditorProps {
    * Wenn nicht gesetzt: existing manueller Save-Flow (default).
    */
   autoSave?: AutoSaveAdapter
+
+  /**
+   * Cluster H Phase 2 — TagPicker-Slot (DI-Pattern, Render-Prop).
+   * `TagPicker` lebt in `packages/shared/`, darf aber nicht direkt aus
+   * `tagsStore`/`tagsApi` (App-Schicht) lesen → Build-Bruch.
+   * Host-App erhält den Editor-internen `tagIds`-State + `onChange` als
+   * Slot-Argumente, instanziiert den TagPicker mit eigenen Tags-Daten
+   * (aus tagsStore) und gibt das ReactNode zurück.
+   * Wenn nicht gesetzt: kein TagPicker-Block (backward-compat).
+   */
+  tagPickerSlot?: (props: {
+    tagIds: string[]
+    onChange: (neueIds: string[]) => void
+  }) => React.ReactNode
 }
 
 /** Generischer Vollbild-Editor für Prüfungs-/Übungsfragen. Host wrapped mit EditorProvider. */
@@ -181,6 +195,7 @@ export default function SharedFragenEditor({
   berechtigungenHeaderSlot,
   PDFEditorComponent, rueckSyncSlot,
   autoSave,
+  tagPickerSlot,
 }: SharedFragenEditorProps) {
   const config = useEditorConfig()
   const services = useEditorServices()
@@ -229,6 +244,8 @@ export default function SharedFragenEditor({
   const [bloom, setBloom] = useState<BloomStufe>(frage?.bloom ?? 'K2')
   const [punkte, setPunkte] = useState(frage?.punkte ?? 1)
   const [tags, setTags] = useState((frage?.tags ?? []).join(', '))
+  /** Cluster H Phase 2 — Tag-Objekt-Referenzen (parallel zu legacy `tags`-String, bis Phase 3-Cleanup). */
+  const [tagIds, setTagIds] = useState<string[]>(frage?.tagIds ?? [])
   const [semester, setSemester] = useState<string[]>(frage?.semester ?? [])
   const [gefaesse, setGefaesse] = useState<string[]>(frage?.gefaesse ?? ['SF'])
 
@@ -774,13 +791,14 @@ export default function SharedFragenEditor({
       punkte,
       bloom,
       tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
+      tagIds,
       semester,
       gefaesse,
       lernzielIds,
       geteilt,
       anhaenge,
     } as Frage
-  }, [aktuelleFrage, thema, fachbereich, punkte, bloom, tags, semester, gefaesse, lernzielIds, geteilt, anhaenge, frage?.fach])
+  }, [aktuelleFrage, thema, fachbereich, punkte, bloom, tags, tagIds, semester, gefaesse, lernzielIds, geteilt, anhaenge, frage?.fach])
 
   // Ref-Mirror gegen autoSave-Recreation-Trigger: autoSaveAdapter wird im Caller
   // (useFragenEditor) bei jeder autoSaveState.status-Änderung neu memoized — wäre
@@ -898,6 +916,7 @@ export default function SharedFragenEditor({
       gefaesse,
       bloom,
       tags: tagListe,
+      tagIds: tagIds.length > 0 ? tagIds : undefined,
       punkte,
       musterlosung: musterlosung.trim(),
       bewertungsraster: bewertungsraster.filter((b) => b.beschreibung.trim()),
@@ -1104,6 +1123,7 @@ export default function SharedFragenEditor({
             lernzieleLadend={lernzieleLadend}
             themenVorschlaege={themenVorschlaege}
             zeigeLernzielResetHinweis={resetBanner > 0 ? resetBanner : undefined}
+            tagPickerSlot={tagPickerSlot?.({ tagIds, onChange: setTagIds })}
           />
 
           {/* Fragetyp wählen — kategorisiert */}
