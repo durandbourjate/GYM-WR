@@ -15,6 +15,7 @@ import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
 import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
+import type { FragenBulkPatch, TagsModus } from '@shared/types/fragen-core'
 import { TagPicker } from '@shared/editor/components/TagPicker'
 import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../store/tagsStore.ts'
@@ -47,9 +48,14 @@ interface Props {
   autoSave?: AutoSaveAdapter
   /** Test-Tickets-Bundle — Lösch-Button im Editor (mit Bestätigung). undefined = kein Button. */
   onLoeschen?: (frage: Frage) => void
+  /** Cluster D Phase 4 — Pass-Through für Batch-Edit-Modus an den SharedFragenEditor.
+   *  undefined = Single-Edit-Modus (Backward-Compat). */
+  batchMode?: { count: number; sichtbareCount: number }
+  /** Cluster D Phase 4 — Save-Handler im Batch-Modus (statt onSpeichern). */
+  onBatchSave?: (patch: FragenBulkPatch, tagsModus: TagsModus) => void
 }
 
-export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage, autoSave, onLoeschen }: Props) {
+export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, performance, onVorherigeFrage, onNaechsteFrage, autoSave, onLoeschen, batchMode, onBatchSave }: Props) {
   const user = useAuthStore((s) => s.user)
   const schulConfig = useSchulConfig((s) => s.config)
   const summaries = useFragensammlungStore((s) => s.summaries)
@@ -203,6 +209,8 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
         onVorherigeFrage={onVorherigeFrage}
         onNaechsteFrage={onNaechsteFrage}
         autoSave={wrappedAutoSave}
+        batchMode={batchMode}
+        onBatchSave={onBatchSave}
         tagPickerSlot={({ tagIds, onChange }) => (
           <TagPicker
             tagIds={tagIds}
