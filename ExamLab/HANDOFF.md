@@ -6,38 +6,63 @@
 
 ---
 
-## 📍 STAND 12.05.2026 — Wo wir gerade stehen
+## 📍 STAND 15.05.2026 — Wo wir gerade stehen
 
-**Letzter Merge auf main:** `ad59a5c` — HANDOFF-Eintrag Cluster C komplett.
-**Tip-Commit Code:** `5d1d046` — Cluster C Hotfix#3 deutsche Ersatzregel.
+**Letzter Merge auf main:** `ad59a5c` — HANDOFF-Eintrag Cluster C komplett (vom 12.05.).
+**Letzter Push auf preview:** `965f88d` — Cluster H Plan + Spec.
+**Aktueller Feature-Branch:** `feature/cluster-h-tag-modell` HEAD `ee42ed1` — Cluster H Phase 0 KOMPLETT (Backend + Frontend-API+Store, kein UI).
 
 **Branches:**
 - `main`: HEAD `ad59a5c`, synchronisiert mit `origin/main`
-- `preview`: HEAD `ad59a5c`, synchronisiert mit `origin/preview` (fast-forwarded auf main nach Merge)
-- `feature/cluster-c-globale-suche`: aufgeräumt — alle Commits sind in main
+- `preview`: HEAD `965f88d` (4 commits ahead of main: CI-Fix + Cluster-H Spec + Spec-Polish + Plan + Plan-Polish)
+- `feature/cluster-h-tag-modell`: HEAD `ee42ed1` (22 commits ahead of preview, gepusht zu origin)
+- `feature/cluster-c-globale-suche`: alte Cluster-C-Branch — alle Commits in main
 
-**Test-Status:**
-- vitest: **1698 passed + 4 todo** (Baseline 1623 → +75 Cluster-C-Tests)
+**Test-Status (auf feature/cluster-h-tag-modell):**
+- vitest: **1706 passed + 4 todo** (Baseline 1698 → +8 Cluster-H tagsStore-Tests)
 - tsc -b: clean
-- 4× lint-Gates clean (as-any 0/0, no-alert 0, musterloesung Baseline, wire-contract 61/0)
-- vite build: ✅ (PWA 256 entries, 5253 KiB)
+- 4× lint-Gates clean (as-any 0/0, no-alert 0, musterloesung 0 drift, wire-contract 68/0 — 7 neue Tag-Action-Pairs gematcht)
+- vite build: ✅ (PWA 256 entries, 5255 KiB)
 
-**Was als letztes passiert ist:**
-1. Cluster C (globale Suche) komplett implementiert in 6 Commits (Phase 1-5)
-2. Auf preview deployed, 3 Hotfixes nach E2E-Discovery (lint as-any, Favoriten-Sync, deutsche Ersatzregel)
-3. Browser-E2E auf Staging mit echtem LP-Login: 11/11 ✅
-4. preview → main fast-forward merged + gepusht
-5. preview lokal + remote auf main aligned
+**Was zwischen 12.05. und 15.05. passiert ist:**
+1. Sandbox-Worktree-Cleanup: verwaiste `useGlobalSucheLP.ts` (5.5. Spec-Phase-Entwurf, durch Cluster-C-Komponente überholt) entfernt
+2. **Roadmap-Pivot:** vor Cluster D Tag-Modell-Migration als Vor-Cluster H eingezogen — User-Entscheidung „saubere Lösung statt einfache". Cluster D wird nach Cluster H sauberer + kleiner.
+3. **Cluster H Spec geschrieben + Reviewer-approved** (`95e7a22` mit 2 Reco-Edits)
+4. **Cluster H Plan geschrieben + Reviewer-approved** (`80da653` initial, `965f88d` mit 8 Reviewer-Issue-Edits — TagPicker-DI, useIstAdmin-Pfad, FACHBEREICH_SHEETS-Konstante, BaseDialog statt confirm/alert, etc.)
+5. **Cluster H Phase 0 komplett implementiert via subagent-driven-development:**
+   - **Sub-Task 1** (3 commits) — Tag + TagFarbe Type-Definition in `packages/shared/src/types/tag.ts` + Frage.tagIds optional in `fragen-core.ts`
+   - **Sub-Task 2** (10 + 6 Fix commits) — Apps-Script Backend in `apps-script-code.js`: 5 Helpers (pruefeAdminOderFehler_, getOderErstelleTagsSheet_, ladeAlleTagsAusSheet_, zaehleTagVerwendung_, FACHBEREICH_SHEETS), 6 CRUD-Endpoints (apiListTags/Create/Update/Archive/HardDelete/MergeTags), 1 Migration (apiMigriereTagsZuObjects), parseFrage erweitert, 4 Schreib-Pfade aktualisiert. **6 Code-Quality-Fixes**: setValues-Batch (C1), TOCTOU-Lock-Härtung (C2), uebenSpeichereFrage-CSV-Fix (C3), masterId-Existenz-Check (I1), differenzierte HardDelete-Message (I3), Farbe-Validation TAG_FARBEN_VALID (I4)
+   - **Sub-Task 3** (3 commits) — Frontend in `ExamLab/src/`: tagsApi.ts mit `unwrap`-Helper-Pattern (Memory-S130), tagsStore.ts Zustand-Store, tagsStore.test.ts mit 8 Tests
+6. Branch `feature/cluster-h-tag-modell` gepusht zu origin (22 commits ahead of preview)
+
+**Was JETZT noch ausstehend für Cluster H:**
+- **Phase 1 (USER-Aktion):** Apps-Script-Deploy via Apps-Script-IDE (Code aus `apps-script-code.js` rein-pasten + neue Version deployen) → Migration-Button im AdminTab klicken → Live-E2E
+- **Phase 2:** Read/Write-Pfade auf `tagsStore`-Lookup umstellen (9 Hybrid-Stellen gefunden: useFragenFilter, sucheAdapter, SuSAnalyse, AnalyseDashboard, AbschnitteTab, DetailKarte, AllgemeinTab, AdminThemensteuerung, useThemenKomputationen) + TagPicker-Komponente in shared mit DI + Verwaltungs-Tab in EinstellungenPanel + Browser-E2E (11 Cases aus Spec §10.3)
+- **Phase 3:** Cleanup nach 2 Wochen Live-Betrieb (`tagsLegacy`-Spalte raus, Frontend-Fallback raus)
+
+**Spawn-Tasks aus Phase-0-Reviews:**
+- Lock-Serialisierung von tag-Schreib-Operationen vs `speichereFrageIntern_` (TOCTOU-Restbestand, Code-Comment Z.726-728)
+- `zaehleTagVerwendung_` so erweitern, dass Tag-Object mit zurückkommt (vermeidet doppelte I/O im HardDelete-Error-Pfad)
+- Test-Coverage für `tagsStore`: Error-Pfad, Re-entry-Guard, edge-cases (sobald 5+ Konsumenten lesen)
+- Memoisierter `useTagsByIds`-Hook im Store (statt frische Map pro Render) wenn Phase-2-Profiler Hotspot zeigt
+- I2 (Doku): Migration partial-state-recovery in Spec/Plan klarer dokumentieren
 
 ---
 
 ## 🎯 ROADMAP — Was als nächstes ansteht (priorisiert)
 
-### Priorität 1 — Cluster D Batch-Edit (neues Feature)
-- **Status:** Spec existiert (`docs/superpowers/specs/2026-05-11-cluster-d-batch-edit-design.md`), Plan steht aus
+### Priorität 1 — Cluster H Phase 1+2+3 (Tag-Modell-Migration FERTIGSTELLEN)
+- **Status:** Phase 0 KOMPLETT (Backend + Frontend-API+Store auf `feature/cluster-h-tag-modell`, gepusht). Phase 1-3 ausstehend.
+- **Phase 1 (User-Aktion):** Apps-Script-Code deployen + Migration im AdminTab manuell triggern → Live-E2E (Tags-Sheet befüllt, Fragen haben tagIds, alte UI funktioniert)
+- **Phase 2 (~1.5 Tage):** 9 Hybrid-Code-Stellen umstellen + TagPicker-Komponente (DI-Slot-Pattern) + Verwaltungs-Tab in EinstellungenPanel + 11 Browser-E2E-Cases
+- **Phase 3 (nach 2 Wochen Live):** tagsLegacy-Spalte raus, Frontend-Fallback raus
+- **Geschätzter Restaufwand:** 2-2.5 Tage Code (Phase 2) + 0.5 Tag Cleanup (Phase 3)
+
+### Priorität 2 — Cluster D Batch-Edit (wartet auf Cluster H Phase 2)
+- **Status:** Spec existiert (`docs/superpowers/specs/2026-05-11-cluster-d-batch-edit-design.md`), aktualisierungsbedürftig (Tag-Object-Modell statt string[], +Editor-Felder status/gefaess/semester/lernzielIds als Pre-Phase, +Minimal-Audit-Log). Plan steht aus.
 - **Inhalt:** Multi-Select + Floating-Bar + Apps-Script `apiBulkUpdateFragen`
-- **Blocker:** Apps-Script-Deploy auf Server (nicht nur Frontend)
-- **Geschätzter Aufwand:** 5-7 Tage (eine Code-Session pro Phase, plus Apps-Script-Deploy + Live-E2E)
+- **Blocker:** Cluster H Phase 2 (saubere Tag-Object-API) muss live sein, sonst Bulk-Tag-Logik mit String-Hybrid kämpfen
+- **Geschätzter Aufwand:** 4-5 Tage (kleiner als ursprünglich 5-7, weil Tag-Logik durch Cluster H sauber)
 
 ### Priorität 2 — Cluster E.2-E.5 (Konsistenz + Favoriten)
 - **Status:** 4 separate Specs zu schreiben (oder einer)
