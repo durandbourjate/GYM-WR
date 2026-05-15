@@ -28,13 +28,16 @@ interface Props {
   zielAbschnittTitel?: string
   inline?: boolean
   listeRef: React.RefObject<HTMLDivElement | null>
+  /** IDs der gefilterten Fragen — für Shift-Click-Range in KompaktZeile + „Alle anzeigen"-Button
+   *  im Header. Cluster D Phase 2 (15.05.2026). */
+  sichtbareIds: string[]
 }
 
 export default function FragenBrowserBody({
   ladeStatus, detailLaden, filter, drafts, bereitsVerwendetSet, fragenStats, ownEmail,
   toggleFrageInPruefung, toggleGruppe, handleEditFrage, handleFrageDuplizieren, handleFrageLoeschen,
   onNeueFrageErstellen, onBatchExport, onImport, onExcelImport, onSchliessen,
-  zielPruefungTitel, zielAbschnittTitel, inline, listeRef,
+  zielPruefungTitel, zielAbschnittTitel, inline, listeRef, sichtbareIds,
 }: Props) {
   return (
     <>
@@ -42,6 +45,7 @@ export default function FragenBrowserBody({
       <FragenBrowserHeader
         ladeStatus={ladeStatus}
         gefilterteFragen={filter.gefilterteFragen}
+        gefilterteIds={sichtbareIds}
         stats={filter.stats}
         alleStats={filter.alleStats}
         verfuegbareThemen={filter.verfuegbareThemen}
@@ -120,6 +124,7 @@ export default function FragenBrowserBody({
             ownEmail={ownEmail}
             onClickDraft={(frage) => handleEditFrage(frage)}
             onLoeschenDraft={(frage) => handleFrageLoeschen(frage)}
+            sichtbareIds={sichtbareIds}
           />
         )}
       </div>

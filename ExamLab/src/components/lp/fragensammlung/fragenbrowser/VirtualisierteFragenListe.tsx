@@ -107,6 +107,10 @@ export interface Props {
   ownEmail?: string
   onClickDraft?: (frage: Frage) => void
   onLoeschenDraft?: (frage: Frage) => void
+  /** IDs der aktuell gefilterten/sichtbaren Fragen — wird an KompaktZeile weitergereicht für
+   *  Shift-Click-Range-Toggle. Cluster D Phase 2 (15.05.2026). Optional, default = [] für
+   *  Tests/Callsites, die noch nicht migriert sind. */
+  sichtbareIds?: string[]
 }
 
 export default function VirtualisierteFragenListe(p: Props) {
@@ -264,6 +268,7 @@ export default function VirtualisierteFragenListe(p: Props) {
                   onLoeschen={() => p.handleFrageLoeschen(frage)}
                   zeigeGruppierung={p.gruppierung}
                   performance={p.fragenStats.get(frage.id)}
+                  sichtbareIds={p.sichtbareIds ?? []}
                 />
               ) : (
                 <div className="px-4 py-2">

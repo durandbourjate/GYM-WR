@@ -14,6 +14,7 @@ import { erstelleDemoTrackerDaten, aggregiereFragenPerformance } from '../../../
 import type { Frage, FrageSummary } from '../../../types/fragen-storage'
 import type { FragenPerformance } from '../../../types/tracker.ts'
 import FragenBrowserBody from './fragenbrowser/FragenBrowserBody.tsx'
+import FragenSelektionBar from './fragenbrowser/FragenSelektionBar.tsx'
 import LoeschBestaetigungsDialog from './fragenbrowser/LoeschBestaetigungsDialog.tsx'
 import FragenEditor from '../frageneditor/FragenEditor.tsx'
 import FragenImport from './FragenImport.tsx'
@@ -110,6 +111,19 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [zeigExcelImport, setZeigExcelImport] = useState(false)
   const [zeigBatchExport, setZeigBatchExport] = useState(false)
 
+  // Cluster D Phase 2 Batch-Edit: State-Stubs für Phase 3 (Editor) + Phase 4 (Confirm).
+  // Setter werden in Phase 2 schon mit der FragenSelektionBar verdrahtet, der Open-Trigger
+  // geht aber noch ins Leere (Modals existieren erst in Phase 3/4).
+  const [, setBatchEditorOffen] = useState(false)
+  const [, setLoeschConfirmOffen] = useState(false)
+
+  // IDs der aktuell gefilterten Fragen — für Shift-Click-Range-Toggle in KompaktZeile,
+  // „Alle anzeigen"-Button im Header und „Auf Filter beschränken" in der Selektion-Bar.
+  const gefilterteIds = useMemo(
+    () => filter.gefilterteFragen.map((f) => f.id),
+    [filter.gefilterteFragen],
+  )
+
   const toggleFrageInPruefung = useCallback((frageId: string): void => {
     if (bereitsVerwendetSet.has(frageId)) {
       onEntfernen?.(frageId)
@@ -151,6 +165,7 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       zielAbschnittTitel={zielAbschnittTitel}
       inline={inline}
       listeRef={listeRef}
+      sichtbareIds={gefilterteIds}
     />
   )
 
@@ -222,6 +237,13 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
           }}
         />
       )}
+
+      {/* Cluster D Phase 2 Batch-Edit Floating-Bar — zeigt sich nur wenn ≥1 Frage selektiert. */}
+      <FragenSelektionBar
+        sichtbareIds={gefilterteIds}
+        onOeffneEditor={() => { setBatchEditorOffen(true) }}
+        onOeffneLoeschConfirm={() => { setLoeschConfirmOffen(true) }}
+      />
     </>
   )
 

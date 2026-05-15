@@ -4,11 +4,15 @@ import type { Sortierung, FilterPoolStatus, FilterKontext } from '../../../../ho
 import type { Gruppierung } from './gruppenHelfer.ts'
 import { typLabel } from '../../../../utils/fachUtils.ts'
 import Button from '../../../ui/Button.tsx'
+import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
 
 interface Props {
   // Daten
   ladeStatus: 'laden' | 'fertig'
   gefilterteFragen: (Frage | FrageSummary)[]
+  /** IDs der aktuell gefilterten Fragen — für „Alle anzeigen auswählen"-Button.
+   *  Cluster D Phase 2 (15.05.2026). */
+  gefilterteIds: string[]
   stats: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
   /** Ungefilterte Stats — für Dropdown-Optionen, damit alle Werte immer sichtbar bleiben */
   alleStats?: { fachbereiche: Map<string, number>; typen: Map<string, number>; gesamt: number }
@@ -66,7 +70,7 @@ interface Props {
 
 /** Header mit Suche, Filter, Sortierung und Aktions-Buttons */
 export default function FragenBrowserHeader({
-  ladeStatus, gefilterteFragen, stats, alleStats: alleStatsProp, verfuegbareThemen, verfuegbareUnterthemen, aktiveFilter,
+  ladeStatus, gefilterteFragen, gefilterteIds, stats, alleStats: alleStatsProp, verfuegbareThemen, verfuegbareUnterthemen, aktiveFilter,
   suchtext, setSuchtext,
   filterFachbereich, setFilterFachbereich,
   filterTyp, setFilterTyp,
@@ -88,6 +92,9 @@ export default function FragenBrowserHeader({
 }: Props) {
   // Ungefilterte Stats für Dropdown-Optionen (Fallback auf gefilterte Stats)
   const dropdownStats = alleStatsProp ?? stats
+
+  // Cluster D Phase 2: Bulk-Selection-Hook für „Alle anzeigen"-Button.
+  const alleSichtbarenAuswaehlen = useFragenSelectionStore((s) => s.alleSichtbarenAuswaehlen)
 
   const [exportOffen, setExportOffen] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
@@ -304,6 +311,17 @@ export default function FragenBrowserHeader({
             </button>
           ))}
         </div>
+
+        {/* "Alle anzeigen auswählen" — Cluster D Phase 2 Batch-Edit. Sichtbar wenn ≥1 Frage im Filter. */}
+        {gefilterteIds.length > 0 && (
+          <button
+            type="button"
+            onClick={() => { alleSichtbarenAuswaehlen(gefilterteIds) }}
+            className={`text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer ${aktiveFilter > 0 ? '' : 'ml-auto'}`}
+          >
+            Alle anzeigen auswählen ({gefilterteIds.length})
+          </button>
+        )}
 
         {/* Filter zurücksetzen */}
         {aktiveFilter > 0 && (

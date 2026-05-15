@@ -5,6 +5,7 @@ import type { EffektivesRecht } from '../../../../types/auth.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 import PoolBadges from './PoolBadges.tsx'
+import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
 
 interface Props {
   frage: Frage | FrageSummary
@@ -15,6 +16,9 @@ interface Props {
   onLoeschen?: () => void
   zeigeGruppierung: Gruppierung
   performance?: FragenPerformance
+  /** IDs der aktuell gefilterten/sichtbaren Fragen — für Shift-Click Range-Toggle.
+   *  Cluster D Phase 2 (15.05.2026). */
+  sichtbareIds: string[]
 }
 
 function rechteBadge(recht?: EffektivesRecht): { label: string; farbe: string } | null {
@@ -24,7 +28,9 @@ function rechteBadge(recht?: EffektivesRecht): { label: string; farbe: string } 
 }
 
 /** Kompakte Zeile für grosse Listen */
-export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, onDuplizieren, onLoeschen, zeigeGruppierung, performance }: Props) {
+export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, onDuplizieren, onLoeschen, zeigeGruppierung, performance, sichtbareIds }: Props) {
+  const selektiert = useFragenSelectionStore((s) => s.selektiert.has(frage.id))
+  const toggleSelektion = useFragenSelectionStore((s) => s.toggle)
   return (
     <div
       onClick={onEdit}
@@ -34,6 +40,21 @@ export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, o
           : 'border-l-4 border-l-transparent border-b-slate-100 dark:border-b-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/30'
         }`}
     >
+      {/* Selektions-Checkbox (Cluster D Phase 2) — stopPropagation damit Klick nicht Editor öffnet.
+          Shift-Click via nativeEvent.shiftKey für Range-Toggle (siehe fragenSelectionStore.toggle). */}
+      <input
+        type="checkbox"
+        checked={selektiert}
+        onClick={(e) => { e.stopPropagation() }}
+        onChange={(e) => {
+          const nativeEv = e.nativeEvent as MouseEvent
+          const shift = typeof nativeEv.shiftKey === 'boolean' ? nativeEv.shiftKey : false
+          toggleSelektion(frage.id, { shift, sichtbareIds })
+        }}
+        className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-violet-600 focus:ring-violet-500 shrink-0 cursor-pointer"
+        aria-label={`Frage „${frage.thema || frage.id}" auswählen`}
+      />
+
       {/* +/- Button */}
       <button
         onClick={(e) => { e.stopPropagation(); onToggle() }}

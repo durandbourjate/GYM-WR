@@ -625,11 +625,16 @@ it('Auswahl aufheben leert Store', () => {
 
 - [ ] **Step 4.3: FragenSelektionBar — Implementation**
 
+**Anmerkung Implementation (15.05.2026):** Inline-Tailwind-Buttons mit Pill-Shape statt
+`<Button variant="...">`-Komponente verwendet, weil deren `rounded-lg`+`min-h-[36px]`
+den Bar-Look bricht. JSDoc in `FragenSelektionBar.tsx` dokumentiert das. Falls Phase
+3+ ähnliche Pill-Bar-Patterns auftauchen, ggf. `<PillButton>` in `@shared/` extrahieren.
+
 `FragenSelektionBar.tsx`:
 ```tsx
 import { useFragenSelectionStore, useSelektierteIds } from '@/store/fragenSelectionStore'
 import { Pencil, Trash2, X } from 'lucide-react'
-import { Button } from '@shared/Button'  // exakter Pfad via grep
+// import { Button } from '@shared/Button'  // SIEHE Anmerkung oben — inline statt Shared-Button
 
 interface Props {
   sichtbareIds: string[]
