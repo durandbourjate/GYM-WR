@@ -673,6 +673,39 @@ function apiUpdateTag(body) {
   }
 }
 
+/**
+ * Cluster H Phase 0: Tag archivieren (Soft-Delete). Admin-only.
+ */
+function apiArchiveTag(body) {
+  var lpInfo = getLPInfo(body.email);
+  var fehler = pruefeAdminOderFehler_(lpInfo);
+  if (fehler) return fehler;
+
+  var id = String(body.id || '');
+  if (!id) return jsonResponse({ error: 'id ist Pflicht' });
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var sheet = getOderErstelleTagsSheet_();
+    var values = sheet.getDataRange().getValues();
+    var header = values[0];
+    var idIdx = header.indexOf('id');
+    var archivIdx = header.indexOf('archiviert');
+
+    for (var i = 1; i < values.length; i++) {
+      if (values[i][idIdx] === id) {
+        sheet.getRange(i + 1, archivIdx + 1).setValue(true);
+        cacheInvalidieren_();
+        return jsonResponse({ ok: true });
+      }
+    }
+    return jsonResponse({ error: 'Tag nicht gefunden' });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // === CACHE-SYSTEM (Performance-Optimierung) ===
 // Globaler Cache für Configs, Fragensammlung, Tracker.
 // Sichtbarkeits-Filter wird NACH dem Cache-Lesen angewendet.
@@ -1799,6 +1832,8 @@ function doPost(e) {
       return apiCreateTag(body);
     case 'apiUpdateTag':
       return apiUpdateTag(body);
+    case 'apiArchiveTag':
+      return apiArchiveTag(body);
 
     default:
       return jsonResponse({ error: 'Unbekannte Action' });
