@@ -4,6 +4,7 @@ import type { Frage, FrageSummary, FrageBase } from '../../../../types/fragen-st
 import type { EffektivesRecht } from '../../../../types/auth.ts'
 import type { FragenPerformance } from '../../../../types/tracker.ts'
 import PoolBadges from './PoolBadges.tsx'
+import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../../store/tagsStore'
 import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
 
@@ -27,7 +28,8 @@ function rechteBadge(recht?: EffektivesRecht): { label: string; farbe: string } 
 export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, onLoeschen, onDuplizieren, performance }: Props) {
   const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
   // Cluster H Phase 2: Tag-Namen via tagsStore-Hook (subscribed → Re-Render bei Tag-Rename).
-  const tagNamen = useTagsStore(s => tagNamenFromStore(frage, s))
+  // useShallow ist Pflicht: Selector returnt neues Array → ohne shallow-Equality infinite re-render (React #185).
+  const tagNamen = useTagsStore(useShallow(s => tagNamenFromStore(frage, s)))
 
   return (
     <div

@@ -16,6 +16,7 @@ import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
 import { TagPicker } from '@shared/editor/components/TagPicker'
+import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../store/tagsStore.ts'
 import { erstelleTag } from '../../../services/tagsApi.ts'
 import { istWRFachschaft } from '../../../utils/fachUtils.ts'
@@ -55,7 +56,8 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
 
   // Cluster H Phase 2 — TagPicker DI: tagsStore + tagsApi sind App-Schicht;
   // wir reichen TagPicker als Render-Prop in den SharedFragenEditor.
-  const alleTags = useTagsStore((s) => s.tags.filter((t) => !t.archiviert))
+  // useShallow ist Pflicht: .filter() returnt neues Array → ohne shallow-Equality infinite re-render (React #185).
+  const alleTags = useTagsStore(useShallow((s) => s.tags.filter((t) => !t.archiviert)))
   const upsertTagLokal = useTagsStore((s) => s.upsertLokal)
   const handleErstelleTag = useCallback(async (name: string) => {
     if (!user?.email) throw new Error('Nicht eingeloggt')
