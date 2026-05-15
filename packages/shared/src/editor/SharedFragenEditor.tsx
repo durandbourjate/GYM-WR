@@ -70,6 +70,11 @@ import MusterloesungSection from './sections/MusterloesungSection'
 // Default-Komponente für Anhang (wenn kein Slot übergeben)
 import DefaultAnhangEditor from './components/AnhangEditor'
 
+// Cluster D Phase 3a — Batch-Edit-Modus
+import BatchEditorBanner from './BatchEditorBanner'
+import { berechnePatch } from './batchDiff'
+import type { FragenBulkPatch, TagsModus } from './batchDiff'
+
 
 /** Optionale Metadaten die beim Speichern mitgesendet werden (KI-Kalibrierungs-Loop) */
 export interface SpeichernMeta {
@@ -185,6 +190,25 @@ export interface SharedFragenEditorProps {
     tagIds: string[]
     onChange: (neueIds: string[]) => void
   }) => React.ReactNode
+
+  /**
+   * Cluster D Phase 3a — Batch-Edit-Modus (opt-in).
+   *
+   * Wenn gesetzt:
+   *  - `BatchEditorBanner` oben im Form (zeigt count + sichtbar-Diff).
+   *  - 7 batch-fähige Metadaten-Felder kriegen violetten Ring (Highlighting).
+   *  - 6 nicht-Tag-Felder starten ohne Initial-Wert (Dirty-Flag-Tracking)
+   *    — nur explizit gesetzte Felder landen im Patch.
+   *  - Nicht-batch-bare Felder (Fragetext, Lösung, Optionen, Lücken …) sind disabled.
+   *  - Save-Button ruft `onBatchSave(patch, tagsModus)` statt `onSpeichern(frage)`.
+   *
+   * Wenn undefined: Editor verhält sich exakt wie heute (Single-Edit-Modus,
+   * Backward-Compat absolut).
+   */
+  batchMode?: { count: number; sichtbareCount: number }
+
+  /** Wird in batchMode beim Save-Button-Klick aufgerufen mit dem Diff-Patch + Tag-Modus. */
+  onBatchSave?: (patch: FragenBulkPatch, tagsModus: TagsModus) => void
 }
 
 /** Generischer Vollbild-Editor für Prüfungs-/Übungsfragen. Host wrapped mit EditorProvider. */
@@ -196,7 +220,15 @@ export default function SharedFragenEditor({
   PDFEditorComponent, rueckSyncSlot,
   autoSave,
   tagPickerSlot,
+  batchMode,
+  onBatchSave,
 }: SharedFragenEditorProps) {
+  /**
+   * Cluster D Phase 3a — Batch-Edit-Modus aktiv?
+   * Wird mehrfach im Hot-Path getestet — als const cachen für Lesbarkeit.
+   * `undefined` (Single-Edit) → ALLES wie heute (Backward-Compat absolut).
+   */
+  const istBatchMode = !!batchMode
   const config = useEditorConfig()
   const services = useEditorServices()
 
@@ -241,13 +273,42 @@ export default function SharedFragenEditor({
   const [resetBanner, setResetBanner] = useState<number>(0) // Bundle 2 P4.2: Counter — jeder Increment triggert Reset-Banner im LernzielWaehler
   const [thema, setThema] = useState(frage?.thema ?? '')
   const [unterthema, setUnterthema] = useState(frage?.unterthema ?? '')
-  const [bloom, setBloom] = useState<BloomStufe>(frage?.bloom ?? 'K2')
+  const [bloom, setBloomRaw] = useState<BloomStufe>(frage?.bloom ?? 'K2')
   const [punkte, setPunkte] = useState(frage?.punkte ?? 1)
   const [tags, setTags] = useState((frage?.tags ?? []).join(', '))
   /** Cluster H Phase 2 — Tag-Objekt-Referenzen (parallel zu legacy `tags`-String, bis Phase 3-Cleanup). */
   const [tagIds, setTagIds] = useState<string[]>(frage?.tagIds ?? [])
-  const [semester, setSemester] = useState<string[]>(frage?.semester ?? [])
-  const [gefaesse, setGefaesse] = useState<string[]>(frage?.gefaesse ?? ['SF'])
+  const [semester, setSemesterRaw] = useState<string[]>(frage?.semester ?? [])
+  const [gefaesse, setGefaesseRaw] = useState<string[]>(frage?.gefaesse ?? ['SF'])
+
+  /**
+   * Cluster D Phase 3a — Dirty-Flag-Tracking für die 6 nicht-tag batch-fähigen Felder.
+   * Im Single-Edit-Modus irrelevant (Save-Pfad nutzt alle Werte). Im Batch-Modus
+   * landet ein Feld nur dann im Patch wenn der User es explizit gesetzt hat.
+   * `statusDirty` existiert bereits (Cluster D Phase 0, für Apps-Script-Auto-Derivation).
+   * Pattern: Setter-Wrapper setzen das jeweilige Dirty-Flag + raw-Setter.
+   */
+  const [fachbereichDirty, setFachbereichDirty] = useState(false)
+  const [bloomDirty, setBloomDirty] = useState(false)
+  const [semesterDirty, setSemesterDirty] = useState(false)
+  const [gefaesseDirty, setGefaesseDirty] = useState(false)
+  const [lernzielIdsDirty, setLernzielIdsDirty] = useState(false)
+  /** Cluster D Phase 3a — Tag-Modus für Batch (Default 'hinzufuegen').
+   *  Setter kommt in Sub-Task 6 (BatchTagPicker mit 3-Modi-Radio). */
+  const [tagsModus] = useState<TagsModus>('hinzufuegen')
+
+  const setBloom = useCallback((b: BloomStufe) => {
+    setBloomRaw(b)
+    setBloomDirty(true)
+  }, [])
+  const setSemester: React.Dispatch<React.SetStateAction<string[]>> = useCallback((v) => {
+    setSemesterRaw(v)
+    setSemesterDirty(true)
+  }, [])
+  const setGefaesse: React.Dispatch<React.SetStateAction<string[]>> = useCallback((v) => {
+    setGefaesseRaw(v)
+    setGefaesseDirty(true)
+  }, [])
   /** Cluster D Phase 0 — Lifecycle-Status (Single-Source-of-Truth in FrageBase).
    *  Default 'sammlung' für Neu-Anlagen. Apps-Script Hybrid-Logic überschreibt mit Auto-Derivation
    *  (istVollstaendig_), wenn das Feld noch nie vom User explizit gesetzt wurde. */
@@ -693,20 +754,28 @@ export default function SharedFragenEditor({
   const [lernzieleLadend, setLernzieleLadend] = useState(false)
   const [zeigLernzielDialog, setZeigLernzielDialog] = useState(false)
   const [gewaehlterLernzielId, setGewaehlterLernzielId] = useState('')
-  const [lernzielIds, setLernzielIds] = useState<string[]>(frage?.lernzielIds ?? [])
+  const [lernzielIds, setLernzielIdsRaw] = useState<string[]>(frage?.lernzielIds ?? [])
+  const setLernzielIds = useCallback((v: string[]) => {
+    setLernzielIdsRaw(v)
+    setLernzielIdsDirty(true)
+  }, [])
 
   // Bundle 2 P4.2: setFachbereich-Wrapper — bei Fachwechsel Lernziele-Auswahl + Liste leeren
   // und Reset-Banner triggern. Nötig weil der nachfolgende Lade-Effect einen Early-Return-Guard
   // `lernziele.length > 0` hat — ohne setLernziele([]) würde die alte Liste hängen bleiben.
+  // Cluster D Phase 3a — Setter wirft zusätzlich Dirty-Flag für Batch-Mode-Diff.
   const setFachbereich = useCallback((neu: Fachbereich) => {
     setFachbereichRaw((prev) => {
       if (prev !== neu) {
-        setLernzielIds([])           // (a) Aktuelle Lernziel-Auswahl der Frage leeren
+        // (a) Aktuelle Lernziel-Auswahl der Frage leeren — raw-Variante damit das
+        //     nicht als „User dirty Lernziele" gewertet wird (Cluster D Phase 3a).
+        setLernzielIdsRaw([])
         setLernziele([])             // (b) Lernziel-LISTE leeren — sonst greift Early-Return im useEffect
         setResetBanner((c) => c + 1) // (c) Banner-Counter triggern
       }
       return neu
     })
+    setFachbereichDirty(true)
   }, [])
 
   // Themen-Vorschläge per Service holen — sieht aktuellen fachbereich-State
@@ -859,6 +928,23 @@ export default function SharedFragenEditor({
   }, [typ, ddZielzonen])
 
   async function handleSpeichern(): Promise<void> {
+    // Cluster D Phase 3a — Batch-Modus gabelt VOR den Pflicht/Validator-Checks ab.
+    // Im Batch-Modus existieren die nicht-batch-baren Felder (Fragetext, Lücken, …)
+    // gar nicht in der Submit-Logik — wir bauen ein Patch nur aus dirty-Metadaten.
+    if (istBatchMode && onBatchSave) {
+      const patch = berechnePatch({
+        fachbereich: fachbereichDirty ? fachbereich : undefined,
+        bloom: bloomDirty ? bloom : undefined,
+        status: statusDirty ? status : undefined,
+        gefaesse: gefaesseDirty ? gefaesse : undefined,
+        semester: semesterDirty ? semester : undefined,
+        lernzielIds: lernzielIdsDirty ? lernzielIds : undefined,
+        tagIds,
+      }, tagsModus)
+      onBatchSave(patch, tagsModus)
+      return
+    }
+
     const errs = validiereFrage({
       typ, thema, fragetext, punkte,
       optionen, mehrfachauswahl, textMitLuecken,
@@ -1028,16 +1114,20 @@ export default function SharedFragenEditor({
         <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-              {frage ? 'Frage bearbeiten' : 'Neue Frage erstellen'}
+              {istBatchMode ? 'Fragen batch-bearbeiten' : (frage ? 'Frage bearbeiten' : 'Neue Frage erstellen')}
             </h2>
-            <PruefungstauglichBadge
-              pruefungstauglich={validation.pflichtErfuellt && validation.empfohlenErfuellt}
-              empfohlenLeerFelder={validation.empfohlenLeerFelder}
-            />
+            {/* Cluster D Phase 3a — Pruefungstauglich-Badge im Batch-Modus ausblenden
+                (bezieht sich auf eine einzelne Frage; Batch betrifft viele). */}
+            {!istBatchMode && (
+              <PruefungstauglichBadge
+                pruefungstauglich={validation.pflichtErfuellt && validation.empfohlenErfuellt}
+                empfohlenLeerFelder={validation.empfohlenLeerFelder}
+              />
+            )}
           </div>
           <div className="flex items-center gap-2">
-            {/* Navigation zwischen Fragen (nur Fragensammlung — optional) */}
-            {(onVorherigeFrage || onNaechsteFrage) && (
+            {/* Navigation zwischen Fragen (nur Fragensammlung — optional). Im Batch-Modus deaktiviert. */}
+            {!istBatchMode && (onVorherigeFrage || onNaechsteFrage) && (
               <div className="flex items-center gap-0.5 mr-1">
                 <button
                   onClick={onVorherigeFrage}
@@ -1059,12 +1149,13 @@ export default function SharedFragenEditor({
                 </button>
               </div>
             )}
-            {/* Kompakte Geteilt-mit-Anzeige (Host-Slot, Bundle 12 K-2) */}
-            {berechtigungenHeaderSlot?.({ berechtigungen, geteilt })}
-            {/* Pool-Sync Buttons (Host-Slot) */}
-            {poolSyncSlot?.({ frage, typ, onRueckSync: () => setRueckSyncOffen(true) })}
-            {/* Lösch-Button im Header (nur bei bestehenden Fragen) — ergänzt den unten am Scrollende existierenden Button um eine direkt sichtbare Variante */}
-            {frage && onLoeschen && (
+            {/* Kompakte Geteilt-mit-Anzeige (Host-Slot, Bundle 12 K-2) — nicht in Batch (per-Frage-Info). */}
+            {!istBatchMode && berechtigungenHeaderSlot?.({ berechtigungen, geteilt })}
+            {/* Pool-Sync Buttons (Host-Slot) — nicht in Batch (per-Frage-Operation). */}
+            {!istBatchMode && poolSyncSlot?.({ frage, typ, onRueckSync: () => setRueckSyncOffen(true) })}
+            {/* Lösch-Button im Header (nur bei bestehenden Fragen) — ergänzt den unten am Scrollende existierenden Button um eine direkt sichtbare Variante.
+                Nicht im Batch-Modus (Batch hat eigenen Lösch-Pfad über FragenSelektionBar). */}
+            {!istBatchMode && frage && onLoeschen && (
               <button
                 onClick={() => { onLoeschen(frage) }}
                 title="Frage löschen"
@@ -1081,7 +1172,7 @@ export default function SharedFragenEditor({
             >
               ← Zurück
             </button>
-            {autoSave ? (
+            {autoSave && !istBatchMode ? (
               autoSave.statusSlot
             ) : (
               <button
@@ -1089,7 +1180,10 @@ export default function SharedFragenEditor({
                 disabled={speicherLaeuft}
                 className="px-3 py-1.5 text-sm font-semibold text-white bg-slate-800 dark:bg-slate-200 dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                {speicherLaeuft ? 'Speichern...' : 'Speichern'}
+                {/* Cluster D Phase 3a — Im Batch-Modus eigenes Label; Speichern... bleibt für Single-Edit. */}
+                {istBatchMode
+                  ? (batchMode ? `Auf ${batchMode.count} Fragen anwenden` : 'Anwenden')
+                  : (speicherLaeuft ? 'Speichern...' : 'Speichern')}
               </button>
             )}
           </div>
@@ -1106,6 +1200,11 @@ export default function SharedFragenEditor({
 
         {/* Scrollbarer Inhalt */}
         <div className="flex-1 overflow-auto px-5 py-4 space-y-5 overscroll-contain" style={{ overflowY: 'auto', minHeight: 0 }}>
+
+          {/* Cluster D Phase 3a — Batch-Edit-Banner (nur im Batch-Modus) */}
+          {batchMode && (
+            <BatchEditorBanner count={batchMode.count} sichtbareCount={batchMode.sichtbareCount} />
+          )}
 
           {/* Pool-Info (Host-Slot) */}
           {poolInfoSlot?.({ frage, typ, onSpeichern })}
@@ -1141,8 +1240,17 @@ export default function SharedFragenEditor({
             zeigeLernzielResetHinweis={resetBanner > 0 ? resetBanner : undefined}
             tagPickerSlot={tagPickerSlot?.({ tagIds, onChange: setTagIds })}
             status={status} setStatus={setStatus}
+            batchMode={istBatchMode}
           />
 
+          {/* Cluster D Phase 3a — Im Batch-Modus werden alle nicht-batch-baren Sections
+              (Fragetyp, Fragetext, Anhänge, Typ-Editor, Musterlösung, Bewertungsraster)
+              komplett ausgeblendet. Der User sieht nur Banner + MetadataSection.
+              Pragmatisch sicherer als per-Sub-Component `disabled`-Cascade (viele
+              spezialisierte Editoren akzeptieren das Prop nicht; Konsistenz hilft auch
+              dem User: was nicht sichtbar ist, kann nicht versehentlich landen). */}
+          {!istBatchMode && (
+          <>
           {/* Fragetyp wählen — kategorisiert */}
           <Abschnitt titel="Fragetyp" einklappbar standardOffen={!frage}>
             <FrageTypAuswahl typ={typ} setTyp={setTyp} gesperrt={!!frage} />
@@ -1349,6 +1457,9 @@ export default function SharedFragenEditor({
               )}
             </>
           )}
+          </>
+          )}
+          {/* Ende Cluster D Phase 3a Batch-Hide */}
 
         </div>
       </div>

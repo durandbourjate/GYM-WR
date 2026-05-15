@@ -97,6 +97,32 @@ export type Fachbereich = 'VWL' | 'BWL' | 'Recht' | 'Informatik' | 'Allgemein';
 export type Gefaess = 'SF' | 'EF' | 'EWR' | 'GF';
 export type BloomStufe = 'K1' | 'K2' | 'K3' | 'K4' | 'K5' | 'K6';
 
+/**
+ * Cluster D Phase 1b — Bulk-Patch-Vertrag (Wire-Vertrag zwischen Frontend & Apps-Script-Backend).
+ *
+ * Single-Source-of-Truth: Wird sowohl vom Service-Wrapper (`ExamLab/src/services/fragenBulkApi.ts`)
+ * als auch vom Pure-Diff-Modul (`packages/shared/src/editor/batchDiff.ts`) konsumiert.
+ *
+ * Tag-Modi (tagsHinzufuegen / tagsErsetzen / tagsEntfernen) sind mutually exclusive —
+ * sowohl Frontend (validateMutuallyExclusive) als auch Backend prüfen das.
+ */
+export interface FragenBulkPatch {
+  fachbereich?: Fachbereich;
+  bloom?: BloomStufe;
+  status?: 'draft' | 'sammlung';
+  gefaesse?: string[];
+  semester?: string[];
+  lernzielIds?: string[];
+  // Mutually exclusive Tag-Modi:
+  tagsHinzufuegen?: string[];
+  tagsErsetzen?: string[];
+  tagsEntfernen?: string[];
+}
+
+/** Cluster D Phase 3a — UI-Modus für die Tag-Spalte im Batch-Editor.
+ *  Entscheidet welches Feld in FragenBulkPatch gesetzt wird (siehe batchDiff). */
+export type TagsModus = 'hinzufuegen' | 'ersetzen' | 'entfernen';
+
 export interface Niveaustufe {
   punkte: number;        // z.B. 3, 2, 1, 0
   beschreibung: string;  // z.B. "Schlüssige Argumentation mit mehreren Belegen"

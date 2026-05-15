@@ -9,24 +9,16 @@
  * Backend implementiert die finale Hybrid-Logic + Audit-Log (siehe apps-script-code.js).
  */
 import { postJson } from './apiClient'
+import type { FragenBulkPatch } from '@shared/types/fragen-core'
+
+// Re-export für Backward-Compat (Konsumenten importieren weiter von './fragenBulkApi').
+// Single-Source-of-Truth: `@shared/types/fragen-core` (Cluster D Phase 3a).
+export type { FragenBulkPatch }
 
 interface ApiResponse {
   success?: boolean
   error?: string
   [key: string]: unknown
-}
-
-export interface FragenBulkPatch {
-  fachbereich?: 'VWL' | 'BWL' | 'Recht' | 'Informatik' | 'Allgemein'
-  bloom?: 'K1' | 'K2' | 'K3' | 'K4' | 'K5' | 'K6'
-  status?: 'draft' | 'sammlung'
-  gefaesse?: string[]
-  semester?: string[]
-  lernzielIds?: string[]
-  // Mutually exclusive Tag-Modi (Frontend + Backend prüfen beide)
-  tagsHinzufuegen?: string[]
-  tagsErsetzen?: string[]
-  tagsEntfernen?: string[]
 }
 
 export interface FragenBulkResult {

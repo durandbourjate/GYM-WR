@@ -116,6 +116,19 @@ export default function MetadataSection({
   const [statsOffen, setStatsOffen] = useState(false)
   const config = useEditorConfig()
 
+  /** Cluster D Phase 3a — Wrapper-Helper für die 7 batch-fähigen Felder.
+   *  Im Single-Edit-Modus (`batchMode === false`) wird der Inhalt OHNE Extra-DOM-Wrapper
+   *  zurückgegeben → DOM byte-identisch wie vor Cluster D (Backward-Compat absolut).
+   *  Im Batch-Modus wrappt ein `<div>` mit violettem Ring + Pastell-Hintergrund. */
+  const violetWrap = (kinder: React.ReactNode): React.ReactNode =>
+    batchMode ? (
+      <div className="ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10">
+        {kinder}
+      </div>
+    ) : (
+      <>{kinder}</>
+    )
+
   return (
     <Abschnitt
       titel="Metadaten"
@@ -198,26 +211,32 @@ export default function MetadataSection({
       )}
 
       <div className="grid grid-cols-2 gap-3">
-        {istWRFachschaft(config.benutzer.fachschaft) ? (
-          <Feld label="Fach *">
-            <select value={fachbereich} onChange={(e) => setFachbereich(e.target.value as Fachbereich)} className="input-field input-pflicht">
-              <option value="VWL">VWL</option>
-              <option value="BWL">BWL</option>
-              <option value="Recht">Recht</option>
-            </select>
-          </Feld>
-        ) : (
-          <Feld label="Fach *">
-            <input type="text" value={fachbereich} readOnly className="input-field input-pflicht text-slate-500 cursor-not-allowed" />
-          </Feld>
+        {/* Cluster D Phase 3a — Fach + Bloom mit violet-Wrapper NUR im Batch-Modus.
+            `violetWrap` ist eine Fragment-Identität wenn !batchMode → DOM unverändert. */}
+        {violetWrap(
+          istWRFachschaft(config.benutzer.fachschaft) ? (
+            <Feld label="Fach *">
+              <select value={fachbereich} onChange={(e) => setFachbereich(e.target.value as Fachbereich)} className="input-field input-pflicht">
+                <option value="VWL">VWL</option>
+                <option value="BWL">BWL</option>
+                <option value="Recht">Recht</option>
+              </select>
+            </Feld>
+          ) : (
+            <Feld label="Fach *">
+              <input type="text" value={fachbereich} readOnly className="input-field input-pflicht text-slate-500 cursor-not-allowed" />
+            </Feld>
+          ),
         )}
-        <Feld label="Bloom-Stufe">
-          <select value={bloom} onChange={(e) => setBloom(e.target.value as BloomStufe)} className="input-field">
-            {(['K1', 'K2', 'K3', 'K4', 'K5', 'K6'] as BloomStufe[]).map((k) => (
-              <option key={k} value={k}>{k} — {bloomLabel(k)}</option>
-            ))}
-          </select>
-        </Feld>
+        {violetWrap(
+          <Feld label="Bloom-Stufe">
+            <select value={bloom} onChange={(e) => setBloom(e.target.value as BloomStufe)} className="input-field">
+              {(['K1', 'K2', 'K3', 'K4', 'K5', 'K6'] as BloomStufe[]).map((k) => (
+                <option key={k} value={k}>{k} — {bloomLabel(k)}</option>
+              ))}
+            </select>
+          </Feld>,
+        )}
         <Feld label="Thema *">
           <input type="text" value={thema} onChange={(e) => setThema(e.target.value)}
             placeholder="z.B. Marktgleichgewicht" className="input-field input-pflicht"
@@ -257,11 +276,10 @@ export default function MetadataSection({
         </Feld>
       </div>
 
-      {/* Cluster D Phase 0 — Lifecycle-Status (Entwurf / Sammlung). Auto-Default 'sammlung' wenn nichts gesetzt. */}
+      {/* Cluster D Phase 0 — Lifecycle-Status (Entwurf / Sammlung). Auto-Default 'sammlung' wenn nichts gesetzt.
+          Cluster D Phase 3a — violet-Wrapper via `violetWrap`-Helper (Backward-Compat: nur Klassen-add, DOM identisch). */}
       {setStatus && (
-        <div
-          className={`mt-3 ${batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}`}
-        >
+        <div className={`mt-3 ${batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}`}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Status</label>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -290,17 +308,19 @@ export default function MetadataSection({
         </div>
       )}
 
-      {/* Cluster H Phase 2 — Tag-Objekt-Picker (Slot vom Host, DI-Pattern) */}
+      {/* Cluster H Phase 2 — Tag-Objekt-Picker (Slot vom Host, DI-Pattern).
+          Cluster D Phase 3a — violet-Wrapper für Batch-Modus. */}
       {tagPickerSlot && (
-        <div className="mt-3">
+        <div className={`mt-3 ${batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}`}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Tags</label>
           {tagPickerSlot}
         </div>
       )}
 
-      {/* Zeitpunkt + Gefässe */}
+      {/* Zeitpunkt + Gefässe.
+          Cluster D Phase 3a — Beide Sub-Blöcke kriegen im Batch-Modus violet-Ring. */}
       <div className="flex gap-6 mt-3">
-        <div>
+        <div className={batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Zeitpunkt</label>
           <div className="flex gap-1 flex-wrap">
             {config.verfuegbareSemester.map((s) => (
@@ -316,7 +336,7 @@ export default function MetadataSection({
             ))}
           </div>
         </div>
-        <div>
+        <div className={batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Gefäss</label>
           <div className="flex gap-1">
             {config.verfuegbareGefaesse.map((g) => (
@@ -333,28 +353,51 @@ export default function MetadataSection({
           </div>
         </div>
 
-        {/* Berechtigungen-Editor (vom Host bereitgestellt) */}
+        {/* Berechtigungen-Editor (vom Host bereitgestellt) — nicht batch-bar (kein Wrapper). */}
         {berechtigungenEditor}
       </div>
 
-      {/* Lernziele zuordnen */}
+      {/* Lernziele zuordnen.
+          Cluster D Phase 3a — violet-Wrapper nur im Batch-Modus (DOM-Wrapper-Add ist hier OK,
+          weil LernzielWaehler eh in eigenem Container rendert — kein Layout-Regress). */}
       {(lernzieleLadend || (lernziele && lernziele.length > 0) || onNeuLernzielErstellen) && (
-        <LernzielWaehler
-          lernziele={lernziele || []}
-          gewaehlteIds={lernzielIds}
-          onToggle={(id) => {
-            if (!setLernzielIds) return
-            setLernzielIds(
-              lernzielIds.includes(id)
-                ? lernzielIds.filter(x => x !== id)
-                : [...lernzielIds, id]
-            )
-          }}
-          onNeuErstellen={onNeuLernzielErstellen}
-          aktuellerFachbereich={fachbereich}
-          ladend={lernzieleLadend}
-          zeigeResetHinweis={zeigeLernzielResetHinweis && zeigeLernzielResetHinweis > 0 ? zeigeLernzielResetHinweis : undefined}
-        />
+        batchMode ? (
+          <div className="mt-3 ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10">
+            <LernzielWaehler
+              lernziele={lernziele || []}
+              gewaehlteIds={lernzielIds}
+              onToggle={(id) => {
+                if (!setLernzielIds) return
+                setLernzielIds(
+                  lernzielIds.includes(id)
+                    ? lernzielIds.filter(x => x !== id)
+                    : [...lernzielIds, id]
+                )
+              }}
+              onNeuErstellen={onNeuLernzielErstellen}
+              aktuellerFachbereich={fachbereich}
+              ladend={lernzieleLadend}
+              zeigeResetHinweis={zeigeLernzielResetHinweis && zeigeLernzielResetHinweis > 0 ? zeigeLernzielResetHinweis : undefined}
+            />
+          </div>
+        ) : (
+          <LernzielWaehler
+            lernziele={lernziele || []}
+            gewaehlteIds={lernzielIds}
+            onToggle={(id) => {
+              if (!setLernzielIds) return
+              setLernzielIds(
+                lernzielIds.includes(id)
+                  ? lernzielIds.filter(x => x !== id)
+                  : [...lernzielIds, id]
+              )
+            }}
+            onNeuErstellen={onNeuLernzielErstellen}
+            aktuellerFachbereich={fachbereich}
+            ladend={lernzieleLadend}
+            zeigeResetHinweis={zeigeLernzielResetHinweis && zeigeLernzielResetHinweis > 0 ? zeigeLernzielResetHinweis : undefined}
+          />
+        )
       )}
 
       {/* Fragen-Statistiken (nur wenn Performance-Daten vorhanden) */}
