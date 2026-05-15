@@ -924,7 +924,12 @@ function apiMigriereTagsZuObjects(body) {
  * Performance: Batch-Read + Batch-Write pro Sheet (1×getValues, 1×setValues) — analog Cluster H.
  * Admin-only via pruefeAdminOderFehler_.
  *
- * @returns {{success: true, count: number, dauerMs: number}}
+ * Iteriert via getFragensammlungTabs_() (dynamisch, alle Non-System-Tabs) statt
+ * FACHBEREICH_SHEETS (nur 4 WR-Sheets), um auch "Allgemein"-Tab (FACHBEREICH_MAPPING)
+ * und potentielle Zukunfts-Tabs abzudecken. Konsistent mit parseFrageKanonisch_-Pfaden
+ * (uebenLadeFragen, ladeFrageUnbereinigtById_), die ebenfalls dynamisch iterieren.
+ *
+ * @returns {{success: true, count: number, defaultWert: 'sammlung', dauerMs: number}}
  */
 function apiBackfillStatusDefault(body) {
   var lpInfo = getLPInfo(body.email);
@@ -932,7 +937,7 @@ function apiBackfillStatusDefault(body) {
   if (fehler) return fehler;
 
   var startTime = new Date().getTime();
-  var fachbereiche = FACHBEREICH_SHEETS;
+  var fachbereiche = getFragensammlungTabs_();
   var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
   var totalCount = 0;
 
@@ -975,7 +980,7 @@ function apiBackfillStatusDefault(body) {
   cacheInvalidieren_();
   var dauerMs = new Date().getTime() - startTime;
   auditLog_('backfillStatus', body.email, { count: totalCount, defaultWert: 'sammlung', dauerMs: dauerMs });
-  return jsonResponse({ success: true, count: totalCount, dauerMs: dauerMs });
+  return jsonResponse({ success: true, count: totalCount, defaultWert: 'sammlung', dauerMs: dauerMs });
 }
 
 /**
@@ -10791,6 +10796,10 @@ function parseFrageKanonisch_(row, fachbereich) {
     poolId: row.poolId || '',
     pruefungstauglich: row.pruefungstauglich === 'true',
     lernzielIds: (row.lernzielIds || '').split(',').filter(Boolean),
+    // Cluster D Phase 0 Hotfix: status-Feld analog parseFrage (Z.~3649).
+    // Konsumenten von parseFrageKanonisch_ (uebenLadeFragen, ladeFrageUnbereinigtById_,
+    // bulkLadeFragenAusSheet_) brauchen status für Draft-Filter im Frontend.
+    status: row.status === 'draft' ? 'draft' : 'sammlung',
   };
 
   // Themen-Hierarchie aus poolId ableiten (Pool-Titel → thema, bisheriges thema → unterthema)

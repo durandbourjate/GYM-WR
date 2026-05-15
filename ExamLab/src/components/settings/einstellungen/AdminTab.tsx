@@ -7,7 +7,7 @@ import CRUDSectionShell from './CRUDSectionShell'
 import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
 import SpeicherButton from './SpeicherButton'
 import { migriereTagsZuObjects } from '../../../services/tagsApi'
-import { postJson } from '../../../services/apiClient'
+import { backfillStatusDefault } from '../../../services/maintenanceApi'
 import Button from '../../ui/Button'
 import BaseDialog from '../../ui/BaseDialog'
 
@@ -37,7 +37,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
   // Cluster D Phase 0 — Status-Backfill State (einmalige Wartungs-Aktion)
   const [statusBackfillConfirmOpen, setStatusBackfillConfirmOpen] = useState(false)
   const [statusBackfillLaeuft, setStatusBackfillLaeuft] = useState(false)
-  const [statusBackfillErgebnis, setStatusBackfillErgebnis] = useState<{ count: number; dauerMs: number } | null>(null)
+  const [statusBackfillErgebnis, setStatusBackfillErgebnis] = useState<{ count: number; defaultWert: 'draft' | 'sammlung'; dauerMs: number } | null>(null)
   const [statusBackfillFehler, setStatusBackfillFehler] = useState<string | null>(null)
 
   async function handleMigrationStartenOK() {
@@ -60,13 +60,8 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
     setStatusBackfillLaeuft(true)
     setStatusBackfillFehler(null)
     try {
-      const r = await postJson<{ success?: boolean; count?: number; dauerMs?: number; error?: string }>(
-        'apiBackfillStatusDefault',
-        { email },
-      )
-      if (!r) throw new Error('Backfill: keine Antwort vom Server')
-      if (r.success === false || r.error) throw new Error(r.error || 'Backfill fehlgeschlagen')
-      setStatusBackfillErgebnis({ count: Number(r.count ?? 0), dauerMs: Number(r.dauerMs ?? 0) })
+      const r = await backfillStatusDefault({ email })
+      setStatusBackfillErgebnis(r)
     } catch (e) {
       setStatusBackfillFehler(e instanceof Error ? e.message : String(e))
     } finally {
@@ -329,7 +324,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
         </Button>
         {statusBackfillErgebnis && (
           <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded">
-            ✅ {statusBackfillErgebnis.count} Fragen mit Default „sammlung" befüllt ({statusBackfillErgebnis.dauerMs}ms)
+            ✅ {statusBackfillErgebnis.count} Fragen mit Default „{statusBackfillErgebnis.defaultWert}" befüllt ({statusBackfillErgebnis.dauerMs}ms)
           </div>
         )}
         {statusBackfillFehler && (
