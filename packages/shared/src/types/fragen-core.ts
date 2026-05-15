@@ -35,7 +35,10 @@ export interface FrageBase {
 
   // Taxonomie
   bloom: BloomStufe;
-  tags: string[];
+  /** @deprecated Cluster H Phase 3 entfernt — bis dahin koexistiert mit tagIds für Rollback */
+  tags?: string[];
+  /** Tag-Object-Referenzen (Cluster H, ab Phase 1) */
+  tagIds?: string[];
 
   // Bewertung
   punkte: number;
