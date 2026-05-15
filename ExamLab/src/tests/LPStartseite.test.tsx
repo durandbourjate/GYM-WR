@@ -125,7 +125,10 @@ async function ladeKomponente() {
   return Modul.default
 }
 
-describe('LPStartseite Skeleton-Rendering', () => {
+// CI-Robustheit: LPStartseite-Bundle ist ~833 KB → dynamic-import + Render dauert
+// auf GitHub-Runnern 3.7-4.0 s (gemessen 2026-05-15). Vitest-Default-Timeout 5000 ms ist
+// auf der Kippe → bei Runner-Variance Timeout. Suite-Timeout auf 15000 ms angehoben.
+describe('LPStartseite Skeleton-Rendering', { timeout: 15000 }, () => {
   it('zeigt LPCardsSkeleton bei Prüfungs-Tab + configsLadeStatus=laden', async () => {
     mockModus = 'pruefung'
     mockListenTab = 'pruefungen'
