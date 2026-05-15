@@ -103,7 +103,7 @@ Alle als `case` im bestehenden `doPost`-Router (analog `case 'speichereFrage'`).
 6. Für jeden Eintrag: kanonischer Name = häufigstes Casing (Tie-Break: alphabetisch erstes).
 7. Für jeden kanonischen Tag: erstelle UUID, Tag-Object mit `farbe='slate'`, `archiviert=false`, `erstelltAm=now()`, `erstelltVon='migration@system'`.
 8. Schreibe alle Tag-Objects ins `Tags`-Sheet.
-9. Iteriere alle Fragen: ersetze `tags: string[]` (jetzt benannt zu `tagsLegacy`) durch `tagIds: string[]` (Lookup-Map String → ID).
+9. Iteriere alle Fragen: ersetze `tags: string[]` (jetzt benannt zu `tagsLegacy`) durch `tagIds: string[]`. Lookup-Map-Keys sind `name.toLowerCase()` (konsistent mit dem case-insensitive Dedup aus Schritt 5), damit Frontend-Lookup nicht durch Original-Casing scheitert.
 10. Response: `{ neueTags: number, fragenAktualisiert: number, dauerMs: number }`.
 
 **Idempotenz-Check** verhindert Doppel-Lauf.
@@ -208,7 +208,7 @@ Neue Komponente `TagPicker` in `packages/shared/src/editor/components/TagPicker.
 - Multi-Select via Checkbox.
 - Keyboard: ↑↓ navigiert, Enter toggled.
 - Bei Enter ohne Treffer: Quick-Erstellen mit getipptem Namen + Default-Farbe.
-- Maximal 8 Tags pro Frage als Soft-Limit (UI-Hinweis, kein Backend-Block).
+- Maximal 8 Tags pro Frage als Soft-Limit (UI-Hinweis, kein Backend-Block). Begründung: in der KompaktZeile der Fragensammlung würden mehr Tag-Chips den horizontalen Platz sprengen + Wrap-Verhalten unschön machen. Das Limit kann jederzeit nachgezogen werden, wenn sich das UI-Layout ändert.
 
 ## 7. Migration-Strategie
 
