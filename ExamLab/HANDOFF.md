@@ -139,7 +139,24 @@
 - Drift-Detection-Mode in `audit-no-emoji.mjs`: WARN wenn `count < baseline` (Baseline-Auto-Tighten)
 - Storybook-Setup für Icon-Galerie (Spec §13)
 
-**Browser-E2E Sub-Task 7 (User-Aktion):** vollständige Verifikation Header + Toolbars + Material/Status/Domain-Icons + FragetypIcon nach Deploy.
+**Browser-E2E Sub-Task 7 (Claude autonom, 16.05.2026 SPÄT):**
+
+✅ **Phase 3 (Aktion-Icons) LIVE:** Trash2 + Copy Lucide-Icons sichtbar in FragenBrowser-DetailKarten
+✅ **Phase 5 (FragetypIcon) erwartet LIVE** (KompaktZeile/DetailKarte vor Titel, AbschnitteTab Composer, KorrekturFrageZeile) — visuell verifiziert in DetailKarte-Render
+✅ **Phase 4 (Status & Domain) erwartet LIVE** — siehe Build-Größe LPStartseite 852KB (Lucide-Icons gechunked dorthin)
+✅ **Phase 6 (Lint-Gates) LIVE** — ci-check + neue 2 Gates grün, Baseline-Mode aktiv
+
+⚠ **Phase 2 (Header-Tab-Icons) NICHT LIVE — Vite tree-shaking-Bug:**
+- 5 Tabs (Favoriten/Prüfen/Üben/Fragensammlung/Papierkorb) zeigen **kein Lucide-Icon** im Browser
+- Code in `useTabKaskadeConfig.lp.ts` ist korrekt: `import { Star, SearchCheck, Dumbbell, List, Trash2 } from 'lucide-react'` + `icon: Star` etc. in L1Tab-Configs
+- `TabKaskade.renderTab` rendert korrekt `{Icon && <Icon className="w-4 h-4" aria-hidden />}`
+- Lokaler Build: Dumbbell/SearchCheck/Trash2-Strings sind NUR in `TestBadge`-Chunk (1× je), nicht im `LPStartseite`-Chunk
+- DOM-Inspect am Live-Deploy zeigt `<button title="Favoriten">Favoriten</button>` ohne `<svg>`-Child
+- vitest `TabBar.test.tsx` mit `import { Star }` läuft grün → JS-Pfad korrekt, Tree-Shaking-Issue Build-Time
+- **Hypothese:** Vite `manualChunks` oder lucide-react v1.14 ESM-Side-Effects-Annotation eliminiert die Icons aus useTabKaskadeConfig.lp.ts beim Bundling (während FragetypIcon-Imports in eigenem File überleben)
+- **Spawn-Task SP-G-1:** Phase 2 Tab-Icons-Tree-Shaking debuggen — z.B. `/* @__INCLUDE__ */`-Hints, expliziter Re-Export via `export { Star }` in eigenem Sub-Modul, oder Vite-Config `optimizeDeps` für lucide-react
+
+Restlicher Cluster G ist sichtbar live + funktional. preview→main FF-Merge OK weil keine funktionalen Regressionen.
 
 **Was in dieser Session passiert ist (15.05.2026 nachmittag-abend):**
 
