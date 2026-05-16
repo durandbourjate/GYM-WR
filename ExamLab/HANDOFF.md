@@ -6,11 +6,78 @@
 
 ---
 
-## 📍 STAND 16.05.2026 — Wo wir gerade stehen
+## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**Letzter Merge auf main:** `31bdf81` (Cluster H Phase 0+1+2 LIVE).
-**Letzter Push auf preview:** `7c6fa61` (Cluster D Phase 0+1a+1b+2+3a+3b+4 + 12 Hotfixes).
-**Branch:** `feature/cluster-d-batch-edit-spec-update` HEAD `7c6fa61` (= preview HEAD, FF-merged).
+**HEAD beider Branches:** `a883308` — main + preview identisch, beide gepusht, beide deployed.
+
+**Bei Wiedereinstieg:**
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git fetch origin && git status        # working tree muss clean sein
+git log --oneline -10                  # letzte commits anschauen
+```
+
+**Working tree clean.** vitest 1839 + 4 todo. ci-check vollständig grün.
+
+**Pre-Push-Pflicht:** `cd ExamLab && npm run ci-check` (matched CI 1:1). Bei `packages/shared/package.json`-Änderungen zusätzlich `cd packages/shared && npm install` damit lock-Datei synchron bleibt (Memory `feedback_npm_ci_lock_drift.md`).
+
+### Was als nächstes (priorisiert)
+
+#### 1. Cluster H Phase 3 Cleanup (frühstens 29.05.2026)
+Nach 2 Wochen Live-Beobachtung Tag-Modell:
+- `tagsLegacy`-Spalte aus Apps-Script entfernen via `apiCleanupTagsLegacy`-Endpoint
+- Frontend-Fallback-Code raus
+- `tagIds?` zu `tagIds: string[]` (required) machen
+- `ExamLab/src/types/tags.ts` (5 Z., Pre-Cluster-H Dead-Code) löschen + 3 LegacyTag-Imports auf `@shared/types/tag` umstellen
+
+#### 2. Verbleibende Spawn-Tasks (gross, brauchen Vorsicht)
+- **I-3 + M-1 (Cluster D S3):** `updateFrageMitPatch_` Performance bei >500-ID-Batches — Apps-Script-Refactor (ID→{tab,row,headers}-Map einmal pro endpoint, setValues-Batch statt per-Field-setValue). Braucht Deploy + LIVE-Verifikation. Ca. 0.5 Tag.
+- **appNavigation.ts Persist-Migration auf Lucide-Component-Keys:** vorsichtig, weil `favoritenStore.icon` persistiert User-Favoriten als Emoji-Strings. Migration-Path: alte Strings → neue Keys + Auto-Migration im Store. Aktuell pragmatisch über `NavIcon`-Helper gelöst (Mapping Emoji→Lucide bei Render). Längerfristig sauberer mit Keys.
+- **91 Mid-Files (Count 1-2) Emojis schrittweise migrieren:** ~138 Emojis Rest in Baseline. Weniger UX-Impact, aber Baseline immer kleiner = besser.
+
+#### 3. Komplett neue Cluster
+- **Cluster E.2-E.5** (Typografie + Favoriten-Backend-Sync + Star-Toggle + Favoriten-Picker) — 4 separate Sub-Cluster, je 2-3 Tage
+- **Globale Suche Phase 2** (C.2 Schüler-Suche / C.3 ?suche=-Pre-Fill / C.4 Volltext / C.5 Fuzzy) — orthogonal, je 1-3 Tage
+- **Storybook-Setup für Icon-Galerie** (Cluster G Spec §13)
+
+#### 4. Kleinere Items
+- Filter-Dropdown in FragenBrowserHeader auf Custom-Dropdown mit Lucide-Option-Prefixes
+- Drift-Detection-Mode in `audit-no-emoji.mjs`: WARN wenn `count < baseline` (Baseline-Auto-Tighten)
+- `letzterSeedAm`-Persistenz im Apps-Script Configs-Sheet (F.3 Spec §5.2 A)
+- EinstellungenPanel-Migration auf Tab-Registry (blockiert durch `kiKalibrierung`↔`ki-kalibrierung`-ID-Konflikt)
+- Klassenlisten-Tab Filter (F.4 Out-of-Scope)
+- Live-Durchführen Schüler-Filter (F.4 Out-of-Scope)
+
+### Memory-Lehren aus dieser Session
+Neue Memory-Einträge dokumentiert für nächste Sessions:
+- `feedback_npm_ci_lock_drift.md` — sub-package peerDeps + lock-Sync vor Push
+- `feedback_http_cache_after_sw.md` (existing, **verschärft**) — Browser-E2E nach Deploy: SW-unregister + caches.delete reicht NICHT, `?cb=<ts>` URL-Buster Pflicht (Cluster G SP-G-1-Schadensfall)
+
+---
+
+## 📍 STAND 16.05.2026 SPÄT — Cluster D + Cluster G + Cleanup-Sweep komplett auf main
+
+**HEAD beider Branches:** `a883308` — main + preview identisch, beide gepusht, beide deployed.
+
+**Was heute passiert ist (Reihenfolge):**
+1. **Cluster D Phase 3a+3b+4** (Sub-Tasks 5-7) — Editor batchMode + BatchTagPicker + Confirm-Modals + FragenBrowser-Wiring
+2. **Cluster D 3 Smoke-Test-Fixes** (C1+C2+C3) — Nicht-batch-bare Felder im batchMode ausblenden
+3. **Cluster D Cleanup-Bundle** (SP-1..SP-4 + M-1 + M-3) — useFragenBatchEdit-Hook + useRef-Guard + mountedRef + Defense-in-Depth
+4. **Cluster G Phase 2-6** (7 Sub-Tasks) — Header/Nav/Aktion/Status/FragetypIcon/Lint-Gates
+5. **Cluster G npm-ci-Lock-Hotfix** — packages/shared/package-lock.json war nicht synchron mit peerDependency lucide-react
+6. **SP-G-1 aufgelöst** — war HTTP/SW-Cache-Bug nicht Code-Bug
+7. **Cleanup-Sweep**: M-11 + M-6 + NavIcon + M-4 + Top-15-Emojis + I-1
+
+**Test-Stand:**
+- vitest: **1839 passed + 4 todo**
+- tsc -b + 7 lint-Gates clean (as-any + no-alert + no-tests-dir + musterloesung + wire-contract + no-emoji + no-inline-svg)
+- vite build clean (256 PWA-entries)
+- ci-check vollständig grün
+
+**Vorheriger Stand (für Referenz):**
+- Letzter Merge auf main: `31bdf81` (Cluster H Phase 0+1+2 LIVE)
+- Letzter Push auf preview: `7c6fa61` (Cluster D Phase 0+1a+1b+2+3a+3b+4 + 12 Hotfixes)
+- Branch: `feature/cluster-d-batch-edit-spec-update` HEAD `7c6fa61` (= preview HEAD, FF-merged)
 
 **Branches:**
 - `main`: HEAD `31bdf81`, sync mit origin/main
@@ -152,6 +219,12 @@
 - **Memory-Lehre:** `feedback_http_cache_after_sw.md` greift hier — bei Browser-E2E nach Deploy MUSS `?cb=<timestamp>`-Buster auf der URL stehen, nicht nur Cache-Reset.
 
 Cluster G Phase 2-6 ist **100% LIVE**. preview→main bereits FF-merged auf `2ab4dab` (Hotfix Lock).
+
+**Cleanup-Sweep (HEAD `a883308`, 16.05.2026 SPÄT):** 7 Spawn-Tasks abgearbeitet:
+- `81fe232` M-11 DetailKarte-Checkbox + M-6 ESC-Handler + NavIcon shared util
+- `87f53e9` M-4 FragenSelektionBar Mobile-Layout (flex-wrap + icon-only buttons <sm)
+- `1c56633` Top-15 Mid-File Emoji-Migration (-55 Emojis, Baseline 193→138)
+- `a883308` I-1 apiClient postJson/getJson Backend-Error-Response durchreichen
 
 **Was in dieser Session passiert ist (15.05.2026 nachmittag-abend):**
 
