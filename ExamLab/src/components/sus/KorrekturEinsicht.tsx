@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Check, X, Minus } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore.ts'
 import { apiService } from '../../services/apiService.ts'
 import type { KorrekturDetailDaten, KorrekturDetailBewertung } from '../../services/apiService.ts'
@@ -15,11 +16,11 @@ interface Props {
 }
 
 /** Symbol für Bewertung */
-function bewertungsSymbol(punkte: number, maxPunkte: number): string {
-  if (maxPunkte === 0) return '—'
-  if (punkte === maxPunkte) return '✓'
-  if (punkte === 0) return '✗'
-  return '~'
+function BewertungsSymbol({ punkte, maxPunkte, className }: { punkte: number; maxPunkte: number; className?: string }) {
+  if (maxPunkte === 0) return <span className={className}>—</span>
+  if (punkte === maxPunkte) return <Check className={className ?? 'w-5 h-5'} aria-label="vollständig richtig" />
+  if (punkte === 0) return <X className={className ?? 'w-5 h-5'} aria-label="falsch" />
+  return <Minus className={className ?? 'w-5 h-5'} aria-label="teilweise richtig" />
 }
 
 function bewertungsSymbolFarbe(punkte: number, maxPunkte: number): string {
@@ -123,7 +124,6 @@ interface FrageKarteProps {
 }
 
 function FrageKarte({ index, frage, bewertung, antwort }: FrageKarteProps) {
-  const symbol = bewertungsSymbol(bewertung.punkte, bewertung.maxPunkte)
   const symbolFarbe = bewertungsSymbolFarbe(bewertung.punkte, bewertung.maxPunkte)
 
   return (
@@ -132,7 +132,7 @@ function FrageKarte({ index, frage, bewertung, antwort }: FrageKarteProps) {
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs text-slate-400 dark:text-slate-500">Frage {index}</span>
         <div className="flex items-center gap-2">
-          <span className={`text-lg font-bold ${symbolFarbe}`}>{symbol}</span>
+          <span className={`font-bold ${symbolFarbe}`}><BewertungsSymbol punkte={bewertung.punkte} maxPunkte={bewertung.maxPunkte} /></span>
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 tabular-nums">
             {bewertung.punkte} / {bewertung.maxPunkte}
           </span>
@@ -208,7 +208,7 @@ function FrageKarte({ index, frage, bewertung, antwort }: FrageKarteProps) {
   )
 }
 
-/** MC-Korrektur: Optionen mit ✓/✗ im Radio-Icon */
+/** MC-Korrektur: Optionen mit Check/X im Radio-Icon */
 function MCKorrektur({ optionen, korrekteOptionen, gewaehlte }: {
   optionen: { id: string; text: string }[]
   korrekteOptionen: string[]
@@ -242,10 +242,10 @@ function MCKorrektur({ optionen, korrekteOptionen, gewaehlte }: {
 
         return (
           <div key={opt.id} className={`flex items-start gap-3 p-3 rounded-xl border-2 ${borderClass}`}>
-            <span className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center text-xs font-bold ${radioClass}`}>
-              {gewaehltKorrekt && <span className="text-white dark:text-slate-900">✓</span>}
-              {gewaehltFalsch && <span className="text-white dark:text-slate-900">✗</span>}
-              {nichtGewaehltKorrekt && <span className="text-green-600 dark:text-green-400">✓</span>}
+            <span className={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${radioClass}`}>
+              {gewaehltKorrekt && <Check className="w-3 h-3 text-white dark:text-slate-900" aria-label="richtig gewählt" />}
+              {gewaehltFalsch && <X className="w-3 h-3 text-white dark:text-slate-900" aria-label="falsch gewählt" />}
+              {nichtGewaehltKorrekt && <Check className="w-3 h-3 text-green-600 dark:text-green-400" aria-label="korrekte Antwort nicht gewählt" />}
             </span>
             <div className="flex-1">
               <span className="font-semibold text-slate-500 dark:text-slate-400 mr-2">{opt.id.toUpperCase()})</span>
@@ -275,7 +275,7 @@ function RFKorrektur({ aussagen, antworten }: {
             <div className="flex-1 text-sm text-slate-700 dark:text-slate-200">{a.text}</div>
             <div className="flex gap-1.5">
               {/* R-Button */}
-              <span className={`px-2.5 py-1 rounded text-xs font-semibold border-2 ${
+              <span className={`px-2.5 py-1 rounded text-xs font-semibold border-2 inline-flex items-center gap-1 ${
                 hatGeantwortet && susAntwort === true
                   ? istRichtig
                     ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-500'
@@ -284,10 +284,10 @@ function RFKorrektur({ aussagen, antworten }: {
                     ? 'border-green-300 text-green-600 dark:border-green-600 dark:text-green-400'
                     : 'border-slate-200 text-slate-400 dark:border-slate-600 dark:text-slate-500'
               }`}>
-                R{hatGeantwortet && susAntwort === true && (istRichtig ? ' ✓' : ' ✗')}
+                R{hatGeantwortet && susAntwort === true && (istRichtig ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />)}
               </span>
               {/* F-Button */}
-              <span className={`px-2.5 py-1 rounded text-xs font-semibold border-2 ${
+              <span className={`px-2.5 py-1 rounded text-xs font-semibold border-2 inline-flex items-center gap-1 ${
                 hatGeantwortet && susAntwort === false
                   ? istRichtig
                     ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-500'
@@ -296,7 +296,7 @@ function RFKorrektur({ aussagen, antworten }: {
                     ? 'border-green-300 text-green-600 dark:border-green-600 dark:text-green-400'
                     : 'border-slate-200 text-slate-400 dark:border-slate-600 dark:text-slate-500'
               }`}>
-                F{hatGeantwortet && susAntwort === false && (istRichtig ? ' ✓' : ' ✗')}
+                F{hatGeantwortet && susAntwort === false && (istRichtig ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />)}
               </span>
             </div>
           </div>

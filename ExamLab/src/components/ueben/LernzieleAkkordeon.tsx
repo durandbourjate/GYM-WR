@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CheckCircle2, Circle, Flag, X, Play, ChevronUp, ChevronDown } from 'lucide-react'
 import type { Lernziel } from '../../types/pool'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 import { lernzielStatus } from '../../utils/ueben/mastery'
@@ -62,7 +63,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
       return (
         <div key={lz.id} className="flex items-start gap-2 text-sm">
           <span className="mt-0.5 shrink-0">
-            {status === 'gemeistert' ? '✅' : status === 'gefestigt' ? '🔵' : status === 'inArbeit' ? '🟡' : '🏁'}
+            <LernzielStatusIcon status={status} />
           </span>
           <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
             {lz.text}
@@ -80,8 +81,8 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onSchliessen}>
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-md mx-4" onClick={e => e.stopPropagation()}>
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold dark:text-white">🏁 Lernziele</h2>
-            <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xl">✕</button>
+            <h2 className="text-lg font-bold dark:text-white inline-flex items-center gap-2"><Flag className="w-5 h-5" /> Lernziele</h2>
+            <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-5 h-5" /></button>
           </div>
           <p className="text-slate-500 dark:text-slate-400">Lernziele werden von der Lehrperson definiert. Sobald Themen aktiviert sind, erscheinen hier die zugehörigen Lernziele.</p>
         </div>
@@ -97,8 +98,8 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
       >
         {/* Header */}
         <div className="flex justify-between items-center p-5 pb-3 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="text-lg font-bold dark:text-white">🏁 Alle Lernziele</h2>
-          <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xl">✕</button>
+          <h2 className="text-lg font-bold dark:text-white inline-flex items-center gap-2"><Flag className="w-5 h-5" /> Alle Lernziele</h2>
+          <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-5 h-5" /></button>
         </div>
 
         {/* Scrollbarer Inhalt */}
@@ -125,7 +126,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-400">
                     <span>{themenKeys.length} Themen · {anzahlLZ} LZ</span>
-                    <span>{fachOffen ? '▲' : '▼'}</span>
+                    {fachOffen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </button>
 
@@ -155,13 +156,13 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
                                   tabIndex={0}
                                   onClick={(e) => { e.stopPropagation(); e.preventDefault(); onThemaUeben(thema) }}
                                   onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); onThemaUeben(thema) } }}
-                                  className="text-xs px-2 py-0.5 rounded text-white transition-colors cursor-pointer"
+                                  className="text-xs px-2 py-0.5 rounded text-white transition-colors cursor-pointer inline-flex items-center gap-1"
                                   style={{ backgroundColor: farbe }}
                                 >
-                                  Fragen ▶
+                                  Fragen <Play className="w-3 h-3" />
                                 </span>
                               )}
-                              <span className="text-slate-400">{themaOffen ? '▲' : '▼'}</span>
+                              <span className="text-slate-400 inline-flex items-center">{themaOffen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</span>
                             </div>
                           </button>
 
@@ -187,10 +188,10 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
                               ))}
                               <button
                                 onClick={() => onThemaUeben(thema)}
-                                className="w-full mt-2 py-2 rounded-lg text-sm font-medium text-white transition-colors"
+                                className="w-full mt-2 py-2 rounded-lg text-sm font-medium text-white transition-colors inline-flex items-center justify-center gap-1.5"
                                 style={{ backgroundColor: farbe }}
                               >
-                                ▶ Fragen zu «{thema}» üben
+                                <Play className="w-4 h-4" /> Fragen zu «{thema}» üben
                               </button>
                             </div>
                           )}
@@ -210,7 +211,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
 
 /**
  * Mini-Modal für Lernziele eines einzelnen Themas.
- * Wird von ThemaKarte über 🏁 Button geöffnet.
+ * Wird von ThemaKarte über Flag-Button geöffnet.
  */
 export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSchliessen, onUeben }: {
   thema: string
@@ -247,7 +248,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: farbe }} />
             <h3 className="font-semibold dark:text-white text-sm">{thema}</h3>
           </div>
-          <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100">✕</button>
+          <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-4 h-4" /></button>
         </div>
 
         <div className="overflow-y-auto flex-1 space-y-3 mb-4">
@@ -269,15 +270,23 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
         {onUeben && (
           <button
             onClick={onUeben}
-            className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-colors shrink-0"
+            className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-colors shrink-0 inline-flex items-center justify-center gap-1.5"
             style={{ backgroundColor: farbe }}
           >
-            ▶ Fragen zu «{thema}» üben
+            <Play className="w-4 h-4" /> Fragen zu «{thema}» üben
           </button>
         )}
       </div>
     </div>
   )
+}
+
+/** Status-Icon für Lernziel-Listen */
+function LernzielStatusIcon({ status }: { status: ReturnType<typeof lernzielStatus> }) {
+  if (status === 'gemeistert') return <CheckCircle2 className="w-4 h-4 text-green-500" aria-label="gemeistert" />
+  if (status === 'gefestigt') return <Circle className="w-4 h-4 fill-blue-500 text-blue-500" aria-label="gefestigt" />
+  if (status === 'inArbeit') return <Circle className="w-4 h-4 fill-yellow-500 text-yellow-500" aria-label="in Arbeit" />
+  return <Flag className="w-4 h-4 text-slate-400" aria-label="offen" />
 }
 
 /** Einzelnes Lernziel rendern (für Mini-Modal) */
@@ -286,7 +295,7 @@ function renderLZ(lz: Lernziel, fortschritte: Record<string, FragenFortschritt>)
   return (
     <div key={lz.id} className="flex items-start gap-2 text-sm">
       <span className="mt-0.5 shrink-0">
-        {status === 'gemeistert' ? '✅' : status === 'gefestigt' ? '🔵' : status === 'inArbeit' ? '🟡' : '🏁'}
+        <LernzielStatusIcon status={status} />
       </span>
       <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
         {lz.text}

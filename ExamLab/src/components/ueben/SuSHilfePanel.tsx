@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Lightbulb, Star, Flag, Circle, CheckCircle2, Shuffle, RotateCw, Play } from 'lucide-react'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 
 interface Props {
@@ -78,7 +79,7 @@ export default function SuSHilfePanel({ onSchliessen }: Props) {
 function Tipp({ children }: { children: React.ReactNode }) {
   return (
     <div className="bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-xs">
-      <span className="font-semibold">💡 Tipp:</span> {children}
+      <span className="font-semibold inline-flex items-center gap-1"><Lightbulb className="w-3.5 h-3.5 text-yellow-500" /> Tipp:</span> {children}
     </div>
   )
 }
@@ -110,7 +111,7 @@ function HilfeUeben() {
     <h4 className="font-medium dark:text-white mt-3">Filter</h4>
     <ul className="list-disc list-inside space-y-1">
       <li><strong>Unterthemen:</strong> Wähle gezielt einen Teilbereich aus.</li>
-      <li><strong>Schwierigkeit:</strong> ⭐ Einfach, ⭐⭐ Mittel, ⭐⭐⭐ Schwer.</li>
+      <li><strong>Schwierigkeit:</strong> <Star className="w-3.5 h-3.5 inline text-yellow-500" /> Einfach, <Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> Mittel, <Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> Schwer.</li>
       <li><strong>Fragetyp:</strong> MC, Lückentext, Berechnung, Zuordnung, etc.</li>
     </ul>
     <Tipp>Klicke "Alle ⇄" um alle Filter einer Kategorie ein-/auszuschalten.</Tipp>
@@ -162,14 +163,14 @@ function HilfeMastery() {
 function HilfeMix() {
   return <>
     <h3 className="font-semibold dark:text-white text-base">Gemischte Übung & Repetition</h3>
-    <h4 className="font-medium dark:text-white mt-2">🔀 Gemischte Übung</h4>
+    <h4 className="font-medium dark:text-white mt-2 inline-flex items-center gap-1.5"><Shuffle className="w-4 h-4" /> Gemischte Übung</h4>
     <p>Wähle <strong>mehrere Themen</strong> aus verschiedenen Fächern für eine gemischte Session — ideal zur Prüfungsvorbereitung.</p>
     <ol className="list-decimal list-inside space-y-1">
       <li>Klicke "Gemischte Übung" auf dem Dashboard.</li>
       <li>Wähle mindestens 2 Themen aus (auch fachübergreifend).</li>
       <li>Klicke "Übung starten" — du bekommst 10 Fragen, gleichmässig verteilt.</li>
     </ol>
-    <h4 className="font-medium dark:text-white mt-3">🔄 Repetition</h4>
+    <h4 className="font-medium dark:text-white mt-3 inline-flex items-center gap-1.5"><RotateCw className="w-4 h-4" /> Repetition</h4>
     <p>Trainiert automatisch deine <strong>Schwächen über alle Themen</strong>. Perfekt wenn du nicht weisst, wo du anfangen sollst.</p>
     <ul className="list-disc list-inside space-y-1">
       <li>Dauerbaustellen (oft falsch) werden bevorzugt.</li>
@@ -193,9 +194,9 @@ function HilfeFortschritt() {
     <h4 className="font-medium dark:text-white mt-3">Sterne</h4>
     <p>Jedes Thema hat bis zu <strong>3 Sterne</strong>:</p>
     <ul className="list-disc list-inside space-y-1">
-      <li>⭐ — mehr als 30% gefestigt.</li>
-      <li>⭐⭐ — mehr als 60% gefestigt.</li>
-      <li>⭐⭐⭐ — mehr als 90% gemeistert.</li>
+      <li><Star className="w-3.5 h-3.5 inline text-yellow-500" /> — mehr als 30% gefestigt.</li>
+      <li><Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> — mehr als 60% gefestigt.</li>
+      <li><Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> — mehr als 90% gemeistert.</li>
     </ul>
   </>
 }
@@ -206,17 +207,17 @@ function HilfeLernziele() {
     <p>Lernziele zeigen dir, was du am Ende eines Themas können solltest. Sie helfen dir, deinen Fortschritt einzuschätzen.</p>
     <h4 className="font-medium dark:text-white mt-3">Wo finde ich Lernziele?</h4>
     <ul className="list-disc list-inside space-y-1">
-      <li><strong>🏁 Button im Header</strong> — Öffnet alle Lernziele als Akkordeon (Fach → Thema → Unterthema).</li>
-      <li><strong>🏁 auf Themen-Karten</strong> — Zeigt die Lernziele für dieses spezifische Thema in einem Mini-Modal.</li>
+      <li><strong className="inline-flex items-center gap-1"><Flag className="w-3.5 h-3.5" /> Button im Header</strong> — Öffnet alle Lernziele als Akkordeon (Fach → Thema → Unterthema).</li>
+      <li><strong className="inline-flex items-center gap-1"><Flag className="w-3.5 h-3.5" /> auf Themen-Karten</strong> — Zeigt die Lernziele für dieses spezifische Thema in einem Mini-Modal.</li>
     </ul>
     <h4 className="font-medium dark:text-white mt-3">Mastery-Status pro Lernziel</h4>
     <div className="space-y-1.5 mt-2">
-      <div className="flex items-center gap-2"><span>🏁</span> <span>Offen — noch nicht bearbeitet.</span></div>
-      <div className="flex items-center gap-2"><span>🟡</span> <span>In Arbeit — erste Fragen beantwortet.</span></div>
-      <div className="flex items-center gap-2"><span>🔵</span> <span>Gefestigt — Fragen mehrmals richtig.</span></div>
-      <div className="flex items-center gap-2"><span>✅</span> <span>Gemeistert — Lernziel erreicht!</span></div>
+      <div className="flex items-center gap-2"><Flag className="w-4 h-4 text-slate-400" /> <span>Offen — noch nicht bearbeitet.</span></div>
+      <div className="flex items-center gap-2"><Circle className="w-4 h-4 fill-yellow-500 text-yellow-500" /> <span>In Arbeit — erste Fragen beantwortet.</span></div>
+      <div className="flex items-center gap-2"><Circle className="w-4 h-4 fill-blue-500 text-blue-500" /> <span>Gefestigt — Fragen mehrmals richtig.</span></div>
+      <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> <span>Gemeistert — Lernziel erreicht!</span></div>
     </div>
-    <Tipp>Klicke auf "▶ Fragen üben" bei einem Lernziel um direkt zum entsprechenden Thema zu gelangen.</Tipp>
+    <Tipp>Klicke auf den <Play className="w-3 h-3 inline" /> Fragen üben Button bei einem Lernziel um direkt zum entsprechenden Thema zu gelangen.</Tipp>
   </>
 }
 
@@ -257,7 +258,7 @@ function HilfeFAQ() {
         <p className="text-slate-500 dark:text-slate-400">Er sammelt deine schwächsten Fragen über alle Themen und erstellt eine gezielte Übung. Ideal für Prüfungsvorbereitung.</p>
       </div>
       <div>
-        <p className="font-medium dark:text-white">Was ist der 🏁 Button?</p>
+        <p className="font-medium dark:text-white inline-flex items-center gap-1">Was ist der <Flag className="w-3.5 h-3.5" /> Button?</p>
         <p className="text-slate-500 dark:text-slate-400">Er zeigt die Lernziele — im Header alle Lernziele als Akkordeon, auf den Themen-Karten die Lernziele des jeweiligen Themas.</p>
       </div>
       <div>
