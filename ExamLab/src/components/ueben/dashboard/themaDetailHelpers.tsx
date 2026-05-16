@@ -2,14 +2,15 @@
 import type React from 'react'
 import type { ThemenFortschritt } from '../../../types/ueben/fortschritt'
 
-export function FilterSection({ titel, emoji, children, onToggleAlle }: {
-  titel: string; emoji: string; children: React.ReactNode; onToggleAlle: () => void
+export function FilterSection({ titel, icon, children, onToggleAlle }: {
+  titel: string; icon: React.ReactNode; children: React.ReactNode; onToggleAlle: () => void
 }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
       <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          {emoji} {titel}
+        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 inline-flex items-center gap-2">
+          <span aria-hidden="true" className="inline-flex items-center text-slate-500 dark:text-slate-400">{icon}</span>
+          {titel}
         </h4>
         <button
           onClick={onToggleAlle}

@@ -1,4 +1,5 @@
 // ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx
+import { BookOpen, BarChart3, Pencil } from 'lucide-react'
 import type { Frage } from '../../../types/ueben/fragen'
 import type { ThemenInfo } from '../../../hooks/ueben/useThemenKomputationen'
 import { berechneSterne, sterneText } from '../../../utils/ueben/gamification'
@@ -84,7 +85,7 @@ export function ThemaDetailView({
       {themaDetail.unterthemen.length > 0 && (
         <FilterSection
           titel="Unterthemen"
-          emoji="📚"
+          icon={<BookOpen className="w-4 h-4" />}
           onToggleAlle={onToggleAlleUnterthemen}
         >
           {themaDetail.unterthemen.map(ut => {
@@ -104,7 +105,7 @@ export function ThemaDetailView({
       )}
 
       {/* Schwierigkeits-Chips */}
-      <FilterSection titel="Schwierigkeit" emoji="📊" onToggleAlle={onToggleAlleSchwierigkeiten}>
+      <FilterSection titel="Schwierigkeit" icon={<BarChart3 className="w-4 h-4" />} onToggleAlle={onToggleAlleSchwierigkeiten}>
         {verfuegbareSchwierigkeiten.map(s => {
           const anzahl = themaDetail.fragen.filter(f => (f.schwierigkeit ?? 2) === s).length
           return (
@@ -122,7 +123,7 @@ export function ThemaDetailView({
 
       {/* Fragetyp-Chips */}
       {verfuegbareTypen.length > 0 && (
-        <FilterSection titel="Fragetyp" emoji="✏️" onToggleAlle={onToggleAlleTypen}>
+        <FilterSection titel="Fragetyp" icon={<Pencil className="w-4 h-4" />} onToggleAlle={onToggleAlleTypen}>
           {verfuegbareTypen.map(t => {
             const anzahl = themaDetail.fragen.filter(f => f.typ === t).length
             return (

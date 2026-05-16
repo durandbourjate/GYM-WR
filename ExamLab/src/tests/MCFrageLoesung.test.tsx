@@ -39,7 +39,7 @@ function zeileFuer(label: string) {
 }
 
 describe('MCFrage modus=loesung', () => {
-  it('gewählt+korrekt zeigt grüne Zeile mit ✓', () => {
+  it('gewählt+korrekt zeigt grüne Zeile mit Check-Icon', () => {
     const antwort: Antwort = { typ: 'mc', gewaehlteOptionen: ['a'] }
     render(<MCFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeileA = zeileFuer('Option A')
@@ -47,7 +47,7 @@ describe('MCFrage modus=loesung', () => {
     expect(zeileA?.querySelector('svg.lucide-check')).toBeTruthy()
   })
 
-  it('gewählt+falsch zeigt rote Zeile mit ✓ (Marker immer grün bei Wahl)', () => {
+  it('gewählt+falsch zeigt rote Zeile mit Check-Icon (Marker immer grün bei Wahl)', () => {
     const antwort: Antwort = { typ: 'mc', gewaehlteOptionen: ['b'] }
     render(<MCFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeileB = zeileFuer('Option B')

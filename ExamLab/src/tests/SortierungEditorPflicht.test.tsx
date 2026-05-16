@@ -38,7 +38,7 @@ describe('SortierungEditor — MC-Pattern (Inputs statt Textarea)', () => {
     expect(setElemente).toHaveBeenCalledWith([...baseElemente, ''])
   })
 
-  it('✕ entfernt einen Eintrag', () => {
+  it('Entfernen-Button entfernt einen Eintrag', () => {
     const setElemente = vi.fn()
     renderEditor({ setElemente })
     fireEvent.click(screen.getByRole('button', { name: /Element 2 entfernen/i }))

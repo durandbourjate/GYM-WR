@@ -34,7 +34,7 @@ function zeileFuer(text: string) {
 }
 
 describe('RichtigFalschFrage modus=loesung', () => {
-  it('SuS-Urteil korrekt (richtig richtig) → grüne Zeile mit ✓', () => {
+  it('SuS-Urteil korrekt (richtig richtig) → grüne Zeile mit Check-Icon', () => {
     const antwort: Antwort = { typ: 'richtigfalsch', bewertungen: { a2: true } }
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB steuert die Geldpolitik.')
@@ -42,7 +42,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     expect(zeile?.querySelector('svg.lucide-check')).toBeTruthy()
   })
 
-  it('SuS-Urteil korrekt (falsch falsch) → grüne Zeile mit ✗', () => {
+  it('SuS-Urteil korrekt (falsch falsch) → grüne Zeile mit X-Icon', () => {
     const antwort: Antwort = { typ: 'richtigfalsch', bewertungen: { a1: false } }
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB ist eine Privatbank.')
@@ -50,7 +50,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     expect(zeile?.querySelector('svg.lucide-x')).toBeTruthy()
   })
 
-  it('SuS-Urteil falsch (richtig falsch gesagt) → rote Zeile mit ✗', () => {
+  it('SuS-Urteil falsch (richtig falsch gesagt) → rote Zeile mit X-Icon', () => {
     const antwort: Antwort = { typ: 'richtigfalsch', bewertungen: { a2: false } }
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB steuert die Geldpolitik.')
@@ -60,7 +60,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     expect(zeile?.textContent).toMatch(/Richtig/)
   })
 
-  it('SuS-Urteil falsch (falsch richtig gesagt) → rote Zeile mit ✓ + Zusatz', () => {
+  it('SuS-Urteil falsch (falsch richtig gesagt) → rote Zeile mit Check-Icon + Zusatz', () => {
     const antwort: Antwort = { typ: 'richtigfalsch', bewertungen: { a1: true } }
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB ist eine Privatbank.')

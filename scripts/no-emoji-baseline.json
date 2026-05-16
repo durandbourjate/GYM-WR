@@ -1,16 +1,10 @@
 {
-  "comment": "Cluster G Phase 6 Baseline. Snapshot 2026-05-16. allowlist = complete-ignore (didakt. Frage-Inhalt, Tests, Demo, Belohnungs-Sticker). per_file_max = Snapshot existierender Emoji-Counts in Files die noch NICHT migriert wurden (Cluster G Migration Phase 1-5 hat ~152 Emojis ersetzt, Rest schrittweise via Spawn-Tasks). CI failt bei Anstieg pro File über baseline; Reduktion (nach File-Migration) erfordert manuelles Update der baseline.",
+  "comment": "Cluster G Phase 6 Baseline. Snapshot 2026-05-17 (strict-review). allowlist = complete-ignore. Behalten: didakt. Frage-Inhalt (einrichtungs*Fragen, demoKorrektur), Belohnungs-Sticker (gamification), Persist-Schema + NavIcon-Mapping (appNavigation/FavoritenTab/Favoriten/NavIcon — werden in NavIcon-Persist-Migration zusammen gemacht). Entfernt 17.05.2026: 5 Test-Files (Test-Assertions auf SVG-Selektor migriert, ✓/✗/✕/✨ aus it()/console.log) + ThemaDetailView (FilterSection-Prop emoji→icon Lucide). per_file_max = Snapshot existierender Emoji-Counts; CI failt bei Anstieg pro File über baseline.",
   "allowlist": [
     "ExamLab/src/data/einrichtungsFragen.ts",
     "ExamLab/src/data/einrichtungsUebungFragen.ts",
     "ExamLab/src/data/demoKorrektur.ts",
-    "ExamLab/src/tests/AntwortZeile.test.tsx",
-    "ExamLab/src/tests/MCFrageLoesung.test.tsx",
-    "ExamLab/src/tests/RichtigFalschFrageLoesung.test.tsx",
-    "ExamLab/src/tests/SortierungEditorPflicht.test.tsx",
-    "ExamLab/src/utils/sucheEngine.perf.test.ts",
     "ExamLab/src/utils/ueben/gamification.ts",
-    "ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx",
     "ExamLab/src/config/appNavigation.ts",
     "ExamLab/src/components/settings/FavoritenTab.tsx",
     "ExamLab/src/components/lp/Favoriten.tsx",

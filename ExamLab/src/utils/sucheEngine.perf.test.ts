@@ -53,7 +53,7 @@ describe('fuehreSucheAus performance', () => {
     const dauer = performance.now() - start
     expect(ergebnis.treffer.length).toBeGreaterThan(0)
     expect(dauer).toBeLessThan(100)
-    if (dauer < 50) console.log(`✨ Bonus-Ziel erreicht: ${dauer.toFixed(1)} ms`)
+    if (dauer < 50) console.log(`Bonus-Ziel erreicht: ${dauer.toFixed(1)} ms`)
   })
 
   it('Empty Query bei grossem Index ist instant (< 5 ms)', () => {
