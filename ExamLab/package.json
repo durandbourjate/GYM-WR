@@ -20,7 +20,8 @@
     "preview:lernen": "VITE_APP_MODE=lernen vite preview --outDir dist-lernen",
     "test": "vitest run",
     "test:watch": "vitest",
-    "ci-check": "npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir && npm run lint:musterloesung && npm run lint:wire-contract && npm run lint:no-emoji && npm run lint:no-inline-svg && npm test && npm run build"
+    "ci-check": "npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir && npm run lint:musterloesung && npm run lint:wire-contract && npm run lint:no-emoji && npm run lint:no-inline-svg && npm test && npm run build",
+    "postinstall": "cd .. && git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
     "@codemirror/lang-css": "^6.3.1",

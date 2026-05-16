@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# pre-push Hook — blockt Push wenn ci-check failed.
+# Setup: `git config core.hooksPath .githooks` (einmal pro Clone).
+#
+# Reason: GitHub Actions hat einen separaten `npm ci`-Step für `packages/shared/`
+# der lokal NICHT in `cd ExamLab && npm run ci-check` enthalten ist. Plus
+# `tsc -b` ist strikter als `tsc --noEmit` (Memory `feedback_pre_push_ci_check.md`).
+# Pre-Push-Hook fängt beide Klassen von Drift.
+#
+# Override (für Notfälle): git push --no-verify
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+echo "🔍 pre-push: checking packages/shared lock-sync + ExamLab ci-check..."
+
+# Step 1: packages/shared package-lock.json synchron mit package.json?
+# `npm ci --dry-run` failt mit "Missing: X from lock file" bei Drift.
+cd "$REPO_ROOT/packages/shared"
+if ! npm ci --dry-run --silent > /dev/null 2>&1; then
+  echo "❌ packages/shared: package-lock.json NICHT synchron mit package.json"
+  echo "   Fix: cd packages/shared && npm install, dann beide Files committen."
+  exit 1
+fi
+
+# Step 2: Volle ci-check-Pipeline (lints + tsc -b + vitest + build).
+cd "$REPO_ROOT/ExamLab"
+if ! npm run ci-check; then
+  echo ""
+  echo "❌ ExamLab ci-check failed. Push blockiert."
+  echo "   Override (mit Vorsicht): git push --no-verify"
+  exit 1
+fi
+
+echo "✅ pre-push: ci-check + lock-sync clean."
