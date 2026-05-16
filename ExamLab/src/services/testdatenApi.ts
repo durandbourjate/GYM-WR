@@ -18,6 +18,15 @@ export interface SeedStatistik {
   testFortschrittAngelegt?: number
   geloeschtBeiReset?: Record<string, number | boolean>
   hinweis?: string
+  /** ISO-Timestamp des erfolgreichen Seeds (Spawn-Task 17.05.2026). */
+  letzterSeedAm?: string
+}
+
+export interface LetzterSeedResponse {
+  success: boolean
+  error?: string
+  /** ISO-Timestamp oder leerer String (= noch nie geseedet bzw. nach Backend-Reset). */
+  letzterSeedAm?: string
 }
 
 export interface SeedResponse {
@@ -38,5 +47,18 @@ export interface SeedResponse {
  */
 export async function apiAdminSeedTestdaten(opts: { email: string; mode: SeedMode }): Promise<SeedResponse> {
   const result = await postJson<SeedResponse>('apiAdminSeedTestdaten', { email: opts.email, mode: opts.mode })
+  return result ?? { success: false, error: 'Keine Antwort vom Backend' }
+}
+
+/**
+ * Read-Endpoint fuer den ISO-Timestamp des letzten erfolgreichen Seed/Reset.
+ *
+ * Auth: alle zugelassenen LPs (nicht nur Admin). Wird im TestdatenTab fuer die
+ * „zuletzt: <Datum>"-Anzeige genutzt. Backend speichert in ScriptProperties
+ * (TESTDATEN_LETZTER_SEED_AM). Bei nicht-existentem Backend-Endpoint (alter Deploy)
+ * fallback auf leeren String — UI rendert dann nur „Initialisiert" ohne Zeitangabe.
+ */
+export async function apiTestdatenLetzterSeed(opts: { email: string }): Promise<LetzterSeedResponse> {
+  const result = await postJson<LetzterSeedResponse>('apiTestdatenLetzterSeed', { email: opts.email })
   return result ?? { success: false, error: 'Keine Antwort vom Backend' }
 }

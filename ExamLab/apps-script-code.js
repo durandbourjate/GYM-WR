@@ -2262,6 +2262,8 @@ function doPost(e) {
       return bulkSetzeLueckentextModusEndpoint(body);
     case 'apiAdminSeedTestdaten':
       return apiAdminSeedTestdaten_(body);
+    case 'apiTestdatenLetzterSeed':
+      return apiTestdatenLetzterSeed_(body);
     case 'loescheFrage':
       return loescheFrage(body);
     case 'stelleWiederHer':
@@ -15833,6 +15835,13 @@ function apiAdminSeedTestdaten_(body) {
       return jsonResponse({ success: false, error: 'Testdaten-Operation läuft bereits, bitte erneut versuchen' });
     }
     var statistik = seedTestdaten_(mode, email);
+    // F.3-Spawn (17.05.2026): letzterSeedAm in ScriptProperties persistieren,
+    // damit das TestdatenTab den Zeitpunkt der letzten Initialisierung anzeigen kann.
+    var seedTs = new Date().toISOString();
+    try { setLetzterSeedAm_(seedTs); } catch (propErr) {
+      Logger.log('setLetzterSeedAm_ Fehler (ignoriert): ' + propErr.message);
+    }
+    statistik.letzterSeedAm = seedTs;
     try { cacheInvalidieren_(); } catch (cacheErr) { Logger.log('cacheInvalidieren_ Fehler (ignoriert): ' + cacheErr.message); }
     var dauerMs = Date.now() - startMs;
     return jsonResponse({ success: true, statistik: statistik, dauerMs: dauerMs });
@@ -15842,6 +15851,30 @@ function apiAdminSeedTestdaten_(body) {
   } finally {
     try { lock.releaseLock(); } catch (_e) { /* ignore */ }
   }
+}
+
+/** ScriptProperties-Key fuer den ISO-Timestamp des letzten erfolgreichen Seed/Reset. */
+var TESTDATEN_LETZTER_SEED_PROP = 'TESTDATEN_LETZTER_SEED_AM';
+
+function setLetzterSeedAm_(isoTimestamp) {
+  PropertiesService.getScriptProperties().setProperty(TESTDATEN_LETZTER_SEED_PROP, String(isoTimestamp));
+}
+
+function getLetzterSeedAm_() {
+  return PropertiesService.getScriptProperties().getProperty(TESTDATEN_LETZTER_SEED_PROP) || '';
+}
+
+/**
+ * Read-Endpoint: liefert den ISO-Timestamp des letzten Seed/Reset.
+ * Auth: alle zugelassenen LPs (nicht nur Admin) — Status-Anzeige im TestdatenTab.
+ * Antwort: { success: true, letzterSeedAm: '<iso-string>' | '' }
+ */
+function apiTestdatenLetzterSeed_(body) {
+  var email = String((body && body.email) || '').toLowerCase().trim();
+  if (!istZugelasseneLP(email)) {
+    return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  }
+  return jsonResponse({ success: true, letzterSeedAm: getLetzterSeedAm_() });
 }
 
 /**

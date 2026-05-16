@@ -6,6 +6,7 @@ import type { PruefungsConfig } from '../types/pruefung'
 
 const mockStore = vi.hoisted(() => ({ stammdaten: null as Stammdaten | null }))
 const ladeAlleConfigsMock = vi.hoisted(() => vi.fn())
+const apiTestdatenLetzterSeedMock = vi.hoisted(() => vi.fn())
 
 vi.mock('../store/stammdatenStore', () => ({
   useStammdatenStore: (sel: (s: typeof mockStore) => unknown) => sel(mockStore),
@@ -15,6 +16,10 @@ vi.mock('../services/apiService', () => ({
   apiService: {
     ladeAlleConfigs: ladeAlleConfigsMock,
   },
+}))
+
+vi.mock('../services/testdatenApi', () => ({
+  apiTestdatenLetzterSeed: apiTestdatenLetzterSeedMock,
 }))
 
 const echteSD: Stammdaten = {
@@ -33,6 +38,8 @@ describe('useTestdatenStatus', () => {
   beforeEach(() => {
     mockStore.stammdaten = null
     ladeAlleConfigsMock.mockReset()
+    apiTestdatenLetzterSeedMock.mockReset()
+    apiTestdatenLetzterSeedMock.mockResolvedValue({ success: true, letzterSeedAm: '' })
   })
 
   it('initialisiert=false ohne email + ohne stammdaten', async () => {
@@ -88,5 +95,26 @@ describe('useTestdatenStatus', () => {
     const { result } = renderHook(() => useTestdatenStatus({ email: 'admin@x.ch' }))
     await waitFor(() => expect(result.current.ladestand).toBe('fertig'))
     expect(result.current.initialisiert).toBe(false)
+  })
+
+  it('letzterSeedAm wird aus Backend-Response übernommen', async () => {
+    mockStore.stammdaten = echteSD
+    ladeAlleConfigsMock.mockResolvedValue([testPruefung])
+    apiTestdatenLetzterSeedMock.mockResolvedValue({
+      success: true,
+      letzterSeedAm: '2026-05-17T10:30:00.000Z',
+    })
+    const { result } = renderHook(() => useTestdatenStatus({ email: 'admin@x.ch' }))
+    await waitFor(() => expect(result.current.ladestand).toBe('fertig'))
+    expect(result.current.letzterSeedAm).toBe('2026-05-17T10:30:00.000Z')
+  })
+
+  it('letzterSeedAm bleibt leer wenn Backend-Endpoint failt (alter Deploy)', async () => {
+    mockStore.stammdaten = echteSD
+    ladeAlleConfigsMock.mockResolvedValue([])
+    apiTestdatenLetzterSeedMock.mockRejectedValue(new Error('Endpoint nicht gefunden'))
+    const { result } = renderHook(() => useTestdatenStatus({ email: 'admin@x.ch' }))
+    await waitFor(() => expect(result.current.ladestand).toBe('fertig'))
+    expect(result.current.letzterSeedAm).toBe('')
   })
 })

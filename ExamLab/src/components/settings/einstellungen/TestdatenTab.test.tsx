@@ -6,6 +6,7 @@ import type { Stammdaten, LPProfil } from '../../../types/stammdaten'
 
 vi.mock('../../../services/testdatenApi', () => ({
   apiAdminSeedTestdaten: vi.fn(),
+  apiTestdatenLetzterSeed: vi.fn().mockResolvedValue({ success: true, letzterSeedAm: '' }),
 }))
 
 // Mock apiService für useTestdatenStatus — Default: keine Test-Prüfungen (initialisiert=false)

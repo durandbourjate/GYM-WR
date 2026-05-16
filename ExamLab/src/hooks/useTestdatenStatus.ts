@@ -3,10 +3,14 @@ import { useStammdatenStore } from '../store/stammdatenStore'
 import { TEST_KLASSE_ID, TEST_KURS_ID } from '../utils/testdaten/identifikation'
 import { istTestdaten } from '../utils/testdaten/filter'
 import { apiService } from '../services/apiService'
+import { apiTestdatenLetzterSeed } from '../services/testdatenApi'
 
 export interface TestdatenStatus {
   initialisiert: boolean
   ladestand: 'pruefe' | 'fertig'
+  /** ISO-Timestamp des letzten Seed/Reset (leer = unbekannt oder Backend ohne
+   *  letzterSeedAm-Support). */
+  letzterSeedAm: string
 }
 
 /**
@@ -26,20 +30,29 @@ export function useTestdatenStatus(opts?: { email?: string }): TestdatenStatus {
   const stammdaten = useStammdatenStore(s => s.stammdaten)
   const [pruefeFertig, setPruefeFertig] = useState(false)
   const [hatPruefungsMarker, setHatPruefungsMarker] = useState(false)
+  const [letzterSeedAm, setLetzterSeedAm] = useState<string>('')
 
   useEffect(() => {
     let abgebrochen = false
     if (!opts?.email) { setPruefeFertig(true); return }
-    apiService.ladeAlleConfigs(opts.email)
+    // Parallel: configs für Marker-Inferenz, ScriptProperty für letzterSeedAm.
+    const configsPromise = apiService.ladeAlleConfigs(opts.email)
       .then(configs => {
         if (abgebrochen) return
         const marker = (configs ?? []).some(c =>
           istTestdaten({ id: c.id, klasse: c.klasse })
         )
         setHatPruefungsMarker(marker)
-        setPruefeFertig(true)
       })
-      .catch(() => { if (!abgebrochen) setPruefeFertig(true) })
+      .catch(() => { /* swallow — pruefeFertig wird unten gesetzt */ })
+    const seedPromise = apiTestdatenLetzterSeed({ email: opts.email })
+      .then(r => {
+        if (!abgebrochen && r.success && r.letzterSeedAm) setLetzterSeedAm(r.letzterSeedAm)
+      })
+      .catch(() => { /* Backend ohne letzterSeedAm-Support — letzterSeedAm bleibt '' */ })
+    Promise.all([configsPromise, seedPromise]).finally(() => {
+      if (!abgebrochen) setPruefeFertig(true)
+    })
     return () => { abgebrochen = true }
   }, [opts?.email])
 
@@ -52,5 +65,6 @@ export function useTestdatenStatus(opts?: { email?: string }): TestdatenStatus {
   return {
     initialisiert: hatStammdatenMarker || hatPruefungsMarker,
     ladestand: pruefeFertig ? 'fertig' : 'pruefe',
+    letzterSeedAm,
   }
 }

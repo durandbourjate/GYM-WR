@@ -7,6 +7,17 @@ import { apiAdminSeedTestdaten, type SeedResponse } from '../../../services/test
 import ResetConfirmModal from './testdaten/ResetConfirmModal'
 import type { LPProfil } from '../../../types/stammdaten'
 
+/** ISO-Timestamp -> 'DD.MM.YYYY HH:mm' (Europe/Zurich-Lokalzeit). Bei
+ *  ungueltigem Input wird der Original-String zurueckgegeben (defensiv). */
+function formatiereSeedDatum(iso: string): string {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleString('de-CH', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  })
+}
+
 interface Props {
   email: string
 }
@@ -19,7 +30,7 @@ export default function TestdatenTab({ email }: Props) {
   const speichereLPProfil = useStammdatenStore(s => s.speichereLPProfil)
   const istAdmin = useStammdatenStore(s => s.istAdmin)
   const toastAdd = useToastStore(s => s.add)
-  const { initialisiert, ladestand } = useTestdatenStatus({ email })
+  const { initialisiert, ladestand, letzterSeedAm } = useTestdatenStatus({ email })
 
   const admin = istAdmin(email)
   const sichtbar = lpProfil?.testdatenSichtbar ?? false
@@ -62,7 +73,14 @@ export default function TestdatenTab({ email }: Props) {
         {ladestand === 'pruefe' ? (
           <p className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> Prüfe…</p>
         ) : initialisiert ? (
-          <p className="text-sm text-emerald-700 dark:text-emerald-300 inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5" aria-hidden="true" /> Initialisiert</p>
+          <p className="text-sm text-emerald-700 dark:text-emerald-300 inline-flex items-center gap-1.5">
+            <Check className="w-3.5 h-3.5" aria-hidden="true" /> Initialisiert
+            {letzterSeedAm && (
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-normal ml-1">
+                (zuletzt: {formatiereSeedDatum(letzterSeedAm)})
+              </span>
+            )}
+          </p>
         ) : (
           <p className="text-sm text-slate-600 dark:text-slate-400 inline-flex items-center gap-1.5">
             <X className="w-3.5 h-3.5" aria-hidden="true" /> Noch nicht erzeugt{!admin && ' — bitte Admin kontaktieren.'}
