@@ -1,4 +1,4 @@
-import { Copy, Trash2 } from 'lucide-react'
+import { Check, Copy, Target, Trash2 } from 'lucide-react'
 import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { loesungsquoteBgFarbe } from '../../../../utils/trackerUtils.ts'
 import type { Frage, FrageSummary, FrageBase } from '../../../../types/fragen-storage'
@@ -98,8 +98,8 @@ export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, o
 
       {/* Lernziele */}
       {(frage.lernzielIds?.length ?? 0) > 0 && (
-        <span className="text-[10px] px-1 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded shrink-0" title={`${frage.lernzielIds!.length} Lernziel${frage.lernzielIds!.length !== 1 ? 'e' : ''}`}>
-          🏁{frage.lernzielIds!.length}
+        <span className="text-[10px] px-1 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded shrink-0 inline-flex items-center gap-0.5" title={`${frage.lernzielIds!.length} Lernziel${frage.lernzielIds!.length !== 1 ? 'e' : ''}`}>
+          <Target className="w-2.5 h-2.5" aria-hidden="true" />{frage.lernzielIds!.length}
         </span>
       )}
 
@@ -135,8 +135,8 @@ export default function KompaktZeile({ frage, istInPruefung, onToggle, onEdit, o
         />
       )}
       {istInPruefung && (
-        <span className="text-[10px] px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded shrink-0 font-medium">
-          ✓ In Prüfung
+        <span className="text-[10px] px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded shrink-0 font-medium inline-flex items-center gap-0.5">
+          <Check className="w-2.5 h-2.5" aria-hidden="true" /> In Prüfung
         </span>
       )}
     </div>

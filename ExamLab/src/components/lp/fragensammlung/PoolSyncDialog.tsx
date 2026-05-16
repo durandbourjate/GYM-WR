@@ -1,5 +1,6 @@
 // Pruefung/src/components/lp/PoolSyncDialog.tsx
 import { useState, useCallback, useRef } from 'react'
+import { Check } from 'lucide-react'
 import { useAuthStore } from '../../../store/authStore'
 import { ladePoolIndex, ladePoolConfig, berechneDelta } from '../../../services/poolSync'
 import { apiService } from '../../../services/apiService'
@@ -253,7 +254,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
                       <>
                         {e.neu > 0 && <span className="text-slate-700 dark:text-slate-300 font-medium">+{e.neu}</span>}
                         {e.aktualisiert > 0 && <span className="text-slate-600 dark:text-slate-400">↻{e.aktualisiert}</span>}
-                        {e.neu === 0 && e.aktualisiert === 0 && <span className="text-slate-400">✓</span>}
+                        {e.neu === 0 && e.aktualisiert === 0 && <Check className="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />}
                       </>
                     )}
                   </div>
@@ -282,7 +283,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
 
         {phase === 'fertig' && (
           <div className="text-center py-8">
-            <div className="text-4xl mb-3">✓</div>
+            <div className="flex justify-center mb-3"><Check className="w-10 h-10 text-green-500 dark:text-green-400" aria-hidden="true" /></div>
             <p className="text-lg font-medium dark:text-white mb-2">Synchronisierung abgeschlossen</p>
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
               {neuAnzahl > 0 && `${neuAnzahl} Fragen importiert`}

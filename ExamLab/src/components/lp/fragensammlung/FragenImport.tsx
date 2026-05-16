@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { Check } from 'lucide-react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap.ts'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { apiService } from '../../../services/apiService.ts'
@@ -331,7 +332,7 @@ export default function FragenImport({ onImportiert, onSchliessen }: Props) {
                           ? 'bg-slate-800 dark:bg-slate-200 border-slate-800 dark:border-slate-200'
                           : 'border-slate-400 dark:border-slate-500'
                       }`}>
-                        {frage.ausgewaehlt && <span className="text-white dark:text-slate-800 text-xs">✓</span>}
+                        {frage.ausgewaehlt && <Check className="w-3 h-3 text-white dark:text-slate-800" aria-hidden="true" strokeWidth={3} />}
                       </div>
 
                       <div className="flex-1 min-w-0">
@@ -362,7 +363,7 @@ export default function FragenImport({ onImportiert, onSchliessen }: Props) {
                                   ? 'text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20'
                                   : 'text-slate-500 dark:text-slate-400'
                               }`}>
-                                {String.fromCharCode(97 + oi)}) {opt.text} {opt.korrekt ? '✓' : ''}
+                                <span className="inline-flex items-center gap-1">{String.fromCharCode(97 + oi)}) {opt.text} {opt.korrekt && <Check className="w-3 h-3 inline-block" aria-hidden="true" />}</span>
                               </div>
                             ))}
                           </div>

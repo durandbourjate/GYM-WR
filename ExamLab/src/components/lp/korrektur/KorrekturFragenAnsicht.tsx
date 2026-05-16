@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Check } from 'lucide-react'
 import FeedbackButton from '../../shared/FeedbackButton.tsx'
 import { usePrefetchAssets } from '../../../hooks/usePrefetchAssets'
 import { pdfPrefetchUrls } from '../../../utils/anhaengePrefetch'
@@ -450,8 +451,8 @@ function SchuelerAntwortKarte({
               onChange={(e) => onUpdate({ geprueft: e.target.checked })}
               className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-green-600 focus:ring-green-500 cursor-pointer"
             />
-            <span className={`text-xs ${bewertung.geprueft ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
-              ✓
+            <span className={`text-xs inline-flex items-center ${bewertung.geprueft ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
+              <Check className="w-3.5 h-3.5" aria-hidden="true" />
             </span>
           </label>
         </div>

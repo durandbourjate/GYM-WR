@@ -2,6 +2,7 @@
 // Zwei-Modus-Dialog: Update bestehender Pool-Fragen / Export neuer Fragen
 
 import { useState, useEffect } from 'react'
+import { Check, X } from 'lucide-react'
 import type { Frage } from '../../../types/fragen-storage'
 import type { RueckSyncDiffFeld } from '../../../services/poolSync'
 import { berechneRueckSyncDiff, ladePoolIndex, ladePoolConfig } from '../../../services/poolSync'
@@ -281,7 +282,7 @@ export default function RueckSyncDialog({ frage, offen, onSchliessen, onErfolg }
         {/* Fertig */}
         {phase === 'fertig' && ergebnis && (
           <div className="py-8 text-center">
-            <div className="text-4xl mb-3">✓</div>
+            <div className="flex justify-center mb-3"><Check className="w-10 h-10 text-green-500 dark:text-green-400" aria-hidden="true" /></div>
             <p className="text-sm dark:text-gray-300">
               {ergebnis.aktualisiert > 0 && `${ergebnis.aktualisiert} Felder zurückgeschrieben.`}
               {ergebnis.exportiert > 0 && 'Frage exportiert.'}
@@ -296,7 +297,7 @@ export default function RueckSyncDialog({ frage, offen, onSchliessen, onErfolg }
         {/* Fehler */}
         {phase === 'fehler' && (
           <div className="py-8 text-center">
-            <div className="text-4xl mb-3">✗</div>
+            <div className="flex justify-center mb-3"><X className="w-10 h-10 text-red-500 dark:text-red-400" aria-hidden="true" /></div>
             <p className="text-sm text-red-600 dark:text-red-400">{fehlerText}</p>
             <div className="flex justify-center gap-2 mt-4">
               <button onClick={onSchliessen} className="px-4 py-2 text-sm rounded border dark:border-gray-600 dark:text-gray-300">Schliessen</button>

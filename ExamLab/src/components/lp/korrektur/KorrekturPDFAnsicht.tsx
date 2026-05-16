@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify'
+import { Check, X } from 'lucide-react'
 import type { SchuelerKorrektur, SchuelerAbgabe, FragenBewertung } from '../../../types/korrektur.ts'
 import type { Frage, MCFrage, PDFAnnotation } from '../../../types/fragen-storage'
 import type { PruefungsKorrektur } from '../../../types/korrektur.ts'
@@ -127,16 +128,20 @@ function antwortAlsText(antwort: Antwort | undefined, frage: Frage): string {
 function PunkteIndikator({ punkte, maxPunkte }: { punkte: number; maxPunkte: number }) {
   const safePunkte = Number.isFinite(punkte) ? punkte : 0
   const safeMax = Number.isFinite(maxPunkte) ? maxPunkte : 0
-  const symbol = safePunkte >= safeMax ? '✓' : safePunkte > 0 ? '~' : '✗'
-  const farbe = safePunkte >= safeMax
+  const istVoll = safePunkte >= safeMax
+  const istTeil = !istVoll && safePunkte > 0
+  const farbe = istVoll
     ? 'text-green-700 print:text-green-800'
-    : safePunkte > 0
+    : istTeil
       ? 'text-amber-700 print:text-amber-800'
       : 'text-red-700 print:text-red-800'
 
   return (
-    <span className={`font-bold ${farbe}`}>
-      {symbol} {safePunkte} / {safeMax}
+    <span className={`font-bold inline-flex items-center gap-1 ${farbe}`}>
+      {istVoll && <Check className="w-4 h-4" aria-hidden="true" />}
+      {istTeil && <span aria-hidden="true">~</span>}
+      {!istVoll && !istTeil && <X className="w-4 h-4" aria-hidden="true" />}
+      {safePunkte} / {safeMax}
     </span>
   )
 }

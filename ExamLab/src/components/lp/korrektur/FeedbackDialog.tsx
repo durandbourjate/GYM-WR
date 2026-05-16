@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import BaseDialog from '../../ui/BaseDialog'
 
 interface Props {
@@ -46,12 +47,12 @@ export default function FeedbackDialog({ offen, onSchliessen, onSenden, status, 
       )}
       {status === 'fertig' && ergebnis && (
         <>
-          <p className="text-sm text-green-700 dark:text-green-400 mb-1">
-            ✓ {ergebnis.erfolg.length} erfolgreich versendet
+          <p className="text-sm text-green-700 dark:text-green-400 mb-1 inline-flex items-center gap-1.5">
+            <Check className="w-4 h-4" aria-hidden="true" /> {ergebnis.erfolg.length} erfolgreich versendet
           </p>
           {ergebnis.fehler.length > 0 && (
-            <p className="text-sm text-red-700 dark:text-red-400 mb-1">
-              ✗ {ergebnis.fehler.length} fehlgeschlagen
+            <p className="text-sm text-red-700 dark:text-red-400 mb-1 inline-flex items-center gap-1.5">
+              <X className="w-4 h-4" aria-hidden="true" /> {ergebnis.fehler.length} fehlgeschlagen
             </p>
           )}
           <button

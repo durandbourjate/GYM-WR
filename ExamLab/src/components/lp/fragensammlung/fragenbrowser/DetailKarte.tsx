@@ -1,4 +1,4 @@
-import { Copy, Trash2 } from 'lucide-react'
+import { Check, Copy, Target, Trash2 } from 'lucide-react'
 import { fachbereichFarbe, typLabel } from '../../../../utils/fachUtils.ts'
 import { loesungsquoteFarbe } from '../../../../utils/trackerUtils.ts'
 import type { Frage, FrageSummary, FrageBase } from '../../../../types/fragen-storage'
@@ -91,13 +91,13 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
               {frage.bloom} · {frage.punkte}P.
             </span>
             {istInPruefung && (
-              <span className="text-xs px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded font-medium">
-                ✓ In Prüfung
+              <span className="text-xs px-1.5 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded font-medium inline-flex items-center gap-1">
+                <Check className="w-3 h-3" aria-hidden="true" /> In Prüfung
               </span>
             )}
             {(frage.lernzielIds?.length ?? 0) > 0 && (
-              <span className="text-xs px-1.5 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded" title={`${frage.lernzielIds!.length} Lernziel${frage.lernzielIds!.length !== 1 ? 'e' : ''} zugeordnet`}>
-                🏁 {frage.lernzielIds!.length}
+              <span className="text-xs px-1.5 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded inline-flex items-center gap-1" title={`${frage.lernzielIds!.length} Lernziel${frage.lernzielIds!.length !== 1 ? 'e' : ''} zugeordnet`}>
+                <Target className="w-3 h-3" aria-hidden="true" /> {frage.lernzielIds!.length}
               </span>
             )}
           </div>

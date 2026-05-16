@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AlertTriangle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
@@ -203,9 +204,10 @@ export default function KorrekturDashboard({ pruefungId, eingebettet = false, co
           if (ohnePunkte === 0) return null
           return (
             <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-              <p className="text-sm text-amber-800 dark:text-amber-200">
-                ⚠ {ohnePunkte} {ohnePunkte === 1 ? 'Bewertung' : 'Bewertungen'} als geprüft markiert, aber ohne Punkte.
-                Leere Punkte bedeuten: noch nicht beurteilt.
+              <p className="text-sm text-amber-800 dark:text-amber-200 flex items-start gap-1.5">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                <span>{ohnePunkte} {ohnePunkte === 1 ? 'Bewertung' : 'Bewertungen'} als geprüft markiert, aber ohne Punkte.
+                Leere Punkte bedeuten: noch nicht beurteilt.</span>
               </p>
             </div>
           )
