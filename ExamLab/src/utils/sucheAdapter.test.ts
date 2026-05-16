@@ -35,6 +35,7 @@ const stubFrage = (id: string, fragetext: string, tags: string[] = [], thema = '
   bloom: 'K1' as FrageSummary['bloom'],
   punkte: 1,
   tags,
+  tagIds: [],
   erstelltAm: '2026-05-12',
   hatAnhang: false,
   hatMaterial: false,
@@ -127,10 +128,11 @@ describe('indexFragen', () => {
     expect(treffer[0].iconKey).toBe('frage')
   })
 
-  it('matched String-Tag', () => {
-    const treffer = indexFragen('bilanz', [stubFrage('f1', 'Foo', ['Bilanz'])])
-    expect(treffer).toHaveLength(1)
-  })
+  // Cluster H Phase 3 (17.05.2026): String-Tag-Suche entfernt — Tag-Suche
+  // erfolgt jetzt via tagIds + tagsStore-Lookup. Wenn der Store leer ist (Test-
+  // Default), liefert tagNamenFuerFrage [] zurueck und der Suchtext matched nicht.
+  // Separate Tag-Such-Tests fuer Store-basierte Lookups gehoeren ggf. in einen
+  // tagsStore-Integration-Test.
 
   it('matched ID-exakt mit ID_EXACT-Score', () => {
     const treffer = indexFragen('frg-12345', [stubFrage('frg-12345', 'Foo')])

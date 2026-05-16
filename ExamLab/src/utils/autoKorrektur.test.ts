@@ -32,6 +32,7 @@ function makeMCFrage(optionen: { id: string; text: string; korrekt: boolean }[],
     gefaesse: ['SF'],
     bloom: 'K1',
     tags: [],
+    tagIds: [],
     punkte: 2,
     musterlosung: '',
     bewertungsraster: [],
@@ -136,6 +137,7 @@ describe('autoKorrigiere', () => {
       gefaesse: ['SF'],
       bloom: 'K1',
       tags: [],
+      tagIds: [],
       punkte: 3,
       musterlosung: '',
       bewertungsraster: [],
@@ -163,7 +165,7 @@ describe('autoKorrigiere', () => {
     const frage: SortierungFrage = {
       id: 'so-1', typ: 'sortierung', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 4, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Sortiere chronologisch',
       elemente: ['A', 'B', 'C', 'D'],
@@ -179,7 +181,7 @@ describe('autoKorrigiere', () => {
     const frage: SortierungFrage = {
       id: 'so-2', typ: 'sortierung', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 4, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Sortiere',
       elemente: ['A', 'B', 'C', 'D'],
@@ -195,7 +197,7 @@ describe('autoKorrigiere', () => {
     const frage: SortierungFrage = {
       id: 'so-3', typ: 'sortierung', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 4, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Sortiere',
       elemente: ['A', 'B', 'C', 'D'],
@@ -213,7 +215,7 @@ describe('autoKorrigiere', () => {
     const frage: HotspotFrage = {
       id: 'hs-1', typ: 'hotspot', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Klicke auf das richtige Feld',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -234,7 +236,7 @@ describe('autoKorrigiere', () => {
     const frage: HotspotFrage = {
       id: 'hs-2', typ: 'hotspot', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Klicke auf das richtige Feld',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -255,7 +257,7 @@ describe('autoKorrigiere', () => {
     const frage: HotspotFrage = {
       id: 'hs-3', typ: 'hotspot', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 3, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Klicke auf den Kreis',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -282,7 +284,7 @@ describe('autoKorrigiere', () => {
     const frage: BildbeschriftungFrage = {
       id: 'bb-1', typ: 'bildbeschriftung', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 3, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Beschrifte das Bild',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -305,7 +307,7 @@ describe('autoKorrigiere', () => {
     const frage: BildbeschriftungFrage = {
       id: 'bb-2', typ: 'bildbeschriftung', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Beschrifte',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -327,7 +329,7 @@ describe('autoKorrigiere', () => {
     const frage: BildbeschriftungFrage = {
       id: 'bb-3', typ: 'bildbeschriftung', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Beschrifte',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -351,7 +353,7 @@ describe('autoKorrigiere', () => {
     const frage = {
       id: 'dd-1', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 3, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne die Labels zu',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -380,7 +382,7 @@ describe('autoKorrigiere', () => {
     const frage = {
       id: 'dd-2', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne zu',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -407,7 +409,7 @@ describe('autoKorrigiere', () => {
     const frage = {
       id: 'dd-3', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne zu',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -429,7 +431,7 @@ describe('autoKorrigiere', () => {
     const frage = {
       id: 'dd-4', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Ordne zu',
       bild: { typ: 'extern', url: 'https://example.com/bild.png', mimeType: 'image/png' },
@@ -458,7 +460,7 @@ describe('autoKorrigiere', () => {
     return {
       id: 'fo-1', typ: 'formel', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'VWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K3', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K3', tags: [], tagIds: [],
       punkte: 2, musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: 'Geben Sie die Formel ein',
       korrekteFormel,
@@ -496,7 +498,7 @@ describe('korrigiereDragDropBild — Bundle J Multi-Zone + Multi-Label', () => {
     const f = {
       id: 'f1', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: '', bildUrl: '', punkte: 3,
       zielzonen: [
@@ -520,7 +522,7 @@ describe('korrigiereDragDropBild — Bundle J Multi-Zone + Multi-Label', () => {
     const f = {
       id: 'f2', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: '', bildUrl: '', punkte: 1,
       zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Marketing-Mix', '4P'] }],
@@ -534,7 +536,7 @@ describe('korrigiereDragDropBild — Bundle J Multi-Zone + Multi-Label', () => {
     const f = {
       id: 'f3', typ: 'dragdrop_bild', version: 1, erstelltAm: '2026-01-01', geaendertAm: '2026-01-01',
       fachbereich: 'BWL', fach: 'Wirtschaft & Recht', thema: 'Test',
-      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [],
+      semester: ['S3'], gefaesse: ['SF'], bloom: 'K2', tags: [], tagIds: [],
       musterlosung: '', bewertungsraster: [], verwendungen: [],
       fragetext: '', bildUrl: '', punkte: 1,
       zielzonen: [{ id: 'z1', form: 'rechteck', punkte: [], korrekteLabels: ['Aktiva'] }],

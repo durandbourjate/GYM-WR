@@ -17,6 +17,7 @@ const frage = {
   gefaesse: [],
   bloom: 'K2',
   tags: [],
+  tagIds: [],
   punkte: 2,
   musterlosung: '',
   bewertungsraster: [],

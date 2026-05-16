@@ -15,6 +15,8 @@ const baseMeta = {
   gefaesse: [],
   bloom: 'K2' as const,
   tags: [],
+  tagIds: [],
+  
   punkte: 1,
   musterlosung: '',
   bewertungsraster: [],

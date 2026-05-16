@@ -108,14 +108,15 @@ export default function TestdatenTab({ email }: Props) {
       {admin && (
         <section>
           <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Admin-Aktionen</h4>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3">
             {!initialisiert && (
               <button
                 type="button"
                 onClick={() => void fuehreAus('initial')}
                 disabled={seedLoading}
-                className="px-3 py-1.5 rounded text-sm bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-50"
+                className="px-3 py-1.5 rounded text-sm bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-50 inline-flex items-center gap-1.5"
               >
+                {seedLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />}
                 {seedLoading ? 'Wird erzeugt…' : 'Testdaten erzeugen'}
               </button>
             )}
@@ -124,10 +125,16 @@ export default function TestdatenTab({ email }: Props) {
                 type="button"
                 onClick={() => setModalOffen(true)}
                 disabled={seedLoading}
-                className="px-3 py-1.5 rounded text-sm bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50"
+                className="px-3 py-1.5 rounded text-sm bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50 inline-flex items-center gap-1.5"
               >
-                Zurücksetzen
+                {seedLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />}
+                {seedLoading ? 'Wird zurückgesetzt…' : 'Zurücksetzen'}
               </button>
+            )}
+            {seedLoading && (
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                kann bis ~60s dauern (Backend re-seedet)
+              </span>
             )}
           </div>
 

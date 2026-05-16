@@ -120,6 +120,7 @@ export default function FragenImport({ onImportiert, onSchliessen }: Props) {
         gefaesse: ['SF'],
         bloom,
         tags: ['import'],
+        tagIds: [] as string[],
         punkte: ef.punkte || 1,
         musterlosung: ef.musterlosung || '',
         bewertungsraster: [],

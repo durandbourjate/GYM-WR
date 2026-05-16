@@ -41,6 +41,7 @@ export interface BasisFelder {
   gefaesse: string[]
   bloom: BloomStufe
   tags: string[]
+  tagIds: string[]
   punkte: number
   musterlosung: string
   bewertungsraster: Bewertungskriterium[]
@@ -97,6 +98,10 @@ export function konvertierePoolFrage(
 
     bloom: mapBloom(poolFrage.tax),
     tags: [poolFrage.topic, `diff:${poolFrage.diff}`],
+    // Cluster H Phase 3 (17.05.2026): tagIds required. Pool-Konverter setzt leeres
+    // Array; Pool-Tags werden ueber den deprecated `tags`-Field-Fallback gehalten,
+    // bis ein Pool-Tag-Mapping ueber tagsStore eingefuehrt ist.
+    tagIds: [] as string[],
 
     punkte: berechnePunkte(poolFrage),
     musterlosung: poolFrage.explain ?? ('sample' in poolFrage ? poolFrage.sample : undefined) ?? '',

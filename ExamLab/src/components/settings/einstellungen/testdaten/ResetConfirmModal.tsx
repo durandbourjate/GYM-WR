@@ -1,3 +1,5 @@
+import { Loader2 } from 'lucide-react'
+
 interface Props {
   offen: boolean
   loading?: boolean
@@ -13,11 +15,17 @@ export default function ResetConfirmModal({ offen, loading = false, onAbbrechen,
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
           Testdaten zurücksetzen?
         </h3>
-        <p className="text-sm text-slate-700 dark:text-slate-300 mb-6">
+        <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
           Alle Testdaten werden gelöscht und neu erzeugt. Eigene Änderungen am Testkurs
           (zusätzliche Prüfungen, Antworten, …) gehen dauerhaft verloren. Echtdaten sind
           nicht betroffen.
         </p>
+        {loading && (
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 inline-flex items-center gap-1.5">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+            Reset läuft auf dem Backend (kann bis ~60s dauern) — Modal schliesst nach Erfolg automatisch.
+          </p>
+        )}
         <div className="flex justify-end gap-2">
           <button
             type="button"
@@ -29,11 +37,12 @@ export default function ResetConfirmModal({ offen, loading = false, onAbbrechen,
           </button>
           <button
             type="button"
-            className="px-3 py-1.5 rounded text-sm bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50"
+            className="px-3 py-1.5 rounded text-sm bg-rose-600 text-white hover:bg-rose-700 disabled:opacity-50 inline-flex items-center gap-1.5"
             disabled={loading}
             onClick={onBestaetigen}
           >
-            Endgültig zurücksetzen
+            {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />}
+            {loading ? 'Wird zurückgesetzt…' : 'Endgültig zurücksetzen'}
           </button>
         </div>
       </div>

@@ -44,6 +44,7 @@ const baseFrage: LTType = {
   gefaesse: [],
   bloom: 'K1',
   tags: [],
+  tagIds: [],
   punkte: 1,
   musterlosung: '',
   bewertungsraster: [],

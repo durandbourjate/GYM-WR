@@ -11,7 +11,7 @@ type FrageTyp = Frage['typ']
 
 // Skalare Defaults — Arrays werden in `baseDefaults()` separat erzeugt, damit jeder
 // Mock-Aufruf eigene Array-Instanzen bekommt (kein Shared-Reference-Bug).
-const FRAGE_BASE_DEFAULTS: Omit<FrageBase, 'tags' | 'semester' | 'gefaesse' | 'verwendungen' | 'bewertungsraster'> = {
+const FRAGE_BASE_DEFAULTS: Omit<FrageBase, 'tags' | 'tagIds' | 'semester' | 'gefaesse' | 'verwendungen' | 'bewertungsraster'> = {
   id: 'test-frage',
   version: 1,
   erstelltAm: new Date(0).toISOString(),
@@ -29,6 +29,8 @@ function baseDefaults(): FrageBase {
     ...FRAGE_BASE_DEFAULTS,
     bewertungsraster: [],
     tags: [],
+    tagIds: [],
+    
     semester: [],
     gefaesse: [],
     verwendungen: [],

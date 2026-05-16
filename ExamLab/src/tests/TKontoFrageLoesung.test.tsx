@@ -17,6 +17,7 @@ const frage = {
   gefaesse: [],
   bloom: 'K3',
   tags: [],
+  tagIds: [],
   punkte: 2,
   musterlosung: 'Das Konto Kasse ist ein Aktivkonto.',
   bewertungsraster: [],

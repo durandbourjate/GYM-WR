@@ -17,6 +17,7 @@ const frageBilanz = {
   gefaesse: [],
   bloom: 'K3',
   tags: [],
+  tagIds: [],
   punkte: 3,
   musterlosung: 'Bilanz balanciert mit Bilanzsumme CHF 5000.',
   bewertungsraster: [],

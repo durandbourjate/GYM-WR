@@ -72,6 +72,7 @@ function inlineTeilaufgabeAlsFrage(ta: InlineTeilaufgabe, parent: Aufgabengruppe
     semester: parent.semester,
     gefaesse: parent.gefaesse,
     tags: parent.tags,
+    tagIds: parent.tagIds ?? [],
     punkte: ta.punkte,
     zeitbedarf: 0,
     musterlosung: '',

@@ -45,6 +45,7 @@ const frage = {
   gefaesse: [],
   bloom: 'K3',
   tags: [],
+  tagIds: [],
   punkte: 2,
   musterlosung: '',
   bewertungsraster: [],

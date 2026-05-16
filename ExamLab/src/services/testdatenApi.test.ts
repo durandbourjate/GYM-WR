@@ -18,7 +18,7 @@ describe('apiAdminSeedTestdaten', () => {
       dauerMs: 1234,
     })
     const r = await apiAdminSeedTestdaten({ email: 'a@x.ch', mode: 'initial' })
-    expect(apiClient.postJson).toHaveBeenCalledWith('apiAdminSeedTestdaten', { email: 'a@x.ch', mode: 'initial' })
+    expect(apiClient.postJson).toHaveBeenCalledWith('apiAdminSeedTestdaten', { email: 'a@x.ch', mode: 'initial' }, { timeoutMs: 180_000 })
     expect(r.success).toBe(true)
     expect(r.statistik?.testSuSAngelegt).toBe(20)
   })
@@ -38,7 +38,7 @@ describe('apiAdminSeedTestdaten', () => {
   it('akzeptiert mode reset', async () => {
     vi.mocked(apiClient.postJson).mockResolvedValue({ success: true })
     await apiAdminSeedTestdaten({ email: 'a@x.ch', mode: 'reset' })
-    expect(apiClient.postJson).toHaveBeenCalledWith('apiAdminSeedTestdaten', { email: 'a@x.ch', mode: 'reset' })
+    expect(apiClient.postJson).toHaveBeenCalledWith('apiAdminSeedTestdaten', { email: 'a@x.ch', mode: 'reset' }, { timeoutMs: 180_000 })
   })
 
   it('liefert Fallback wenn postJson null returnt', async () => {

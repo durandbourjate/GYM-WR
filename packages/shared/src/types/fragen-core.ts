@@ -35,10 +35,11 @@ export interface FrageBase {
 
   // Taxonomie
   bloom: BloomStufe;
-  /** @deprecated Cluster H Phase 3 entfernt — bis dahin koexistiert mit tagIds für Rollback */
+  /** @deprecated Cluster H Phase 3 (17.05.2026): Backend liefert leeres Array. Field bleibt optional
+   *  fuer Backwards-Compat von pre-Phase-3-Storage-Objekten. Display-Tags-Namen kommen aus tagsStore via tagIds. */
   tags?: string[];
-  /** Tag-Object-Referenzen (Cluster H, ab Phase 1). TODO Phase 3: zu required machen wenn `tags` entfernt wird. */
-  tagIds?: string[];
+  /** Tag-Object-Referenzen — Single-Source-of-Truth seit Cluster H Phase 3 (17.05.2026). */
+  tagIds: string[];
 
   // Bewertung
   punkte: number;

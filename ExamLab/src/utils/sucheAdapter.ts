@@ -116,14 +116,13 @@ export function indexUebungen(query: string, configs: PruefungsConfig[]): SucheT
 }
 
 /**
- * Cluster H Phase 2: Tag-Namen für Such-Index. Nutzt `tagNamenFuerFrage`-Helper
- * (tagIds via tagsStore + Legacy-Fallback) und joined zu String.
+ * Cluster H Phase 3 (17.05.2026): Tag-Namen für Such-Index aus tagIds via tagsStore.
  *
  * Pure-Helper-Kontext: `getState()` liefert keinen Re-Index bei Tag-Rename
  * mid-typing — akzeptiert, weil Suche bei nächstem Render mit neuem `index` neu läuft.
  */
-function tagsAlsText(tagIds: string[] | undefined, legacy: FrageSummary['tags']): string {
-  return tagNamenFuerFrage({ tagIds, tags: legacy }).join(' ')
+function tagsAlsText(tagIds: string[]): string {
+  return tagNamenFuerFrage({ tagIds }).join(' ')
 }
 
 export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer[] {
@@ -132,7 +131,7 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
     const titel = f.fragetext.length > 80 ? f.fragetext.slice(0, 77) + '…' : f.fragetext
     const titelScore = scoreFromMatch(titel, query, 'titel')
     const idScore = scoreFromMatch(f.id, query, 'id')
-    const tagText = tagsAlsText(f.tagIds, f.tags)
+    const tagText = tagsAlsText(f.tagIds)
     const tagScore = tagText ? scoreFromMatch(tagText, query, 'tag') : 0
     const themaScore = f.thema ? scoreFromMatch(f.thema, query, 'tag') : 0
     const score = Math.max(titelScore, idScore, tagScore, themaScore)

@@ -26,7 +26,10 @@ export interface LegacyTag {
  * - `poolVersion` ist ein Snapshot zur Update-Erkennung importierter Pool-Fragen.
  */
 export interface FrageBase extends Omit<Core.FrageBase, 'tags'> {
-  tags: (string | LegacyTag)[]
+  /** Cluster H Phase 3 (17.05.2026): tags-Field ist legacy, optional fuer Backwards-Compat
+   *  von pre-Phase-3-Storage-Objekten. Backend liefert leeres Array — tagsStore-Lookup
+   *  via tagIds ist primary Path. */
+  tags?: (string | LegacyTag)[]
   _recht?: EffektivesRecht
   poolVersion?: PoolFrageSnapshot
   // Cluster D Phase 0: `status` ist jetzt im Core (siehe `@shared/types/fragen-core` FrageBase).
@@ -121,9 +124,12 @@ export interface FrageSummary {
   fragetext: string  // Gekürzt auf max. 200 Zeichen
   bloom: Core.BloomStufe
   punkte: number
-  tags: (string | LegacyTag)[]
-  /** Tag-Object-Referenzen (Cluster H Phase 1+, parallel zu legacy `tags` bis Phase 3). */
-  tagIds?: string[]
+  /** Cluster H Phase 3 (17.05.2026): tags-Field ist legacy. Backend liefert leeres
+   *  Array — Display-Tag-Namen werden im Frontend via tagsStore aus tagIds aufgeloest.
+   *  Field bleibt optional fuer Backwards-Compat von pre-Phase-3-Storage-Daten. */
+  tags?: (string | LegacyTag)[]
+  /** Tag-Object-Referenzen — Single-Source-of-Truth seit Cluster H Phase 3. */
+  tagIds: string[]
   quelle?: 'pool' | 'papier' | 'manuell' | 'ki-generiert'
   autor?: string
   erstelltVon?: string

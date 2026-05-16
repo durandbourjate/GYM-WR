@@ -2320,6 +2320,8 @@ function doPost(e) {
       return apiAdminSeedTestdaten_(body);
     case 'apiTestdatenLetzterSeed':
       return apiTestdatenLetzterSeed_(body);
+    case 'apiCleanupTagsLegacy':
+      return apiCleanupTagsLegacy_(body);
     case 'loescheFrage':
       return loescheFrage(body);
     case 'stelleWiederHer':
@@ -3998,9 +4000,11 @@ function parseFrage(row, fachbereich) {
     semester: (row.semester || '').split(',').map(s => s.trim()).filter(Boolean),
     gefaesse: (row.gefaesse || '').split(',').map(s => s.trim()).filter(Boolean),
     bloom: row.bloom || 'K1',
-    // Cluster H Phase 0: tagsLegacy (umbenannte Spalte nach Migration) hat Vorrang vor tags (Pre-Migration).
-    // Phase 3 entfernt beide Fallbacks und setzt nur tags = [] wenn nötig.
-    tags: (row.tagsLegacy || row.tags || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+    // Cluster H Phase 3 (17.05.2026): tagsLegacy-Spalte ist via apiCleanupTagsLegacy
+    // entfernt worden, tagIds ist Single-Source-of-Truth. Display-tags-Array wird
+    // im Frontend aus tagIds via tagsStore aufgeloest. Backend liefert leeres tags
+    // fuer Backward-Compat des Wire-Vertrags (Frontend-Typ tags?: optional).
+    tags: [],
     tagIds: (row.tagIds || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     punkte: Number(row.punkte) || 1,
     musterlosung: row.musterlosung || '',
@@ -4978,8 +4982,8 @@ function speichereFrageIntern_(frage, email) {
       return g !== '' && ladeSchulConfig_().gefaesse.includes(g);
     }).join(','),
     bloom: frage.bloom || 'K1',
-    tags: (frage.tags || []).join(','),
-    // Cluster H Phase 0: tagIds parallel zu tags schreiben. Phase 3 entfernt tags-Schreib-Pfad.
+    // Cluster H Phase 3 (17.05.2026): tags-Spalte entfernt via apiCleanupTagsLegacy.
+    // tagIds ist Single-Source-of-Truth.
     tagIds: (frage.tagIds || []).join(','),
     punkte: String(frage.punkte || 0),
     musterlosung: frage.musterlosung || '',
@@ -5602,8 +5606,7 @@ function batchImportFragen(body) {
           semester: (frage.semester || []).join(','),
           gefaesse: Array.isArray(frage.gefaesse) ? frage.gefaesse.join(',') : '',
           bloom: frage.bloom || 'K1',
-          tags: (frage.tags || []).join(','),
-          // Cluster H Phase 0: tagIds parallel zu tags schreiben.
+          // Cluster H Phase 3 (17.05.2026): tags-Spalte entfernt, tagIds Single-Source.
           tagIds: (frage.tagIds || []).join(','),
           punkte: String(frage.punkte || 0),
           musterlosung: frage.musterlosung || '',
@@ -6783,8 +6786,7 @@ function importierePoolFragen(body) {
             semester: (frage.semester || []).join(','),
             gefaesse: (frage.gefaesse || []).join(','),
             bloom: frage.bloom || 'K1',
-            tags: (frage.tags || []).join(','),
-            // Cluster H Phase 0: tagIds parallel zu tags schreiben.
+            // Cluster H Phase 3 (17.05.2026): tags-Spalte entfernt, tagIds Single-Source.
             tagIds: (frage.tagIds || []).join(','),
             punkte: String(frage.punkte || 0),
             musterlosung: frage.musterlosung || '',
@@ -11159,8 +11161,8 @@ function parseFrageKanonisch_(row, fachbereich) {
     semester: (row.semester || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     gefaesse: (row.gefaesse || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     bloom: row.bloom || 'K1',
-    // Cluster H Phase 0: tagsLegacy (Post-Migration) hat Vorrang vor tags (Pre-Migration).
-    tags: (row.tagsLegacy || row.tags || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+    // Cluster H Phase 3: tagIds-only (tagsLegacy entfernt via apiCleanupTagsLegacy).
+    tags: [],
     tagIds: (row.tagIds || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
     punkte: Number(row.punkte) || 1,
     musterlosung: row.musterlosung || '',
@@ -15904,6 +15906,55 @@ function apiAdminSeedTestdaten_(body) {
   } catch (e) {
     Logger.log('apiAdminSeedTestdaten_ Fehler: ' + e.message + '\n' + (e.stack || ''));
     return jsonResponse({ success: false, error: 'Seed-Fehler: ' + e.message });
+  } finally {
+    try { lock.releaseLock(); } catch (_e) { /* ignore */ }
+  }
+}
+
+/**
+ * Cluster H Phase 3 (17.05.2026): entfernt die `tagsLegacy`-Spalte aus allen
+ * Fragensammlung-Tabs (Phase-0 hatte sie als Rollback-Sicherheit umbenannt).
+ *
+ * Auth: nur Admin (Schema-Aenderung).
+ * Per-Tab: findet tagsLegacy-Header, loescht die Spalte (deleteColumn) wenn vorhanden.
+ * Idempotent: wenn keine Spalte mehr da → success mit removed=0.
+ */
+function apiCleanupTagsLegacy_(body) {
+  var email = String((body && body.email) || '').toLowerCase().trim();
+  if (!istZugelasseneLP(email)) {
+    return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  }
+  var lpInfo = getLPInfo(email);
+  if (!lpInfo || lpInfo.rolle !== 'admin') {
+    return jsonResponse({ success: false, error: 'Nur Admins duerfen Schema-Cleanup ausfuehren' });
+  }
+  var lock = LockService.getScriptLock();
+  try {
+    if (!lock.tryLock(10000)) {
+      return jsonResponse({ success: false, error: 'Cleanup laeuft bereits' });
+    }
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var tabs = getFragensammlungTabs_();
+    var removed = 0;
+    var betroffen = [];
+    for (var t = 0; t < tabs.length; t++) {
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
+      if (!sheet) continue;
+      var lastCol = sheet.getLastColumn();
+      if (lastCol === 0) continue;
+      var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+      var idx = headers.indexOf('tagsLegacy');
+      if (idx >= 0) {
+        sheet.deleteColumn(idx + 1);
+        removed += 1;
+        betroffen.push(tabs[t]);
+      }
+    }
+    cacheInvalidieren_();
+    return jsonResponse({ success: true, removed: removed, betroffen: betroffen });
+  } catch (e) {
+    Logger.log('apiCleanupTagsLegacy_ Fehler: ' + e.message);
+    return jsonResponse({ success: false, error: 'Cleanup-Fehler: ' + e.message });
   } finally {
     try { lock.releaseLock(); } catch (_e) { /* ignore */ }
   }

@@ -51,7 +51,7 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
   const zeit = frage ? frage.zeitbedarf ?? berechneZeitbedarf(frage.typ as 'mc' | 'freitext' | 'lueckentext' | 'zuordnung' | 'richtigfalsch' | 'berechnung' | 'visualisierung', frage.bloom as BloomStufe) : undefined
   // Cluster H Phase 2: Tag-Namen via tagsStore-Hook (subscribed → Re-Render bei Tag-Rename).
   // useShallow ist Pflicht: Selector returnt neues Array → ohne shallow-Equality infinite re-render (React #185).
-  const tagNamen = useTagsStore(useShallow(s => tagNamenFromStore(frage ?? {}, s)))
+  const tagNamen = useTagsStore(useShallow(s => tagNamenFromStore({ tagIds: frage?.tagIds ?? [] }, s)))
   return (
     <div ref={setNodeRef} style={style} className="px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors">
       <div className="flex items-center gap-2">

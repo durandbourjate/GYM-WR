@@ -33,6 +33,8 @@ describe('ResetConfirmModal', () => {
   it('disabled Buttons wenn loading=true', () => {
     render(<ResetConfirmModal offen loading onAbbrechen={() => {}} onBestaetigen={() => {}} />)
     expect(screen.getByRole('button', { name: 'Abbrechen' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: /Endgültig/ })).toBeDisabled()
+    // Cluster H Phase 3 / Reset-Timeout-UX (17.05.2026): Button-Label wechselt
+    // zu "Wird zurückgesetzt…" wenn loading=true (mit Loader-Spinner).
+    expect(screen.getByRole('button', { name: /Wird zurückgesetzt/ })).toBeDisabled()
   })
 })

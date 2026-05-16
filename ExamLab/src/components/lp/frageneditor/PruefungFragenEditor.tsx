@@ -72,28 +72,12 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
     return r.tag
   }, [user?.email, upsertTagLokal])
 
-  // Cluster H Phase 2 Polish P3: Legacy-Fallback für vorausgewählte Tags im Picker.
-  // Fragen mit `tags=["einführung"]` (Komma-Feld vor Phase-2-Migration) aber leerem
-  // `tagIds` zeigten keine Checkboxen vorausgewählt. Lookup via tagsStore.getByName
-  // (case-insensitive) und Inject als initial-tagIds — einmalig pro frage-Identity.
-  // Dep nur `[frage]` (nicht der Store), sonst läuft Tag-Save-Loop bei jedem
-  // upsertLokal. tagsStore wird beim Login parallel zu summaries geladen, also
-  // sind die Lookups beim Edit-Open verfügbar.
-  const fragePrepared = useMemo(() => {
-    if (!frage) return null
-    if (frage.tagIds && frage.tagIds.length > 0) return frage
-    const legacyNames = (frage.tags ?? [])
-      .map((t) => (typeof t === 'string' ? t : t.name))
-      .filter(Boolean) as string[]
-    if (legacyNames.length === 0) return frage
-    const tagsState = useTagsStore.getState()
-    const matched = legacyNames
-      .map((name) => tagsState.getByName(name)?.id)
-      .filter((id): id is string => Boolean(id))
-    if (matched.length === 0) return frage
-    return { ...frage, tagIds: matched } as Frage
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frage])
+  // Cluster H Phase 3 (17.05.2026): Legacy-Fallback aus Polish P3 entfernt.
+  // tagIds ist Single-Source-of-Truth — der Editor zeigt direkt die im Store
+  // referenzierten Tags. Pre-Phase-3-Fragen mit leerem tagIds + altem `tags`-Feld
+  // zeigen jetzt keine vorausgewaehlten Tags mehr; das ist erwartet, weil Phase 1
+  // alle Migrationskandidaten in tagIds umgeschrieben hat.
+  const fragePrepared = frage
 
   // Cluster H Phase 2 Polish P4: Beim Speichern legacy-`tags`-Liste aus aktuellem
   // `tagIds` neu computen — der TagPicker ist jetzt single-source-of-truth, das

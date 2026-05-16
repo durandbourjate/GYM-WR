@@ -46,8 +46,15 @@ export interface SeedResponse {
  * Plan: docs/superpowers/plans/2026-05-11-cluster-f-testdaten-f2-backend.md
  */
 export async function apiAdminSeedTestdaten(opts: { email: string; mode: SeedMode }): Promise<SeedResponse> {
-  const result = await postJson<SeedResponse>('apiAdminSeedTestdaten', { email: opts.email, mode: opts.mode })
-  return result ?? { success: false, error: 'Keine Antwort vom Backend' }
+  // Reset+Re-Seed kann 30-90s dauern (delete + insert all test-data + LockService).
+  // Default 30s reicht nicht. 180s ist unter Apps-Scripts 6min-Hard-Limit, gibt
+  // genug Puffer, blockt aber nicht ewig falls Backend wirklich haengt.
+  const result = await postJson<SeedResponse>(
+    'apiAdminSeedTestdaten',
+    { email: opts.email, mode: opts.mode },
+    { timeoutMs: 180_000 },
+  )
+  return result ?? { success: false, error: 'Keine Antwort vom Backend (Timeout nach 180s)' }
 }
 
 /**

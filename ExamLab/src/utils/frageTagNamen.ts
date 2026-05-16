@@ -1,11 +1,8 @@
 /**
- * Cluster H Phase 2: Helpers für Tag-Namen-Auflösung aus `tagIds` via tagsStore.
+ * Cluster H Phase 3 (17.05.2026): Helpers für Tag-Namen-Auflösung aus `tagIds` via tagsStore.
  *
- * Hintergrund: Nach Phase 1 ist `frage.tagIds: string[]` der primäre Wire-Vertrag,
- * `frage.tags` (string|Tag)[] bleibt als Legacy für Rollback bis Phase 3.
- *
- * Diese Helpers liefern Tag-Namen aus tagIds via `useTagsStore.getState()`.
- * Bei leeren tagIds (alter Daten-State) Fallback auf legacy `tags`.
+ * Phase 3 entfernt den `frage.tags`-Fallback — `tagIds` ist Single-Source-of-Truth.
+ * Bei leeren tagIds liefert der Helper ein leeres Array zurück.
  *
  * Hook-Form: Render-Time-Komponenten sollen `useTagsStore(s => ...)` direkt
  * benutzen für Re-Render bei Tag-Rename. Diese Helpers sind für Pure-Helpers,
@@ -14,14 +11,8 @@
 import type { Tag as SharedTag } from '@shared/types/tag'
 import { useTagsStore } from '../store/tagsStore'
 
-/** Cluster H Phase 2 Legacy-Form: `frage.tags` enthielt Pre-Cluster-H Tag-Objekte
- * mit `name` (und weiteren Feldern wie `farbe`/`ebene`). Nur `name` wird konsumiert.
- * Wird in Cluster H Phase 3 zusammen mit `frage.tags`-Fallback entfernt. */
-type LegacyTagShape = { name: string }
-type TagFeld = string | LegacyTagShape
 export type FrageMitTags = {
-  tagIds?: string[]
-  tags?: TagFeld[]
+  tagIds: string[]
 }
 
 /** Tags die eine Demo-/Einrichtungsfrage markieren — siehe `istEinrichtungsfrage`. */
@@ -34,26 +25,19 @@ const EINRICHTUNGS_TAGS = new Set(['einrichtung', 'einführung'])
  *
  *   const tagNamen = useTagsStore(s => tagNamenFromStore(frage, s))
  *
- * Single Source of Truth für Lookup-Reihenfolge: tagIds → tagsStore → Legacy-tags-Fallback.
+ * Cluster H Phase 3 (17.05.2026): Single Source of Truth ist tagIds + tagsStore.
+ * Bei leeren tagIds oder leerem Store-Lookup → leeres Array.
  */
 export function tagNamenFromStore(
   frage: FrageMitTags,
   store: { getByIds: (ids: string[]) => SharedTag[] },
 ): string[] {
-  const ids = frage.tagIds
-  if (ids && ids.length > 0) {
-    const namen = store.getByIds(ids).map(t => t.name)
-    if (namen.length > 0) return namen
-  }
-  const legacy = frage.tags ?? []
-  return legacy.map(t => (typeof t === 'string' ? t : t.name))
+  if (!frage.tagIds || frage.tagIds.length === 0) return []
+  return store.getByIds(frage.tagIds).map(t => t.name)
 }
 
 /**
- * Liefert die Tag-Namen einer Frage als string[]. Nutzt zuerst `tagIds` +
- * tagsStore-Lookup, fällt zurück auf legacy `tags`-Array bei leeren tagIds
- * ODER leerem Lookup-Result (z.B. Store noch nicht geladen).
- *
+ * Liefert die Tag-Namen einer Frage als string[] via tagsStore-Lookup.
  * NICHT-reaktiv: nutzt `useTagsStore.getState()`. Für render-time Subscribe
  * `tagNamenFromStore` mit `useTagsStore(s => ...)` verwenden.
  */

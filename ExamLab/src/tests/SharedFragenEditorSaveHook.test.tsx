@@ -61,6 +61,8 @@ describe('SharedFragenEditor — Bundle H Save-Hook', () => {
       gefaesse: ['SF'],
       bloom: 'K2',
       tags: [],
+      tagIds: [],
+      
       punkte: 1,
       musterlosung: '',
       bewertungsraster: [],
@@ -98,6 +100,8 @@ describe('SharedFragenEditor — Bundle H Save-Hook', () => {
       gefaesse: ['SF'],
       bloom: 'K2',
       tags: [],
+      tagIds: [],
+      
       punkte: 1,
       musterlosung: '',
       bewertungsraster: [],
@@ -147,6 +151,8 @@ describe('SharedFragenEditor — Bundle H Save-Hook', () => {
       gefaesse: ['SF'],
       bloom: 'K2',
       tags: [],
+      tagIds: [],
+      
       punkte: 1,
       musterlosung: '',
       bewertungsraster: [],

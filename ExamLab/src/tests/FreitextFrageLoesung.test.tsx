@@ -17,6 +17,7 @@ const frage = {
   gefaesse: [],
   bloom: 'K3',
   tags: [],
+  tagIds: [],
   punkte: 3,
   musterlosung: 'Die SNB ist die Zentralbank der Schweiz und steuert die Geldpolitik.',
   bewertungsraster: [],

@@ -8,7 +8,29 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `280b4d2` — TODO-Sweep #1-#6 KOMPLETT auf main + preview synchron (17.05.2026 SEHR SPÄT).
+**HEAD main + preview:** Mega-Sweep — Reset-Timeout-UX + Cluster H Phase 3 (17.05.2026 NACHT).
+
+## Mega-Sweep Stand 17.05.2026 SEHR SPÄT
+
+**Reset-Timeout-UX ✅:** `apiAdminSeedTestdaten` Timeout 30s → 180s, Loading-State im `Zurücksetzen`-Button + im ResetConfirmModal mit Hint "kann bis ~60s dauern" + Spinner.
+
+**Cluster H Phase 3 ✅:** Tag-Modell-Cleanup (irreversible).
+- **Apps-Script:** Neuer `apiCleanupTagsLegacy`-Endpoint (Admin-only, entfernt `tagsLegacy`-Spalte aus allen Fragen-Tabs). Read-Pfade in `parseFrageKanonisch_`-Stellen (2×) liefern `tags: []` statt `tagsLegacy/tags`-Fallback. Write-Pfade (3×) schreiben nur noch `tagIds`, kein `tags`.
+- **Frontend Type:** `FrageBase.tagIds: string[]` required (vorher optional). `tags?:` jetzt optional (Backwards-Compat fuer pre-Phase-3-Daten).
+- **Frontend Fallback raus:** `frageTagNamen.tagNamenFromStore` ohne `frage.tags`-Fallback (returnt `[]` wenn tagIds leer). `PruefungFragenEditor.fragePrepared` ohne Legacy-Names-Bridge. `sucheAdapter.tagsAlsText` nur via tagIds.
+- **36 Files mit tagIds-Defaults:** Demo-Daten + Test-Mocks + Pool-Converter + fragenResolver + FragenImport bekamen `tagIds: []` oder Constructor-Default.
+
+**Cluster D Audit ergab:** ALLE Items aus Memory bereits in der Codebase (C1/C2/M-1/M-3/M-4/M-6/M-11/SP-1/SP-2/SP-3/SP-4) — Memory war stale, keine Edits nötig.
+
+**Apps-Script-Deploy ausstehend (DU):** Wieder ein Deploy noetig (apiCleanupTagsLegacy-Endpoint + Read/Write-Path-Aenderungen). **Schritt 2:** Du rufst `apiCleanupTagsLegacy` einmalig via Admin auf um die `tagsLegacy`-Spalte physisch zu entfernen (bisher nur frontend-side ignoriert).
+
+**Tests:** vitest 1871 + 4 todo (+ Reset-Timeout-Tests angepasst, sucheAdapter String-Tag-Test entfernt da Phase 3 obsolet).
+
+---
+
+## Vorheriger Stand (TODO-Sweep #1-#6 vom 17.05.2026 spaet)
+
+**HEAD main + preview:** `f379ae7` — TODO-Sweep #1-#6 KOMPLETT auf main + preview synchron (17.05.2026 SEHR SPÄT).
 
 **Apps-Script:** Deployed (DU 17.05.2026 nach Code-Push). URL unverändert.
 
