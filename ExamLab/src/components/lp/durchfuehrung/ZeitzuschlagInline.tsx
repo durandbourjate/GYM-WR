@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Timer } from 'lucide-react'
 
 interface Props {
   email: string
@@ -72,8 +73,8 @@ export function ZeitzuschlagInline({ email, zuschlagMin, basisEndeMs, jetzt, ist
     const sek = restSekunden % 60
     return (
       <div className="flex items-center gap-1">
-        <span className="text-xs font-mono text-amber-600 dark:text-amber-400" title={`+${zuschlagMin} Min. Zuschlag — Restzeit`}>
-          ⏱ {min}:{sek.toString().padStart(2, '0')}
+        <span className="text-xs font-mono text-amber-600 dark:text-amber-400 inline-flex items-center gap-1" title={`+${zuschlagMin} Min. Zuschlag — Restzeit`}>
+          <Timer className="w-3 h-3" aria-hidden="true" /> {min}:{sek.toString().padStart(2, '0')}
         </span>
         <button
           type="button"
@@ -91,10 +92,10 @@ export function ZeitzuschlagInline({ email, zuschlagMin, basisEndeMs, jetzt, ist
       <button
         type="button"
         onClick={() => setZeigEditor(true)}
-        className="text-xs px-2 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+        className="text-xs px-2 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors inline-flex items-center gap-1"
         title={`+${zuschlagMin} Min. Zeitzuschlag — klicken zum Bearbeiten`}
       >
-        ⏱ +{zuschlagMin}′
+        <Timer className="w-3 h-3" aria-hidden="true" /> +{zuschlagMin}′
       </button>
       <button
         type="button"

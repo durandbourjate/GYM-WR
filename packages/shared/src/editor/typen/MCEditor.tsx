@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import type { MCOption } from '../../types/fragen-core'
 import { Abschnitt } from '../components/EditorBausteine'
 import type { FeldStatus } from '../pflichtfeldValidation'
@@ -66,7 +67,7 @@ export default function MCEditor({ optionen, setOptionen, mehrfachauswahl, setMe
                 }`}
               title={opt.korrekt ? 'Korrekt (klicken zum Entfernen)' : 'Als korrekt markieren'}
             >
-              {opt.korrekt && <span className="text-xs">✓</span>}
+              {opt.korrekt && <Check className="w-3 h-3" aria-hidden="true" strokeWidth={3} />}
             </button>
 
             {/* Option-Label (a, b, c, ...) */}

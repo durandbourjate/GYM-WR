@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { X } from 'lucide-react'
 import type { BildbeschriftungLabel } from '../../types/fragen-core'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
@@ -213,10 +214,11 @@ export default function BildbeschriftungEditor({ bildUrl, setBildUrl, beschriftu
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); handleEntfernen(b.id) }}
-                      className="px-2 py-1 text-xs rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer"
+                      className="px-2 py-1 text-xs rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer inline-flex items-center"
                       title="Label entfernen (oder Delete/Backspace)"
+                      aria-label="Label entfernen"
                     >
-                      {'✕'}
+                      <X className="w-3 h-3" aria-hidden="true" />
                     </button>
                   </div>
                 </div>

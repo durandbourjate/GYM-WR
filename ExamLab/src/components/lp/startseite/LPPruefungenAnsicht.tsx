@@ -1,3 +1,4 @@
+import { ClipboardList } from 'lucide-react'
 import LPCardsSkeleton from '../skeletons/LPCardsSkeleton'
 import LPTrackerSkeleton from '../skeletons/LPTrackerSkeleton'
 import TrackerSection from '../TrackerSection'
@@ -90,7 +91,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
       {listenTab === 'pruefungen' && configsLadeStatus === 'fertig' && summativeConfigs.length === 0 && (
         <div className="text-center py-12">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
-            <span className="text-2xl">📝</span>
+            <ClipboardList className="w-7 h-7 text-slate-500 dark:text-slate-400" aria-hidden="true" />
           </div>
           <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
             Noch keine Prüfungen

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { ClipboardList, X } from 'lucide-react'
 import {
   DndContext,
   closestCenter,
@@ -113,9 +114,9 @@ export default function SortierungEditor({
           <button
             type="button"
             onClick={() => setBulkOffen(true)}
-            className="px-2 py-1 text-xs rounded border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer"
+            className="px-2 py-1 text-xs rounded border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer inline-flex items-center gap-1.5"
           >
-            📋 Bulk einfügen
+            <ClipboardList className="w-3.5 h-3.5" aria-hidden="true" /> Bulk einfügen
           </button>
         </div>
 
@@ -212,10 +213,10 @@ function SortableItem({ id, index, text, onChange, onLoeschen }: SortableItemPro
       <button
         type="button"
         onClick={onLoeschen}
-        className="px-2 py-1 text-xs rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer"
+        className="px-2 py-1 text-xs rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer inline-flex items-center"
         aria-label={`Element ${index + 1} entfernen`}
       >
-        ✕
+        <X className="w-3 h-3" aria-hidden="true" />
       </button>
     </div>
   )

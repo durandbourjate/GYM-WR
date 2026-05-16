@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
+import { AlertTriangle } from 'lucide-react'
 import type { DragDropBildZielzone, DragDropBildLabel } from '../../types/fragen-core'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
@@ -438,9 +439,10 @@ export default function DragDropBildEditor({ bildUrl, setBildUrl, zielzonen, set
             </div>
           </div>
           {anzahlAlt > 0 && (
-            <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-300">
-              ⚠ {anzahlAlt} Zielzone{anzahlAlt > 1 ? 'n' : ''} ha{anzahlAlt > 1 ? 'ben' : 't'} noch das alte Zonen-Format und wird/werden nicht angezeigt.
-              Öffne Einstellungen → Admin → Zonen-Migration.
+            <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-300 flex items-start gap-1.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+              <span>{anzahlAlt} Zielzone{anzahlAlt > 1 ? 'n' : ''} ha{anzahlAlt > 1 ? 'ben' : 't'} noch das alte Zonen-Format und wird/werden nicht angezeigt.
+              Öffne Einstellungen → Admin → Zonen-Migration.</span>
             </div>
           )}
         </>

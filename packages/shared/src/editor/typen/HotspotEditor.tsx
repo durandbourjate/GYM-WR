@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
+import { AlertTriangle } from 'lucide-react'
 import type { HotspotBereich } from '../../types/fragen-core'
 import BildMitGenerator from '../components/BildMitGenerator'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
@@ -351,9 +352,10 @@ export default function HotspotEditor({ bildUrl, setBildUrl, bereiche, setBereic
             </div>
           </div>
           {anzahlAlt > 0 && (
-            <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-300">
-              ⚠ {anzahlAlt} Bereich{anzahlAlt > 1 ? 'e' : ''} hat noch das alte Zonen-Format und wird nicht angezeigt.
-              Öffne Einstellungen → Admin → Zonen-Migration und führe die Migration für das betroffene Fach aus.
+            <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-300 flex items-start gap-1.5">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+              <span>{anzahlAlt} Bereich{anzahlAlt > 1 ? 'e' : ''} hat noch das alte Zonen-Format und wird nicht angezeigt.
+              Öffne Einstellungen → Admin → Zonen-Migration und führe die Migration für das betroffene Fach aus.</span>
             </div>
           )}
         </>
