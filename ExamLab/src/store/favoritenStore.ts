@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { iconStringToCanonicalKey } from '../components/ui/icons/NavIcon'
 
 /**
  * Erweitertes Favoriten-Modell: App-Orte (Routes) + Inhalte (Prüfungen/Übungen/Fragen)
@@ -9,7 +10,9 @@ export interface Favorit {
   typ: 'ort' | 'pruefung' | 'uebung' | 'frage' | 'einstellungen-tab' | 'hilfe-tab'
   ziel: string       // Route-Pfad ('/fragensammlung') oder Config-ID ('abc123')
   label: string      // Anzeigename
-  icon?: string      // Emoji optional
+  /** Lucide-Component-Name als String (canonical Form seit #4 17.05.2026).
+   *  Persist-Migration v1→v2 konvertiert alte Emoji-Strings einmalig. */
+  icon?: string
   sortierung: number // Drag & Drop Reihenfolge
 }
 
@@ -71,6 +74,21 @@ export const useFavoritenStore = create<FavoritenStore>()(
     }),
     {
       name: 'examlab-favoriten',
+      version: 2,
+      /** v1 → v2 (17.05.2026): icon-Strings von Emoji auf Lucide-Component-Name umstellen.
+       *  Defensiv: unbekannte Strings (z.B. User-Custom) bleiben unverändert — Render-Helper
+       *  in NavIcon.tsx kann beide Formen lesen. */
+      migrate: (persistedState: unknown, version: number) => {
+        const state = (persistedState ?? {}) as { favoriten?: Favorit[] }
+        if (version < 2 && Array.isArray(state.favoriten)) {
+          state.favoriten = state.favoriten.map((f) => {
+            if (!f.icon) return f
+            const key = iconStringToCanonicalKey(f.icon)
+            return key ? { ...f, icon: key } : f
+          })
+        }
+        return state as FavoritenStore
+      },
       // Migration: Alte AppOrt[] aus 'lp-favoriten' übernehmen
       onRehydrateStorage: () => (state) => {
         if (!state || state.favoriten.length > 0) return

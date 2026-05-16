@@ -233,12 +233,13 @@ function ConfigListe({ configs, linkPrefix, linkSuffix = '' }: {
 }
 
 function typIcon(typ: string): string {
+  // Liefert Lucide-Component-Name (canonical Form seit #4, 17.05.2026).
   switch (typ) {
-    case 'ort': return '📍'
-    case 'pruefung': return '📝'
-    case 'uebung': return '🎯'
-    case 'frage': return '❓'
-    default: return '📄'
+    case 'ort': return 'MapPin'
+    case 'pruefung': return 'ClipboardList'
+    case 'uebung': return 'Target'
+    case 'frage': return 'HelpCircle'
+    default: return 'FileText'
   }
 }
 

@@ -6,6 +6,56 @@ describe('favoritenStore', () => {
     useFavoritenStore.getState().reset()
   })
 
+  describe('persist-Migration v1 → v2', () => {
+    it('konvertiert Legacy-Emoji-Icons in canonical Lucide-Keys', async () => {
+      // Simuliere v1-State im LocalStorage (vor #4)
+      localStorage.setItem(
+        'examlab-favoriten',
+        JSON.stringify({
+          state: {
+            favoriten: [
+              { typ: 'ort', ziel: '/a', label: 'A', icon: '📝', sortierung: 0 },
+              { typ: 'ort', ziel: '/b', label: 'B', icon: '⭐', sortierung: 1 },
+              { typ: 'frage', ziel: 'x', label: 'X', icon: '❓', sortierung: 2 },
+            ],
+          },
+          version: 1,
+        }),
+      )
+      // Re-Initialisierung via rehydrate (Zustand-API)
+      await useFavoritenStore.persist.rehydrate()
+      const { favoriten } = useFavoritenStore.getState()
+      expect(favoriten.map((f) => f.icon)).toEqual(['ClipboardList', 'Star', 'HelpCircle'])
+      localStorage.removeItem('examlab-favoriten')
+    })
+
+    it('lässt unbekannte Icon-Strings (User-Custom) unverändert', async () => {
+      localStorage.setItem(
+        'examlab-favoriten',
+        JSON.stringify({
+          state: { favoriten: [{ typ: 'ort', ziel: '/a', label: 'A', icon: '🦄', sortierung: 0 }] },
+          version: 1,
+        }),
+      )
+      await useFavoritenStore.persist.rehydrate()
+      expect(useFavoritenStore.getState().favoriten[0].icon).toBe('🦄')
+      localStorage.removeItem('examlab-favoriten')
+    })
+
+    it('berührt v2-Stände nicht (idempotent)', async () => {
+      localStorage.setItem(
+        'examlab-favoriten',
+        JSON.stringify({
+          state: { favoriten: [{ typ: 'ort', ziel: '/a', label: 'A', icon: 'ClipboardList', sortierung: 0 }] },
+          version: 2,
+        }),
+      )
+      await useFavoritenStore.persist.rehydrate()
+      expect(useFavoritenStore.getState().favoriten[0].icon).toBe('ClipboardList')
+      localStorage.removeItem('examlab-favoriten')
+    })
+  })
+
   it('fügt einen Ort-Favoriten hinzu', () => {
     useFavoritenStore.getState().toggleFavorit({
       typ: 'ort',

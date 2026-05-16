@@ -1,14 +1,13 @@
 {
-  "comment": "Cluster G Phase 6 Baseline. Snapshot 2026-05-17 (strict-review). allowlist = complete-ignore. Behalten: didakt. Frage-Inhalt (einrichtungs*Fragen, demoKorrektur), Belohnungs-Sticker (gamification), Persist-Schema + NavIcon-Mapping (appNavigation/FavoritenTab/Favoriten/NavIcon — werden in NavIcon-Persist-Migration zusammen gemacht). Entfernt 17.05.2026: 5 Test-Files (Test-Assertions auf SVG-Selektor migriert, ✓/✗/✕/✨ aus it()/console.log) + ThemaDetailView (FilterSection-Prop emoji→icon Lucide). per_file_max = Snapshot existierender Emoji-Counts; CI failt bei Anstieg pro File über baseline.",
+  "comment": "Cluster G Phase 6 Baseline. Snapshot 2026-05-17 SPÄT (nach NavIcon-Persist-Migration #4). allowlist = complete-ignore. Behalten: didakt. Frage-Inhalt (einrichtungs*Fragen, demoKorrektur), Belohnungs-Sticker (gamification), NavIcon EMOJI_TO_KEY Legacy-Mapping (Konstante mit Emoji-Keys, by design). 17.05.2026: appNavigation.ts + FavoritenTab.tsx + Favoriten.tsx auf Lucide-Keys migriert (#4 NavIcon-Persist-Migration mit v1→v2 zustand-migrate). per_file_max = Snapshot existierender Emoji-Counts; CI failt bei Anstieg pro File über baseline.",
   "allowlist": [
     "ExamLab/src/data/einrichtungsFragen.ts",
     "ExamLab/src/data/einrichtungsUebungFragen.ts",
     "ExamLab/src/data/demoKorrektur.ts",
     "ExamLab/src/utils/ueben/gamification.ts",
-    "ExamLab/src/config/appNavigation.ts",
-    "ExamLab/src/components/settings/FavoritenTab.tsx",
-    "ExamLab/src/components/lp/Favoriten.tsx",
-    "ExamLab/src/components/ui/icons/NavIcon.tsx"
+    "ExamLab/src/components/ui/icons/NavIcon.tsx",
+    "ExamLab/src/components/ui/icons/NavIcon.test.tsx",
+    "ExamLab/src/store/favoritenStore.test.ts"
   ],
   "per_file_max": {}
 }
