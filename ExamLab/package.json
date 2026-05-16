@@ -14,11 +14,13 @@
     "lint:no-alert": "../scripts/audit-no-alert.sh --strict",
     "lint:no-tests-dir": "../scripts/audit-test-locations.sh --strict",
     "lint:wire-contract": "node ../scripts/audit-wire-contract.mjs --strict",
+    "lint:no-emoji": "node ../scripts/audit-no-emoji.mjs --strict",
+    "lint:no-inline-svg": "node ../scripts/audit-no-inline-svg.mjs --strict",
     "preview": "vite preview",
     "preview:lernen": "VITE_APP_MODE=lernen vite preview --outDir dist-lernen",
     "test": "vitest run",
     "test:watch": "vitest",
-    "ci-check": "npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir && npm run lint:musterloesung && npm run lint:wire-contract && npm test && npm run build"
+    "ci-check": "npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir && npm run lint:musterloesung && npm run lint:wire-contract && npm run lint:no-emoji && npm run lint:no-inline-svg && npm test && npm run build"
   },
   "dependencies": {
     "@codemirror/lang-css": "^6.3.1",
