@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CheckCircle2, AlertTriangle, Circle, Clock, Download, RotateCcw } from 'lucide-react'
 import type { PruefungsConfig } from '../../../types/pruefung'
 import type { SchuelerStatus } from '../../../types/monitoring'
 import type { Frage } from '../../../types/fragen-storage'
@@ -53,10 +54,10 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
                 <tr key={s.email}>
                   <td className="px-3 py-2 text-slate-700 dark:text-slate-200">{s.name || s.email}</td>
                   <td className="px-3 py-2 text-xs">
-                    {s.status === 'abgegeben' && <span className="text-green-600 dark:text-green-400">✅ Abgegeben</span>}
-                    {s.status === 'beendet-lp' && <span className="text-amber-600 dark:text-amber-400">⚠️ Erzwungen</span>}
-                    {s.status === 'nicht-gestartet' && <span className="text-slate-400">⚪ Nicht erschienen</span>}
-                    {s.status === 'aktiv' && <span className="text-blue-600 dark:text-blue-400">🔵 Noch aktiv</span>}
+                    {s.status === 'abgegeben' && <span className="text-green-600 dark:text-green-400 inline-flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5" /> Abgegeben</span>}
+                    {s.status === 'beendet-lp' && <span className="text-amber-600 dark:text-amber-400 inline-flex items-center gap-1"><AlertTriangle className="w-3.5 h-3.5" /> Erzwungen</span>}
+                    {s.status === 'nicht-gestartet' && <span className="text-slate-400 inline-flex items-center gap-1"><Circle className="w-3 h-3" /> Nicht erschienen</span>}
+                    {s.status === 'aktiv' && <span className="text-blue-600 dark:text-blue-400 inline-flex items-center gap-1"><Circle className="w-3 h-3 fill-blue-500 text-blue-500" /> Noch aktiv</span>}
                   </td>
                   <td className="px-3 py-2 text-xs text-slate-500 dark:text-slate-400">
                     {s.abgabezeit
@@ -65,8 +66,8 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
                   </td>
                   <td className="px-3 py-2 text-xs">
                     {(config.zeitverlaengerungen?.[s.email] ?? 0) > 0 ? (
-                      <span className="px-1.5 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold">
-                        ⏱ +{config.zeitverlaengerungen![s.email]}′
+                      <span className="px-1.5 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold inline-flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> +{config.zeitverlaengerungen![s.email]}′
                       </span>
                     ) : null}
                   </td>
@@ -93,9 +94,9 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
                 setBackupLaden(false)
               }
             }}
-            className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 cursor-pointer inline-flex items-center gap-2"
           >
-            {backupLaden ? 'Exportiert…' : '📥 Excel Export'}
+            {backupLaden ? 'Exportiert…' : (<><Download className="w-4 h-4" /> Excel Export</>)}
           </button>
         )}
 
@@ -106,9 +107,9 @@ export default function BeendetPhase({ config, schuelerStatus, fragen, abgaben, 
               <button
                 type="button"
                 onClick={() => setResetBestaetigung(true)}
-                className="px-4 py-2 text-sm bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 cursor-pointer"
+                className="px-4 py-2 text-sm bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 cursor-pointer inline-flex items-center gap-2"
               >
-                🔄 Neue Durchführung starten
+                <RotateCcw className="w-4 h-4" /> Neue Durchführung starten
               </button>
             ) : (
               <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">

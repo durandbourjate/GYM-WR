@@ -50,14 +50,16 @@ describe('verstossTooltip', () => {
 })
 
 describe('stufeIcon', () => {
-  it('liefert grünen Kreis für locker', () => {
-    expect(stufeIcon('locker')).toBe('🟢')
+  it('liefert Circle mit grünen Fill-Klassen für locker', () => {
+    const el = stufeIcon('locker')
+    expect(el.props.className).toContain('fill-green-500')
   })
-  it('liefert roten Kreis für streng', () => {
-    expect(stufeIcon('streng')).toBe('🔴')
+  it('liefert Circle mit roten Fill-Klassen für streng', () => {
+    const el = stufeIcon('streng')
+    expect(el.props.className).toContain('fill-red-500')
   })
-  it('liefert gelben Kreis als Default (z.B. standard, undefined)', () => {
-    expect(stufeIcon('standard')).toBe('🟡')
-    expect(stufeIcon(undefined)).toBe('🟡')
+  it('liefert Circle mit gelben Fill-Klassen als Default', () => {
+    expect(stufeIcon('standard').props.className).toContain('fill-yellow-500')
+    expect(stufeIcon(undefined).props.className).toContain('fill-yellow-500')
   })
 })

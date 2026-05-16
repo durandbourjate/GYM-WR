@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from 'react'
+import { Settings, Circle, Pencil, RotateCw, Clock, AlertTriangle, ArrowLeft, ChevronDown, Square } from 'lucide-react'
 import { TabBar } from '../../ui/TabBar'
 import DurchfuehrenVorbereitungSkeleton from '../skeletons/DurchfuehrenVorbereitungSkeleton'
 import DurchfuehrenSusReihenSkeleton from '../skeletons/DurchfuehrenSusReihenSkeleton'
@@ -27,11 +28,11 @@ import {
   type DurchfuehrenTab,
 } from '../../../hooks/useDurchfuehrenPhasenTab'
 
-const TAB_CONFIG: { key: DurchfuehrenTab; label: string; icon: string }[] = [
-  { key: 'vorbereitung', label: 'Vorbereitung', icon: '⚙️' },
-  { key: 'lobby', label: 'Lobby', icon: '🟡' },
-  { key: 'live', label: 'Live', icon: '🟢' },
-  { key: 'auswertung', label: 'Auswertung', icon: '✏️' },
+const TAB_CONFIG: { key: DurchfuehrenTab; label: string; tabIcon: React.ReactNode }[] = [
+  { key: 'vorbereitung', label: 'Vorbereitung', tabIcon: <Settings className="w-3.5 h-3.5" /> },
+  { key: 'lobby', label: 'Lobby', tabIcon: <Circle className="w-3 h-3 fill-yellow-500 text-yellow-500" /> },
+  { key: 'live', label: 'Live', tabIcon: <Circle className="w-3 h-3 fill-green-500 text-green-500" /> },
+  { key: 'auswertung', label: 'Auswertung', tabIcon: <Pencil className="w-3.5 h-3.5" /> },
 ]
 
 function formatDauer(ms: number): string {
@@ -143,7 +144,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
           </div>
           <p className="text-slate-700 dark:text-slate-300 mb-4">Daten konnten nicht geladen werden.</p>
           <div className="flex gap-2 justify-center flex-wrap">
-            <button onClick={zurueck} className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer">← Zurück</button>
+            <button onClick={zurueck} className="px-4 py-2 text-sm border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer inline-flex items-center gap-1.5"><ArrowLeft className="w-4 h-4" /> Zurück</button>
             <button onClick={ladeDaten} className="px-4 py-2 text-sm bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 rounded-lg hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors cursor-pointer">Erneut versuchen</button>
           </div>
         </div>
@@ -178,16 +179,17 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
             <button
               disabled={istLadenOderConfigFehlt}
               onClick={ladeDaten}
-              className={`px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 rounded-lg transition-colors ${
+              className={`px-2.5 py-1.5 text-xs border border-slate-300 dark:border-slate-600 rounded-lg transition-colors inline-flex items-center ${
                 istLadenOderConfigFehlt ? 'cursor-not-allowed opacity-50 text-slate-400 dark:text-slate-500'
                                         : 'cursor-pointer text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
+              aria-label="Neu laden"
             >
-              ↻
+              <RotateCw className="w-3.5 h-3.5" />
             </button>
             {/* Timer in aktiver Phase — bleibt unverändert */}
             {phase === 'aktiv' && dauer && (
-              <span className="text-sm font-mono text-slate-600 dark:text-slate-300">⏱ {dauer}</span>
+              <span className="text-sm font-mono text-slate-600 dark:text-slate-300 inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {dauer}</span>
             )}
             {phase === 'beendet' && config?.beendetUm && (
               <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -206,7 +208,7 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       {/* === Verbindungsfehler-Banner === */}
       {zeigeVerbindungsBanner && (
         <div className="bg-amber-50 dark:bg-amber-900/30 border-b border-amber-200 dark:border-amber-700 px-4 py-2 text-sm text-amber-700 dark:text-amber-300 flex items-center gap-2">
-          <span>⚠️</span>
+          <AlertTriangle className="w-4 h-4" />
           <span>Verbindung unterbrochen — wird automatisch erneut versucht...</span>
         </div>
       )}
@@ -215,15 +217,15 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto w-full px-4 py-2">
           <TabBar
-            tabs={TAB_CONFIG.map(({ key, label, icon }) => {
+            tabs={TAB_CONFIG.map(({ key, label, tabIcon }) => {
               const istAktuellePhase = phaseZuTab(phase) === key
               return {
                 id: key,
-                label: `${icon} ${label}`,
+                label,
                 disabled: istLadenOderConfigFehlt || !istTabVerfuegbar(key, phase),
                 icon: !istLadenOderConfigFehlt && istAktuellePhase && activeTab !== key
                   ? <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  : undefined,
+                  : tabIcon,
               }
             })}
             activeTab={activeTab}
@@ -344,12 +346,10 @@ export default function DurchfuehrenDashboard({ pruefungId }: { pruefungId: stri
                     className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200 flex items-center gap-2">
-                      <span>⏹</span>
+                      <Square className="w-3.5 h-3.5" />
                       <span>Ergebnis-Übersicht</span>
                     </span>
-                    <span className={`text-slate-400 dark:text-slate-500 transition-transform duration-200 ${ergebnisOffen ? 'rotate-180' : ''}`}>
-                      ▼
-                    </span>
+                    <ChevronDown className={`w-4 h-4 text-slate-400 dark:text-slate-500 transition-transform duration-200 ${ergebnisOffen ? 'rotate-180' : ''}`} />
                   </button>
                   {ergebnisOffen && (
                     <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700">

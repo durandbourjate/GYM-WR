@@ -1,3 +1,4 @@
+import { Circle, Clock, Smartphone, Laptop, AlertTriangle, X, ArrowLeft, Loader2, Check, Play } from 'lucide-react'
 import type { PruefungsConfig } from '../../../types/pruefung'
 import type { SchuelerStatus } from '../../../types/monitoring'
 
@@ -68,24 +69,24 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
         {/* Bereite SuS */}
         {bereite.map((s) => (
           <div key={s.email} className="flex items-center gap-2 px-3 py-2">
-            <span className="text-green-500">🟢</span>
+            <Circle className="w-3 h-3 fill-green-500 text-green-500" aria-label="bereit" />
             <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{s.name}</span>
             {/* Zeitzuschlag inline */}
             {(config.zeitverlaengerungen?.[s.email] ?? 0) > 0 && (
-              <span className="text-xs px-1.5 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold" title={`+${config.zeitverlaengerungen![s.email]} Min. Zeitzuschlag`}>
-                ⏱ +{config.zeitverlaengerungen![s.email]}′
+              <span className="text-xs px-1.5 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold inline-flex items-center gap-1" title={`+${config.zeitverlaengerungen![s.email]} Min. Zeitzuschlag`}>
+                <Clock className="w-3 h-3" /> +{config.zeitverlaengerungen![s.email]}′
               </span>
             )}
             {/* Gerät-Icon */}
-            <span title={s.geraet === 'tablet' ? 'Tablet' : s.geraet === 'laptop' ? 'Laptop' : 'Gerät unbekannt'}>
-              {s.geraet === 'tablet' ? '📱' : '💻'}
+            <span title={s.geraet === 'tablet' ? 'Tablet' : s.geraet === 'laptop' ? 'Laptop' : 'Gerät unbekannt'} className="text-slate-500 dark:text-slate-400">
+              {s.geraet === 'tablet' ? <Smartphone className="w-4 h-4" /> : <Laptop className="w-4 h-4" />}
             </span>
             {/* Kontrollstufe-Icon (nicht bei formativen Übungen) */}
             {config.typ !== 'formativ' && (
               <>
-                {s.kontrollStufe === 'locker' && <span title="Kontrollstufe: Locker">🟢</span>}
-                {s.kontrollStufe === 'standard' && <span title="Kontrollstufe: Standard">🟡</span>}
-                {s.kontrollStufe === 'streng' && <span title="Kontrollstufe: Streng">🔴</span>}
+                {s.kontrollStufe === 'locker' && <Circle className="w-3 h-3 fill-green-500 text-green-500" aria-label="Kontrollstufe: Locker" />}
+                {s.kontrollStufe === 'standard' && <Circle className="w-3 h-3 fill-yellow-500 text-yellow-500" aria-label="Kontrollstufe: Standard" />}
+                {s.kontrollStufe === 'streng' && <Circle className="w-3 h-3 fill-red-500 text-red-500" aria-label="Kontrollstufe: Streng" />}
               </>
             )}
             {/* SEB-Badge (nicht bei formativen Übungen) */}
@@ -99,9 +100,10 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
             <button
               type="button"
               onClick={() => onEntfernen(s.email)}
-              className="text-xs px-1.5 py-0.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded cursor-pointer"
+              className="text-xs px-1.5 py-0.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded cursor-pointer inline-flex items-center"
+              aria-label="Entfernen"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         ))}
@@ -109,11 +111,11 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
         {/* Ausstehende SuS */}
         {ausstehende.map((t) => (
           <div key={t.email} className="flex items-center gap-3 px-3 py-2 opacity-60">
-            <span>⚪</span>
+            <Circle className="w-3 h-3 text-slate-400" aria-label="ausstehend" />
             <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{t.name}, {t.vorname}</span>
             {(config.zeitverlaengerungen?.[t.email] ?? 0) > 0 && (
-              <span className="text-xs px-1.5 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold" title={`+${config.zeitverlaengerungen![t.email]} Min. Zeitzuschlag`}>
-                ⏱ +{config.zeitverlaengerungen![t.email]}′
+              <span className="text-xs px-1.5 py-0.5 bg-blue-600 dark:bg-blue-700 text-white rounded font-bold inline-flex items-center gap-1" title={`+${config.zeitverlaengerungen![t.email]} Min. Zeitzuschlag`}>
+                <Clock className="w-3 h-3" /> +{config.zeitverlaengerungen![t.email]}′
               </span>
             )}
             <span className="text-xs text-slate-500 dark:text-slate-400">{t.klasse}</span>
@@ -121,9 +123,10 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
             <button
               type="button"
               onClick={() => onEntfernen(t.email)}
-              className="text-xs px-1.5 py-0.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded cursor-pointer"
+              className="text-xs px-1.5 py-0.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded cursor-pointer inline-flex items-center"
+              aria-label="Entfernen"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         ))}
@@ -131,7 +134,7 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
         {/* Unerwartete SuS */}
         {unerwartete.map((s) => (
           <div key={s.email} className="flex items-center gap-3 px-3 py-2 bg-amber-50 dark:bg-amber-900/10">
-            <span>⚠️</span>
+            <AlertTriangle className="w-4 h-4 text-amber-500" aria-label="unerwartet" />
             <span className="flex-1 text-sm text-amber-800 dark:text-amber-200">{s.name || s.email}</span>
             <span className="text-xs text-amber-600 dark:text-amber-400">unerwartet</span>
             <button
@@ -157,22 +160,28 @@ export default function LobbyPhase({ config, schuelerStatus, onFreischalten, onZ
         <button
           type="button"
           onClick={onZurueck}
-          className="px-4 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
+          className="px-4 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer inline-flex items-center gap-2"
         >
-          ← Zurück zur Vorbereitung
+          <ArrowLeft className="w-4 h-4" /> Zurück zur Vorbereitung
         </button>
 
         <button
           type="button"
           onClick={onFreischalten}
           disabled={freischaltenLaedt || config.freigeschaltet}
-          className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
+          className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors inline-flex items-center gap-2 ${
             freischaltenLaedt || config.freigeschaltet
               ? 'bg-slate-300 dark:bg-slate-600 text-slate-500 dark:text-slate-400 cursor-not-allowed'
               : 'bg-green-600 text-white hover:bg-green-700 cursor-pointer'
           }`}
         >
-          {freischaltenLaedt ? '⏳ Wird freigeschaltet...' : config.freigeschaltet ? '✓ Freigeschaltet' : '▶ Freischalten'}
+          {freischaltenLaedt ? (
+            <><Loader2 className="w-4 h-4 animate-spin" /> Wird freigeschaltet...</>
+          ) : config.freigeschaltet ? (
+            <><Check className="w-4 h-4" /> Freigeschaltet</>
+          ) : (
+            <><Play className="w-4 h-4" /> Freischalten</>
+          )}
         </button>
       </div>
 

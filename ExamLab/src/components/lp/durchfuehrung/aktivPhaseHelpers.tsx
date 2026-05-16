@@ -1,3 +1,4 @@
+import { Circle } from 'lucide-react'
 import type { SchuelerStatus } from '../../../types/monitoring'
 
 type Sortierung = 'name' | 'klasse' | 'fortschritt' | 'status'
@@ -32,8 +33,13 @@ export function verstossTooltip(s: SchuelerStatus): string {
   ).join('\n')
 }
 
-export function stufeIcon(stufe?: string): string {
-  return stufe === 'locker' ? '🟢' : stufe === 'streng' ? '🔴' : '🟡'
+export function stufeIcon(stufe?: string): React.JSX.Element {
+  const cls = stufe === 'locker'
+    ? 'fill-green-500 text-green-500'
+    : stufe === 'streng'
+      ? 'fill-red-500 text-red-500'
+      : 'fill-yellow-500 text-yellow-500'
+  return <Circle className={`w-3 h-3 inline-block ${cls}`} aria-label={`Kontrollstufe ${stufe ?? 'standard'}`} />
 }
 
 export function statusBadge(status: SchuelerStatus['status']): React.JSX.Element {

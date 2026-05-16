@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { Clock, Circle, Smartphone, Laptop, Lock, AlertTriangle, X, Check } from 'lucide-react'
 import type { SchuelerStatus } from '../../../types/monitoring'
 import type { PruefungsConfig } from '../../../types/pruefung'
 import { inaktivitaetsStufe } from '../../../utils/phase'
@@ -182,7 +183,7 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
               <th className="px-3 py-2">Gerät</th>
               <th className="px-3 py-2">Frage</th>
               <th className="px-3 py-2">Fortschritt</th>
-              <th className="px-2 py-2" title="Zeitzuschlag (Nachteilsausgleich)">⏱ Zeit+</th>
+              <th className="px-2 py-2" title="Zeitzuschlag (Nachteilsausgleich)"><span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" /> Zeit+</span></th>
               {config.sebErforderlich && <th className="px-3 py-2">SEB</th>}
               <th className="px-2 py-2 w-10"></th>
             </tr>
@@ -208,8 +209,8 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                     {s.name || s.email}
                     {s.klasse && <span className="ml-1 text-xs text-slate-400">({s.klasse})</span>}
                     {stufe && (
-                      <span className="ml-1 text-xs" title={`Inaktiv seit >${{ gelb: '1', orange: '3', rot: '5' }[stufe]} Min.`}>
-                        {{ gelb: '\uD83D\uDFE1', orange: '\uD83D\uDFE0', rot: '\uD83D\uDD34' }[stufe]}
+                      <span className="ml-1 inline-flex items-center" title={`Inaktiv seit >${{ gelb: '1', orange: '3', rot: '5' }[stufe]} Min.`}>
+                        <Circle className={`w-3 h-3 ${{ gelb: 'fill-yellow-500 text-yellow-500', orange: 'fill-orange-500 text-orange-500', rot: 'fill-red-500 text-red-500' }[stufe]}`} />
                       </span>
                     )}
                   </td>
@@ -220,8 +221,8 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                   <td className="px-3 py-2">
                     {s.gesperrt ? (
                       <div className="flex items-center gap-2">
-                        <span className="text-red-600 font-bold cursor-help text-xs" title={verstossTooltip(s)}>
-                          🔒 {s.verstossZaehler ?? 0}/{maxVerstoesse}
+                        <span className="text-red-600 font-bold cursor-help text-xs inline-flex items-center gap-1" title={verstossTooltip(s)}>
+                          <Lock className="w-3.5 h-3.5" /> {s.verstossZaehler ?? 0}/{maxVerstoesse}
                         </span>
                         <button
                           type="button"
@@ -234,10 +235,10 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                       </div>
                     ) : (s.verstossZaehler ?? 0) > 0 ? (
                       <span
-                        className={`font-semibold cursor-help text-xs ${(s.verstossZaehler ?? 0) >= 2 ? 'text-red-600' : 'text-amber-600'}`}
+                        className={`font-semibold cursor-help text-xs inline-flex items-center gap-1 ${(s.verstossZaehler ?? 0) >= 2 ? 'text-red-600' : 'text-amber-600'}`}
                         title={verstossTooltip(s)}
                       >
-                        ⚠️ {s.verstossZaehler}/{maxVerstoesse}
+                        <AlertTriangle className="w-3.5 h-3.5" /> {s.verstossZaehler}/{maxVerstoesse}
                       </span>
                     ) : (
                       <span className="text-slate-400 text-xs">—</span>
@@ -260,8 +261,8 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                     })()}
                   </td>
                   {/* Gerät */}
-                  <td className="px-3 py-2 text-sm">
-                    {s.geraet === 'tablet' ? '📱' : s.geraet === 'laptop' ? '💻' : '—'}
+                  <td className="px-3 py-2 text-sm text-slate-600 dark:text-slate-300">
+                    {s.geraet === 'tablet' ? <Smartphone className="w-4 h-4 inline-block" aria-label="Tablet" /> : s.geraet === 'laptop' ? <Laptop className="w-4 h-4 inline-block" aria-label="Laptop" /> : '—'}
                   </td>
                   <td className="px-3 py-2 text-slate-600 dark:text-slate-300">
                     {s.aktuelleFrage !== null && s.aktuelleFrage !== undefined
@@ -318,9 +319,10 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
                           e.stopPropagation()
                           setEinzelBeendenSuS({ email: s.email, name: s.name || s.email })
                         }}
-                        className="w-6 h-6 flex items-center justify-center text-xs text-red-400 hover:text-white hover:bg-red-500 rounded cursor-pointer transition-colors"
+                        className="w-6 h-6 flex items-center justify-center text-red-400 hover:text-white hover:bg-red-500 rounded cursor-pointer transition-colors"
+                        aria-label="SuS beenden"
                       >
-                        ✕
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     )}
                   </td>
@@ -339,8 +341,8 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
       {/* Beenden-Button (U8: grau wenn bereits beendet) */}
       <div className="flex justify-center pt-2 border-t border-slate-200 dark:border-slate-700">
         {config.beendetUm ? (
-          <span className="px-6 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-lg font-medium">
-            Prüfung beendet ✓
+          <span className="px-6 py-2 text-sm bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-lg font-medium inline-flex items-center gap-2">
+            Prüfung beendet <Check className="w-4 h-4" />
           </span>
         ) : (
           <button
