@@ -8,7 +8,13 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `6c30abf` — NavIcon-Persist-Migration #4 LIVE auf main + preview synchron (17.05.2026 SEHR SPÄT).
+**HEAD main + preview:** `e73d921` — letzterSeedAm-Persistenz #5 LIVE auf main + preview synchron (17.05.2026 SEHR SPÄT).
+
+**⚠️ Apps-Script-Deploy ausstehend (DU):** `ExamLab/apps-script-code.js` enthält neue Funktionen für #5 (apiTestdatenLetzterSeed-Endpoint + ScriptProperties-Helpers). Im Apps-Script-Editor:
+1. `apps-script-code.js`-Inhalt komplett kopieren und im Editor einfügen
+2. „Bereitstellung verwalten" → ⚙️ → „Neue Version" → „Bereitstellen"
+3. URL bleibt gleich (gleiche Bereitstellung, nur neue Version)
+4. Nach Deploy: Im TestdatenTab (Admin-Login) „Testdaten zurücksetzen" → Status sollte „(zuletzt: 17.05.2026 …)" anzeigen.
 
 **Bei Wiedereinstieg:**
 ```bash
@@ -26,7 +32,7 @@ git log --oneline -10                  # letzte commits anschauen
 - ✅ **#2 Legacy-Tag-Typ Cleanup** (HEAD `66c814c`): `types/tags.ts` gelöscht. Migration auf `@shared/types/tag` war NICHT möglich (strukturell inkompatibel: Hex vs Token, plus `ebene`-Hierarchie). Stattdessen Typ-Definition an Konsum-Orten: `LegacyTag` in `fragen-storage.ts`, `FachbereichTag` in `fachUtils.ts`, inline `{name}` in `frageTagNamen.ts`.
 - ✅ **#3 Filter-Dropdown FragenBrowserHeader** (HEAD `0f179e7`): Custom `Dropdown<TValue>`-Komponente (~200 Z. + 13 Tests). 4 native `<select>` ersetzt: Fachbereich (Farbpunkt-Prefix), Fragetyp (FragetypIcon), Bloom (Layers-Icon), Status (CircleDot/CheckCircle2/ShieldCheck/Sparkles). Tastatur-Navigation + Click-outside + Aria-Roles. Thema/Unterthema/Gruppieren/Sortieren bleiben native. vitest 1852 (+13). preview synchron mit main. **E2E mit Dir auf Staging ausstehend** — Tab-Gruppe öffnen, Dropdown-Filter mit Icons sichtbar, Filter-Anwendung verifizieren, Tastatur-Navigation testen.
 - ✅ **#4 NavIcon-Persist-Migration** (HEAD `6c30abf`): favoritenStore `version: 2` + `migrate()`. Canonical-Form = Lucide-Component-Name als String (z.B. 'ClipboardList'). Legacy-Emoji bleibt im NavIcon-Runtime-Fallback (defensiv). appNavigation.ts + typIcon-Helpers in FavoritenTab/Favoriten auf Lucide-Keys umgestellt. 3 Files aus Allowlist raus, 2 neue Test-Files rein (Test-Fixtures mit Emoji für Backward-Compat-Tests). vitest 1870 (+18). 16 neue NavIcon-Tests + 3 Migration-Tests. preview synchron mit main. **E2E mit Dir ausstehend** — Login, Favoriten setzen, Reload, Icons rendern korrekt.
-- ⏳ **#5 `letzterSeedAm`-Persistenz** Apps-Script Configs-Sheet (F.3 Spec §5.2 A) — braucht Deploy
+- ✅ **#5 `letzterSeedAm`-Persistenz** (HEAD `e73d921`): ScriptProperties statt Configs-Sheet (Apps-Script-Latenz-Limit + atomic). Apps-Script-Helpers `setLetzterSeedAm_/getLetzterSeedAm_` + Endpoint `apiTestdatenLetzterSeed_`. Frontend `useTestdatenStatus` mit parallel-Fetch + Backend-Fehler-Fallback auf leeren String. TestdatenTab zeigt „(zuletzt: 17.05.2026 21:23)" als de-CH-Locale-Datum. vitest 1872 (+2). **Apps-Script-Deploy ausstehend (DU)** — siehe Deploy-Anleitung oben.
 - ⏳ **#6 Apps-Script Perf** `updateFrageMitPatch_` ID→{tab,row,headers}-Map + setValues-Batch (I-3/M-1) — braucht Deploy
 
 Cluster H Phase 3 Cleanup bleibt blockiert bis ~29.05.2026 (2-Wochen-Live-Beobachtung).
