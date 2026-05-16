@@ -1289,6 +1289,14 @@ export default function SharedFragenEditor({
                     tagIds={tagIds}
                     setTagIds={setTagIds}
                     modus={tagsModus}
+                    // Cluster D Cleanup M-1 (16.05.2026): Defense-in-Depth.
+                    // `setTagIdsDirty(true)` im Modus-Setter ist heute nicht load-bearing,
+                    // weil `berechnePatch` (batchDiff.ts Z.52) bei `tagIds.length === 0`
+                    // sowieso kein Tag-Feld erzeugt — der reine Modus-Wechsel ohne
+                    // ID-Änderung produziert also ohnehin keinen Patch-Eintrag.
+                    // Aber falls jemand den length-Check entfernt, fängt dieser Flag-Set
+                    // den Edge-Case auf, dass User „ich will alle bestehenden Tags
+                    // ersetzen mit Leerliste" tatsächlich als bewusste Aktion meint.
                     setModus={(m) => { setTagsModus(m); setTagIdsDirty(true) }}
                     tagPickerSlot={tagPickerSlot}
                   />
