@@ -72,10 +72,11 @@ export async function postJson<T>(
     const text = await response.text()
     try {
       const data = JSON.parse(text)
-      if (data.error) {
-        console.error(`[API] ${action}:`, data.error)
-        return null
-      }
+      // I-1 (Cluster D Spawn-Task, 16.05.2026): Bei Backend-Error das Response-Objekt
+      // an Caller durchreichen, NICHT null. Sonst verschluckt das unwrap-Pattern
+      // (draftApi/tagsApi/maintenanceApi/fragenBulkApi) den Error-Text und wirft
+      // "keine Antwort vom Server" statt des echten Backend-Error.
+      if (data.error) console.error(`[API] ${action}:`, data.error)
       return data as T
     } catch {
       console.error(`[API] ${action}: Antwort ist kein JSON`)
@@ -175,10 +176,8 @@ export async function getJson<T>(
     const text = await response.text()
     try {
       const data = JSON.parse(text)
-      if (data.error) {
-        console.error(`[API] ${action}:`, data.error)
-        return null
-      }
+      // I-1 (Cluster D Spawn-Task): siehe postJson — Backend-Error-Response durchreichen.
+      if (data.error) console.error(`[API] ${action}:`, data.error)
       return data as T
     } catch {
       console.error(`[API] ${action}: Antwort ist kein JSON`)

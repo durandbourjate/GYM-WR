@@ -140,4 +140,31 @@ describe('apiClient — Session-Token Regression', () => {
       expect(url).not.toContain('sessionToken')
     })
   })
+
+  // Cluster D Spawn-Task I-1 (16.05.2026): postJson/getJson sollen Backend-Error-Response
+  // an Caller durchreichen, NICHT null. Sonst verschluckt das unwrap-Pattern den Error-Text.
+  describe('I-1: Backend-Error-Response wird durchgereicht (nicht null)', () => {
+    it('postJson returnt Response mit error-Feld statt null', async () => {
+      fetchMock.mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({ success: false, error: 'Frage existiert nicht' })),
+      })
+      const { postJson } = await import('../../services/apiClient.ts')
+      const result = await postJson<{ success: boolean; error?: string }>('test', {})
+      expect(result).not.toBeNull()
+      expect(result?.success).toBe(false)
+      expect(result?.error).toBe('Frage existiert nicht')
+    })
+
+    it('getJson returnt Response mit error-Feld statt null', async () => {
+      fetchMock.mockResolvedValue({
+        ok: true,
+        text: () => Promise.resolve(JSON.stringify({ success: false, error: 'Permission denied' })),
+      })
+      const { getJson } = await import('../../services/apiClient.ts')
+      const result = await getJson<{ success: boolean; error?: string }>('test', {})
+      expect(result).not.toBeNull()
+      expect(result?.error).toBe('Permission denied')
+    })
+  })
 })
