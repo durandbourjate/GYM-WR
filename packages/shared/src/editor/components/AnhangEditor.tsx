@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback } from 'react'
+import { Image as ImageIcon, Music, Video, FileText, Mic } from 'lucide-react'
 import type { FrageAnhang } from '../../types/fragen-core'
 import { Abschnitt } from './EditorBausteine'
 import { maxGroesseFuerMimeType, formatGroesse, AKZEPTIERTE_MIME_TYPES, parseVideoUrl, istBild, istAudio, istVideo, istEmbed } from '../utils/mediaUtils'
@@ -20,11 +21,11 @@ export interface AnhangEditorProps {
 }
 
 /** Icon für Medientyp */
-function medienIcon(mimeType: string): string {
-  if (istBild(mimeType)) return '🖼️'
-  if (istAudio(mimeType)) return '🎵'
-  if (istVideo(mimeType) || istEmbed(mimeType)) return '🎬'
-  return '📄'
+function MedienIcon({ mimeType }: { mimeType: string }) {
+  if (istBild(mimeType)) return <ImageIcon className="w-5 h-5 text-slate-500 dark:text-slate-400" aria-hidden="true" />
+  if (istAudio(mimeType)) return <Music className="w-5 h-5 text-slate-500 dark:text-slate-400" aria-hidden="true" />
+  if (istVideo(mimeType) || istEmbed(mimeType)) return <Video className="w-5 h-5 text-slate-500 dark:text-slate-400" aria-hidden="true" />
+  return <FileText className="w-5 h-5 text-slate-500 dark:text-slate-400" aria-hidden="true" />
 }
 
 export default function AnhangEditor({
@@ -134,9 +135,9 @@ export default function AnhangEditor({
               type="button"
               onClick={() => setZeigAufnahme(!zeigAufnahme)}
               disabled={gesamtAnzahl >= MAX_ANHAENGE}
-              className="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-sm bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
             >
-              🎤 Aufnehmen
+              <Mic className="w-4 h-4" aria-hidden="true" /> Aufnehmen
             </button>
           )}
         </div>
@@ -227,7 +228,7 @@ export default function AnhangEditor({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-lg">{medienIcon(a.mimeType)}</span>
+                  <MedienIcon mimeType={a.mimeType} />
                 )}
               </div>
               {/* Info */}
@@ -257,7 +258,7 @@ export default function AnhangEditor({
             >
               {/* Icon */}
               <div className="w-10 h-10 shrink-0 rounded bg-slate-200 dark:bg-slate-600 flex items-center justify-center">
-                <span className="text-lg">{medienIcon(datei.type)}</span>
+                <MedienIcon mimeType={datei.type} />
               </div>
               {/* Info + Badge */}
               <div className="flex-1 min-w-0">

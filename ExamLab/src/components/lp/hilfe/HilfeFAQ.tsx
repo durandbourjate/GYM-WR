@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { Flag, Check, AlertTriangle } from 'lucide-react'
 import { Titel } from './layoutHelpers'
 
 export default function HilfeFAQ() {
@@ -43,7 +44,7 @@ export default function HilfeFAQ() {
       </FAQItem>
 
       <FAQItem frage="Was sind Lernziele und woher kommen sie?">
-        Lernziele stammen aus den Übungspools (316 importierte Lernziele). Sie werden pro Fach, Thema und Unterthema gruppiert. SuS sehen sie über den 🏁-Button im Header oder auf den Themen-Karten. Die Lernziele helfen bei der Orientierung und zeigen den Mastery-Fortschritt. Im Fragen-Editor (Metadaten-Rubrik) können Fragen einzelnen Lernzielen zugeordnet werden.
+        Lernziele stammen aus den Übungspools (316 importierte Lernziele). Sie werden pro Fach, Thema und Unterthema gruppiert. SuS sehen sie über den <Flag className="inline w-3.5 h-3.5 align-text-bottom text-slate-500" aria-label="Lernziele" />-Button im Header oder auf den Themen-Karten. Die Lernziele helfen bei der Orientierung und zeigen den Mastery-Fortschritt. Im Fragen-Editor (Metadaten-Rubrik) können Fragen einzelnen Lernzielen zugeordnet werden.
       </FAQItem>
 
       <FAQItem frage="Wie funktioniert der Demo-Modus?">
@@ -79,7 +80,7 @@ export default function HilfeFAQ() {
       </FAQItem>
 
       <FAQItem frage="Was sind die Pool-Badges in der Fragensammlung?">
-        Pool-Badges zeigen den Sync-Status von importierten Übungspool-Fragen: Rot = ungeprüft (aus Pool importiert, noch nicht reviewt), Gelb = Pool ✓ (reviewt), Grün = prüfungstauglich (von LP abgesegnet für Prüfungen), Blau pulsierend = Update verfügbar.
+        Pool-Badges zeigen den Sync-Status von importierten Übungspool-Fragen: Rot = ungeprüft (aus Pool importiert, noch nicht reviewt), Gelb = Pool <Check className="inline w-3.5 h-3.5 align-text-bottom text-yellow-600" aria-label="reviewt" /> (reviewt), Grün = prüfungstauglich (von LP abgesegnet für Prüfungen), Blau pulsierend = Update verfügbar.
       </FAQItem>
 
       <FAQItem frage="Kann ich mathematische Formeln in Fragetexten verwenden?">
@@ -107,11 +108,11 @@ export default function HilfeFAQ() {
       </FAQItem>
 
       <FAQItem frage="Wie kann ich ein Problem oder einen Wunsch melden?">
-        Über das ⚠️-Icon im Header oder den &laquo;Problem melden&raquo;-Link unter jeder Frage (in der Korrektur-Ansicht). Wählen Sie den Typ (Problem/Wunsch), eine Kategorie und optional einen Kommentar. Das Feedback wird direkt im Google Sheet erfasst.
+        Über das <AlertTriangle className="inline w-3.5 h-3.5 align-text-bottom text-yellow-500" aria-label="Warnung" />-Icon im Header oder den &laquo;Problem melden&raquo;-Link unter jeder Frage (in der Korrektur-Ansicht). Wählen Sie den Typ (Problem/Wunsch), eine Kategorie und optional einen Kommentar. Das Feedback wird direkt im Google Sheet erfasst.
       </FAQItem>
 
       <FAQItem frage="Können SuS Feedback geben?">
-        Ja, aber erst nach Freigabe der Korrektur-Einsicht. SuS sehen dann ein ⚠️-Icon im Header und können pro Frage Feedback geben — z.B. wenn eine Bewertung unklar ist oder ein technisches Problem aufgetreten ist.
+        Ja, aber erst nach Freigabe der Korrektur-Einsicht. SuS sehen dann ein <AlertTriangle className="inline w-3.5 h-3.5 align-text-bottom text-yellow-500" aria-label="Warnung" />-Icon im Header und können pro Frage Feedback geben — z.B. wenn eine Bewertung unklar ist oder ein technisches Problem aufgetreten ist.
       </FAQItem>
     </div>
   )

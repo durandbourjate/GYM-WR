@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { Settings, Sun, Moon, HelpCircle, AlertTriangle, LogOut } from 'lucide-react'
 import type { Rolle } from './types'
 
 interface Props {
@@ -65,22 +66,24 @@ export function OptionenMenu({ rolle, benutzerName, theme, onThemeToggle, onHilf
           <div className="h-px bg-slate-200 dark:bg-slate-700 my-1" role="separator" />
           {rolle === 'lp' && onEinstellungen && (
             <button role="menuitem" type="button" onClick={() => { onEinstellungen(); setOffen(false) }} className={itemClass()}>
-              <span className="w-4 text-center">⚙</span>Einstellungen
+              <Settings className="w-4 h-4 shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true" />Einstellungen
             </button>
           )}
           <button role="menuitem" type="button" onClick={() => { onThemeToggle() }} className={itemClass()}>
-            <span className="w-4 text-center">{theme === 'dark' ? '☀' : '🌙'}</span>
+            {theme === 'dark'
+              ? <Sun className="w-4 h-4 shrink-0 text-yellow-500" aria-hidden="true" />
+              : <Moon className="w-4 h-4 shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true" />}
             {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
           </button>
           <button role="menuitem" type="button" onClick={() => { onHilfe(); setOffen(false) }} className={itemClass()}>
-            <span className="w-4 text-center">?</span>{hilfeLabel}
+            <HelpCircle className="w-4 h-4 shrink-0 text-slate-500 dark:text-slate-400" aria-hidden="true" />{hilfeLabel}
           </button>
           <button role="menuitem" type="button" onClick={() => { onFeedback(); setOffen(false) }} className={itemClass()}>
-            <span className="w-4 text-center">⚠</span>{feedbackLabel}
+            <AlertTriangle className="w-4 h-4 shrink-0 text-yellow-500" aria-hidden="true" />{feedbackLabel}
           </button>
           <div className="h-px bg-slate-200 dark:bg-slate-700 my-1" role="separator" />
           <button role="menuitem" type="button" onClick={() => { onAbmelden(); setOffen(false) }} className={itemClass(true)}>
-            <span className="w-4 text-center">⎋</span>Abmelden
+            <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" />Abmelden
           </button>
         </div>
       )}

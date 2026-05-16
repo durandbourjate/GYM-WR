@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Loader2, Check, X } from 'lucide-react'
 import { useStammdatenStore } from '../../../store/stammdatenStore'
 import { useToastStore } from '../../../store/toastStore'
 import { useTestdatenStatus } from '../../../hooks/useTestdatenStatus'
@@ -59,12 +60,12 @@ export default function TestdatenTab({ email }: Props) {
       <section>
         <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Status</h4>
         {ladestand === 'pruefe' ? (
-          <p className="text-sm text-slate-500 dark:text-slate-400">⏳ Prüfe…</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> Prüfe…</p>
         ) : initialisiert ? (
-          <p className="text-sm text-emerald-700 dark:text-emerald-300">✓ Initialisiert</p>
+          <p className="text-sm text-emerald-700 dark:text-emerald-300 inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5" aria-hidden="true" /> Initialisiert</p>
         ) : (
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            ✗ Noch nicht erzeugt{!admin && ' — bitte Admin kontaktieren.'}
+          <p className="text-sm text-slate-600 dark:text-slate-400 inline-flex items-center gap-1.5">
+            <X className="w-3.5 h-3.5" aria-hidden="true" /> Noch nicht erzeugt{!admin && ' — bitte Admin kontaktieren.'}
           </p>
         )}
       </section>

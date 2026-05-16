@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ClipboardList, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
 import { type GespeichertesErgebnis } from '../../utils/ueben/historie'
 
@@ -17,7 +18,7 @@ export default function UebungsEinsicht() {
   if (historie.length === 0) {
     return (
       <div className="text-center py-12 text-slate-500 dark:text-slate-400">
-        <p className="text-3xl mb-3">📋</p>
+        <ClipboardList className="w-8 h-8 mx-auto mb-3 text-slate-400 dark:text-slate-500" aria-hidden="true" />
         <p className="font-medium dark:text-white">Noch keine abgeschlossenen Übungen</p>
         <p className="text-sm mt-1">Abgeschlossene Übungen erscheinen hier automatisch.</p>
       </div>
@@ -116,13 +117,17 @@ function SessionDetail({ ergebnis, onZurueck }: { ergebnis: GespeichertesErgebni
               : 'border-red-200 dark:border-red-800 bg-red-50/50 dark:bg-red-900/10'
           }`}>
             <div className="flex items-start gap-2">
-              <span className="mt-0.5 text-sm shrink-0">{d.korrekt ? '✅' : '❌'}</span>
+              <span className="mt-0.5 shrink-0" aria-hidden="true">
+                {d.korrekt
+                  ? <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  : <XCircle className="w-4 h-4 text-red-500" />}
+              </span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm dark:text-white">
                   <span className="text-slate-400 mr-1">{i + 1}.</span>
                   {d.frage}
                 </p>
-                {d.unsicher && <span className="text-xs text-amber-500 mt-1 inline-block">⚠ Als unsicher markiert</span>}
+                {d.unsicher && <span className="text-xs text-amber-500 mt-1 inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3" aria-hidden="true" /> Als unsicher markiert</span>}
                 {!d.korrekt && d.erklaerung && (
                   <div className="mt-2 text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 rounded-lg p-2 border border-slate-200 dark:border-slate-700">
                     <span className="font-medium">Musterlösung: </span>{d.erklaerung}

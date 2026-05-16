@@ -1,3 +1,4 @@
+import { Clock, AlertTriangle, Lock, X } from 'lucide-react'
 import { Titel, Untertitel, Text, Schritt } from './layoutHelpers'
 
 export default function HilfeDurchfuehrung() {
@@ -18,7 +19,7 @@ export default function HilfeDurchfuehrung() {
 
       <Untertitel>Phase 2: Lobby</Untertitel>
       <Text>
-        Hier sehen Sie, welche SuS bereit sind (eingeloggt und wartend). Ein Fortschrittsbalken zeigt bereit/ausstehend an. Unerwartete SuS (nicht auf der Teilnehmerliste) werden separat angezeigt. Gerät, Kontrollstufe und SEB-Status sind pro SuS sichtbar. Zeitzuschläge werden inline pro SuS als ⏱-Badge angezeigt und können über den Nachteilsausgleich-Bereich angepasst werden.
+        Hier sehen Sie, welche SuS bereit sind (eingeloggt und wartend). Ein Fortschrittsbalken zeigt bereit/ausstehend an. Unerwartete SuS (nicht auf der Teilnehmerliste) werden separat angezeigt. Gerät, Kontrollstufe und SEB-Status sind pro SuS sichtbar. Zeitzuschläge werden inline pro SuS als <Clock className="inline w-3.5 h-3.5 align-text-bottom text-slate-500" aria-label="Uhr" />-Badge angezeigt und können über den Nachteilsausgleich-Bereich angepasst werden.
       </Text>
 
       <Untertitel>Phase 3: Live-Monitoring</Untertitel>
@@ -26,10 +27,10 @@ export default function HilfeDurchfuehrung() {
         Im Live-Dashboard sehen Sie pro SuS: Status, Verstösse, Kontrollstufe, Gerät (Laptop/iPad), aktuelle Frage und Fortschritt. Inaktivitäts-Warnstufen zeigen an, wenn SuS länger als 1/3/5 Minuten nichts tun.
       </Text>
       <Text>
-        <strong>Soft-Lockdown:</strong> Die Verstoss-Spalte zeigt den Zähler (z.B. ⚠️ 2/3). Bei Hover sehen Sie Details (Zeitpunkt, Typ). Wird ein SuS gesperrt (max. Verstösse erreicht), erscheint ein 🔒-Symbol mit &laquo;Entsperren&raquo;-Button. Die Kontrollstufe zeigt an, ob ein automatisches Downgrade stattgefunden hat (z.B. bei iPads).
+        <strong>Soft-Lockdown:</strong> Die Verstoss-Spalte zeigt den Zähler (z.B. <AlertTriangle className="inline w-3.5 h-3.5 align-text-bottom text-yellow-500" aria-label="Warnung" /> 2/3). Bei Hover sehen Sie Details (Zeitpunkt, Typ). Wird ein SuS gesperrt (max. Verstösse erreicht), erscheint ein <Lock className="inline w-3.5 h-3.5 align-text-bottom text-slate-500" aria-label="Schloss" />-Symbol mit &laquo;Entsperren&raquo;-Button. Die Kontrollstufe zeigt an, ob ein automatisches Downgrade stattgefunden hat (z.B. bei iPads).
       </Text>
       <Text>
-        Sie können die Prüfung jederzeit beenden — sofort oder mit Restzeit (z.B. noch 5 Minuten). Über den ✕-Button in der Schülerzeile können auch einzelne SuS individuell beendet werden (z.B. bei Spickverdacht). Bei SuS mit Nachteilsausgleich wird der verbleibende Zeitzuschlag als Countdown angezeigt.
+        Sie können die Prüfung jederzeit beenden — sofort oder mit Restzeit (z.B. noch 5 Minuten). Über den <X className="inline w-3.5 h-3.5 align-text-bottom text-red-500" aria-label="Schliessen" />-Button in der Schülerzeile können auch einzelne SuS individuell beendet werden (z.B. bei Spickverdacht). Bei SuS mit Nachteilsausgleich wird der verbleibende Zeitzuschlag als Countdown angezeigt.
       </Text>
       <Text>
         Antworten werden alle 30 Sekunden automatisch gespeichert. Bei Verbindungsabbruch werden sie lokal zwischengespeichert und bei Reconnect nachgesendet.

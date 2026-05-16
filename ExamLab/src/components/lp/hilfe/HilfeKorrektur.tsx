@@ -1,3 +1,4 @@
+import { FileText, AlertTriangle } from 'lucide-react'
 import { Titel, Untertitel, Text, Schritt, Hinweis } from './layoutHelpers'
 
 export default function HilfeKorrektur() {
@@ -22,7 +23,7 @@ export default function HilfeKorrektur() {
 
       <Untertitel>SuS-PDFs & Export</Untertitel>
       <Text>
-        Pro SuS kann ein druckbares PDF erstellt werden (📄-Button pro SuS oder &laquo;Korrektur-PDFs&raquo; im Header). Die PDF-Ansicht enthält alle Fragen, Antworten, Punkte und Kommentare. Über den Browser-Druckdialog können Sie &laquo;Als PDF speichern&raquo; wählen.
+        Pro SuS kann ein druckbares PDF erstellt werden (<FileText className="inline w-3.5 h-3.5 align-text-bottom text-slate-500" aria-label="PDF" />-Button pro SuS oder &laquo;Korrektur-PDFs&raquo; im Header). Die PDF-Ansicht enthält alle Fragen, Antworten, Punkte und Kommentare. Über den Browser-Druckdialog können Sie &laquo;Als PDF speichern&raquo; wählen.
       </Text>
       <Text>
         Der &laquo;Excel-Export (Detailliert)&raquo; erstellt eine CSV-Datei mit Antwort-Text und Punkten pro Frage/SuS — wie ein Google-Forms-Export.
@@ -45,10 +46,10 @@ export default function HilfeKorrektur() {
         SuS und LP können direkt aus der Plattform Probleme oder Wünsche melden. Das Feedback wird in einem eigenen Tab im Google Sheet gesammelt.
       </Text>
       <Text>
-        <strong>Für LP:</strong> Im Header finden Sie ein ⚠️-Icon neben dem Theme-Toggle. In der Korrektur-Ansicht erscheint zusätzlich ein &laquo;Problem melden&raquo;-Link unter jeder Frage — damit können Sie fachliche Fehler oder technische Probleme direkt im Kontext der Frage melden.
+        <strong>Für LP:</strong> Im Header finden Sie ein <AlertTriangle className="inline w-3.5 h-3.5 align-text-bottom text-yellow-500" aria-label="Warnung" />-Icon neben dem Theme-Toggle. In der Korrektur-Ansicht erscheint zusätzlich ein &laquo;Problem melden&raquo;-Link unter jeder Frage — damit können Sie fachliche Fehler oder technische Probleme direkt im Kontext der Frage melden.
       </Text>
       <Text>
-        <strong>Für SuS:</strong> In der Korrektur-Einsicht (nach Freigabe) finden SuS ein ⚠️-Icon im Header und einen &laquo;Problem melden&raquo;-Link unter jeder Frage — z.B. wenn eine Bewertung unklar ist.
+        <strong>Für SuS:</strong> In der Korrektur-Einsicht (nach Freigabe) finden SuS ein <AlertTriangle className="inline w-3.5 h-3.5 align-text-bottom text-yellow-500" aria-label="Warnung" />-Icon im Header und einen &laquo;Problem melden&raquo;-Link unter jeder Frage — z.B. wenn eine Bewertung unklar ist.
       </Text>
     </div>
   )

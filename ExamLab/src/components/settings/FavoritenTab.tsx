@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { ChevronDown, ChevronRight, GripVertical, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, GripVertical, Star, X } from 'lucide-react'
 import { useFavoritenStore, type Favorit } from '../../store/favoritenStore'
 import { APP_NAVIGATION, type NavigationsEintrag } from '../../config/appNavigation'
 import { NavIcon } from '../ui/icons/NavIcon'

@@ -5,6 +5,7 @@
  * Nutzt den generiereFrageBild-Endpoint im Apps Script Backend (Claude API).
  */
 import { useState } from 'react'
+import { Loader2, RefreshCw, Sparkles, Check } from 'lucide-react'
 import { useEditorServices } from '../EditorContext'
 
 interface Props {
@@ -91,13 +92,13 @@ export default function BildGeneratorPanel({ onBildGeneriert, fragetyp }: Props)
         >
           {ladend ? (
             <>
-              <span className="animate-spin">⏳</span>
+              <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
               Generiere...
             </>
           ) : iterationen > 0 ? (
-            '🔄 Nochmal generieren'
+            <><RefreshCw className="w-4 h-4" aria-hidden="true" /> Nochmal generieren</>
           ) : (
-            '🤖 SVG generieren'
+            <><Sparkles className="w-4 h-4" aria-hidden="true" /> SVG generieren</>
           )}
         </button>
         {iterationen > 0 && (
@@ -126,9 +127,9 @@ export default function BildGeneratorPanel({ onBildGeneriert, fragetyp }: Props)
           <div className="flex gap-2">
             <button
               onClick={uebernehmen}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 min-h-[36px]"
+              className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 min-h-[36px] inline-flex items-center gap-1.5"
             >
-              ✓ Bild übernehmen
+              <Check className="w-4 h-4" aria-hidden="true" /> Bild übernehmen
             </button>
             <button
               onClick={() => { setGeneriert(null); setIterationen(0) }}

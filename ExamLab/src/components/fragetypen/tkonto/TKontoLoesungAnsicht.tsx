@@ -1,4 +1,5 @@
 // ExamLab/src/components/fragetypen/tkonto/TKontoLoesungAnsicht.tsx
+import { Check, X } from 'lucide-react'
 import type { TKontoFrage as TKontoFrageType } from '../../../types/fragen-storage'
 import type { Antwort } from '../../../types/antworten.ts'
 import { renderMarkdown } from '../../../utils/markdown.ts'
@@ -66,8 +67,10 @@ export default function TKontoLoesungAnsicht({ frage, antwort }: Props) {
                     </span>
                   )}
                 </span>
-                <span className={`text-xs font-bold ${kontoKorrekt ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
-                  {kontoKorrekt ? '✓ Korrekt' : '✗ Falsch'}
+                <span className={`text-xs font-bold inline-flex items-center gap-1 ${kontoKorrekt ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
+                  {kontoKorrekt
+                    ? <><Check className="w-3.5 h-3.5" aria-hidden="true" /> Korrekt</>
+                    : <><X className="w-3.5 h-3.5" aria-hidden="true" /> Falsch</>}
                 </span>
               </div>
 
@@ -134,7 +137,7 @@ function EintragBadge({ status }: { status: EintragStatus }) {
       <span className="inline-flex items-center gap-2 text-green-700 dark:text-green-400">
         <span className="font-mono">{status.gegenkonto}</span>
         <span className="font-mono">{Number(status.betrag ?? 0).toFixed(2)}</span>
-        <span aria-hidden>{'✓'}</span>
+        <Check className="w-3.5 h-3.5" aria-hidden="true" />
       </span>
     )
   }

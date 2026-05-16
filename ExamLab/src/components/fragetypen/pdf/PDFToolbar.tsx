@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eraser } from 'lucide-react'
+import { Eraser, MessageSquare, Pencil, Trash2 } from 'lucide-react'
 import type { PDFAnnotationsWerkzeug, PDFToolbarWerkzeug, PDFKategorie, ZoomStufe } from './PDFTypes.ts'
 import { ZOOM_STUFEN, STANDARD_HIGHLIGHT_FARBEN } from './PDFTypes.ts'
 import ToolbarDropdown from '../../shared/ToolbarDropdown.tsx'
@@ -222,7 +222,7 @@ export function PDFToolbar({
         <Tooltip text="Kommentar">
           <button type="button" aria-pressed={aktivesWerkzeug === 'kommentar'}
             onClick={() => onWerkzeugWechsel('kommentar')} className={btnKlassen(aktivesWerkzeug === 'kommentar')}>
-            💬
+            <MessageSquare className="w-[18px] h-[18px]" aria-hidden="true" />
           </button>
         </Tooltip>
       )}
@@ -230,7 +230,7 @@ export function PDFToolbar({
       {/* Freihand als Stift-Menü (Stärke + Gestrichelt) */}
       {hatFreihand && (
         <ToolbarDropdown
-          icon={<span style={{ fontSize: stiftBreite > 2 ? 18 : 14 }}>✏️</span>}
+          icon={<Pencil className={stiftBreite > 2 ? 'w-[18px] h-[18px]' : 'w-[14px] h-[14px]'} aria-hidden="true" />}
           label="Freihand"
           aktiv={aktivesWerkzeug === 'freihand'}
           horizontal={isHorizontal}
@@ -372,7 +372,7 @@ export function PDFToolbar({
             onClick={() => setZeigeLoeschenDialog(true)}
             className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
           >
-            🗑
+            <Trash2 className="w-[18px] h-[18px]" aria-hidden="true" />
           </button>
         </Tooltip>
       )}

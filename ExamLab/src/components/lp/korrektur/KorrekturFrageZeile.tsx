@@ -7,6 +7,7 @@ import { effektivePunkte, quelleLabel } from '../../../utils/korrekturUtils.ts'
 import { apiService } from '../../../services/apiService.ts'
 import AudioRecorder from '../../AudioRecorder.tsx'
 import KorrekturFrageVollansicht from './KorrekturFrageVollansicht'
+import { Star } from 'lucide-react'
 import { useToast } from '../../../hooks/useToast'
 import { FragetypIcon } from '../../ui/icons/FragetypIcon'
 
@@ -218,10 +219,12 @@ export default function KorrekturFrageZeile({
               <button
                 type="button"
                 onClick={() => setKiWichtig((v) => !v)}
-                className={`text-base leading-none transition-colors cursor-pointer ${kiWichtig ? 'text-amber-500' : 'text-slate-400 hover:text-amber-400'}`}
+                className={`leading-none transition-colors cursor-pointer ${kiWichtig ? 'text-amber-500' : 'text-slate-400 hover:text-amber-400'}`}
                 title={kiWichtig ? 'Als wichtig markiert' : 'Für künftige Korrekturen als wichtig markieren'}
+                aria-pressed={kiWichtig}
+                aria-label={kiWichtig ? 'Als wichtig markiert' : 'Als wichtig markieren'}
               >
-                {kiWichtig ? '★' : '☆'}
+                <Star className="w-4 h-4" fill={kiWichtig ? 'currentColor' : 'none'} aria-hidden="true" />
               </button>
             )}
           </div>
@@ -284,7 +287,7 @@ export default function KorrekturFrageZeile({
         />
       </div>
 
-      {/* Bewertungszeile: Punkte | = X Pkt. | 🎤 Audio | ☑ Geprüft */}
+      {/* Bewertungszeile: Punkte | = X Pkt. | Audio | Geprüft */}
       <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
         {/* Punkte-Eingabe (nicht bei formativen Übungen) */}
         {!istFormativ && (

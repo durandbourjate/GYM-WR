@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { Shuffle, RotateCw, Star, Lock } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -277,7 +278,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               onClick={() => setMixDialogOffen(true)}
               className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-slate-400 dark:hover:border-slate-500 hover:shadow-sm transition-all cursor-pointer"
             >
-              <span>🔀</span> Gemischte Übung
+              <Shuffle className="w-4 h-4 text-slate-500 dark:text-slate-400" aria-hidden="true" /> Gemischte Übung
             </button>
             <button
               onClick={hatFortschrittDaten ? handleStarteRepetition : undefined}
@@ -289,7 +290,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                   : 'text-slate-400 dark:text-slate-500 opacity-60 cursor-not-allowed'
               }`}
             >
-              <span>🔄</span> Repetition
+              <RotateCw className="w-4 h-4 text-slate-500 dark:text-slate-400" aria-hidden="true" /> Repetition
             </button>
             <input
               type="text"
@@ -418,7 +419,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               {themenSektionen.aktuelle.length > 0 && (
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 flex items-center gap-1.5">
-                    <span>★</span> Aktuelle Themen
+                    <Star className="w-3.5 h-3.5" fill="currentColor" aria-hidden="true" /> Aktuelle Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {themenSektionen.aktuelle.map(info => renderThemaKarte(info, 'aktiv'))}
@@ -455,7 +456,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               {themenSektionen.weitere.length > 0 && (
                 <div className="opacity-60">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 flex items-center gap-1.5">
-                    <span>🔒</span> Weitere Themen
+                    <Lock className="w-3.5 h-3.5" aria-hidden="true" /> Weitere Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {themenSektionen.weitere.map(info => renderThemaKarte(info, 'nicht_freigeschaltet'))}

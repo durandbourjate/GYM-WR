@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Star, Trash2 } from 'lucide-react'
 import { kalibrierungApi, type KIFeedbackEintragLP } from '../../../services/kalibrierungApi'
 import { useToast } from '../../../hooks/useToast'
 import DiffModal from './DiffModal'
@@ -101,8 +102,10 @@ function BeispielZeile({ eintrag, email, onRefresh, onDiffOeffnen }: {
           onClick={toggleWichtig}
           className={wichtig ? 'text-amber-500 hover:text-amber-600' : 'text-slate-400 hover:text-amber-400'}
           title={wichtig ? 'Als wichtig markiert — Klick entfernt' : 'Als wichtig markieren'}
+          aria-pressed={wichtig}
+          aria-label={wichtig ? 'Als wichtig markiert' : 'Als wichtig markieren'}
         >
-          {wichtig ? '★' : '☆'}
+          <Star className="w-4 h-4" fill={wichtig ? 'currentColor' : 'none'} aria-hidden="true" />
         </button>
       </td>
       <td className="py-2 pr-2">
@@ -118,8 +121,9 @@ function BeispielZeile({ eintrag, email, onRefresh, onDiffOeffnen }: {
             onClick={loeschen}
             className="text-red-500 hover:text-red-700 text-xs px-1"
             title="Löschen"
+            aria-label="Löschen"
           >
-            🗑
+            <Trash2 className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       </td>

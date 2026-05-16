@@ -1,3 +1,4 @@
+import { ClipboardList, Target, Dumbbell, type LucideIcon } from 'lucide-react'
 import type { Empfehlung } from '../../types/ueben/auftrag'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
 
@@ -7,21 +8,24 @@ interface EmpfehlungsKarteProps {
   onStarte: () => void
 }
 
-const TYP_CONFIG: Record<Empfehlung['typ'], { icon: string; label: string; bgLight: string; bgDark: string; borderLight: string; borderDark: string }> = {
+const TYP_CONFIG: Record<Empfehlung['typ'], { Icon: LucideIcon; iconColor: string; label: string; bgLight: string; bgDark: string; borderLight: string; borderDark: string }> = {
   auftrag: {
-    icon: '📋',
+    Icon: ClipboardList,
+    iconColor: 'text-blue-600 dark:text-blue-400',
     label: 'Auftrag',
     bgLight: 'bg-blue-50', bgDark: 'dark:bg-blue-900/20',
     borderLight: 'border-blue-200', borderDark: 'dark:border-blue-800',
   },
   luecke: {
-    icon: '🎯',
+    Icon: Target,
+    iconColor: 'text-violet-600 dark:text-violet-400',
     label: 'Empfohlen',
     bgLight: 'bg-violet-50', bgDark: 'dark:bg-violet-900/20',
     borderLight: 'border-violet-200', borderDark: 'dark:border-violet-800',
   },
   festigung: {
-    icon: '💪',
+    Icon: Dumbbell,
+    iconColor: 'text-green-600 dark:text-green-400',
     label: 'Festigung',
     bgLight: 'bg-green-50', bgDark: 'dark:bg-green-900/20',
     borderLight: 'border-green-200', borderDark: 'dark:border-green-800',
@@ -30,6 +34,7 @@ const TYP_CONFIG: Record<Empfehlung['typ'], { icon: string; label: string; bgLig
 
 export function EmpfehlungsKarte({ empfehlung, fachFarben, onStarte }: EmpfehlungsKarteProps) {
   const config = TYP_CONFIG[empfehlung.typ]
+  const Icon = config.Icon
   const farbe = getFachFarbe(empfehlung.fach, fachFarben)
 
   return (
@@ -42,7 +47,7 @@ export function EmpfehlungsKarte({ empfehlung, fachFarben, onStarte }: Empfehlun
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm">{config.icon}</span>
+            <Icon className={`w-4 h-4 shrink-0 ${config.iconColor}`} aria-hidden="true" />
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {config.label}
             </span>
