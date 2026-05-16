@@ -33,7 +33,10 @@ export default defineConfig({
       // dieselbe Instanz verwenden — sonst Doppel-React-Hooks bei Build oder Test.
       '@dnd-kit/core': path.resolve(__dirname, 'node_modules/@dnd-kit/core'),
       '@dnd-kit/sortable': path.resolve(__dirname, 'node_modules/@dnd-kit/sortable'),
-      '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities')
+      '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities'),
+      // lucide-react in packages/shared via ExamLab/node_modules auflösen
+      // (peerDependency in packages/shared/package.json, Cluster G Phase 3c).
+      'lucide-react': path.resolve(__dirname, 'node_modules/lucide-react')
     },
     dedupe: ['react', 'react-dom']
   },

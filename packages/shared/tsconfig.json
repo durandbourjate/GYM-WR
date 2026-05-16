@@ -16,7 +16,8 @@
     "paths": {
       "@dnd-kit/core": ["../../ExamLab/node_modules/@dnd-kit/core"],
       "@dnd-kit/sortable": ["../../ExamLab/node_modules/@dnd-kit/sortable"],
-      "@dnd-kit/utilities": ["../../ExamLab/node_modules/@dnd-kit/utilities"]
+      "@dnd-kit/utilities": ["../../ExamLab/node_modules/@dnd-kit/utilities"],
+      "lucide-react": ["../../ExamLab/node_modules/lucide-react"]
     }
   },
   "include": ["src"]

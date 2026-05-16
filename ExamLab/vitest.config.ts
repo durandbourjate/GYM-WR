@@ -11,6 +11,8 @@ export default defineConfig({
       '@dnd-kit/sortable': path.resolve(__dirname, 'node_modules/@dnd-kit/sortable'),
       '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities'),
       '@testing-library/react': path.resolve(__dirname, 'node_modules/@testing-library/react'),
+      // lucide-react in packages/shared via ExamLab/node_modules auflösen (Cluster G Phase 3c).
+      'lucide-react': path.resolve(__dirname, 'node_modules/lucide-react'),
     },
     dedupe: ['react', 'react-dom'],
   },

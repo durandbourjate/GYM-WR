@@ -3,6 +3,7 @@
  * Wird von Host-Apps (Pruefung, Lernplattform) mit EditorProvider + Slots genutzt.
  */
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import { Trash2 } from 'lucide-react'
 import { useEditorConfig, useEditorServices } from './EditorContext'
 import { useFocusTrap } from './hooks/useFocusTrap'
 import { ResizableSidebar } from '../ui/ResizableSidebar'
@@ -1206,7 +1207,7 @@ export default function SharedFragenEditor({
                 aria-label="Frage löschen"
                 className="px-3 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer inline-flex items-center gap-1.5"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <Trash2 className="w-3.5 h-3.5" />
                 Löschen
               </button>
             )}

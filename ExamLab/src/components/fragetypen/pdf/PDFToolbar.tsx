@@ -1,17 +1,13 @@
 import { useState } from 'react'
+import { Eraser } from 'lucide-react'
 import type { PDFAnnotationsWerkzeug, PDFToolbarWerkzeug, PDFKategorie, ZoomStufe } from './PDFTypes.ts'
 import { ZOOM_STUFEN, STANDARD_HIGHLIGHT_FARBEN } from './PDFTypes.ts'
 import ToolbarDropdown from '../../shared/ToolbarDropdown.tsx'
 import Tooltip from '../../ui/Tooltip.tsx'
 
-/** Inline SVG Radierer-Icon (identisch mit ZeichnenToolbar) */
+/** Radierer-Icon via Lucide (Cluster G Phase 3c). */
 function RadiererIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 20H7L3 16a1 1 0 0 1 0-1.41l9.59-9.59a2 2 0 0 1 2.82 0l5.18 5.18a2 2 0 0 1 0 2.82L14 20" />
-      <path d="M6 12l4 4" />
-    </svg>
-  );
+  return <Eraser className="w-[18px] h-[18px]" />
 }
 
 /** Stift-Stärken (wie ZeichnenToolbar) */
