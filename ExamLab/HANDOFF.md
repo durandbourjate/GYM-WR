@@ -8,7 +8,7 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD beider Branches:** `a883308` — main + preview identisch, beide gepusht, beide deployed.
+**HEAD beider Branches:** `35e9020` — main + preview identisch, beide gepusht, beide deployed.
 
 **Bei Wiedereinstieg:**
 ```bash
@@ -18,6 +18,8 @@ git log --oneline -10                  # letzte commits anschauen
 ```
 
 **Working tree clean.** vitest 1839 + 4 todo. ci-check vollständig grün.
+
+**Letzte Session (17.05.2026):** Cluster G mid-files Batch 2 (`4b986f9`) + Batch 3 (`35e9020`) → -36 Emojis (138→102 Baseline). 20 Files migriert (Korrektur-Anzeigen + Üben-Feedback + Fragensammlung + Korrektur-Rest). Browser-Test auf staging: R/F-Badge mit grünem Lucide-Check visuell verifiziert; restliche Migration-Pfade pattern-identisch zum schon-live Top-15-Commit. Pattern: `'✓'`/`'✗'` → `<Check/X className="w-3.5 h-3.5" aria-hidden="true" />` mit inline-flex Wrapper.
 
 **Pre-Push-Pflicht:** `cd ExamLab && npm run ci-check` (matched CI 1:1). Bei `packages/shared/package.json`-Änderungen zusätzlich `cd packages/shared && npm install` damit lock-Datei synchron bleibt (Memory `feedback_npm_ci_lock_drift.md`).
 
@@ -33,7 +35,7 @@ Nach 2 Wochen Live-Beobachtung Tag-Modell:
 #### 2. Verbleibende Spawn-Tasks (gross, brauchen Vorsicht)
 - **I-3 + M-1 (Cluster D S3):** `updateFrageMitPatch_` Performance bei >500-ID-Batches — Apps-Script-Refactor (ID→{tab,row,headers}-Map einmal pro endpoint, setValues-Batch statt per-Field-setValue). Braucht Deploy + LIVE-Verifikation. Ca. 0.5 Tag.
 - **appNavigation.ts Persist-Migration auf Lucide-Component-Keys:** vorsichtig, weil `favoritenStore.icon` persistiert User-Favoriten als Emoji-Strings. Migration-Path: alte Strings → neue Keys + Auto-Migration im Store. Aktuell pragmatisch über `NavIcon`-Helper gelöst (Mapping Emoji→Lucide bei Render). Längerfristig sauberer mit Keys.
-- **91 Mid-Files (Count 1-2) Emojis schrittweise migrieren:** ~138 Emojis Rest in Baseline. Weniger UX-Impact, aber Baseline immer kleiner = besser.
+- **72 Mid-Files (Count 1-2) Emojis schrittweise migrieren:** ~102 Emojis Rest in Baseline (Stand 17.05.2026 nach Batch 2 + 3). Weniger UX-Impact, aber Baseline immer kleiner = besser.
 
 #### 3. Komplett neue Cluster
 - **Cluster E.2-E.5** (Typografie + Favoriten-Backend-Sync + Star-Toggle + Favoriten-Picker) — 4 separate Sub-Cluster, je 2-3 Tage
