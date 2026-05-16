@@ -8,13 +8,17 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `e73d921` — letzterSeedAm-Persistenz #5 LIVE auf main + preview synchron (17.05.2026 SEHR SPÄT).
+**HEAD main + preview:** `280b4d2` — TODO-Sweep #1-#6 KOMPLETT auf main + preview synchron (17.05.2026 SEHR SPÄT).
 
-**⚠️ Apps-Script-Deploy ausstehend (DU):** `ExamLab/apps-script-code.js` enthält neue Funktionen für #5 (apiTestdatenLetzterSeed-Endpoint + ScriptProperties-Helpers). Im Apps-Script-Editor:
+**⚠️ Apps-Script-Deploy ausstehend (DU):** `ExamLab/apps-script-code.js` enthält Änderungen aus #5 + #6 (apiTestdatenLetzterSeed-Endpoint + ScriptProperties-Helpers + buildFragenIndex_ + setValues-Batch in updateFrageMitPatch_). EIN gemeinsamer Deploy für beide:
 1. `apps-script-code.js`-Inhalt komplett kopieren und im Editor einfügen
 2. „Bereitstellung verwalten" → ⚙️ → „Neue Version" → „Bereitstellen"
 3. URL bleibt gleich (gleiche Bereitstellung, nur neue Version)
-4. Nach Deploy: Im TestdatenTab (Admin-Login) „Testdaten zurücksetzen" → Status sollte „(zuletzt: 17.05.2026 …)" anzeigen.
+4. Nach Deploy LIVE-Verifikation:
+   - **#5:** TestdatenTab (Admin-Login) → „Testdaten zurücksetzen" → Status zeigt „(zuletzt: 17.05.2026 …)"
+   - **#6:** FragensammlungBrowser → 100+ Fragen selektieren → Batch-Edit (z.B. Tag hinzufügen) → Dauer-Vergleich vor/nach Deploy
+
+**Browser-E2E ausstehend (DU)** für #3 (Filter-Dropdown) + #4 (NavIcon-Persist) — siehe Notes pro Item unten.
 
 **Bei Wiedereinstieg:**
 ```bash
@@ -33,6 +37,7 @@ git log --oneline -10                  # letzte commits anschauen
 - ✅ **#3 Filter-Dropdown FragenBrowserHeader** (HEAD `0f179e7`): Custom `Dropdown<TValue>`-Komponente (~200 Z. + 13 Tests). 4 native `<select>` ersetzt: Fachbereich (Farbpunkt-Prefix), Fragetyp (FragetypIcon), Bloom (Layers-Icon), Status (CircleDot/CheckCircle2/ShieldCheck/Sparkles). Tastatur-Navigation + Click-outside + Aria-Roles. Thema/Unterthema/Gruppieren/Sortieren bleiben native. vitest 1852 (+13). preview synchron mit main. **E2E mit Dir auf Staging ausstehend** — Tab-Gruppe öffnen, Dropdown-Filter mit Icons sichtbar, Filter-Anwendung verifizieren, Tastatur-Navigation testen.
 - ✅ **#4 NavIcon-Persist-Migration** (HEAD `6c30abf`): favoritenStore `version: 2` + `migrate()`. Canonical-Form = Lucide-Component-Name als String (z.B. 'ClipboardList'). Legacy-Emoji bleibt im NavIcon-Runtime-Fallback (defensiv). appNavigation.ts + typIcon-Helpers in FavoritenTab/Favoriten auf Lucide-Keys umgestellt. 3 Files aus Allowlist raus, 2 neue Test-Files rein (Test-Fixtures mit Emoji für Backward-Compat-Tests). vitest 1870 (+18). 16 neue NavIcon-Tests + 3 Migration-Tests. preview synchron mit main. **E2E mit Dir ausstehend** — Login, Favoriten setzen, Reload, Icons rendern korrekt.
 - ✅ **#5 `letzterSeedAm`-Persistenz** (HEAD `e73d921`): ScriptProperties statt Configs-Sheet (Apps-Script-Latenz-Limit + atomic). Apps-Script-Helpers `setLetzterSeedAm_/getLetzterSeedAm_` + Endpoint `apiTestdatenLetzterSeed_`. Frontend `useTestdatenStatus` mit parallel-Fetch + Backend-Fehler-Fallback auf leeren String. TestdatenTab zeigt „(zuletzt: 17.05.2026 21:23)" als de-CH-Locale-Datum. vitest 1872 (+2). **Apps-Script-Deploy ausstehend (DU)** — siehe Deploy-Anleitung oben.
+- ✅ **#6 Apps-Script Perf** `updateFrageMitPatch_` (HEAD `280b4d2`): ID-Map einmal pro Endpoint (`buildFragenIndex_`) + setValues-Batch pro Row statt per-Field-setValue. Reduziert Sheet-Reads von O(n_ids × n_tabs) auf O(n_tabs) (Faktor 500 bei 500 IDs) und Apps-Script-Roundtrip-Calls pro Row um Faktor 4-7. Backward-Compat: Single-Mode-Pfad via `locateFrageInFragensammlung_` für künftige Non-Bulk-Caller. Verhalten unverändert. vitest unchanged (Apps-Script nicht in vitest). **Apps-Script-Deploy ausstehend (DU)** zusammen mit #5.
 - ⏳ **#6 Apps-Script Perf** `updateFrageMitPatch_` ID→{tab,row,headers}-Map + setValues-Batch (I-3/M-1) — braucht Deploy
 
 Cluster H Phase 3 Cleanup bleibt blockiert bis ~29.05.2026 (2-Wochen-Live-Beobachtung).
