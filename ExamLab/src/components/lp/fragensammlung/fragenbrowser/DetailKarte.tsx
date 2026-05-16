@@ -8,6 +8,7 @@ import PoolBadges from './PoolBadges.tsx'
 import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../../store/tagsStore'
 import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
+import { FragetypIcon, type Fragetyp } from '../../../ui/icons/FragetypIcon'
 
 interface Props {
   frage: Frage | FrageSummary
@@ -60,6 +61,8 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
               {frage.fachbereich}
             </span>
             <PoolBadges frage={frage} />
+            {/* Typ (Icon + Label) — Cluster G Phase 5. Cast: FrageSummary.typ ist `string`, FragetypIcon hat graceful Fallback (return null). */}
+            <FragetypIcon typ={frage.typ as Fragetyp} className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden />
             <span className="px-1.5 py-0.5 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded">
               {typLabel(frage.typ)}
             </span>
