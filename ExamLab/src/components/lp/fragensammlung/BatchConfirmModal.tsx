@@ -32,9 +32,16 @@ interface Props {
   onAbbrechen: () => void
 }
 
-/** Leitet aus dem Patch (mutually exclusive Tag-Modi) den aktiven TagsModus ab.
- *  Default `hinzufuegen` analog batchDiff#berechnePatch — gilt auch wenn kein
- *  Tag-Feld gesetzt ist (dann ist die Tag-Sektion eh ausgeblendet). */
+/**
+ * Defense-in-Depth (Cluster D Cleanup SP-1, 16.05.2026): leitet TagsModus
+ * aus dem Patch ab, falls die Props-Übergabe nicht mit dem Patch übereinstimmt
+ * (z.B. wenn der Caller den Modus aus verschiedenen Quellen liest, oder bei
+ * einer Race-Condition zwischen `setPendingTagsModus` und `setPendingPatch`).
+ *
+ * Leitet aus dem Patch (mutually exclusive Tag-Modi) den aktiven TagsModus ab.
+ * Default `hinzufuegen` analog batchDiff#berechnePatch — gilt auch wenn kein
+ * Tag-Feld gesetzt ist (dann ist die Tag-Sektion eh ausgeblendet).
+ */
 export function tagsModusAusPatch(patch: FragenBulkPatch): TagsModus {
   if (patch.tagsErsetzen !== undefined) return 'ersetzen'
   if (patch.tagsEntfernen !== undefined) return 'entfernen'
@@ -94,8 +101,26 @@ export default function BatchConfirmModal({
   onBestaetigen,
   onAbbrechen,
 }: Props) {
+  /** Defense-in-Depth (SP-1): wenn der Caller einen tagsModus übergibt,
+   *  der mit dem Patch nicht konsistent ist (z.B. `tagsModus='ersetzen'`,
+   *  aber `patch.tagsHinzufuegen` gesetzt), ziehen wir den patch-derivierten
+   *  Modus vor — sonst würde der User in der Confirm-Anzeige die falsche
+   *  Sektion sehen (Verwechslungsgefahr „Hinzufügen" vs „Ersetzen"). */
+  const effektiverModus = useMemo<TagsModus>(() => {
+    const ausPatch = tagsModusAusPatch(patch)
+    // Falls Tag-Felder im Patch fehlen → patch-derived ist 'hinzufuegen' (Default).
+    // Dann hat der prop-Modus keinen Bezug zum Patch und wir behalten den prop-Wert
+    // (z.B. Skalar-Patch ohne Tag-Felder: tagsModus='ersetzen' ist dann egal).
+    const patchHatTags =
+      patch.tagsHinzufuegen !== undefined ||
+      patch.tagsErsetzen !== undefined ||
+      patch.tagsEntfernen !== undefined
+    if (!patchHatTags) return tagsModus
+    // Patch hat Tag-Felder → patch-derived ist load-bearing. Mismatch overriden.
+    return ausPatch
+  }, [patch, tagsModus])
   const ueberschriebeneFelder = useMemo(() => felderAusPatch(patch), [patch])
-  const tagIds = useMemo(() => tagIdsAusPatch(patch, tagsModus), [patch, tagsModus])
+  const tagIds = useMemo(() => tagIdsAusPatch(patch, effektiverModus), [patch, effektiverModus])
   const nichtSichtbar = Math.max(0, anzahl - sichtbarCount)
 
   return (
@@ -137,7 +162,7 @@ export default function BatchConfirmModal({
           </section>
         )}
 
-        {tagsModus === 'hinzufuegen' && tagIds.length > 0 && (
+        {effektiverModus === 'hinzufuegen' && tagIds.length > 0 && (
           <section
             data-testid="batch-confirm-tags-hinzufuegen"
             className="text-emerald-700 dark:text-emerald-300"
@@ -151,7 +176,7 @@ export default function BatchConfirmModal({
           </section>
         )}
 
-        {tagsModus === 'ersetzen' && (
+        {effektiverModus === 'ersetzen' && (
           <section
             data-testid="batch-confirm-tags-ersetzen"
             className="text-red-700 dark:text-red-300"
@@ -171,7 +196,7 @@ export default function BatchConfirmModal({
           </section>
         )}
 
-        {tagsModus === 'entfernen' && tagIds.length > 0 && (
+        {effektiverModus === 'entfernen' && tagIds.length > 0 && (
           <section
             data-testid="batch-confirm-tags-entfernen"
             className="text-orange-700 dark:text-orange-300"

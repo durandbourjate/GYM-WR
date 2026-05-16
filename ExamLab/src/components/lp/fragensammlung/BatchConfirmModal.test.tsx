@@ -162,6 +162,41 @@ describe('BatchConfirmModal', () => {
     expect(onBestaetigen).toHaveBeenCalledTimes(1)
   })
 
+  it('SP-1 Defense-in-Depth: tagsModus-Prop "ersetzen" + Patch.tagsHinzufuegen → rendert grüne Sektion (Patch wins)', () => {
+    // Inkonsistenter Caller: prop sagt ersetzen, aber Patch trägt tagsHinzufuegen.
+    // Defense-in-Depth via tagsModusAusPatch: patch-derived Modus 'hinzufuegen' wird genutzt.
+    const { getByTestId, queryByTestId } = render(
+      <BatchConfirmModal
+        patch={{ tagsHinzufuegen: ['t1'] }}
+        anzahl={1}
+        sichtbarCount={1}
+        tagsModus="ersetzen"
+        tagNamen={['Algebra']}
+        onBestaetigen={vi.fn()}
+        onAbbrechen={vi.fn()}
+      />,
+    )
+    expect(getByTestId('batch-confirm-tags-hinzufuegen')).toBeTruthy()
+    expect(queryByTestId('batch-confirm-tags-ersetzen')).toBeNull()
+  })
+
+  it('SP-1 Defense-in-Depth: bei Patch ohne Tag-Felder bleibt prop-Modus erhalten', () => {
+    // Patch ohne Tag-Felder → prop-Modus relevant (z.B. „ersetzen" mit leerer Liste = alle Tags löschen).
+    // Hier sollte die rote ERSETZEN-Sektion gerendert werden (Spec: Modus = ersetzen mit 0 Tags ⇒ „alle entfernen").
+    const { getByTestId } = render(
+      <BatchConfirmModal
+        patch={{ fachbereich: 'VWL' }}
+        anzahl={1}
+        sichtbarCount={1}
+        tagsModus="ersetzen"
+        tagNamen={[]}
+        onBestaetigen={vi.fn()}
+        onAbbrechen={vi.fn()}
+      />,
+    )
+    expect(getByTestId('batch-confirm-tags-ersetzen')).toBeTruthy()
+  })
+
   it('"Abbrechen"-Click ruft onAbbrechen', () => {
     const onAbbrechen = vi.fn()
     const { getByText } = render(
