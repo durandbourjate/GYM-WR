@@ -1,44 +1,8 @@
-import { useState, useMemo, type ComponentType } from 'react'
-import {
-  ClipboardList, BarChart3, Eye, Target, Play, TrendingUp, BookOpen, Settings,
-  User, GraduationCap, Star, Wrench, MapPin, HelpCircle, FileText, ChevronDown, ChevronRight,
-  GripVertical, X, type LucideProps,
-} from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { ChevronDown, ChevronRight, GripVertical, X } from 'lucide-react'
 import { useFavoritenStore, type Favorit } from '../../store/favoritenStore'
 import { APP_NAVIGATION, type NavigationsEintrag } from '../../config/appNavigation'
-
-/**
- * Mappt persistierte Emoji-Strings (aus appNavigation/Store) auf Lucide-Komponenten.
- * Unbekannte Strings fallen auf String-Render zurück (`null` Return).
- */
-function iconStringToComponent(s: string): ComponentType<LucideProps> | null {
-  switch (s) {
-    case '📝': return ClipboardList
-    case '📊': return BarChart3
-    case '👁️': case '👁': return Eye
-    case '🎯': return Target
-    case '▶️': case '▶': return Play
-    case '📈': return TrendingUp
-    case '📚': return BookOpen
-    case '⚙️': case '⚙': return Settings
-    case '👤': return User
-    case '🎓': return GraduationCap
-    case '⭐': case '☆': return Star
-    case '🔧': return Wrench
-    case '📍': return MapPin
-    case '❓': return HelpCircle
-    case '📄': return FileText
-    default: return null
-  }
-}
-
-/** Render-Helper: Icon-String → Lucide-Komponente (falls bekannt) sonst String unverändert */
-function IconRender({ icon, className = 'w-4 h-4 inline-block' }: { icon?: string; className?: string }) {
-  if (!icon) return null
-  const Comp = iconStringToComponent(icon)
-  if (Comp) return <Comp className={className} />
-  return <span>{icon}</span>
-}
+import { NavIcon } from '../ui/icons/NavIcon'
 import {
   DndContext,
   closestCenter,
@@ -170,7 +134,7 @@ function BaumEintrag({ eintrag, istAdmin, toggleFavorit, istFavorit, tiefe = 0 }
         )}
 
         {/* Icon + Label */}
-        <span className="text-sm inline-flex items-center"><IconRender icon={eintrag.icon} className="w-4 h-4 text-slate-500 dark:text-slate-400" /></span>
+        <span className="text-sm inline-flex items-center"><NavIcon icon={eintrag.icon} className="w-4 h-4 text-slate-500 dark:text-slate-400" /></span>
         <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{eintrag.label}</span>
 
         {/* Stern-Toggle */}
@@ -231,7 +195,7 @@ function SortableFavoritItem({ fav, onEntfernen }: { fav: Favorit; onEntfernen: 
         <GripVertical className="w-4 h-4" />
       </button>
 
-      <span className="text-sm inline-flex items-center"><IconRender icon={fav.icon || typIcon(fav.typ)} className="w-4 h-4 text-slate-500 dark:text-slate-400" /></span>
+      <span className="text-sm inline-flex items-center"><NavIcon icon={fav.icon || typIcon(fav.typ)} className="w-4 h-4 text-slate-500 dark:text-slate-400" /></span>
       <span className="flex-1 text-sm text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</span>
       <span className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</span>
 

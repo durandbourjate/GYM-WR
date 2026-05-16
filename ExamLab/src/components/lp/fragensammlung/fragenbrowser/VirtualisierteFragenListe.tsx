@@ -302,6 +302,7 @@ export default function VirtualisierteFragenListe(p: Props) {
                     onLoeschen={() => p.handleFrageLoeschen(frage)}
                     onDuplizieren={() => p.handleFrageDuplizieren(frage)}
                     performance={p.fragenStats.get(frage.id)}
+                    sichtbareIds={p.sichtbareIds ?? []}
                   />
                 </div>
               )}

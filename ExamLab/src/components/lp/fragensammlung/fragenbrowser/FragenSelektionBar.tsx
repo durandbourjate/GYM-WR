@@ -11,6 +11,7 @@
  * Hinweis: Floating-Bar mit Pill-Shape weicht vom Standard-Button-Layout ab (gewollt),
  * deshalb inline-Buttons statt der gemeinsamen Button-Komponente.
  */
+import { useEffect } from 'react'
 import { Pencil, Trash2, X } from 'lucide-react'
 import { useFragenSelectionStore, useSelektierteIds } from '../../../../store/fragenSelectionStore.ts'
 
@@ -27,6 +28,16 @@ export default function FragenSelektionBar({ sichtbareIds, onOeffneEditor, onOef
   const selektierteIds = useSelektierteIds()
   const leereSelektion = useFragenSelectionStore((s) => s.leereSelektion)
   const beschraenkeAufFilter = useFragenSelectionStore((s) => s.beschraenkeAufFilter)
+
+  // Cluster D M-6 Spawn-Task: ESC schliesst Selektion (Konvention BaseDialog).
+  useEffect(() => {
+    if (selektierteIds.length === 0) return
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') leereSelektion()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [selektierteIds.length, leereSelektion])
 
   if (selektierteIds.length === 0) return null
 

@@ -7,6 +7,7 @@ import type { FragenPerformance } from '../../../../types/tracker.ts'
 import PoolBadges from './PoolBadges.tsx'
 import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../../store/tagsStore'
+import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
 import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
 import { FragetypIcon, type Fragetyp } from '../../../ui/icons/FragetypIcon'
 
@@ -18,6 +19,9 @@ interface Props {
   onLoeschen: () => void
   onDuplizieren?: () => void
   performance?: FragenPerformance
+  /** IDs der aktuell gefilterten/sichtbaren Fragen — für Shift-Click Range-Toggle.
+   *  Cluster D M-11 Spawn-Task (16.05.2026): UX-Konsistenz mit KompaktZeile. */
+  sichtbareIds: string[]
 }
 
 function rechteBadge(recht?: EffektivesRecht): { label: string; farbe: string } | null {
@@ -27,11 +31,14 @@ function rechteBadge(recht?: EffektivesRecht): { label: string; farbe: string } 
 }
 
 /** Detaillierte Karte mit Fragetext-Vorschau */
-export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, onLoeschen, onDuplizieren, performance }: Props) {
+export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, onLoeschen, onDuplizieren, performance, sichtbareIds }: Props) {
   const fragetext = 'fragetext' in frage ? (frage as { fragetext: string }).fragetext : ''
   // Cluster H Phase 2: Tag-Namen via tagsStore-Hook (subscribed → Re-Render bei Tag-Rename).
   // useShallow ist Pflicht: Selector returnt neues Array → ohne shallow-Equality infinite re-render (React #185).
   const tagNamen = useTagsStore(useShallow(s => tagNamenFromStore(frage, s)))
+  // Cluster D M-11: Checkbox-Konsistenz mit KompaktZeile.
+  const selektiert = useFragenSelectionStore((s) => s.selektiert.has(frage.id))
+  const toggleSelektion = useFragenSelectionStore((s) => s.toggle)
 
   return (
     <div
@@ -43,6 +50,20 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
         }`}
     >
       <div className="flex items-start gap-3">
+        {/* Selektions-Checkbox (Cluster D M-11 Spawn-Task) \u2014 analog KompaktZeile.
+            stopPropagation gegen Edit-Trigger; Shift-Click via nativeEvent f\u00fcr Range-Toggle. */}
+        <input
+          type="checkbox"
+          checked={selektiert}
+          onClick={(e) => { e.stopPropagation() }}
+          onChange={(e) => {
+            const nativeEv = e.nativeEvent as MouseEvent
+            const shift = typeof nativeEv.shiftKey === 'boolean' ? nativeEv.shiftKey : false
+            toggleSelektion(frage.id, { shift, sichtbareIds })
+          }}
+          className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-violet-600 focus:ring-violet-500 shrink-0 cursor-pointer mt-2"
+          aria-label={`Frage \u201e${frage.thema || frage.id}" ausw\u00e4hlen`}
+        />
         {/* +/- Button */}
         <button
           onClick={(e) => { e.stopPropagation(); onToggle() }}

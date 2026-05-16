@@ -115,4 +115,18 @@ describe('FragenSelektionBar', () => {
     fireEvent.click(getByText('Löschen'))
     expect(onOeffneLoeschConfirm).toHaveBeenCalledTimes(1)
   })
+
+  it('M-6: ESC-Key leert die Selektion', () => {
+    useFragenSelectionStore.getState().setzeSelektion(new Set(['a', 'b', 'c']))
+    render(
+      <FragenSelektionBar
+        sichtbareIds={['a', 'b']}
+        onOeffneEditor={vi.fn()}
+        onOeffneLoeschConfirm={vi.fn()}
+      />,
+    )
+    expect(useFragenSelectionStore.getState().selektiert.size).toBe(3)
+    fireEvent.keyDown(window, { key: 'Escape' })
+    expect(useFragenSelectionStore.getState().selektiert.size).toBe(0)
+  })
 })
