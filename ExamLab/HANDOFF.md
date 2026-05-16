@@ -8,7 +8,7 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD beider Branches:** `81689e2` — main + preview identisch, beide gepusht, beide deployed.
+**HEAD beider Branches:** `753d327` — main + preview identisch, beide gepusht, beide deployed.
 
 **Bei Wiedereinstieg:**
 ```bash
@@ -17,7 +17,7 @@ git fetch origin && git status        # working tree muss clean sein
 git log --oneline -10                  # letzte commits anschauen
 ```
 
-**Working tree clean.** vitest 1839 + 4 todo. ci-check vollständig grün.
+**Working tree clean.** vitest 1839 + 4 todo. ci-check vollständig grün. 5 alte Feature-Branches lokal aufgeräumt (alle merged); nur `main` + `preview` lokal, beide identisch mit origin.
 
 **Letzte Sessions (17.05.2026):** **Cluster G Icon-Migration KOMPLETT abgeschlossen.**
 - 6 Batches: Top-15 (`1c56633`) + Batch 2 (`4b986f9`) + Batch 3 (`35e9020`) + Batch 4 (`12dca6f`) + Batch 5 (`a579633`) + Mega-Batch (`81689e2`).
@@ -48,7 +48,7 @@ Nach 2 Wochen Live-Beobachtung Tag-Modell:
 
 #### 4. Kleinere Items
 - Filter-Dropdown in FragenBrowserHeader auf Custom-Dropdown mit Lucide-Option-Prefixes
-- Drift-Detection-Mode in `audit-no-emoji.mjs`: WARN wenn `count < baseline` (Baseline-Auto-Tighten)
+- Allowlist-Review in `scripts/no-emoji-baseline.json`: 14 didaktische Files prüfen ob alle noch zwingend Allowlist brauchen
 - `letzterSeedAm`-Persistenz im Apps-Script Configs-Sheet (F.3 Spec §5.2 A)
 - EinstellungenPanel-Migration auf Tab-Registry (blockiert durch `kiKalibrierung`↔`ki-kalibrierung`-ID-Konflikt)
 - Klassenlisten-Tab Filter (F.4 Out-of-Scope)
