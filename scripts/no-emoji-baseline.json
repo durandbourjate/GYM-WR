@@ -13,7 +13,8 @@
     "ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx",
     "ExamLab/src/config/appNavigation.ts",
     "ExamLab/src/components/settings/FavoritenTab.tsx",
-    "ExamLab/src/components/lp/Favoriten.tsx"
+    "ExamLab/src/components/lp/Favoriten.tsx",
+    "ExamLab/src/components/ui/icons/NavIcon.tsx"
   ],
   "per_file_max": {
     "ExamLab/src/components/AbgabeDialog.tsx": 1,

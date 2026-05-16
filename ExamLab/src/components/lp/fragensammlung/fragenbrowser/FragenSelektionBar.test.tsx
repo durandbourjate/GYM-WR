@@ -27,7 +27,7 @@ describe('FragenSelektionBar', () => {
 
   it('zeigt Anzahl ausgewählter Fragen wenn ≥1 selektiert', () => {
     useFragenSelectionStore.getState().setzeSelektion(new Set(['a', 'b']))
-    const { getByText } = render(
+    const { getByText, getByRole } = render(
       <FragenSelektionBar
         sichtbareIds={['a', 'b']}
         onOeffneEditor={vi.fn()}
@@ -35,7 +35,8 @@ describe('FragenSelektionBar', () => {
       />,
     )
     expect(getByText('2')).toBeTruthy()
-    expect(getByText(/Fragen ausgew/).textContent).toContain('2')
+    // M-4 (Cluster D): „Fragen" ist in eigenem span (hidden sm:inline) — kombinierter Text via Region.
+    expect(getByRole('region', { name: /Frage-Auswahl-Aktionen/ }).textContent).toContain('ausgewählt')
   })
 
   it('zeigt sichtbar-Diff wenn selektierte IDs nicht alle im Filter sichtbar sind', () => {

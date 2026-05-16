@@ -48,10 +48,10 @@ export default function FragenSelektionBar({ sichtbareIds, onOeffneEditor, onOef
     <div
       role="region"
       aria-label="Frage-Auswahl-Aktionen"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-800 dark:bg-slate-900 text-white shadow-lg rounded-full px-5 py-3 flex items-center gap-3 transition-all"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-800 dark:bg-slate-900 text-white shadow-lg rounded-full px-4 sm:px-5 py-3 flex items-center gap-2 sm:gap-3 transition-all max-w-[calc(100vw-2rem)] flex-wrap justify-center"
     >
       <span className="text-sm">
-        <strong>{selektierteIds.length}</strong> Fragen ausgewählt
+        <strong>{selektierteIds.length}</strong> <span className="hidden sm:inline">Fragen </span>ausgewählt
         {sichtbarCount < selektierteIds.length && (
           <span className="text-xs text-slate-300 ml-2">
             (davon {sichtbarCount} im Filter sichtbar)
@@ -61,23 +61,26 @@ export default function FragenSelektionBar({ sichtbareIds, onOeffneEditor, onOef
       <button
         type="button"
         onClick={onOeffneEditor}
+        title="Bearbeiten"
         className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-violet-600 hover:bg-violet-700 text-white text-sm transition-colors cursor-pointer"
       >
         <Pencil className="w-4 h-4" />
-        Bearbeiten
+        <span className="hidden sm:inline">Bearbeiten</span>
       </button>
       <button
         type="button"
         onClick={onOeffneLoeschConfirm}
+        title="Löschen"
         className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600 hover:bg-red-700 text-white text-sm transition-colors cursor-pointer"
       >
         <Trash2 className="w-4 h-4" />
-        Löschen
+        <span className="hidden sm:inline">Löschen</span>
       </button>
       <button
         type="button"
         onClick={() => { beschraenkeAufFilter(sichtbareIds) }}
-        className="px-3 py-1 rounded-full text-slate-200 hover:bg-slate-700 text-sm transition-colors cursor-pointer"
+        title="Auf Filter beschränken"
+        className="px-3 py-1 rounded-full text-slate-200 hover:bg-slate-700 text-sm transition-colors cursor-pointer hidden sm:inline"
       >
         Auf Filter beschränken
       </button>
@@ -85,6 +88,7 @@ export default function FragenSelektionBar({ sichtbareIds, onOeffneEditor, onOef
         type="button"
         onClick={leereSelektion}
         aria-label="Auswahl aufheben"
+        title="Auswahl aufheben"
         className="p-1 rounded-full text-slate-300 hover:bg-slate-700 transition-colors cursor-pointer"
       >
         <X className="w-4 h-4" />
