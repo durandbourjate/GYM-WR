@@ -1002,38 +1002,18 @@ function apiBackfillStatusDefault(body) {
  * @param {string} id
  * @param {object} patch
  */
-function updateFrageMitPatch_(id, patch) {
-  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
-  var tabs = getFragensammlungTabs_();
-  var sheet = null;
-  var rowIdx = -1;
-  var headers = null;
-  var aktuelleRow = null;
+function updateFrageMitPatch_(id, patch, opts) {
+  // Single-mode (kein opts.index): On-the-fly-Lookup. Bulk-Caller liefern
+  // opts.index (vorgebauter ID-Map aus buildFragenIndex_), das spart pro Call
+  // den linearen Scan ueber alle Sheet-Daten.
+  var idxEntry = opts && opts.index ? opts.index[String(id)] : null;
+  if (!idxEntry) idxEntry = locateFrageInFragensammlung_(id);
+  if (!idxEntry) throw new Error('Frage nicht gefunden: ' + id);
 
-  for (var t = 0; t < tabs.length; t++) {
-    var s = fragensammlung.getSheetByName(tabs[t]);
-    if (!s) continue;
-    var lastCol = s.getLastColumn();
-    if (lastCol === 0) continue;
-    var h = s.getRange(1, 1, 1, lastCol).getValues()[0];
-    var idColIdx = h.indexOf('id');
-    if (idColIdx < 0) continue;
-    var lastRow = s.getLastRow();
-    if (lastRow < 2) continue;
-    var data = s.getRange(2, 1, lastRow - 1, lastCol).getValues();
-    for (var r = 0; r < data.length; r++) {
-      if (String(data[r][idColIdx]) === String(id)) {
-        sheet = s;
-        rowIdx = r + 2; // 1-indexed + Header-Row
-        headers = h;
-        aktuelleRow = data[r];
-        break;
-      }
-    }
-    if (sheet) break;
-  }
-
-  if (!sheet) throw new Error('Frage nicht gefunden: ' + id);
+  var sheet = idxEntry.sheet;
+  var headers = idxEntry.headers;
+  var rowIdx = idxEntry.rowIdx;
+  var aktuelleRow = idxEntry.rowSnapshot;
 
   // Owner-Check: wenn autor-Spalte existiert und nicht-eigene Frage → throw.
   // Legacy-Fragen ohne autor-Feld werden akzeptiert (analog loescheFrageIntern_).
@@ -1085,13 +1065,86 @@ function updateFrageMitPatch_(id, patch) {
 
   // Fehlende Spalten automatisch hinzufügen (analog speichereFrageIntern_)
   headers = ensureColumns(sheet, headers, ergaenzteFelder);
+  idxEntry.headers = headers; // shared mit Index — andere Patches in selben Sheet sehen neue Header
 
-  // Pro Patch-Feld: nur die zugehörige Zelle setzen.
+  // setValues-Batch: ganze Row in EINEM Call schreiben statt N per-Field-setValue.
+  // Apps-Script-Latenz pro setValue-Call ist nicht-trivial; bei N=4-7 patches/row
+  // ist setValues-Whole-Row 4-7x schneller pro Frage.
+  var newRow = aktuelleRow.slice();
+  while (newRow.length < headers.length) newRow.push('');
   Object.keys(ergaenzteFelder).forEach(function(field) {
     var colIdx = headers.indexOf(field);
-    if (colIdx < 0) return; // sollte durch ensureColumns nicht passieren
-    sheet.getRange(rowIdx, colIdx + 1).setValue(ergaenzteFelder[field]);
+    if (colIdx >= 0) newRow[colIdx] = ergaenzteFelder[field];
   });
+  sheet.getRange(rowIdx, 1, 1, headers.length).setValues([newRow]);
+
+  // Snapshot fuer subsequente Patches auf dieselbe Row im selben Bulk-Lauf updaten
+  // (theoretisch ist jeder Bulk-Patch pro ID einmalig — Defense-in-Depth).
+  idxEntry.rowSnapshot = newRow;
+}
+
+/**
+ * Linearer Single-Frage-Lookup. Wird nur fuer den Single-mode-Pfad benutzt
+ * (bulk-mode hat einen vorgebauten ID-Map). Iteriert alle Fragensammlung-Tabs.
+ * @returns {{sheet, rowIdx, headers, rowSnapshot} | null}
+ */
+function locateFrageInFragensammlung_(id) {
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var tabs = getFragensammlungTabs_();
+  for (var t = 0; t < tabs.length; t++) {
+    var s = fragensammlung.getSheetByName(tabs[t]);
+    if (!s) continue;
+    var lastCol = s.getLastColumn();
+    if (lastCol === 0) continue;
+    var headers = s.getRange(1, 1, 1, lastCol).getValues()[0];
+    var idColIdx = headers.indexOf('id');
+    if (idColIdx < 0) continue;
+    var lastRow = s.getLastRow();
+    if (lastRow < 2) continue;
+    var data = s.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    for (var r = 0; r < data.length; r++) {
+      if (String(data[r][idColIdx]) === String(id)) {
+        return { sheet: s, rowIdx: r + 2, headers: headers, rowSnapshot: data[r] };
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Baut einmal pro Endpoint einen Map: ID -> {sheet, rowIdx, headers, rowSnapshot}.
+ * Ersetzt die O(n*m)-Suche in updateFrageMitPatch_ (n IDs * m Rows pro Tab)
+ * durch O(1)-Lookup nach einmaligem O(m)-Scan.
+ *
+ * Performance: bei 500 IDs und 5 Tabs zu je 500 Fragen sank die Sheet-Reads
+ * von 500*5 = 2500 auf 5 (factor 500). Memory-Notiz „I-3 + M-1 (Cluster D S3)".
+ *
+ * Gibt Map (Plain Object) zurueck. Aufrufer muss `index[id]` selbst pruefen.
+ */
+function buildFragenIndex_() {
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+  var tabs = getFragensammlungTabs_();
+  var index = {};
+  for (var t = 0; t < tabs.length; t++) {
+    var s = fragensammlung.getSheetByName(tabs[t]);
+    if (!s) continue;
+    var lastCol = s.getLastColumn();
+    if (lastCol === 0) continue;
+    var headers = s.getRange(1, 1, 1, lastCol).getValues()[0];
+    var idColIdx = headers.indexOf('id');
+    if (idColIdx < 0) continue;
+    var lastRow = s.getLastRow();
+    if (lastRow < 2) continue;
+    var data = s.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    for (var r = 0; r < data.length; r++) {
+      var id = String(data[r][idColIdx]);
+      if (!id) continue;
+      // Mehrere Tabs mit gleicher ID: erster Treffer gewinnt (deterministisch).
+      if (index[id]) continue;
+      index[id] = { sheet: s, rowIdx: r + 2, headers: headers, rowSnapshot: data[r] };
+    }
+  }
+  return index;
 }
 
 /**
@@ -1153,12 +1206,15 @@ function apiBulkUpdateFragen(body) {
   var lock = LockService.getScriptLock();
   lock.waitLock(30000);
   try {
+    // Perf-Refactor (#6 17.05.2026): Index einmal bauen statt pro ID linear scannen.
+    // Reduziert Sheet-Reads von O(n_ids * n_tabs) auf O(n_tabs).
+    var index = buildFragenIndex_();
     var affectedIds = [];
     var failedIds = [];
     for (var i = 0; i < body.ids.length; i++) {
       var id = String(body.ids[i]);
       try {
-        updateFrageMitPatch_(id, body.patch);
+        updateFrageMitPatch_(id, body.patch, { index: index });
         affectedIds.push(id);
       } catch (e) {
         console.warn('[apiBulkUpdateFragen] failed for id=' + id + ': ' + (e && e.message ? e.message : e));
