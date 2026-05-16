@@ -1,4 +1,8 @@
-import { useState, useEffect, useMemo, Suspense } from 'react'
+import { useState, useEffect, useMemo, Suspense, type ComponentType } from 'react'
+import {
+  ClipboardList, BarChart3, Eye, Target, Play, TrendingUp, BookOpen, Settings,
+  User, GraduationCap, Star, Wrench, MapPin, HelpCircle, FileText, type LucideProps,
+} from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { useFavoritenStore } from '../../store/favoritenStore'
@@ -128,7 +132,7 @@ export default function Favoriten() {
                 }
                 className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px]"
               >
-                <span className="text-lg">{fav.icon || typIcon(fav.typ)}</span>
+                <span className="text-lg inline-flex items-center"><IconRender icon={fav.icon || typIcon(fav.typ)} className="w-5 h-5 text-slate-500 dark:text-slate-400" /></span>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</p>
                   <p className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</p>
@@ -239,6 +243,35 @@ function typIcon(typ: string): string {
     case 'frage': return '❓'
     default: return '📄'
   }
+}
+
+/** Mappt persistierte Emoji-Strings auf Lucide-Komponenten (analog FavoritenTab). */
+function iconStringToComponent(s: string): ComponentType<LucideProps> | null {
+  switch (s) {
+    case '📝': return ClipboardList
+    case '📊': return BarChart3
+    case '👁️': case '👁': return Eye
+    case '🎯': return Target
+    case '▶️': case '▶': return Play
+    case '📈': return TrendingUp
+    case '📚': return BookOpen
+    case '⚙️': case '⚙': return Settings
+    case '👤': return User
+    case '🎓': return GraduationCap
+    case '⭐': case '☆': return Star
+    case '🔧': return Wrench
+    case '📍': return MapPin
+    case '❓': return HelpCircle
+    case '📄': return FileText
+    default: return null
+  }
+}
+
+function IconRender({ icon, className = 'w-4 h-4 inline-block' }: { icon?: string; className?: string }) {
+  if (!icon) return null
+  const Comp = iconStringToComponent(icon)
+  if (Comp) return <Comp className={className} />
+  return <span>{icon}</span>
 }
 
 function typLabel(typ: string): string {

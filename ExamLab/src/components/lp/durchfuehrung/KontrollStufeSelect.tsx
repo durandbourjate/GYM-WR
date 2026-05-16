@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, type ComponentType } from 'react'
+import { Circle, ChevronRight, type LucideProps } from 'lucide-react'
 import type { KontrollStufe } from '../../../types/lockdown'
 
 interface Props {
@@ -7,38 +8,45 @@ interface Props {
   disabled?: boolean
 }
 
-const STUFEN: {
+interface StufenEintrag {
   key: KontrollStufe
   label: string
-  icon: string
+  Icon: ComponentType<LucideProps>
+  iconClass: string
   beschreibung: string
   details: string[]
-}[] = [
+}
+
+const STUFEN: StufenEintrag[] = [
   {
     key: 'keine',
     label: 'Keine',
-    icon: '⚪',
+    Icon: Circle,
+    iconClass: 'text-slate-400',
     beschreibung: 'Für Übungen',
     details: ['Kein Logging', 'Keine Einschränkungen', 'Kein Vollbild'],
   },
   {
     key: 'locker',
     label: 'Locker',
-    icon: '🟢',
+    Icon: Circle,
+    iconClass: 'fill-green-500 text-green-500',
     beschreibung: 'Nur Logging',
     details: ['Verstösse geloggt', 'Warnung angezeigt', 'Kein Block'],
   },
   {
     key: 'standard',
     label: 'Standard',
-    icon: '🟡',
+    Icon: Circle,
+    iconClass: 'fill-yellow-500 text-yellow-500',
     beschreibung: 'Vollbild + Block',
     details: ['Copy/Paste blockiert', 'Vollbild erzwungen', 'Tab-Wechsel erkannt', '3 Verstösse → Sperre'],
   },
   {
     key: 'streng',
     label: 'Streng',
-    icon: '🔴',
+    Icon: Circle,
+    iconClass: 'fill-red-500 text-red-500',
     beschreibung: 'Sofort-Pause',
     details: ['Sofortige Pause', 'SEB empfohlen', 'Kein Tab-Wechsel'],
   },
@@ -57,11 +65,9 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
           Kontrollstufe
         </span>
-        <span className="text-[10px] text-slate-400 dark:text-slate-500 transition-transform duration-150 inline-block"
+        <ChevronRight className="w-3 h-3 text-slate-400 dark:text-slate-500 transition-transform duration-150 inline-block"
           style={{ transform: detailsOffen ? 'rotate(90deg)' : 'rotate(0deg)' }}
-        >
-          ▶
-        </span>
+        />
       </button>
 
       {/* Stufen-Buttons + Beschreibung unter aktivem Button */}
@@ -74,7 +80,7 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
               type="button"
               onClick={() => !disabled && onChange(s.key)}
               disabled={disabled}
-              className={`px-3 py-2 text-sm font-medium transition-colors ${
+              className={`px-3 py-2 text-sm font-medium transition-colors inline-flex items-center justify-center gap-1.5 ${
                 istAktiv
                   ? 'bg-blue-600 text-white'
                   : disabled
@@ -82,7 +88,7 @@ export function KontrollStufeSelect({ value, onChange, disabled }: Props) {
                     : 'bg-white text-slate-700 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300'
               } ${s.key !== 'keine' ? 'border-l border-slate-300 dark:border-slate-600' : ''}`}
             >
-              {s.icon} {s.label}
+              <s.Icon className={`w-3 h-3 ${s.iconClass}`} /> {s.label}
             </button>
           )
         })}

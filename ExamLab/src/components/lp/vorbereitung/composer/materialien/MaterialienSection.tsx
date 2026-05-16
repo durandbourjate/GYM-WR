@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, type ComponentType } from 'react'
+import { FileText, ClipboardList, FileType2, Link as LinkIcon, Paperclip, Video, ImageIcon, Music, X, type LucideProps } from 'lucide-react'
 import type { PruefungsMaterial } from '../../../../../types/pruefung.ts'
 import { Section, Field } from '../ComposerUI.tsx'
 import { apiService } from '../../../../../services/apiService.ts'
@@ -169,13 +170,13 @@ export default function MaterialienSection({ materialien, setMaterialien }: {
     videoEmbed: 'Video',
   }
 
-  const typIcon: Record<PruefungsMaterial['typ'], string> = {
-    pdf: '📄',
-    text: '📝',
-    richtext: '🖹',
-    link: '🔗',
-    dateiUpload: '📎',
-    videoEmbed: '🎬',
+  const typIconComp: Record<PruefungsMaterial['typ'], ComponentType<LucideProps>> = {
+    pdf: FileText,
+    text: ClipboardList,
+    richtext: FileType2,
+    link: LinkIcon,
+    dateiUpload: Paperclip,
+    videoEmbed: Video,
   }
 
   return (
@@ -193,7 +194,7 @@ export default function MaterialienSection({ materialien, setMaterialien }: {
               className="flex items-start gap-3 px-3 py-2.5 bg-slate-50 dark:bg-slate-700/30 rounded-lg"
             >
               <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
-                <span className="text-sm" title={typLabel[mat.typ]}>{typIcon[mat.typ]}</span>
+                {(() => { const Comp = typIconComp[mat.typ]; return <Comp className="w-4 h-4 text-slate-500 dark:text-slate-400" aria-label={typLabel[mat.typ]} /> })()}
                 <span className="text-xs px-2 py-0.5 bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 rounded font-medium">
                   {typLabel[mat.typ]}
                 </span>
@@ -246,9 +247,10 @@ export default function MaterialienSection({ materialien, setMaterialien }: {
               </div>
               <button
                 onClick={() => removeMaterial(mat.id)}
-                className="w-6 h-6 text-xs text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded cursor-pointer transition-colors shrink-0 mt-0.5"
+                className="w-6 h-6 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded cursor-pointer transition-colors shrink-0 mt-0.5 inline-flex items-center justify-center"
+                aria-label="Material entfernen"
               >
-                ×
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
           ))}
@@ -387,16 +389,16 @@ export default function MaterialienSection({ materialien, setMaterialien }: {
               {/* Gewählte Datei anzeigen */}
               {uploadDatei && (
                 <div className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-700/30 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <span className="text-lg shrink-0" title={
+                  <span className="shrink-0 text-slate-500 dark:text-slate-400" title={
                     uploadDatei.type.startsWith('image/') ? 'Bild'
                     : uploadDatei.type.startsWith('audio/') ? 'Audio'
                     : uploadDatei.type.startsWith('video/') ? 'Video'
                     : 'PDF'
                   }>
-                    {uploadDatei.type.startsWith('image/') ? '🖼️'
-                      : uploadDatei.type.startsWith('audio/') ? '🎵'
-                      : uploadDatei.type.startsWith('video/') ? '🎬'
-                      : '📄'}
+                    {uploadDatei.type.startsWith('image/') ? <ImageIcon className="w-5 h-5" />
+                      : uploadDatei.type.startsWith('audio/') ? <Music className="w-5 h-5" />
+                      : uploadDatei.type.startsWith('video/') ? <Video className="w-5 h-5" />
+                      : <FileText className="w-5 h-5" />}
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{uploadDatei.name}</p>
@@ -406,9 +408,10 @@ export default function MaterialienSection({ materialien, setMaterialien }: {
                     type="button"
                     onClick={() => { setUploadDatei(null); setUploadFehler(null) }}
                     disabled={uploadLaeuft}
-                    className="w-6 h-6 text-xs text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded cursor-pointer transition-colors shrink-0"
+                    className="w-6 h-6 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30 rounded cursor-pointer transition-colors shrink-0 inline-flex items-center justify-center"
+                    aria-label="Datei entfernen"
                   >
-                    ×
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}

@@ -22,6 +22,7 @@
  */
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import KompaktZeile from './KompaktZeile.tsx'
 import DetailKarte from './DetailKarte.tsx'
 import DraftsSection from '../DraftsSection.tsx'
@@ -209,7 +210,7 @@ export default function VirtualisierteFragenListe(p: Props) {
           style={{ height: LANE_HOEHE }}
           className={`sticky top-0 z-20 w-full text-left flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 cursor-pointer ${farbeHelfer(aktiverHeaderItem.gruppeKey, p.gruppierung)}`}
         >
-          <span>{aktiverHeaderItem.istAufgeklappt ? '▼' : '▶'}</span>
+          {aktiverHeaderItem.istAufgeklappt ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
           <span className="font-semibold">
             {labelHelfer(aktiverHeaderItem.gruppeKey, p.gruppierung)}
           </span>
@@ -252,7 +253,7 @@ export default function VirtualisierteFragenListe(p: Props) {
                   onClick={() => p.toggleGruppe(item.gruppeKey)}
                   className={`w-full text-left flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 cursor-pointer ${farbeHelfer(item.gruppeKey, p.gruppierung)}`}
                 >
-                  <span>{item.istAufgeklappt ? '▼' : '▶'}</span>
+                  {item.istAufgeklappt ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                   <span className="font-semibold">
                     {labelHelfer(item.gruppeKey, p.gruppierung)}
                   </span>

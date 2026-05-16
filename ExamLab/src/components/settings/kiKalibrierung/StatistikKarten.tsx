@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Target, Check, AlertTriangle, X, Star } from 'lucide-react'
 import { kalibrierungApi, type KalibrierungsStatistik, type KalibrierungsEinstellungen } from '../../../services/kalibrierungApi'
 
 export default function StatistikKarten({ email }: { email: string }) {
@@ -27,7 +28,7 @@ export default function StatistikKarten({ email }: { email: string }) {
   if (!einst.global && gesamtVorschlaege === 0) {
     return (
       <div className="p-6 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 text-center space-y-3">
-        <p className="text-2xl">🎯</p>
+        <Target className="w-8 h-8 mx-auto text-slate-500 dark:text-slate-400" />
         <p className="font-semibold dark:text-white">KI-Kalibrierung ist noch nicht aktiv.</p>
         <p className="text-sm text-slate-600 dark:text-slate-400">
           Aktiviere sie im Einstellungen-Tab, damit die KI aus deinen Korrekturen lernen kann.
@@ -79,17 +80,17 @@ export default function StatistikKarten({ email }: { email: string }) {
             <h4 className="font-semibold dark:text-white">{aktionsLabels[a] ?? a}</h4>
             <p className="text-xs text-slate-500 dark:text-slate-400">Letzte {tage} Tage: {s.vorschlaege} Vorschläge</p>
             <ul className="text-sm space-y-1 dark:text-slate-200">
-              <li>✓ unverändert übernommen: {s.unveraendert} <span className="text-slate-400">({pct(s.unveraendert, s.vorschlaege)})</span></li>
+              <li className="inline-flex items-center gap-1.5 w-full"><Check className="w-3.5 h-3.5 text-green-500" /> unverändert übernommen: {s.unveraendert} <span className="text-slate-400">({pct(s.unveraendert, s.vorschlaege)})</span></li>
               <li>≈ leicht angepasst: {s.leicht} <span className="text-slate-400">({pct(s.leicht, s.vorschlaege)})</span></li>
-              <li>⚠ deutlich umgeschrieben: {s.deutlich} <span className="text-slate-400">({pct(s.deutlich, s.vorschlaege)})</span></li>
-              <li>✗ verworfen: {s.verworfen} <span className="text-slate-400">({pct(s.verworfen, s.vorschlaege)})</span></li>
+              <li className="inline-flex items-center gap-1.5 w-full"><AlertTriangle className="w-3.5 h-3.5 text-amber-500" /> deutlich umgeschrieben: {s.deutlich} <span className="text-slate-400">({pct(s.deutlich, s.vorschlaege)})</span></li>
+              <li className="inline-flex items-center gap-1.5 w-full"><X className="w-3.5 h-3.5 text-red-500" /> verworfen: {s.verworfen} <span className="text-slate-400">({pct(s.verworfen, s.vorschlaege)})</span></li>
             </ul>
             <p className="text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700">
               Aktive Trainings-Beispiele: <strong>{s.aktive}</strong>
               {s.aktive < einst.minBeispiele && s.vorschlaege > 0 && (
                 <span className="text-amber-600 dark:text-amber-400 ml-2">({s.aktive}/{einst.minBeispiele} bis Kalibrierung startet)</span>
               )}
-              {s.wichtige > 0 && <span className="ml-2">({s.wichtige} ⭐)</span>}
+              {s.wichtige > 0 && <span className="ml-2 inline-flex items-center gap-1">({s.wichtige} <Star className="w-3 h-3 text-yellow-500" />)</span>}
             </p>
           </div>
         ))}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Lock, Flag } from 'lucide-react'
 import type { ThemenFortschritt } from '../../types/ueben/fortschritt'
 import type { ThemenStatus } from '../../types/ueben/themenSichtbarkeit'
 import { berechneSterne, sterneText } from '../../utils/ueben/gamification'
@@ -13,9 +14,9 @@ interface ThemaKarteProps {
   themenStatus: ThemenStatus
   fachFarben: Record<string, string>
   onClick: () => void
-  /** Anzahl Lernziele für dieses Thema (0 = kein 🏁 Button) */
+  /** Anzahl Lernziele für dieses Thema (0 = kein Flag-Button) */
   anzahlLernziele?: number
-  /** Callback wenn 🏁 Button geklickt wird */
+  /** Callback wenn Flag-Button geklickt wird */
   onLernzieleKlick?: () => void
   /** Bundle G.a — Hover-Pre-Warm: Handler vom `useDebouncedHover` durchgereicht. */
   onMouseEnter?: () => void
@@ -97,8 +98,8 @@ export function ThemaKarte({
 
       {/* Schloss-Icon bei gesperrten Themen */}
       {istGesperrt && (
-        <span className="absolute top-2 right-2 text-slate-400 dark:text-slate-600 text-sm">
-          🔒
+        <span className="absolute top-2 right-2 text-slate-400 dark:text-slate-600">
+          <Lock className="w-3.5 h-3.5" aria-label="gesperrt" />
         </span>
       )}
 
@@ -133,10 +134,10 @@ export function ThemaKarte({
         {anzahlLernziele > 0 && onLernzieleKlick && (
           <span
             onClick={(e) => { e.stopPropagation(); onLernzieleKlick() }}
-            className="cursor-pointer hover:opacity-80"
+            className="cursor-pointer hover:opacity-80 inline-flex items-center"
             title={`${anzahlLernziele} Lernziele`}
           >
-            🏁
+            <Flag className="w-3.5 h-3.5" />
           </span>
         )}
       </div>

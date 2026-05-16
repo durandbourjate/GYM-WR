@@ -1,3 +1,5 @@
+import { AlertTriangle, Check, Info, X, type LucideProps } from 'lucide-react'
+import type { ComponentType } from 'react'
 import { useToastStore, type ToastVariant } from '../../store/toastStore'
 
 const VARIANT_STYLES: Record<ToastVariant, string> = {
@@ -7,11 +9,11 @@ const VARIANT_STYLES: Record<ToastVariant, string> = {
   warning: 'bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700 text-yellow-800 dark:text-yellow-200',
 }
 
-const VARIANT_ICONS: Record<ToastVariant, string> = {
-  error:   '⚠️',
-  success: '✓',
-  info:    'ℹ️',
-  warning: '⚠️',
+const VARIANT_ICONS: Record<ToastVariant, ComponentType<LucideProps>> = {
+  error:   AlertTriangle,
+  success: Check,
+  info:    Info,
+  warning: AlertTriangle,
 }
 
 export function ToastContainer() {
@@ -28,15 +30,15 @@ export function ToastContainer() {
           role="alert"
           className={`pointer-events-auto px-4 py-3 rounded-md shadow-lg border flex items-start gap-2 ${VARIANT_STYLES[t.variant]}`}
         >
-          <span aria-hidden="true">{VARIANT_ICONS[t.variant]}</span>
+          {(() => { const Icon = VARIANT_ICONS[t.variant]; return <Icon className="w-4 h-4 mt-0.5 shrink-0" aria-hidden /> })()}
           <span className="flex-1">{t.message}</span>
           <button
             type="button"
             onClick={() => dismiss(t.id)}
             aria-label="Toast schliessen"
-            className="ml-2 text-lg leading-none font-semibold opacity-70 hover:opacity-100"
+            className="ml-2 opacity-70 hover:opacity-100 inline-flex items-center"
           >
-            ×
+            <X className="w-4 h-4" />
           </button>
         </div>
       ))}

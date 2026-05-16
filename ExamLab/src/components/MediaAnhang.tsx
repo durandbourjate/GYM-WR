@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Video, FileText, Paperclip } from 'lucide-react'
 import type { FrageAnhang } from '../types/fragen-storage'
 import { istBild, istAudio, istVideo, istEmbed, istPDF, driveStreamUrl, drivePreviewUrl, driveViewUrl } from '../utils/mediaUtils.ts'
 
@@ -121,7 +122,7 @@ export default function MediaAnhang({ anhang, bildSz = 'w400', onLightbox }: Pro
           />
         </div>
         <div className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700/30 flex items-center justify-between">
-          <span className="text-xs text-slate-600 dark:text-slate-300 truncate">🎬 {anhang.dateiname}</span>
+          <span className="text-xs text-slate-600 dark:text-slate-300 truncate inline-flex items-center gap-1.5"><Video className="w-3.5 h-3.5" /> {anhang.dateiname}</span>
           <a
             href={driveViewUrl(anhang.driveFileId)}
             target="_blank"
@@ -146,7 +147,7 @@ export default function MediaAnhang({ anhang, bildSz = 'w400', onLightbox }: Pro
           allow="autoplay"
         />
         <div className="px-3 py-2 bg-slate-50 dark:bg-slate-700/30 flex items-center justify-between">
-          <span className="text-xs text-slate-600 dark:text-slate-300 truncate">📄 {anhang.dateiname}</span>
+          <span className="text-xs text-slate-600 dark:text-slate-300 truncate inline-flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> {anhang.dateiname}</span>
           <a
             href={driveViewUrl(anhang.driveFileId)}
             target="_blank"
@@ -162,8 +163,8 @@ export default function MediaAnhang({ anhang, bildSz = 'w400', onLightbox }: Pro
 
   // Unbekannter Typ: Fallback
   return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-600 p-3 text-sm text-slate-500">
-      📎 {anhang.dateiname}
+    <div className="rounded-lg border border-slate-200 dark:border-slate-600 p-3 text-sm text-slate-500 inline-flex items-center gap-1.5">
+      <Paperclip className="w-4 h-4" /> {anhang.dateiname}
       {anhang.driveFileId && (
         <a href={driveViewUrl(anhang.driveFileId)} target="_blank" rel="noopener noreferrer" className="ml-2 underline">
           Öffnen

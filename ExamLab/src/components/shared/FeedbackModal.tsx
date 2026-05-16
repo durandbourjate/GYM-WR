@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { CheckCircle2, Circle, Lightbulb } from 'lucide-react'
 
 // ExamLab Problemmeldungen — Sheet "ExamLab Problemmeldungen", Tab "ExamLab-Problemmeldungen"
 const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSxIOqGhAbnNM2-Y4ulgBY3usVEC6cKT4S5sEk4sf2CMognF5qxopj3FJtnTpm3nq7TQ/exec'
@@ -137,7 +138,7 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
         <div className="px-5 py-4">
           {sent ? (
             <div className="text-center py-6">
-              <div className="text-3xl mb-2">✅</div>
+              <div className="flex justify-center mb-2"><CheckCircle2 className="w-10 h-10 text-green-500" /></div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 <strong>Vielen Dank!</strong><br />Deine Rückmeldung wurde gesendet.
               </p>
@@ -170,7 +171,7 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
                       : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
                   }`}
                 >
-                  🔴 Problem
+                  <span className="inline-flex items-center gap-1.5"><Circle className="w-3.5 h-3.5 fill-red-500 text-red-500" /> Problem</span>
                 </button>
                 <button
                   onClick={() => { setTyp('wunsch'); setCategory(null) }}
@@ -180,7 +181,7 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
                       : 'border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-500'
                   }`}
                 >
-                  💡 Wunsch
+                  <span className="inline-flex items-center gap-1.5"><Lightbulb className="w-3.5 h-3.5" /> Wunsch</span>
                 </button>
               </div>
 

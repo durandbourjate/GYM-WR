@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import type { BilanzERFrage as BilanzERFrageType } from '../../types/fragen-storage'
 import type { Antwort as StoreAntwort } from '../../types/antworten.ts'
 import { renderMarkdown } from '../../utils/markdown.ts'
@@ -87,7 +88,7 @@ export function BilanzERLoesung({ frage, antwort }: { frage: BilanzERFrageType; 
                 </span>
               </span>
               <span className={`text-xs font-semibold ${bilanzsummeKorrekt ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
-                Deine Bilanzsumme: {susBilanzsumme.toFixed(2)} {bilanzsummeKorrekt ? '✓' : '✗'}
+                <span className="inline-flex items-center gap-1">Deine Bilanzsumme: {susBilanzsumme.toFixed(2)} {bilanzsummeKorrekt ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}</span>
               </span>
             </div>
           </div>
@@ -130,7 +131,7 @@ export function BilanzERLoesung({ frage, antwort }: { frage: BilanzERFrageType; 
                 </span>
               </span>
               <span className={`text-xs font-semibold ${gewinnKorrekt ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
-                Dein Ergebnis: {susGewinn.toFixed(2)} {gewinnKorrekt ? '✓' : '✗'}
+                <span className="inline-flex items-center gap-1">Dein Ergebnis: {susGewinn.toFixed(2)} {gewinnKorrekt ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}</span>
               </span>
             </div>
           </div>

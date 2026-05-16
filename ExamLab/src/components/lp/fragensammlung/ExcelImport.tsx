@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { X, Check, AlertTriangle, XCircle, FileSpreadsheet, CheckCircle2, ArrowLeft } from 'lucide-react'
 import { useFocusTrap } from '../../../hooks/useFocusTrap'
 import { useAuthStore } from '../../../store/authStore'
 import { fachbereichFarbe, typLabel } from '../../../utils/fachUtils'
@@ -167,9 +168,10 @@ export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds 
           </div>
           <button
             onClick={onSchliessen}
-            className="w-8 h-8 text-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer"
+            className="w-8 h-8 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer inline-flex items-center justify-center"
+            aria-label="Schliessen"
           >
-            ×
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -195,7 +197,7 @@ export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds 
                     : 'border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
                 }`}
               >
-                <div className="text-3xl mb-2">📊</div>
+                <div className="flex justify-center mb-2"><FileSpreadsheet className="w-10 h-10 text-slate-400 dark:text-slate-500" /></div>
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
                   XLSX-Datei hierher ziehen oder klicken
                 </p>
@@ -285,7 +287,7 @@ export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds 
           {/* Fertig */}
           {status === 'fertig' && (
             <div className="text-center py-12">
-              <div className="text-4xl mb-3">✅</div>
+              <div className="flex justify-center mb-3"><CheckCircle2 className="w-12 h-12 text-green-500" /></div>
               <p className="text-lg font-semibold text-slate-800 dark:text-slate-100">
                 {fortschritt.fertig} Frage{fortschritt.fertig !== 1 ? 'n' : ''} importiert
               </p>
@@ -327,7 +329,7 @@ export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds 
                   }
                   className="px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
                 >
-                  {status === 'vorschau' || status === 'sheetWahl' ? '← Zurück' : 'Abbrechen'}
+                  {status === 'vorschau' || status === 'sheetWahl' ? <span className="inline-flex items-center gap-1.5"><ArrowLeft className="w-3.5 h-3.5" /> Zurück</span> : 'Abbrechen'}
                 </button>
 
                 {(status === 'vorschau' || status === 'sheetWahl') && (
@@ -385,8 +387,8 @@ export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds 
                       : 'border-slate-400 dark:border-slate-500'
                 }`}>
                   {zeile.validierung.status === 'fehler'
-                    ? <span className="text-red-500 text-xs">✕</span>
-                    : zeile.ausgewaehlt && <span className="text-white dark:text-slate-800 text-xs">✓</span>
+                    ? <X className="w-3 h-3 text-red-500" />
+                    : zeile.ausgewaehlt && <Check className="w-3 h-3 text-white dark:text-slate-800" />
                   }
                 </div>
 
@@ -409,10 +411,10 @@ export default function ExcelImport({ onImportiert, onSchliessen, bestehendeIds 
                     )}
                     {/* Validierungs-Status */}
                     {zeile.validierung.status === 'warnung' && (
-                      <span className="text-xs text-amber-600 dark:text-amber-400">⚠</span>
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" aria-label="Warnung" />
                     )}
                     {zeile.validierung.status === 'fehler' && (
-                      <span className="text-xs text-red-600 dark:text-red-400">❌</span>
+                      <XCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" aria-label="Fehler" />
                     )}
                   </div>
 

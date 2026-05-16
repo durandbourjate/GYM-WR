@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { apiService } from '../../../services/apiService.ts'
 import type { PruefungsKorrektur, SchuelerAbgabe } from '../../../types/korrektur.ts'
 interface Props {
@@ -31,7 +32,7 @@ export default function KorrekturAktionsLeiste({
 }: Props) {
   // U7: Prüfe ob alle Bewertungen vollständig bepunktet sind
   const hatFehlendePunkte = bewertungenOhnePunkte > 0
-  const punkteWarnung = hatFehlendePunkte ? `⚠ ${bewertungenOhnePunkte} Bewertungen ohne Punkte` : ''
+  const punkteWarnung = hatFehlendePunkte ? `${bewertungenOhnePunkte} Bewertungen ohne Punkte` : ''
   return (
     <>
       {(korrektur?.batchStatus === 'laeuft' || batchLaeuft) && (
@@ -82,7 +83,7 @@ export default function KorrekturAktionsLeiste({
           }`}
           title={hatFehlendePunkte && !einsichtFreigegeben ? punkteWarnung : einsichtFreigegeben ? 'Einsicht für SuS sperren' : 'Einsicht für SuS freigeben'}
         >
-          {aktionLaeuft === 'einsicht' ? 'Wird gespeichert...' : einsichtFreigegeben ? '✓ Einsicht' : 'Einsicht freigeben'}
+          {aktionLaeuft === 'einsicht' ? 'Wird gespeichert...' : einsichtFreigegeben ? (<span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> Einsicht</span>) : 'Einsicht freigeben'}
         </button>
       )}
       {korrektur && einsichtFreigegeben && (
@@ -103,7 +104,7 @@ export default function KorrekturAktionsLeiste({
           }`}
           title={pdfFreigegeben ? 'PDF-Download für SuS sperren' : 'PDF-Download für SuS freigeben'}
         >
-          {aktionLaeuft === 'pdf' ? 'Wird gespeichert...' : pdfFreigegeben ? '✓ PDF-Download' : 'PDF freigeben'}
+          {aktionLaeuft === 'pdf' ? 'Wird gespeichert...' : pdfFreigegeben ? (<span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5" /> PDF-Download</span>) : 'PDF freigeben'}
         </button>
       )}
       {korrektur && korrektur.schueler.length > 0 && (

@@ -2,6 +2,7 @@
 // Batch-Export: Mehrere Fragen gleichzeitig in Pools exportieren
 
 import { useState, useEffect, useMemo } from 'react'
+import { Check, CheckCircle2, AlertTriangle, X } from 'lucide-react'
 import type { Frage } from '../../../types/fragen-storage'
 import { ladePoolIndex, ladePoolConfig } from '../../../services/poolSync'
 import {
@@ -309,7 +310,7 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
                         <span className="text-xs text-gray-600 dark:text-gray-300 truncate flex-1">
                           {fragetext?.replace(/\*\*/g, '').replace(/\n/g, ' ').slice(0, 80)}
                         </span>
-                        {istKomplett && <span className="text-green-600 dark:text-green-400 text-sm">✓</span>}
+                        {istKomplett && <Check className="w-4 h-4 text-green-600 dark:text-green-400" aria-label="komplett" />}
                       </div>
                       <div className="flex items-center gap-2">
                         <select
@@ -360,7 +361,7 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
           {/* === Phase 4: Fertig === */}
           {phase === 'fertig' && (
             <div className="py-8 text-center">
-              <div className="text-4xl mb-3">✓</div>
+              <div className="flex justify-center mb-3"><CheckCircle2 className="w-12 h-12 text-green-500" /></div>
               <p className="text-sm dark:text-gray-300">
                 {ergebnisse.filter(e => e.erfolg).length} Fragen erfolgreich in Pools exportiert.
               </p>
@@ -372,7 +373,7 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
           {phase === 'fehler' && (
             <div className="py-4">
               <div className="text-center mb-4">
-                <div className="text-4xl mb-2">⚠</div>
+                <div className="flex justify-center mb-2"><AlertTriangle className="w-12 h-12 text-amber-500" /></div>
                 <p className="text-sm dark:text-gray-300">
                   {ergebnisse.filter(e => e.erfolg).length} erfolgreich,{' '}
                   {ergebnisse.filter(e => !e.erfolg).length} fehlgeschlagen.
@@ -384,7 +385,7 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
               <div className="space-y-1">
                 {ergebnisse.filter(e => !e.erfolg).map(e => (
                   <div key={e.frageId} className="flex items-center gap-2 p-2 bg-red-50 dark:bg-red-900/20 rounded text-sm">
-                    <span className="text-red-600 dark:text-red-400">✗</span>
+                    <X className="w-3.5 h-3.5 text-red-600 dark:text-red-400" aria-label="fehlgeschlagen" />
                     <span className="font-mono text-xs">{e.frageId}</span>
                     <span className="text-xs text-red-500">{e.fehler}</span>
                   </div>

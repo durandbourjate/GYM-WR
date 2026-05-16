@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Lock, AlertTriangle } from 'lucide-react'
 import { useAuthStore } from '../../../store/authStore'
 import { apiService } from '../../../services/apiService'
 import type { MonitoringDaten, SchuelerStatus } from '../../../types/monitoring'
@@ -204,8 +205,8 @@ export function MultiDurchfuehrenDashboard({ pruefungIds }: Props) {
                       {abgegeben} abgegeben
                     </span>
                     {gesperrte > 0 && (
-                      <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">
-                        🔒 {gesperrte} gesperrt
+                      <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full inline-flex items-center gap-1">
+                        <Lock className="w-3 h-3" /> {gesperrte} gesperrt
                       </span>
                     )}
                   </div>
@@ -240,9 +241,9 @@ export function MultiDurchfuehrenDashboard({ pruefungIds }: Props) {
                         <td className="px-3 py-1.5 text-xs">{statusBadge(s.status)}</td>
                         <td className="px-3 py-1.5 text-xs">
                           {s.gesperrt ? (
-                            <span className="text-red-600 font-bold">🔒 {s.verstossZaehler ?? 0}</span>
+                            <span className="text-red-600 font-bold inline-flex items-center gap-1"><Lock className="w-3 h-3" /> {s.verstossZaehler ?? 0}</span>
                           ) : (s.verstossZaehler ?? 0) > 0 ? (
-                            <span className="text-amber-600 font-semibold">⚠️ {s.verstossZaehler}</span>
+                            <span className="text-amber-600 font-semibold inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3" /> {s.verstossZaehler}</span>
                           ) : (
                             <span className="text-slate-400">—</span>
                           )}

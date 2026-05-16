@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Star, Check, Link as LinkIcon } from 'lucide-react'
 import { useFavoritenStore } from '../../../store/favoritenStore'
 import { formatDatum } from '../../../utils/zeit'
 import { getFachFarbe } from '../../../utils/ueben/fachFarben'
@@ -35,10 +36,11 @@ export function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, tracker
       <div className="flex items-start gap-2 flex-1 min-w-0">
         <button
           onClick={() => toggleFavorit({ typ: c.typ === 'formativ' ? 'uebung' : 'pruefung', ziel: c.id, label: c.titel })}
-          className="mt-0.5 text-lg leading-none cursor-pointer hover:scale-110 transition-transform shrink-0"
+          className="mt-0.5 cursor-pointer hover:scale-110 transition-transform shrink-0 inline-flex items-center"
           title={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
+          aria-label={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
         >
-          {istFav ? '⭐' : '☆'}
+          <Star className={`w-5 h-5 ${istFav ? 'fill-yellow-400 text-yellow-500' : 'text-slate-400'}`} />
         </button>
         <div className="flex-1 min-w-0">
         <h3 className="font-semibold text-slate-800 dark:text-slate-100 truncate flex items-center gap-2">
@@ -90,7 +92,7 @@ export function PruefungsKarte({ config: c, onBearbeiten, onDuplizieren, tracker
           className="px-3 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-slate-400 transition-colors cursor-pointer"
           title="SuS-Link kopieren"
         >
-          {linkKopiert ? '✓' : '🔗'}
+          {linkKopiert ? <Check className="w-4 h-4" /> : <LinkIcon className="w-4 h-4" />}
         </button>
         <button
           onClick={() => onDuplizieren(c)}
