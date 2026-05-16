@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Pause, Play } from 'lucide-react'
 import Tooltip from './ui/Tooltip.tsx'
 
 interface Props {
@@ -45,7 +46,7 @@ export default function AudioPlayer({ src, kompakt = false }: Props) {
         onClick={togglePlay}
         className={`${kompakt ? 'w-7 h-7' : 'w-8 h-8'} flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors cursor-pointer`}
       >
-        <Tooltip text={spielt ? 'Pause' : 'Abspielen'}><span>{spielt ? '⏸' : '▶'}</span></Tooltip>
+        <Tooltip text={spielt ? 'Pause' : 'Abspielen'}><span className="inline-flex items-center">{spielt ? <Pause className="w-3.5 h-3.5" aria-hidden="true" /> : <Play className="w-3.5 h-3.5" aria-hidden="true" />}</span></Tooltip>
       </button>
       <span className="text-slate-500 dark:text-slate-400 tabular-nums min-w-[3rem]">
         {formatZeit(position)} / {formatZeit(dauer)}

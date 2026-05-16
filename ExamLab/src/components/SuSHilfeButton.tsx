@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { HelpCircle } from 'lucide-react'
+import { HelpCircle, Check } from 'lucide-react'
 import Tooltip from './ui/Tooltip.tsx'
 
 /**
@@ -42,7 +42,7 @@ export default function SuSHilfeButton() {
                 <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Fragen-Status</h3>
                 <ul className="list-disc pl-4 space-y-1">
                   <li><span className="inline-block w-3 h-3 rounded border-2 border-violet-400 mr-1" /> <strong>Violett</strong> — Noch nicht beantwortet</li>
-                  <li><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300 mr-1" /> <strong>Grün ✓</strong> — Beantwortet</li>
+                  <li><span className="inline-block w-3 h-3 rounded bg-green-100 border border-green-300 mr-1" /> <strong className="inline-flex items-center gap-1">Grün <Check className="w-3 h-3" aria-hidden="true" /></strong> — Beantwortet</li>
                   <li><span className="inline-block w-3 h-3 rounded bg-amber-100 border border-amber-400 mr-1" /> <strong>Gelb ?</strong> — Als unsicher markiert</li>
                 </ul>
               </section>
@@ -58,7 +58,7 @@ export default function SuSHilfeButton() {
 
               <section>
                 <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Auto-Save</h3>
-                <p>Ihre Antworten werden <strong>automatisch gespeichert</strong>. Das grüne «Gespeichert ✓» zeigt, dass alles sicher ist. Bei Verbindungsproblemen werden Antworten lokal zwischengespeichert und bei Reconnect nachgesendet.</p>
+                <p>Ihre Antworten werden <strong>automatisch gespeichert</strong>. Das grüne «Gespeichert <Check className="w-3 h-3 inline-block" aria-hidden="true" />» zeigt, dass alles sicher ist. Bei Verbindungsproblemen werden Antworten lokal zwischengespeichert und bei Reconnect nachgesendet.</p>
               </section>
 
               <section>

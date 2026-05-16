@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Mic } from 'lucide-react'
 import { useAudioRecorder } from '../hooks/useAudioRecorder.ts'
 import AudioPlayer from './AudioPlayer.tsx'
 import Tooltip from './ui/Tooltip.tsx'
@@ -42,7 +43,7 @@ export default function AudioRecorder({ onSpeichern, bestehendeAudioId, kompakt 
         onClick={startRecording}
         className={`${kompakt ? 'w-7 h-7 text-sm' : 'w-8 h-8 text-base'} flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors cursor-pointer`}
       >
-        <Tooltip text="Audio-Kommentar aufnehmen"><span>🎤</span></Tooltip>
+        <Tooltip text="Audio-Kommentar aufnehmen"><span className="inline-flex items-center"><Mic className="w-3.5 h-3.5" aria-hidden="true" /></span></Tooltip>
       </button>
     )
   }

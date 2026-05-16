@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check } from 'lucide-react'
+import { Check, AlertTriangle } from 'lucide-react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import BaseDialog from './ui/BaseDialog'
 import { useAuthStore } from '../store/authStore.ts'
@@ -165,7 +165,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
       <BaseDialog open={true} onClose={onSchliessen} title="Abgabe gespeichert — Übertragung ausstehend" maxWidth="md">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
-            <span className="text-3xl">⚠</span>
+            <AlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-400" aria-hidden="true" />
           </div>
           <p className="text-slate-500 dark:text-slate-400 mb-2">
             Ihre Antworten sind lokal gesichert. Die Übertragung an den Server hat nicht geklappt.

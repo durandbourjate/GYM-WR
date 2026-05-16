@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Check } from 'lucide-react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 
 export default function AutoSaveIndikator() {
@@ -17,11 +18,11 @@ export default function AutoSaveIndikator() {
 
   return (
     <span
-      className={`text-xs font-medium text-green-600 dark:text-green-400 transition-opacity duration-300 ${
+      className={`text-xs font-medium text-green-600 dark:text-green-400 transition-opacity duration-300 inline-flex items-center gap-1 ${
         sichtbar ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      Gespeichert ✓
+      Gespeichert <Check className="w-3 h-3" aria-hidden="true" />
     </span>
   )
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Video, FileText, Paperclip } from 'lucide-react'
+import { Video, FileText, Paperclip, Music } from 'lucide-react'
 import type { FrageAnhang } from '../types/fragen-storage'
 import { istBild, istAudio, istVideo, istEmbed, istPDF, driveStreamUrl, drivePreviewUrl, driveViewUrl } from '../utils/mediaUtils.ts'
 
@@ -71,7 +71,7 @@ export default function MediaAnhang({ anhang, bildSz = 'w400', onLightbox }: Pro
           <source src={driveStreamUrl(anhang.driveFileId)} type={anhang.mimeType} />
         </audio>
         <div className="px-3 py-1.5 bg-slate-50 dark:bg-slate-700/30 flex items-center justify-between">
-          <span className="text-xs text-slate-600 dark:text-slate-300 truncate">🎵 {anhang.dateiname}</span>
+          <span className="text-xs text-slate-600 dark:text-slate-300 truncate inline-flex items-center gap-1.5"><Music className="w-3.5 h-3.5" aria-hidden="true" /> {anhang.dateiname}</span>
           <a
             href={driveViewUrl(anhang.driveFileId)}
             target="_blank"

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Clock } from 'lucide-react'
+import { Clock, Hourglass, Hand } from 'lucide-react'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import type { Frage } from '../types/fragen-storage'
 import { usePruefungStore } from '../store/pruefungStore.ts'
@@ -242,15 +242,15 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
             <p>Bitte starten Sie die Prüfung über die SEB-Datei Ihrer Lehrperson.</p>
             {ausnahmeAngefragt ? (
               <div className="flex items-center gap-2 p-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded text-amber-700 dark:text-amber-300">
-                <span>⏳</span>
+                <Hourglass className="w-4 h-4 shrink-0" aria-hidden="true" />
                 <span>Ausnahme angefragt — warten Sie auf die Freigabe durch die Lehrperson.</span>
               </div>
             ) : (
               <button
                 onClick={() => setAusnahmeAngefragt(true)}
-                className="w-full mt-1 px-3 py-2 text-sm bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors cursor-pointer"
+                className="w-full mt-1 px-3 py-2 text-sm bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900/50 transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
               >
-                🙋 SEB-Ausnahme bei Lehrperson anfragen
+                <Hand className="w-4 h-4" aria-hidden="true" /> SEB-Ausnahme bei Lehrperson anfragen
               </button>
             )}
           </div>

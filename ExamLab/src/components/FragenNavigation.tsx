@@ -1,3 +1,4 @@
+import { ClipboardList } from 'lucide-react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import { istVollstaendigBeantwortet } from '../utils/antwortStatus.ts'
 import type { PruefungsAbschnitt } from '../types/pruefung.ts'
@@ -27,9 +28,9 @@ export default function FragenNavigation() {
       {/* Übersicht-Link oben (U4) */}
       <button
         onClick={() => setPhase('uebersicht')}
-        className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:underline cursor-pointer text-left font-medium"
+        className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:underline cursor-pointer text-left font-medium inline-flex items-center gap-1.5"
       >
-        📋 Übersicht
+        <ClipboardList className="w-3.5 h-3.5" aria-hidden="true" /> Übersicht
       </button>
 
       {abschnitteMitIndex.map(({ abschnitt, startIndex }) => (

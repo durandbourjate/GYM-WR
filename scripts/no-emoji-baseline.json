@@ -17,18 +17,6 @@
     "ExamLab/src/components/ui/icons/NavIcon.tsx"
   ],
   "per_file_max": {
-    "ExamLab/src/components/AbgabeDialog.tsx": 1,
-    "ExamLab/src/components/AudioPlayer.tsx": 1,
-    "ExamLab/src/components/AudioRecorder.tsx": 1,
-    "ExamLab/src/components/AutoSaveIndikator.tsx": 1,
-    "ExamLab/src/components/FragenNavigation.tsx": 1,
-    "ExamLab/src/components/Layout.tsx": 1,
-    "ExamLab/src/components/MediaAnhang.tsx": 1,
-    "ExamLab/src/components/SperreOverlay.tsx": 1,
-    "ExamLab/src/components/Startbildschirm.tsx": 2,
-    "ExamLab/src/components/SuSHilfeButton.tsx": 2,
-    "ExamLab/src/components/ThemeToggle.tsx": 2,
-    "ExamLab/src/components/VerstossOverlay.tsx": 1,
     "ExamLab/src/components/fragetypen/AudioFrage.tsx": 1,
     "ExamLab/src/components/fragetypen/pdf/PDFSeite.tsx": 1,
     "ExamLab/src/components/fragetypen/pdf/seite/pdfAnnotationenSVG.test.tsx": 1,

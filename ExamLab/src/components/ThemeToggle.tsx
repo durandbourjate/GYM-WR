@@ -1,3 +1,4 @@
+import { Sun, Moon } from 'lucide-react'
 import { useThemeStore } from '../store/themeStore.ts'
 import Tooltip from './ui/Tooltip.tsx'
 
@@ -7,7 +8,6 @@ export default function ThemeToggle() {
 
   // Aktueller visueller Zustand: dunkel oder hell?
   const istAktuellDunkel = mode === 'dark' || (mode === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  const icon = istAktuellDunkel ? '☀️' : '🌙'
   const label = istAktuellDunkel ? 'Hell' : 'Dunkel'
 
   return (
@@ -16,7 +16,7 @@ export default function ThemeToggle() {
       onClick={toggleMode}
       className="h-8 px-2 rounded-lg flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer text-xs"
     >
-      <span className="text-sm">{icon}</span>
+      {istAktuellDunkel ? <Sun className="w-4 h-4" aria-hidden="true" /> : <Moon className="w-4 h-4" aria-hidden="true" />}
     </button>
     </Tooltip>
   )

@@ -1,8 +1,10 @@
+import { Lock } from 'lucide-react'
+
 export function SperreOverlay() {
   return (
     <div className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center">
       <div className="text-center text-white max-w-md px-6">
-        <div className="text-5xl mb-4">🔒</div>
+        <Lock className="w-14 h-14 mx-auto mb-4" aria-hidden="true" />
         <h2 className="text-2xl font-bold mb-3">Prüfung gesperrt</h2>
         <p className="text-red-300 font-semibold text-lg mb-4">
           Zu viele Verstösse

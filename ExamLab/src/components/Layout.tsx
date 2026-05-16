@@ -279,7 +279,7 @@ export default function Layout() {
                 `}
               >
                 <span>?</span>
-                <span className="hidden lg:inline">{istMarkiert ? 'Markiert ✓' : 'Unsicher'}</span>
+                <span className="hidden lg:inline-flex items-center gap-1">{istMarkiert ? <>Markiert <Check className="w-3.5 h-3.5" aria-hidden="true" /></> : 'Unsicher'}</span>
               </button>
             )}
 
