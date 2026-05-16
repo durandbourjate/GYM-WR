@@ -19,6 +19,17 @@ import { Abschnitt, Feld } from '../components/EditorBausteine'
 import { ErgebnisAnzeige } from '../ki/KIBausteine'
 import LernzielWaehler from '../components/LernzielWaehler'
 
+/** Cluster D Cleanup M-3 (16.05.2026) — Single Source of Truth für den violetten
+ *  Batch-Modus-Ring um batch-fähige Felder. Vorher dupliziert in 5 Inline-Ternaries
+ *  + 1 Helper. Spec verlangt visuelle Konsistenz aller Batch-Wrap-Patterns.
+ *
+ *  Benutzt von:
+ *   - `violetWrap`-Helper (Fach + Bloom, Fragment im Single-Mode)
+ *   - Inline-Ternaries für Status, Zeitpunkt, Gefäss (DOM-Wrapper bleibt im Single-Mode)
+ *   - Doppel-Branches für Tags + Lernziele (eigene Single-Mode-Struktur ohne Wrapper) */
+const BATCH_RING_CLASSES =
+  'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10'
+
 interface MetadataSectionProps {
   istNeu: boolean
   /** Frage-ID (nur bei Bearbeitung vorhandener Fragen) — wird als kleiner Hinweis angezeigt */
@@ -119,12 +130,13 @@ export default function MetadataSection({
   /** Cluster D Phase 3a — Wrapper-Helper für die 7 batch-fähigen Felder.
    *  Im Single-Edit-Modus (`batchMode === false`) wird der Inhalt OHNE Extra-DOM-Wrapper
    *  zurückgegeben → DOM byte-identisch wie vor Cluster D (Backward-Compat absolut).
-   *  Im Batch-Modus wrappt ein `<div>` mit violettem Ring + Pastell-Hintergrund. */
+   *  Im Batch-Modus wrappt ein `<div>` mit violettem Ring + Pastell-Hintergrund.
+   *
+   *  Cluster D Cleanup M-3 (16.05.2026): Klassen jetzt aus Module-Konstante
+   *  `BATCH_RING_CLASSES` — Single-Source-of-Truth statt Literal-Duplikat. */
   const violetWrap = (kinder: React.ReactNode): React.ReactNode =>
     batchMode ? (
-      <div className="ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10">
-        {kinder}
-      </div>
+      <div className={BATCH_RING_CLASSES}>{kinder}</div>
     ) : (
       <>{kinder}</>
     )
@@ -283,9 +295,10 @@ export default function MetadataSection({
       </div>
 
       {/* Cluster D Phase 0 — Lifecycle-Status (Entwurf / Sammlung). Auto-Default 'sammlung' wenn nichts gesetzt.
-          Cluster D Phase 3a — violet-Wrapper via `violetWrap`-Helper (Backward-Compat: nur Klassen-add, DOM identisch). */}
+          Cluster D Phase 3a — violet-Wrapper (Backward-Compat: Wrapper-DIV existiert immer für `mt-3`, nur Klassen-add).
+          Cluster D Cleanup M-3 (16.05.2026): `ring`-Klassen aus `BATCH_RING_CLASSES`-Konstante. */}
       {setStatus && (
-        <div className={`mt-3 ${batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}`}>
+        <div className={`mt-3 ${batchMode ? BATCH_RING_CLASSES : ''}`}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Status</label>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -332,9 +345,10 @@ export default function MetadataSection({
       )}
 
       {/* Zeitpunkt + Gefässe.
-          Cluster D Phase 3a — Beide Sub-Blöcke kriegen im Batch-Modus violet-Ring. */}
+          Cluster D Phase 3a — Beide Sub-Blöcke kriegen im Batch-Modus violet-Ring.
+          Cluster D Cleanup M-3 (16.05.2026): `ring`-Klassen aus `BATCH_RING_CLASSES`-Konstante. */}
       <div className="flex gap-6 mt-3">
-        <div className={batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}>
+        <div className={batchMode ? BATCH_RING_CLASSES : ''}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Zeitpunkt</label>
           <div className="flex gap-1 flex-wrap">
             {config.verfuegbareSemester.map((s) => (
@@ -350,7 +364,7 @@ export default function MetadataSection({
             ))}
           </div>
         </div>
-        <div className={batchMode ? 'ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10' : ''}>
+        <div className={batchMode ? BATCH_RING_CLASSES : ''}>
           <label className="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Gefäss</label>
           <div className="flex gap-1">
             {config.verfuegbareGefaesse.map((g) => (
@@ -374,10 +388,12 @@ export default function MetadataSection({
 
       {/* Lernziele zuordnen.
           Cluster D Phase 3a — violet-Wrapper nur im Batch-Modus (DOM-Wrapper-Add ist hier OK,
-          weil LernzielWaehler eh in eigenem Container rendert — kein Layout-Regress). */}
+          weil LernzielWaehler eh in eigenem Container rendert — kein Layout-Regress).
+          Cluster D Cleanup M-3 (16.05.2026): `ring`-Klassen aus `BATCH_RING_CLASSES`-Konstante.
+          Strukturelle Doppel-Branch bleibt, weil Single-Mode keinen Wrapper hat (Layout-Risk). */}
       {(lernzieleLadend || (lernziele && lernziele.length > 0) || onNeuLernzielErstellen) && (
         batchMode ? (
-          <div className="mt-3 ring-1 ring-violet-300 dark:ring-violet-700 rounded-lg p-2 bg-violet-50/30 dark:bg-violet-900/10">
+          <div className={`mt-3 ${BATCH_RING_CLASSES}`}>
             <LernzielWaehler
               lernziele={lernziele || []}
               gewaehlteIds={lernzielIds}
