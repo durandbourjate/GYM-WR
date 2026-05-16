@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Shuffle, RotateCw } from 'lucide-react'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
 import { berechneSterne, sterneText } from '../../utils/ueben/gamification'
 import { useUebenKontext } from '../../hooks/ueben/useUebenKontext'
@@ -67,8 +68,8 @@ export default function Zusammenfassung({ onZurueck, onNochmal }: Props) {
           />
         </div>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          {session.modus === 'mix' ? '🔀 Gemischte Übung' : session.modus === 'repetition' ? '🔄 Repetition' : `${session.fach} — ${session.thema}`}
+        <p className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1.5">
+          {session.modus === 'mix' ? <><Shuffle className="w-4 h-4" aria-hidden="true" /> Gemischte Übung</> : session.modus === 'repetition' ? <><RotateCw className="w-4 h-4" aria-hidden="true" /> Repetition</> : `${session.fach} — ${session.thema}`}
         </p>
         {session.quellen && session.quellen.length > 0 && (
           <p className="text-xs text-slate-400 mt-1">

@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, type ReactNode } from 'react';
+import { X } from 'lucide-react';
 import { useResizableHandle } from './useResizableHandle';
 
 // Modul-lokaler Zähler: jede neu geöffnete overlay-Sidebar bekommt den nächsthöheren z-Index.
@@ -135,9 +136,9 @@ export function ResizableSidebar({
         <button
           onClick={onClose}
           aria-label="Schliessen"
-          className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors cursor-pointer"
+          className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 rounded transition-colors cursor-pointer inline-flex items-center"
         >
-          ✕
+          <X className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { Hourglass } from 'lucide-react'
+
 /**
  * TagsTab — Container für die Tag-Verwaltung im Einstellungen-Panel
  * (Cluster H Phase 2 C3).
@@ -59,7 +61,7 @@ export function TagsTab({ email }: Props) {
       </p>
 
       {ladend && !geladen && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">⏳ Lade Tags…</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1.5"><Hourglass className="w-3.5 h-3.5" aria-hidden="true" /> Lade Tags…</p>
       )}
       {fehler && (
         <p className="text-sm text-red-700 dark:text-red-300">Fehler beim Laden: {fehler}</p>

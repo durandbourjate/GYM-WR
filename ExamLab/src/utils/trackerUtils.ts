@@ -37,7 +37,7 @@ export function korrekturLabel(s: TrackerPruefungSummary): string {
     case 'keine-daten': return 'Noch nicht korrigiert'
     case 'offen': return 'Korrektur offen'
     case 'teilweise': return `${s.korrigiertAnzahl}/${s.korrigiertGesamt} korrigiert`
-    case 'fertig': return '✓ Fertig'
+    case 'fertig': return 'Fertig'
   }
 }
 

@@ -1,3 +1,4 @@
+import { Download } from 'lucide-react'
 import type { PruefungsConfig } from '../../../../../types/pruefung.ts'
 import { Section, Field, Toggle } from '../ComposerUI.tsx'
 import { downloadSebDatei } from '../../../../../utils/sebConfigGenerator.ts'
@@ -29,9 +30,9 @@ export default function OptionenSection({ pruefung, updatePruefung }: Props) {
               <button
                 type="button"
                 onClick={() => downloadSebDatei(pruefung.id, pruefung.titel)}
-                className="ml-8 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+                className="ml-8 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer inline-flex items-center gap-1.5"
               >
-                📥 SEB-Datei herunterladen
+                <Download className="w-3.5 h-3.5" aria-hidden="true" /> SEB-Datei herunterladen
               </button>
             )}
           </>

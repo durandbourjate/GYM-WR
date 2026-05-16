@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
+import { X } from 'lucide-react'
 import type {
   PDFAnnotation, PDFHighlightAnnotation, PDFKommentarAnnotation,
   PDFLabelAnnotation, PDFTextAnnotation, PDFKategorie,
@@ -388,7 +389,7 @@ export function PDFSeite({
               setSelectedAnnotation(null)
             }}
           >
-            ✕ Löschen
+            <span className="inline-flex items-center gap-1"><X className="w-3 h-3" aria-hidden="true" /> Löschen</span>
           </button>
         )
       })()}

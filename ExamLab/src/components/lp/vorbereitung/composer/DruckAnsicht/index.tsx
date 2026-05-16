@@ -1,3 +1,4 @@
+import { Paperclip } from 'lucide-react'
 import type { PruefungsConfig } from '../../../../../types/pruefung.ts'
 import type { Frage, FrageAnhang } from '../../../../../types/fragen-storage'
 import { formatDatum } from '../../../../../utils/zeit.ts'
@@ -216,8 +217,8 @@ function DruckAnhaenge({ anhaenge }: { anhaenge: FrageAnhang[] }) {
           )
         }
         return (
-          <p key={anhang.id} className="text-xs italic text-slate-500 print:text-slate-600">
-            📎 {anhang.dateiname} — nur digital verfügbar
+          <p key={anhang.id} className="text-xs italic text-slate-500 print:text-slate-600 inline-flex items-center gap-1.5">
+            <Paperclip className="w-3.5 h-3.5" aria-hidden="true" /> {anhang.dateiname} — nur digital verfügbar
           </p>
         )
       })}

@@ -1,3 +1,4 @@
+import { Lock } from 'lucide-react'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 
 export default function GruppenAuswahl() {
@@ -17,7 +18,7 @@ export default function GruppenAuswahl() {
         <h2 className="text-xl font-bold mb-4 text-center dark:text-white">Gruppe wählen</h2>
         {gruppen.length === 0 && ladeStatus === 'fertig' && (
           <div className="text-center py-6 text-slate-500 dark:text-slate-400">
-            <p className="text-3xl mb-3">🔒</p>
+            <div className="flex justify-center mb-3"><Lock className="w-9 h-9" aria-hidden="true" /></div>
             <p className="font-medium dark:text-white mb-1">Keine Gruppe zugeordnet</p>
             <p className="text-sm">Du bist noch keiner Übungsgruppe zugeordnet. Bitte wende dich an deine Lehrperson.</p>
           </div>

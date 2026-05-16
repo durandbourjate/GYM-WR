@@ -108,8 +108,8 @@ function renderKommentarMarker(
     <g key={`kom-${ann.id}`} data-annotation-id={ann.id}
       className="pointer-events-auto cursor-pointer">
       <circle cx={cx} cy={cy} r={8} fill="#3b82f6" fillOpacity={0.8} />
-      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={10} fill="white">
-        💬
+      <text x={cx} y={cy + 4} textAnchor="middle" fontSize={10} fontWeight="bold" fill="white">
+        K
       </text>
     </g>
   )

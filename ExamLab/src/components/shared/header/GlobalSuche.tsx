@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Search } from 'lucide-react'
 import type { SucheErgebnis } from '../../../hooks/useGlobalSuche.shared'
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
-const SHORTCUT_KEY = IS_MAC ? '⌘K' : 'Ctrl+K'
+const SHORTCUT_KEY = IS_MAC ? 'Cmd+K' : 'Ctrl+K'
 
 export function GlobalSuche({ suchen, onSuchen, ergebnis, istFokussiert, placeholder = 'Suchen …' }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -44,7 +45,7 @@ export function GlobalSuche({ suchen, onSuchen, ergebnis, istFokussiert, placeho
   return (
     <div className="relative flex-shrink-0">
       {/* Höhe: py-1.5 + text-sm → matcht TabKaskade-Tabs (TAB_BASE). */}
-      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none">⌕</span>
+      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" aria-hidden="true" />
       <input
         ref={inputRef}
         role="searchbox"

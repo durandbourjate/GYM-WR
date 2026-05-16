@@ -1,15 +1,17 @@
+import { FileText, Monitor } from 'lucide-react'
+
 export function PDFHinweis() {
   return (
-    <p className="text-sm italic text-slate-500 print:text-slate-600">
-      📄 Diese Aufgabe ist nur digital verfügbar (PDF-Annotation).
+    <p className="text-sm italic text-slate-500 print:text-slate-600 inline-flex items-center gap-1.5">
+      <FileText className="w-4 h-4" aria-hidden="true" /> Diese Aufgabe ist nur digital verfügbar (PDF-Annotation).
     </p>
   )
 }
 
 export function DigitalHinweis({ typ }: { typ: string }) {
   return (
-    <p className="text-sm italic text-slate-500 print:text-slate-600">
-      💻 {typ} — nur digital verfügbar.
+    <p className="text-sm italic text-slate-500 print:text-slate-600 inline-flex items-center gap-1.5">
+      <Monitor className="w-4 h-4" aria-hidden="true" /> {typ} — nur digital verfügbar.
     </p>
   )
 }

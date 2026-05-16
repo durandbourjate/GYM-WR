@@ -362,7 +362,7 @@ export default function ZeichnenKorrektur({
         </div>
       )}
 
-      {/* Bewertungszeile: Punkte | = X Pkt. | 🎤 Audio | ☑ Geprüft */}
+      {/* Bewertungszeile: Punkte | = X Pkt. | Audio | Geprueft */}
       <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-slate-700/50">
         <div className="flex items-center gap-1.5">
           <label htmlFor={`zk-punkte-${frageId}`} className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">

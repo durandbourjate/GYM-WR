@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import { Sun, Moon } from 'lucide-react'
 import { initializeLernenGoogleAuth, renderLernenGoogleButton } from '../../services/ueben/authService'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenTheme } from '../../hooks/ueben/useTheme'
@@ -34,7 +35,7 @@ export default function LoginScreen() {
         onClick={toggleTheme}
         className="fixed top-4 right-4 p-2 rounded-lg bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 text-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
       >
-        <Tooltip text={istDark ? 'Light Mode' : 'Dark Mode'}><span>{istDark ? '☀️' : '🌙'}</span></Tooltip>
+        <Tooltip text={istDark ? 'Light Mode' : 'Dark Mode'}><span className="inline-flex items-center">{istDark ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}</span></Tooltip>
       </button>
 
       <div className="text-center">

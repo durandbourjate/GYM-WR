@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react'
+import { Trash2, AlertCircle, Lightbulb } from 'lucide-react'
 import type { Problemmeldung } from '../../../types/problemmeldung'
 import { priorisiereDeepLink } from './filterLogik'
 
@@ -30,7 +30,9 @@ export default function ProblemmeldungZeile({ meldung, toggleErledigt, onOeffne,
   const isLegacy = !meldung.id
   const kannToggle = !isLegacy && (istAdmin || meldung.recht === 'inhaber' || meldung.recht === 'bearbeiter')
 
-  const typIcon = meldung.typ === 'problem' ? '🔴' : '💡'
+  const TypIcon = meldung.typ === 'problem'
+    ? <AlertCircle className="w-4 h-4 text-red-500 fill-current" aria-hidden="true" />
+    : <Lightbulb className="w-4 h-4 text-amber-500" aria-hidden="true" />
 
   return (
     <div className={`border-l-4 ${meldung.erledigt ? 'border-slate-300 opacity-60' : meldung.typ === 'problem' ? 'border-red-400' : 'border-amber-400'} bg-white dark:bg-slate-800 rounded-lg shadow-sm p-3 mb-2`}>
@@ -48,7 +50,7 @@ export default function ProblemmeldungZeile({ meldung, toggleErledigt, onOeffne,
         </label>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-1">
-            <span>{typIcon} {meldung.category}</span>
+            <span className="inline-flex items-center gap-1">{TypIcon} {meldung.category}</span>
             <span>·</span>
             <span>{formatRelativ(meldung.zeitstempel)}</span>
             <span>·</span>

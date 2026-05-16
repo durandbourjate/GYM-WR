@@ -1,3 +1,4 @@
+import { Paperclip } from 'lucide-react'
 import type { MediaQuelle } from '../types/mediaQuelle'
 import { mediaQuelleZuImgSrc, mediaQuelleZuIframeSrc, type AppAssetResolver } from '../utils/mediaQuelleUrl'
 import { istBild, istAudio, istVideo, istPDF } from '../editor/utils/mediaUtils'
@@ -45,7 +46,7 @@ export default function MediaAnzeige({ quelle, appResolver, alt, className, hoeh
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded bg-slate-100 dark:bg-slate-700">
-      📎 Datei: {quelle.dateiname ?? quelle.mimeType}
+      <Paperclip className="w-3.5 h-3.5" aria-hidden="true" /> Datei: {quelle.dateiname ?? quelle.mimeType}
     </span>
   )
 }

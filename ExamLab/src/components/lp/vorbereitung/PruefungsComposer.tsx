@@ -292,9 +292,9 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
         onZurueck={onZurueck}
         breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
         statusText={
-          speicherStatus === 'erfolg' ? 'Gespeichert ✓'
+          speicherStatus === 'erfolg' ? 'Gespeichert'
           : speicherStatus === 'fehler' ? 'Fehler beim Speichern'
-          : autoSaveStatus === 'gespeichert' && speicherStatus === 'idle' ? 'Automatisch gespeichert ✓'
+          : autoSaveStatus === 'gespeichert' && speicherStatus === 'idle' ? 'Automatisch gespeichert'
           : undefined
         }
         aktionsButtons={

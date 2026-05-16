@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Mail, Search } from 'lucide-react'
 import type { Teilnehmer } from '../../../types/pruefung'
 
 /** Alle geladenen SuS (für Suche über alle Kurse) */
@@ -107,13 +108,16 @@ export default function TeilnehmerListe({ teilnehmer, onToggle, onManuellHinzufu
             </button>
           </div>
         )}
-        <input
-          type="text"
-          value={suchText}
-          onChange={(e) => setSuchText(e.target.value)}
-          placeholder="🔍 Suchen..."
-          className="flex-1 text-sm px-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 placeholder-slate-400"
-        />
+        <div className="flex-1 relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" aria-hidden="true" />
+          <input
+            type="text"
+            value={suchText}
+            onChange={(e) => setSuchText(e.target.value)}
+            placeholder="Suchen..."
+            className="w-full text-sm pl-8 pr-3 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 placeholder-slate-400"
+          />
+        </div>
       </div>
 
       {/* Suchergebnisse: SuS die noch nicht Teilnehmer sind */}
@@ -183,7 +187,7 @@ export default function TeilnehmerListe({ teilnehmer, onToggle, onManuellHinzufu
                         {t.name}, {t.vorname}
                       </span>
                       {t.einladungGesendet && (
-                        <span title="Einladung gesendet" className="text-xs">✉️</span>
+                        <span title="Einladung gesendet" className="text-xs inline-flex items-center"><Mail className="w-3.5 h-3.5" aria-hidden="true" /></span>
                       )}
                       {t.quelle === 'manuell' && (
                         <span className="text-xs px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-slate-500 dark:text-slate-400">manuell</span>

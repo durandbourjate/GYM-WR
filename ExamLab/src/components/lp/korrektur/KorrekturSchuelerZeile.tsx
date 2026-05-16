@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 import type { SchuelerKorrektur, SchuelerAbgabe } from '../../../types/korrektur.ts'
 import type { Frage, PDFAnnotation, PDFFrage } from '../../../types/fragen-storage'
 import type { KorrekturErgebnis } from '../../../utils/autoKorrektur.ts'
@@ -127,12 +128,12 @@ export default function KorrekturSchuelerZeile({ pruefungId, schueler, abgabe, f
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${korrekturStatusFarbe(schueler.korrekturStatus)}`}>
             {statusLabel(schueler.korrekturStatus)}
           </span>
-          <span className={`text-xs ${
+          <span className={`text-xs inline-flex items-center gap-1 ${
             alleGeprueft
               ? 'text-green-600 dark:text-green-400'
               : 'text-slate-400 dark:text-slate-500'
           }`}>
-            {geprueftCount}/{totalCount} ✓
+            {geprueftCount}/{totalCount} <Check className="w-3 h-3" aria-hidden="true" />
           </span>
           {onPDF && (
             <button

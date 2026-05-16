@@ -4,6 +4,7 @@
  * Beide führen zum gleichen Ergebnis: bildUrl wird gesetzt.
  */
 import { useState } from 'react'
+import { Paperclip, Bot } from 'lucide-react'
 import BildUpload from './BildUpload'
 import BildGeneratorPanel from './BildGeneratorPanel'
 
@@ -32,23 +33,23 @@ export default function BildMitGenerator({ bildUrl, setBildUrl, bildDriveFileId,
       <div className="flex items-center gap-1 border-b dark:border-slate-700 pb-1">
         <button
           onClick={() => setModus('upload')}
-          className={`px-3 py-1.5 text-sm font-medium rounded-t-lg transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-t-lg transition-colors inline-flex items-center gap-1.5 ${
             modus === 'upload'
               ? 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
           }`}
         >
-          📎 Hochladen
+          <Paperclip className="w-3.5 h-3.5" aria-hidden="true" /> Hochladen
         </button>
         <button
           onClick={() => setModus('ki')}
-          className={`px-3 py-1.5 text-sm font-medium rounded-t-lg transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-t-lg transition-colors inline-flex items-center gap-1.5 ${
             modus === 'ki'
               ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
           }`}
         >
-          🤖 KI generieren
+          <Bot className="w-3.5 h-3.5" aria-hidden="true" /> KI generieren
         </button>
       </div>
 

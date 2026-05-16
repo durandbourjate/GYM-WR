@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import type { KIFeedbackEintragLP } from '../../../services/kalibrierungApi'
 
 const KIAKTION_LABELS: Record<string, string> = {
@@ -20,10 +21,10 @@ export default function DiffModal({ eintrag, onSchliessen }: { eintrag: KIFeedba
           </h3>
           <button
             onClick={onSchliessen}
-            className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 text-xl leading-none"
+            className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 inline-flex items-center"
             aria-label="Schliessen"
           >
-            ✕
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 

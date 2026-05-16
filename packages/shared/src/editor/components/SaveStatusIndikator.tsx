@@ -1,4 +1,5 @@
-import type { JSX } from 'react'
+import { type JSX, type ReactNode } from 'react'
+import { Check } from 'lucide-react'
 
 export type SaveStatus = 'sauber' | 'sync-läuft' | 'entwurf' | 'verbindungsproblem' | 'server-down'
 
@@ -8,9 +9,9 @@ interface Props {
   onErneutVersuchen?: () => void
 }
 
-const STATUS_CONFIG: Record<SaveStatus, { text: string; classes: string }> = {
+const STATUS_CONFIG: Record<SaveStatus, { text: ReactNode; classes: string }> = {
   'sauber': {
-    text: '✓ Gespeichert',
+    text: <><Check className="w-3.5 h-3.5" aria-hidden="true" /> Gespeichert</>,
     classes: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
   },
   'sync-läuft': {

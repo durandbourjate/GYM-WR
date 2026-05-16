@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Paintbrush, FileText } from 'lucide-react'
 import type { PruefungsConfig } from '../../../../../types/pruefung.ts'
 import type { Frage, MCFrage, FreitextFrage, LueckentextFrage, ZuordnungFrage, RichtigFalschFrage, BerechnungFrage, BuchungssatzFrage, TKontoFrage, KontenbestimmungFrage, BilanzERFrage, AufgabengruppeFrage } from '../../../../../types/fragen-storage'
 import { formatDatum } from '../../../../../utils/zeit.ts'
@@ -247,14 +248,14 @@ function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
       {frage.typ === 'aufgabengruppe' && <AufgabengruppeVorschau frage={frage as AufgabengruppeFrage} />}
       {frage.typ === 'visualisierung' && (
         <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 text-center space-y-2">
-          <span className="text-2xl">🖌</span>
+          <div className="flex justify-center"><Paintbrush className="w-7 h-7 text-slate-500 dark:text-slate-400" aria-hidden="true" /></div>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Zeichenaufgabe</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">Interaktive Vorschau in der SuS-Ansicht verfügbar</p>
         </div>
       )}
       {frage.typ === 'pdf' && (
         <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 text-center space-y-2">
-          <span className="text-2xl">📄</span>
+          <div className="flex justify-center"><FileText className="w-7 h-7 text-slate-500 dark:text-slate-400" aria-hidden="true" /></div>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">PDF-Annotation</p>
           {ermittlePdfQuelle(frage)?.dateiname && (
             <p className="text-xs text-slate-500 dark:text-slate-400">Datei: {ermittlePdfQuelle(frage)?.dateiname}</p>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Check } from 'lucide-react'
 import { useUebenSettingsStore } from '../../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { useUebenAuthStore } from '../../../../store/ueben/authStore'
@@ -185,7 +186,7 @@ export default function FaecherTab() {
         disabled={speichern === 'laden'}
         className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg py-3 font-medium disabled:opacity-50 min-h-[44px] hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors mt-4"
       >
-        {speichern === 'laden' ? 'Wird gespeichert…' : speichern === 'ok' ? 'Gespeichert ✓' : 'Speichern'}
+        {speichern === 'laden' ? 'Wird gespeichert…' : speichern === 'ok' ? <span className="inline-flex items-center gap-1.5">Gespeichert <Check className="w-3.5 h-3.5" aria-hidden="true" /></span> : 'Speichern'}
       </button>
       {speichern === 'fehler' && (
         <p className="text-sm text-red-500">{fehlerText}</p>

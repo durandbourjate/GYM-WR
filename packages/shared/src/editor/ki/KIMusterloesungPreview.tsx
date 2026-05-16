@@ -1,3 +1,5 @@
+import { Star } from 'lucide-react'
+
 /**
  * C9 Phase 3 Task 24 — Editor-Preview für KI-Musterlösungs-Responses.
  *
@@ -199,7 +201,7 @@ export function KIMusterloesungPreview({
             }
             aria-label={wichtig ? 'Stern entfernen' : 'Als wichtig markieren'}
           >
-            {wichtig ? '★' : '☆'}
+            <Star className={`w-5 h-5 ${wichtig ? 'fill-current' : ''}`} aria-hidden="true" />
           </button>
         )}
       </div>

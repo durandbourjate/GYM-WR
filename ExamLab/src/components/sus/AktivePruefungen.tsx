@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ClipboardList, Dumbbell } from 'lucide-react'
 import { getJson, istKonfiguriert } from '../../services/apiClient'
 
 interface AktivePruefung {
@@ -81,7 +82,7 @@ export default function AktivePruefungen({ email }: AktivePruefungenProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-lg">{p.typ === 'formativ' ? '📚' : '📝'}</span>
+                    <span className="inline-flex items-center text-slate-600 dark:text-slate-300">{p.typ === 'formativ' ? <Dumbbell className="w-5 h-5" aria-hidden="true" /> : <ClipboardList className="w-5 h-5" aria-hidden="true" />}</span>
                     <span className="font-medium dark:text-white text-sm">{p.titel}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-400">

@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { Check, X } from 'lucide-react'
 
 type AntwortZeileProps = {
   marker: 'ja' | 'nein' | 'leer'
@@ -14,10 +15,10 @@ const VARIANT_CLASSES: Record<AntwortZeileProps['variant'], string> = {
   neutral: 'border-slate-200 dark:border-slate-700',
 }
 
-const MARKER_TEXT: Record<AntwortZeileProps['marker'], string> = {
-  ja: '✓',
-  nein: '✗',
-  leer: '',
+const MARKER_ICON: Record<AntwortZeileProps['marker'], ReactNode> = {
+  ja: <Check className="w-4 h-4" aria-hidden="true" />,
+  nein: <X className="w-4 h-4" aria-hidden="true" />,
+  leer: null,
 }
 
 const MARKER_COLOR: Record<AntwortZeileProps['marker'], string> = {
@@ -33,10 +34,10 @@ export function AntwortZeile({ marker, variant, label, erklaerung, zusatz }: Ant
       data-testid="antwort-zeile"
     >
       <span
-        className={`marker-${marker} ${MARKER_COLOR[marker]} font-bold w-5 text-center shrink-0`}
+        className={`marker-${marker} ${MARKER_COLOR[marker]} font-bold w-5 inline-flex items-center justify-center shrink-0`}
         aria-hidden={true}
       >
-        {MARKER_TEXT[marker]}
+        {MARKER_ICON[marker]}
       </span>
       <div className="flex-1 min-w-0">
         <div className="font-medium">{label}</div>

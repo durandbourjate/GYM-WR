@@ -1,14 +1,16 @@
+import { Check } from 'lucide-react'
+
 export function CheckboxChip({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
       onClick={() => onChange(!checked)}
-      className={`px-3 py-1.5 text-sm rounded-lg border transition-colors cursor-pointer ${
+      className={`px-3 py-1.5 text-sm rounded-lg border transition-colors cursor-pointer inline-flex items-center gap-1 ${
         checked
           ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-800 border-slate-800 dark:border-slate-200'
           : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:border-slate-400'
       }`}
     >
-      {checked && '✓ '}{label}
+      {checked && <Check className="w-3.5 h-3.5" aria-hidden="true" />}{label}
     </button>
   )
 }

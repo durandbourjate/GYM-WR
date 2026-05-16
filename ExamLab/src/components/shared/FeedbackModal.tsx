@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { CheckCircle2, Circle, Lightbulb } from 'lucide-react'
+import { CheckCircle2, Circle, Lightbulb, Send } from 'lucide-react'
 
 // ExamLab Problemmeldungen — Sheet "ExamLab Problemmeldungen", Tab "ExamLab-Problemmeldungen"
 const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSxIOqGhAbnNM2-Y4ulgBY3usVEC6cKT4S5sEk4sf2CMognF5qxopj3FJtnTpm3nq7TQ/exec'
@@ -239,9 +239,9 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
                 <button
                   onClick={handleSend}
                   disabled={sending || !typ}
-                  className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                  className="flex-1 px-4 py-2.5 text-sm font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5"
                 >
-                  {sending ? 'Wird gesendet…' : '📨 Senden'}
+                  {sending ? 'Wird gesendet…' : <><Send className="w-4 h-4" aria-hidden="true" /> Senden</>}
                 </button>
               </div>
             </>

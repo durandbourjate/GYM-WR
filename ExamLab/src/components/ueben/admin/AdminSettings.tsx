@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { X } from 'lucide-react'
 import { TabBar } from '../../ui/TabBar'
 import { useUebenSettingsStore } from '../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
@@ -44,10 +45,11 @@ export default function AdminSettings() {
           </div>
           <button
             onClick={resetSaveFehler}
-            className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 text-sm shrink-0"
+            className="text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 text-sm shrink-0 inline-flex items-center"
             title="Schliessen"
+            aria-label="Schliessen"
           >
-            ✕
+            <X className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       )}

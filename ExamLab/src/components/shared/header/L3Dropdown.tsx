@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { Check } from 'lucide-react'
 import type { L3Mode, L3Item } from './types'
 
 interface Props {
@@ -125,8 +126,8 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
                 }`}
               >
                 {mode === 'multi' && (
-                  <span className={`w-3.5 h-3.5 border rounded-sm flex-shrink-0 flex items-center justify-center text-[9px] text-white ${sel ? 'bg-violet-600 border-violet-600' : 'border-slate-300 dark:border-slate-600'}`}>
-                    {sel && '✓'}
+                  <span className={`w-3.5 h-3.5 border rounded-sm flex-shrink-0 flex items-center justify-center text-white ${sel ? 'bg-violet-600 border-violet-600' : 'border-slate-300 dark:border-slate-600'}`}>
+                    {sel && <Check className="w-2.5 h-2.5" aria-hidden="true" strokeWidth={3} />}
                   </span>
                 )}
                 <span className="flex-1">{it.label}</span>

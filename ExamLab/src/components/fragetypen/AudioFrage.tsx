@@ -1,3 +1,4 @@
+import { AlertTriangle } from 'lucide-react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { AudioFrage as AudioFrageType } from '../../types/fragen-storage'
 import { renderMarkdown } from '../../utils/markdown.ts'
@@ -44,8 +45,8 @@ export default function AudioFrage({ frage }: Props) {
 
       {/* Info-Box: Audio temporär deaktiviert */}
       <div className="p-4 rounded-xl border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30">
-        <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-1">
-          ⚠ Audio-Aufnahmen sind temporär deaktiviert
+        <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-1 inline-flex items-center gap-1.5">
+          <AlertTriangle className="w-4 h-4" aria-hidden="true" /> Audio-Aufnahmen sind temporär deaktiviert
         </p>
         <p className="text-xs text-amber-800 dark:text-amber-200">
           Der Audio-Upload ist wegen einer geplanten Backend-Migration aktuell nicht verfügbar.

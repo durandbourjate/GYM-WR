@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Check } from 'lucide-react'
 import type { Lernziel } from '../../types/pool'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 import { lernzielStatus } from '../../utils/ueben/mastery'
@@ -73,7 +74,7 @@ export default function LernzielAnzeige({ lernziele, fortschritte, fach, thema }
 
 function StatusIcon({ status }: { status: string }) {
   switch (status) {
-    case 'gemeistert': return <span className="text-green-500 mt-0.5">✓</span>
+    case 'gemeistert': return <Check className="w-3.5 h-3.5 text-green-500 mt-0.5" aria-hidden="true" />
     case 'gefestigt': return <span className="text-blue-400 mt-0.5">◉</span>
     case 'inArbeit': return <span className="text-yellow-400 mt-0.5">◎</span>
     default: return <span className="text-slate-300 mt-0.5">○</span>

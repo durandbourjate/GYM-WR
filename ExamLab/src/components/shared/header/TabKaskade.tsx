@@ -20,14 +20,14 @@ const TAB_INACTIVE =
   'hover:border-b-slate-400 dark:hover:border-b-slate-600 ' +
   'hover:rounded-bl-lg'
 
-// Parent = L1 wenn L2 aktiv, L2 wenn L3 aktiv → slate ⌐
+// Parent = L1 wenn L2 aktiv, L2 wenn L3 aktiv -> slate
 const TAB_PARENT =
   'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium ' +
   'border-l-slate-400 dark:border-l-slate-600 ' +
   'border-b-slate-400 dark:border-b-slate-600 ' +
   'rounded-bl-lg'
 
-// Aktiv = innerster Tab mit Fokus → violett ⌐
+// Aktiv = innerster Tab mit Fokus -> violett
 const TAB_ACTIVE =
   'bg-white dark:bg-slate-800 text-violet-700 dark:text-violet-300 font-semibold ' +
   'border-l-violet-500 border-b-violet-500 rounded-bl-lg'

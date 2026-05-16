@@ -3,6 +3,7 @@
  * Ersetzt die einfache Checkbox-Liste in MetadataSection.
  */
 import { useState, useMemo, useEffect } from 'react'
+import { X } from 'lucide-react'
 import type { Lernziel, BloomStufe } from '../../types/fragen-core'
 
 interface LernzielWaehlerProps {
@@ -196,10 +197,11 @@ export default function LernzielWaehler({
                 <span className="max-w-[200px] truncate" title={lz.text}>{lz.text}</span>
                 <button
                   onClick={() => onToggle(id)}
-                  className="text-purple-400 hover:text-purple-600 dark:hover:text-purple-200 cursor-pointer"
+                  className="text-purple-400 hover:text-purple-600 dark:hover:text-purple-200 cursor-pointer inline-flex items-center"
                   title="Entfernen"
+                  aria-label="Entfernen"
                 >
-                  ✕
+                  <X className="w-3 h-3" aria-hidden="true" />
                 </button>
               </span>
             )

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eraser } from 'lucide-react';
+import { Eraser, Pencil, Trash2 } from 'lucide-react';
 import type { Tool, ToolbarLayout } from './ZeichnenTypes';
 import ToolbarDropdown from '../../shared/ToolbarDropdown';
 import Tooltip from '../../ui/Tooltip';
@@ -143,7 +143,7 @@ export function ZeichnenToolbar({
       {/* Stift-Menü (Stärke + Stil) — Klick aktiviert Stift + öffnet Optionen */}
       {hatStift && (
         <ToolbarDropdown
-          icon={<span style={{ fontSize: stiftBreite > 2 ? 18 : 14 }}>✏️</span>}
+          icon={<Pencil className={stiftBreite > 2 ? 'w-5 h-5' : 'w-4 h-4'} aria-hidden="true" />}
           label="Freihand"
           aktiv={aktivesTool === 'stift'}
           horizontal={isHorizontal}
@@ -312,7 +312,7 @@ export function ZeichnenToolbar({
           onClick={() => setZeigeLoeschenDialog(true)}
           className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-sm transition-colors bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900"
         >
-          🗑
+          <Trash2 className="w-5 h-5" aria-hidden="true" />
         </button>
       </Tooltip>
 

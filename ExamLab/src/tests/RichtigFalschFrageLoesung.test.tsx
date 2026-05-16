@@ -39,7 +39,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB steuert die Geldpolitik.')
     expect(zeile?.className).toMatch(/border-green/)
-    expect(zeile?.textContent).toContain('\u2713')
+    expect(zeile?.querySelector('svg.lucide-check')).toBeTruthy()
   })
 
   it('SuS-Urteil korrekt (falsch falsch) → grüne Zeile mit ✗', () => {
@@ -47,7 +47,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB ist eine Privatbank.')
     expect(zeile?.className).toMatch(/border-green/)
-    expect(zeile?.textContent).toContain('\u2717')
+    expect(zeile?.querySelector('svg.lucide-x')).toBeTruthy()
   })
 
   it('SuS-Urteil falsch (richtig falsch gesagt) → rote Zeile mit ✗', () => {
@@ -55,7 +55,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB steuert die Geldpolitik.')
     expect(zeile?.className).toMatch(/border-red/)
-    expect(zeile?.textContent).toContain('\u2717')
+    expect(zeile?.querySelector('svg.lucide-x')).toBeTruthy()
     // Zusatz: korrekte Antwort war Richtig
     expect(zeile?.textContent).toMatch(/Richtig/)
   })
@@ -65,7 +65,7 @@ describe('RichtigFalschFrage modus=loesung', () => {
     render(<RichtigFalschFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeile = zeileFuer('Die SNB ist eine Privatbank.')
     expect(zeile?.className).toMatch(/border-red/)
-    expect(zeile?.textContent).toContain('\u2713')
+    expect(zeile?.querySelector('svg.lucide-check')).toBeTruthy()
     expect(zeile?.textContent).toMatch(/Falsch/)
   })
 

@@ -44,7 +44,7 @@ describe('MCFrage modus=loesung', () => {
     render(<MCFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeileA = zeileFuer('Option A')
     expect(zeileA?.className).toMatch(/border-green/)
-    expect(zeileA?.textContent).toContain('\u2713')
+    expect(zeileA?.querySelector('svg.lucide-check')).toBeTruthy()
   })
 
   it('gewählt+falsch zeigt rote Zeile mit ✓ (Marker immer grün bei Wahl)', () => {
@@ -52,7 +52,7 @@ describe('MCFrage modus=loesung', () => {
     render(<MCFrage frage={frage} antwort={antwort} modus="loesung" />)
     const zeileB = zeileFuer('Option B')
     expect(zeileB?.className).toMatch(/border-red/)
-    expect(zeileB?.textContent).toContain('\u2713')
+    expect(zeileB?.querySelector('svg.lucide-check')).toBeTruthy()
   })
 
   it('nicht-gewählt+wäre-korrekt zeigt rote Zeile ohne Marker', () => {

@@ -47,7 +47,7 @@ describe('TabBar', () => {
   });
 
   it('rendert Icon wenn vorhanden', () => {
-    const tabsWithIcon = [{ id: 'x', label: 'Mit Icon', icon: <span data-testid="icon">★</span> }];
+    const tabsWithIcon = [{ id: 'x', label: 'Mit Icon', icon: <span data-testid="icon">X</span> }];
     render(<TabBar tabs={tabsWithIcon} activeTab="x" onTabChange={() => {}} />);
     expect(screen.getByTestId('icon')).toBeDefined();
   });

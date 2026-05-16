@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactNode } from 'react'
+import { TrendingUp, Flame, Star, Pencil } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenFortschrittStore } from '../../store/ueben/fortschrittStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -147,10 +148,10 @@ export default function SuSAnalyse() {
 
       {/* Übersicht: Level + Streak */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <MiniKarte label="Level" wert={stats.level} icon="📈" />
-        <MiniKarte label="Streak" wert={stats.streak} icon="🔥" />
-        <MiniKarte label="Gemeistert" wert={stats.gemeistert} icon="⭐" />
-        <MiniKarte label="Versuche" wert={stats.versuche} icon="✏️" />
+        <MiniKarte label="Level" wert={stats.level} icon={<TrendingUp className="w-5 h-5" aria-hidden="true" />} />
+        <MiniKarte label="Streak" wert={stats.streak} icon={<Flame className="w-5 h-5" aria-hidden="true" />} />
+        <MiniKarte label="Gemeistert" wert={stats.gemeistert} icon={<Star className="w-5 h-5" aria-hidden="true" />} />
+        <MiniKarte label="Versuche" wert={stats.versuche} icon={<Pencil className="w-5 h-5" aria-hidden="true" />} />
       </div>
 
       {/* Meilensteine */}
@@ -262,10 +263,10 @@ export default function SuSAnalyse() {
   )
 }
 
-function MiniKarte({ label, wert, icon }: { label: string; wert: number | string; icon: string }) {
+function MiniKarte({ label, wert, icon }: { label: string; wert: number | string; icon: ReactNode }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-3 text-center">
-      <div className="text-lg mb-0.5">{icon}</div>
+      <div className="flex justify-center mb-0.5 text-slate-600 dark:text-slate-300">{icon}</div>
       <div className="text-xl font-bold dark:text-white">{wert}</div>
       <div className="text-[10px] text-slate-400 uppercase tracking-wide">{label}</div>
     </div>

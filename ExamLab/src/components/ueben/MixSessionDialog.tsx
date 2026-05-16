@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Check } from 'lucide-react'
 import type { ThemaQuelle } from '../../types/ueben/uebung'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
 
@@ -88,14 +89,14 @@ export default function MixSessionDialog({ themen, fachFarben, onStarte, onSchli
                   className="flex items-center gap-2 mb-2 cursor-pointer group"
                 >
                   <span
-                    className="w-3 h-3 rounded-sm border-2 flex items-center justify-center text-[8px]"
+                    className="w-3 h-3 rounded-sm border-2 flex items-center justify-center"
                     style={{
                       borderColor: farbe,
                       backgroundColor: alleAusgewaehlt ? farbe : 'transparent',
                       color: alleAusgewaehlt ? 'white' : farbe,
                     }}
                   >
-                    {alleAusgewaehlt ? '✓' : einigeAusgewaehlt ? '–' : ''}
+                    {alleAusgewaehlt ? <Check className="w-2.5 h-2.5" aria-hidden="true" strokeWidth={3} /> : einigeAusgewaehlt ? <span className="text-[8px]">–</span> : null}
                   </span>
                   <span className="text-sm font-semibold" style={{ color: farbe }}>{fach}</span>
                   <span className="text-xs text-slate-400">({fachThemen.length} Themen)</span>
@@ -116,14 +117,14 @@ export default function MixSessionDialog({ themen, fachFarben, onStarte, onSchli
                         }`}
                       >
                         <span
-                          className="w-3.5 h-3.5 rounded-sm border-2 flex items-center justify-center text-[9px] shrink-0"
+                          className="w-3.5 h-3.5 rounded-sm border-2 flex items-center justify-center shrink-0"
                           style={{
                             borderColor: istAktiv ? farbe : '#94a3b8',
                             backgroundColor: istAktiv ? farbe : 'transparent',
                             color: 'white',
                           }}
                         >
-                          {istAktiv ? '✓' : ''}
+                          {istAktiv && <Check className="w-2.5 h-2.5" aria-hidden="true" strokeWidth={3} />}
                         </span>
                         <span className="flex-1 dark:text-slate-200 truncate">{t.thema}</span>
                         <span className="text-xs text-slate-400 shrink-0">{t.anzahl} Fragen</span>

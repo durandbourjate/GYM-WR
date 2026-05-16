@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useState, useRef } from 'react'
+import { AlertTriangle, BookOpen } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -157,7 +158,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
     return (
       <div className="flex items-center justify-center py-24">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
-          <p className="text-4xl mb-3">⚠️</p>
+          <div className="flex justify-center mb-3"><AlertTriangle className="w-10 h-10 text-amber-500" aria-hidden="true" /></div>
           <h2 className="text-xl font-bold mb-2 dark:text-white">Verbindung fehlgeschlagen</h2>
           <p className="text-slate-500 dark:text-slate-400">
             Das Backend konnte nicht erreicht werden.
@@ -178,7 +179,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
     return (
       <div className="flex items-center justify-center py-24">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
-          <p className="text-4xl mb-3">📚</p>
+          <div className="flex justify-center mb-3"><BookOpen className="w-10 h-10 text-slate-400" aria-hidden="true" /></div>
           <h2 className="text-xl font-bold mb-2 dark:text-white">Keine Gruppen</h2>
           <p className="text-slate-500 dark:text-slate-400">
             Keine Übungsgruppen gefunden. Erstellen Sie eine Gruppe unter Üben.

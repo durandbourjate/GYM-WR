@@ -3,19 +3,19 @@ import { render, screen } from '@testing-library/react'
 import { AntwortZeile } from '@shared/ui/AntwortZeile'
 
 describe('AntwortZeile', () => {
-  it('rendert ja-Marker als grünes ✓', () => {
+  it('rendert ja-Marker als grünes Check-Icon', () => {
     const { container } = render(<AntwortZeile marker="ja" variant="korrekt" label="Option A" />)
-    expect(screen.getByText('✓')).toBeInTheDocument()
+    expect(container.querySelector('.marker-ja svg.lucide-check')).toBeInTheDocument()
     expect(container.querySelector('.marker-ja')).toBeInTheDocument()
   })
-  it('rendert nein-Marker als rotes ✗', () => {
-    render(<AntwortZeile marker="nein" variant="falsch" label="Option A" />)
-    expect(screen.getByText('✗')).toBeInTheDocument()
+  it('rendert nein-Marker als rotes X-Icon', () => {
+    const { container } = render(<AntwortZeile marker="nein" variant="falsch" label="Option A" />)
+    expect(container.querySelector('.marker-nein svg.lucide-x')).toBeInTheDocument()
   })
-  it('leer-Marker rendert keinen Marker-Text aber nimmt Platz ein', () => {
+  it('leer-Marker rendert keinen Marker-Icon aber nimmt Platz ein', () => {
     const { container } = render(<AntwortZeile marker="leer" variant="neutral" label="L" />)
-    expect(screen.queryByText('✓')).not.toBeInTheDocument()
-    expect(screen.queryByText('✗')).not.toBeInTheDocument()
+    expect(container.querySelector('svg.lucide-check')).not.toBeInTheDocument()
+    expect(container.querySelector('svg.lucide-x')).not.toBeInTheDocument()
     expect(container.querySelector('.marker-leer')).toBeInTheDocument()
   })
   it('zeigt KI-Erklärung wenn vorhanden', () => {

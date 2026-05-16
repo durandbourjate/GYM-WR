@@ -1,3 +1,4 @@
+import { Star } from 'lucide-react'
 import type { KiAktionErgebnis } from '../useKIAssistent'
 
 /** Einzelner KI-Aktions-Button mit Lade-, Hinweis- und Tooltip-State */
@@ -121,7 +122,7 @@ export function ErgebnisAnzeige({ ergebnis, vorschauKey, zusatzKey, renderVorsch
             }
             aria-label={wichtig ? 'Stern entfernen' : 'Als wichtig markieren'}
           >
-            {wichtig ? '★' : '☆'}
+            <Star className={`w-5 h-5 ${wichtig ? 'fill-current' : ''}`} aria-hidden="true" />
           </button>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { AlertCircle, Lightbulb } from 'lucide-react'
 import type { FilterConfig } from './filterLogik'
 
 interface Props {
@@ -27,8 +28,8 @@ export default function ProblemmeldungenFilter({ config, onChange, istAdmin }: P
       <div className="flex gap-1.5">
         <span className="text-slate-500 dark:text-slate-400 self-center">Typ:</span>
         {(['alle', 'problem', 'wunsch'] as const).map(t => (
-          <button key={t} className={btnCls(config.typ === t)} onClick={() => onChange({ typ: t })}>
-            {t === 'alle' ? 'Alle' : t === 'problem' ? '🔴 Probleme' : '💡 Wünsche'}
+          <button key={t} className={`${btnCls(config.typ === t)} inline-flex items-center gap-1`} onClick={() => onChange({ typ: t })}>
+            {t === 'alle' ? 'Alle' : t === 'problem' ? <><AlertCircle className="w-3 h-3 fill-current" aria-hidden="true" /> Probleme</> : <><Lightbulb className="w-3 h-3" aria-hidden="true" /> Wünsche</>}
           </button>
         ))}
       </div>

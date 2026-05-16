@@ -62,7 +62,7 @@ describe('Kommentar-Renderer', () => {
     const { container } = renderSvg(renderSVGOverlay([ann], seitenInfo, null))
     const g = container.querySelector('[data-annotation-id="k1"]')
     expect(g?.querySelector('circle')).toBeTruthy()
-    expect(g?.querySelector('text')?.textContent).toBe('💬')
+    expect(g?.querySelector('text')?.textContent).toBe('K')
   })
 })
 

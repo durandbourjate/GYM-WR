@@ -4,6 +4,7 @@
  * Upload geht über EditorServices.uploadAnhang (Dependency Injection).
  */
 import { useRef, useState, useCallback } from 'react'
+import { Check, Camera } from 'lucide-react'
 import { useEditorServices } from '../EditorContext'
 import { resolvePoolBildUrl } from '../utils/poolBildUrl'
 
@@ -99,7 +100,7 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
-        Bild {bildDriveFileId && <span className="text-xs text-green-600 dark:text-green-400">(hochgeladen ✓)</span>}
+        Bild {bildDriveFileId && <span className="text-xs text-green-600 dark:text-green-400 inline-flex items-center gap-1">(hochgeladen <Check className="w-3 h-3" aria-hidden="true" />)</span>}
       </label>
 
       {/* Upload-Zone (wenn kein Bild) */}
@@ -131,8 +132,8 @@ export default function BildUpload({ bildUrl: rawBildUrl, setBildUrl, bildDriveF
             </div>
           ) : (
             <>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                📷 Bild hierher ziehen oder klicken zum Auswählen
+              <p className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1.5">
+                <Camera className="w-4 h-4" aria-hidden="true" /> Bild hierher ziehen oder klicken zum Auswählen
               </p>
               <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                 PNG, JPG, GIF, WebP, SVG · max. 5 MB

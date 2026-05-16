@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check, X } from 'lucide-react'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { uebenGruppenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
 import { useToast } from '../../../../hooks/useToast'
@@ -125,7 +126,7 @@ export default function MitgliederTab() {
                     <option value="lernend">Lernend</option>
                   </select>
                 )}
-                {rolleStatus[m.email] === 'ok' && <span className="text-xs text-green-500">✓</span>}
+                {rolleStatus[m.email] === 'ok' && <Check className="w-3.5 h-3.5 text-green-500" aria-hidden="true" />}
                 {rolleFehler[m.email] && <span className="text-xs text-red-500">{rolleFehler[m.email]}</span>}
 
                 {/* Code generieren (nur Familie, nur nicht-Admin) */}
@@ -143,9 +144,10 @@ export default function MitgliederTab() {
                 {!istAdmin && (
                   <button
                     onClick={() => handleEntfernen(m.email, m.name)}
-                    className="text-xs text-red-400 hover:text-red-600 min-h-[44px] px-2"
+                    className="text-xs text-red-400 hover:text-red-600 min-h-[44px] px-2 inline-flex items-center justify-center"
+                    aria-label="Mitglied entfernen"
                   >
-                    ✕
+                    <X className="w-4 h-4" aria-hidden="true" />
                   </button>
                 )}
               </div>

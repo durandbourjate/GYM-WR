@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Check } from 'lucide-react'
 import type { Frage } from '../../../../types/fragen-storage'
 import type { PruefungsConfig } from '../../../../types/pruefung.ts'
 import { berechnePruefungsAnalyse } from '../../../../utils/analyseUtils.ts'
@@ -264,12 +265,12 @@ export default function AnalyseTab({ pruefung, fragenMap, fragenGeladen }: Props
             ))}
             <div className="flex justify-between text-sm py-1 px-3 font-medium">
               <span className="text-slate-800 dark:text-slate-100">Summe</span>
-              <span className={analyse.gesamtPunkte === analyse.gesamtPunkteKonfiguriert
+              <span className={`inline-flex items-center gap-1 ${analyse.gesamtPunkte === analyse.gesamtPunkteKonfiguriert
                 ? 'text-green-600 dark:text-green-400'
                 : 'text-amber-600 dark:text-amber-400'
-              }>
+              }`}>
                 {analyse.gesamtPunkte} / {analyse.gesamtPunkteKonfiguriert} Pkt.
-                {analyse.gesamtPunkte === analyse.gesamtPunkteKonfiguriert ? ' ✓' : ' ≠'}
+                {analyse.gesamtPunkte === analyse.gesamtPunkteKonfiguriert ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : ' ≠'}
               </span>
             </div>
           </div>
