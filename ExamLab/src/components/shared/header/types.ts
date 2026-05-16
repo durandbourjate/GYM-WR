@@ -1,4 +1,7 @@
 // ExamLab/src/components/shared/header/types.ts
+import type { ComponentType } from 'react'
+import type { LucideProps } from 'lucide-react'
+
 export type L1Id = 'favoriten' | 'pruefung' | 'uebung' | 'fragensammlung' | 'papierkorb'
 export type L3Mode = 'single' | 'multi' | 'none'
 
@@ -23,6 +26,8 @@ export interface L2Tab {
   label: string
   onClick: () => void
   l3?: L3Config
+  /** Optional Lucide-Icon-Komponente (Cluster G Phase 2). */
+  icon?: ComponentType<LucideProps>
 }
 
 export interface L1Tab {
@@ -30,6 +35,8 @@ export interface L1Tab {
   label: string
   onClick: () => void
   l2?: L2Tab[]
+  /** Optional Lucide-Icon-Komponente (Cluster G Phase 2). */
+  icon?: ComponentType<LucideProps>
 }
 
 export interface TabKaskadeConfig {

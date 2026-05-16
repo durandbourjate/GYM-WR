@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, type ComponentType } from 'react'
+import type { LucideProps } from 'lucide-react'
 import { L3Dropdown } from './L3Dropdown'
 import type { TabKaskadeConfig, L1Tab, L2Tab } from './types'
 import { useTabAutoScroll } from '../../../hooks/useTabAutoScroll'
@@ -72,7 +73,7 @@ function SuperChip({ t1, l1Aktiv, aktivL2 }: { t1: L1Tab; l1Aktiv: boolean; akti
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {renderTab(t1.label, l1State, t1.onClick, true)}
+      {renderTab(t1.label, l1State, t1.onClick, true, t1.icon)}
 
       {zeigeL2 && (
         <div
@@ -106,7 +107,7 @@ function L2Block({ t2, l1Aktiv, aktivL2 }: { t2: L2Tab; l1Aktiv: boolean; aktivL
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {renderTab(t2.label, l2State, t2.onClick)}
+      {renderTab(t2.label, l2State, t2.onClick, false, t2.icon)}
       {zeigeL3 && (
         <L3Dropdown
           mode={t2.l3!.mode}
@@ -124,7 +125,7 @@ function L2Block({ t2, l1Aktiv, aktivL2 }: { t2: L2Tab; l1Aktiv: boolean; aktivL
 
 type TabState = 'inactive' | 'parent' | 'active'
 
-function renderTab(label: string, state: TabState, onClick: () => void, isL1 = false) {
+function renderTab(label: string, state: TabState, onClick: () => void, isL1 = false, Icon?: ComponentType<LucideProps>) {
   const stateClass = state === 'active' ? TAB_ACTIVE : state === 'parent' ? TAB_PARENT : TAB_INACTIVE
   return (
     <button
@@ -136,6 +137,7 @@ function renderTab(label: string, state: TabState, onClick: () => void, isL1 = f
       className={`${TAB_BASE} ${stateClass}`}
       {...(isL1 ? { 'data-l1-tab': '' } : {})}
     >
+      {Icon && <Icon className="w-4 h-4" aria-hidden />}
       {label}
     </button>
   )

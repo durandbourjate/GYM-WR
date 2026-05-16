@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { HelpCircle } from 'lucide-react'
 import Tooltip from './ui/Tooltip.tsx'
 
 /**
@@ -15,11 +16,7 @@ export default function SuSHilfeButton() {
           onClick={() => setOffen(true)}
           className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
       >
-        <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <circle cx="12" cy="17" r="0.5" fill="currentColor" />
-        </svg>
+        <HelpCircle className="w-5 h-5" aria-hidden />
         </button>
       </Tooltip>
 

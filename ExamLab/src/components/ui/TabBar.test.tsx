@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { Star } from 'lucide-react';
 import { TabBar } from './TabBar';
 
 const tabs = [
@@ -49,5 +50,13 @@ describe('TabBar', () => {
     const tabsWithIcon = [{ id: 'x', label: 'Mit Icon', icon: <span data-testid="icon">★</span> }];
     render(<TabBar tabs={tabsWithIcon} activeTab="x" onTabChange={() => {}} />);
     expect(screen.getByTestId('icon')).toBeDefined();
+  });
+
+  it('rendert Lucide-Icon vor Label wenn icon-Prop gesetzt', () => {
+    const tabsWithLucide = [{ id: 'fav', label: 'Favoriten', icon: <Star className="w-4 h-4" /> }];
+    render(<TabBar tabs={tabsWithLucide} activeTab="fav" onTabChange={vi.fn()} />);
+    expect(screen.getByText('Favoriten')).toBeDefined();
+    const button = screen.getByText('Favoriten').closest('button');
+    expect(button?.querySelector('svg')).toBeTruthy();
   });
 });

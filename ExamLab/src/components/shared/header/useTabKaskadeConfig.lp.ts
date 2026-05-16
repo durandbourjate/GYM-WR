@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { Star, SearchCheck, Dumbbell, List, Trash2 } from 'lucide-react'
 import type { TabKaskadeConfig, L1Tab, L2Tab } from './types'
 
 interface Input {
@@ -75,16 +76,18 @@ export function baueLPConfigAusRoute(
   }
 
   const l1Tabs: L1Tab[] = [
-    { id: 'favoriten', label: 'Favoriten', onClick: () => navigate('/favoriten') },
+    { id: 'favoriten', label: 'Favoriten', icon: Star, onClick: () => navigate('/favoriten') },
     {
       id: 'pruefung',
       label: 'Prüfen',
+      icon: SearchCheck,
       onClick: () => navigate('/pruefung'),
       l2: [durchfPruefenL2, { id: 'analyse', label: 'Analyse', onClick: () => navigate('/pruefung/tracker') }],
     },
     {
       id: 'uebung',
       label: 'Üben',
+      icon: Dumbbell,
       onClick: () => navigate('/uebung'),
       l2: [
         { id: 'durchfuehren', label: 'Durchführen', onClick: () => navigate('/uebung/durchfuehren') },
@@ -95,9 +98,10 @@ export function baueLPConfigAusRoute(
     {
       id: 'fragensammlung',
       label: 'Fragensammlung',
+      icon: List,
       onClick: () => navigate('/fragensammlung'),
       l2: [
-        { id: 'papierkorb', label: 'Papierkorb', onClick: () => navigate('/papierkorb') },
+        { id: 'papierkorb', label: 'Papierkorb', icon: Trash2, onClick: () => navigate('/papierkorb') },
       ],
     },
   ]
