@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import type { MCFrage } from '../../../../types/fragen-storage'
 import type { Antwort } from '../../../../types/antworten'
 
@@ -18,8 +19,8 @@ export default function MCAnzeige({ frage, antwort }: { frage: MCFrage; antwort:
 
         return (
           <div key={option.id} className={`flex items-start gap-2 px-3 py-1.5 rounded border ${bgClass}`}>
-            <span className="text-sm mt-0.5 shrink-0">
-              {gewaehlt ? (korrekt ? '✓' : '✗') : (korrekt ? '○' : '')}
+            <span className="text-sm mt-0.5 shrink-0 inline-flex items-center">
+              {gewaehlt ? (korrekt ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : <X className="w-3.5 h-3.5" aria-hidden="true" />) : (korrekt ? '○' : '')}
             </span>
             <span className="text-sm text-slate-700 dark:text-slate-200">{option.text}</span>
           </div>

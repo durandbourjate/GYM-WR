@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Check, X } from 'lucide-react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { BilanzERFrage as BilanzERFrageType } from '../../types/fragen-storage'
 import type { Antwort as StoreAntwort } from '../../types/antworten.ts'
@@ -132,7 +133,11 @@ export default function BilanzERAufgabe({ frage }: { frage: BilanzERFrageType })
       {/* Feedback (Üben-Modus) */}
       {feedbackSichtbar && korrekt !== null && (
         <div className={`mt-4 p-3 rounded-lg ${korrekt ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'}`}>
-          {korrekt ? '✓ Richtig!' : '✗ Leider falsch.'}
+          <span className="inline-flex items-center gap-1.5">
+            {korrekt
+              ? <><Check className="w-4 h-4" aria-hidden="true" /> Richtig!</>
+              : <><X className="w-4 h-4" aria-hidden="true" /> Leider falsch.</>}
+          </span>
           {frage.musterlosung && <p className="mt-1 text-sm">{frage.musterlosung}</p>}
         </div>
       )}

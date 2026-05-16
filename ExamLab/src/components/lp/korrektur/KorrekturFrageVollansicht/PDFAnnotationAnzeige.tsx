@@ -1,3 +1,4 @@
+import { FileText } from 'lucide-react'
 import type { Frage, FrageAnhang } from '../../../../types/fragen-storage'
 import type { Antwort } from '../../../../types/antworten'
 import MediaAnhang from '../../../MediaAnhang.tsx'
@@ -18,7 +19,7 @@ export default function PDFAnnotationAnzeige({ frage, antwort }: { frage: Frage;
       {/* PDF-Vorschau */}
       {hatPdf && (
         <div>
-          <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">📄 {pdfDateiname}</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1"><FileText className="w-3.5 h-3.5" aria-hidden="true" />{pdfDateiname}</span>
           {pdfAnhang ? (
             <MediaAnhang anhang={pdfAnhang} />
           ) : pdfQuelle ? (

@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import type { DragDropBildFrage } from '../../../../types/fragen-storage'
 import type { Antwort } from '../../../../types/antworten'
 import { toAssetUrl } from '../../../../utils/assetUrl'
@@ -61,7 +62,7 @@ export default function DragDropBildAnzeige({ frage: frageRaw, antwort: antwortR
           const erwartet = zone.korrekteLabels.join(' / ')
           return (
             <div key={zone.id} className="text-sm flex items-center gap-2">
-              <span className="shrink-0">{hatAntwort ? (korrekt ? '✓' : '✗') : '—'}</span>
+              <span className="shrink-0 inline-flex items-center">{hatAntwort ? (korrekt ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : <X className="w-3.5 h-3.5" aria-hidden="true" />) : '—'}</span>
               <span className="text-slate-500 dark:text-slate-400">{zone.label || `Zone ${idx + 1}`}:</span>
               <span className="text-slate-700 dark:text-slate-200">{hatAntwort ? texte.join(', ') : 'Nicht platziert'}</span>
               {!korrekt && hatAntwort && <span className="text-xs text-slate-400">Erwartet: {erwartet}</span>}

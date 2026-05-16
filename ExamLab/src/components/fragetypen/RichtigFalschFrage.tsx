@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { RichtigFalschFrage as RichtigFalschFrageType } from '../../types/fragen-storage'
 import type { Antwort } from '../../types/antworten.ts'
@@ -104,7 +105,7 @@ function RichtigFalschAufgabe({ frage }: { frage: RichtigFalschFrageType }) {
                     ${disabled ? 'cursor-not-allowed' : ''}
                   `}
                 >
-                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-xs shrink-0 ${gewaehlt === true ? 'border-green-600 bg-green-600 text-white dark:border-green-400 dark:bg-green-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === true ? '✓' : ''}</span>
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-xs shrink-0 ${gewaehlt === true ? 'border-green-600 bg-green-600 text-white dark:border-green-400 dark:bg-green-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === true && <Check className="w-3 h-3" aria-hidden="true" strokeWidth={3} />}</span>
                   <span>Richtig</span>
                 </button>
                 <button
@@ -118,7 +119,7 @@ function RichtigFalschAufgabe({ frage }: { frage: RichtigFalschFrageType }) {
                     ${disabled ? 'cursor-not-allowed' : ''}
                   `}
                 >
-                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-xs shrink-0 ${gewaehlt === false ? 'border-red-600 bg-red-600 text-white dark:border-red-400 dark:bg-red-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === false ? '✗' : ''}</span>
+                  <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full border-2 text-xs shrink-0 ${gewaehlt === false ? 'border-red-600 bg-red-600 text-white dark:border-red-400 dark:bg-red-400 dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>{gewaehlt === false && <X className="w-3 h-3" aria-hidden="true" strokeWidth={3} />}</span>
                   <span>Falsch</span>
                 </button>
               </div>

@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import type { BildbeschriftungFrage } from '../../../../types/fragen-storage'
 import type { Antwort } from '../../../../types/antworten'
 import { toAssetUrl } from '../../../../utils/assetUrl'
@@ -39,7 +40,7 @@ export default function BildbeschriftungAnzeige({ frage, antwort }: { frage: Bil
           const korrekt = label.korrekt.some(k => k.toLowerCase() === eingabe.toLowerCase())
           return (
             <div key={label.id} className="text-sm flex items-center gap-2">
-              <span className="shrink-0">{eingabe ? (korrekt ? '✓' : '✗') : '—'}</span>
+              <span className="shrink-0 inline-flex items-center">{eingabe ? (korrekt ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : <X className="w-3.5 h-3.5" aria-hidden="true" />) : '—'}</span>
               <span className="text-slate-500 dark:text-slate-400">{label.label || `Label ${i + 1}`}:</span>
               <span className="text-slate-700 dark:text-slate-200">{eingabe || 'Keine Eingabe'}</span>
               {!korrekt && eingabe && <span className="text-xs text-slate-400">Erwartet: {label.korrekt.join(' / ')}</span>}

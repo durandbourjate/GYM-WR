@@ -1,3 +1,4 @@
+import { Check, X } from 'lucide-react'
 import type { KorrekturErgebnis } from '../../../../utils/autoKorrektur'
 
 /** Auto-Korrektur-Details */
@@ -16,7 +17,7 @@ export default function AutoKorrekturDetails({ ergebnis, frageTyp }: { ergebnis:
             ? 'bg-green-50 dark:bg-green-900/15 text-green-700 dark:text-green-300'
             : 'bg-red-50 dark:bg-red-900/15 text-red-700 dark:text-red-300'
         }`}>
-          <span className="shrink-0">{detail.korrekt ? '✓' : '✗'}</span>
+          <span className="shrink-0 inline-flex items-center">{detail.korrekt ? <Check className="w-3.5 h-3.5" aria-hidden="true" /> : <X className="w-3.5 h-3.5" aria-hidden="true" />}</span>
           <span className="flex-1 truncate">{detail.bezeichnung}</span>
           <span className="tabular-nums shrink-0">{detail.erreicht}/{detail.max}</span>
           {detail.kommentar && (
