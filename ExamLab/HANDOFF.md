@@ -74,6 +74,73 @@
 
 **Sub-Task 8 / Phase 5 weiterhin ausstehend (User-Aktion):** vollständige 14-Cases-Verifikation mit echten Daten-Operationen (Endgültig anwenden Click + Re-Load + Audit-Log-Check), Performance-Test 1000+ Fragen, preview→main FF-Merge nach User-Freigabe.
 
+---
+
+## 📍 STAND 16.05.2026 SPÄT — Cluster G Phase 2-6 auf preview
+
+**Letzter Push auf preview:** `eafd142` (Cluster G Phase 2-6 — 13 Commits über 7 Sub-Tasks)
+**Branch:** `feature/cluster-g-icon-system-phase-2-6` HEAD `eafd142` (= preview, FF-merged)
+
+**Test-Status:**
+- vitest: **1836 passed + 4 todo** (unchanged vs Cluster D Baseline — keine Test-Regression)
+- tsc -b + 7 lint-Gates clean (alte 5 + neue `lint:no-emoji` + `lint:no-inline-svg`)
+- vite build clean (256 PWA-entries, ~5.30 MB)
+
+**Was in dieser Session passiert ist (Cluster G Phase 2-6, autonom mit Subagent-Loop):**
+
+14. **Plan-Phase (Commit `0c15013`):** Cluster G Phase 2-6 Plan (719 Z., 7 Sub-Tasks, Plan-Reviewer-Approved)
+
+15. **Sub-Task 1 Pre-Audit (`785c718`):**
+    - Audit-Doc `2026-05-16-cluster-g-pre-audit.md` (332 Z.)
+    - Bundle-Baseline: LPStartseite-Chunk 852 KB / 213 KB gzipped, Total PWA 5.30 MB / 256 entries
+    - Emoji-Inventar: 467 Matches in 145 Files (Top: ✓×81, ⚠×33, ✗×29, 💡×29, ✕×25)
+    - Inline-SVG: 24 Files (12 Icon-SVGs IN-Scope, 12 Content-SVGs OUT-Scope)
+    - FRAGETYP_ICON_MAP: 20/20 match, kein Drift
+
+16. **Sub-Task 2 Phase 2 — Header & Navigation (`6726120`):**
+    - **Plan-Korrektur:** Top-Tabs leben in `useTabKaskadeConfig.lp.ts`, NICHT `appNavigation.ts` (Plan hatte falsche Datei. appNavigation.ts hat persisted `icon: string` und wurde in Phase 4 verschoben.)
+    - 5 LP-Top-Tabs (L1: Favoriten/Prüfen/Üben/Fragensammlung + L2: Papierkorb) mit Star/SearchCheck/Dumbbell/List/Trash2
+    - `TabKaskade.tsx` rendert Icon vor Label
+    - Layout.tsx 2 Inline-SVGs + SuSHilfeButton 1 Inline-SVG migriert (FileText/Check/HelpCircle)
+
+17. **Sub-Task 3 Phase 3 — Aktion-Icons (`05646cf` + `7aa66f1` + `3884d0f`):**
+    - 11 Files migriert in 3 logischen Bundles (Phase 3a: UI+Modals, 3b: FragenBrowser+Composer-Toolbars, 3c: Editor-Toolbars)
+    - Pre-existing-Drift gefixt: KompaktZeile/DetailKarte Duplizier-Hover `blue-600` → `violet-600` (Spec-konform)
+    - **Multi-Package-Resolution-Fix:** 5 Config-Files für `lucide-react`-Auflösung aus `packages/shared/` (peerDependency + paths-Aliase in 3 tsconfigs + vite.config + vitest.config) — analog `@dnd-kit/*`-Pattern
+    - 0 `<svg>`-Tags in den 11 migrierten Files
+
+18. **Sub-Task 4 Phase 4 — Status & Domain (`a774980` + `365a4c0` + `39be153` + `8dca131`):**
+    - 30 Files in 4 logischen Bundles (4a Durchfuehrung-Phasen, 4b Ueben-Components, 4c Settings+Admin, 4d Composer+Misc-UI)
+    - ~70% UI-Emoji-Reduktion (Top-7 Files alle migriert)
+    - `appNavigation.ts` Persist-Konflikt: `FavoritenTab` + `Favoriten.tsx` haben jetzt einen `iconStringToComponent`-Mapping-Helper (15 Emoji-Keys → Lucide). Persist-Schema bleibt unverändert.
+    - Allowlist: 13 Files (didakt. Frage-Inhalt, Tests, Demo, gamification.ts Belohnungs-Sticker, appNavigation.ts, FavoritenTab+Favoriten.tsx, ThemaDetailView.tsx, sucheEngine.perf.test.ts)
+    - ~70 Emojis in mid-files (count ≤4) bleiben als Spawn-Tasks
+
+19. **Sub-Task 5 Phase 5 — FragetypIcon einbinden (`a835034` + `85a3547`):**
+    - 5 Surfaces mit `<FragetypIcon typ={...} className="w-4 h-4 text-slate-500 shrink-0" />`:
+      - KompaktZeile + DetailKarte (FragenBrowser)
+      - AbschnitteTab + DragOverlay + VorschauTab (PruefungsComposer)
+      - KorrekturFrageZeile
+    - Type-Cast `frage.typ as Fragetyp` für `FrageSummary.typ: string` mit graceful Fallback (`if (!Icon) return null`)
+    - Filter-Dropdown skipped (native `<select>` rendert keine SVGs als Option-Prefix → eigener Refactor wäre)
+
+20. **Sub-Task 6 Phase 6 — Lint-Gates (`eafd142`):**
+    - `scripts/audit-no-emoji.mjs` (Snapshot-Baseline-Mode: per_file_max statt strict)
+    - `scripts/audit-no-inline-svg.mjs` (Whitelist-Pfade für Content-SVGs)
+    - `scripts/no-emoji-baseline.json`: 13 Allowlist + 107 per_file_max-Files (Total 193 + 145 Allowlist-Emojis)
+    - `lint:no-emoji` + `lint:no-inline-svg` in `ci-check` integriert
+    - **Anti-Regression-Schutz:** neue Emojis in nicht-Allowlist-Files → CI fail; bestehende Emoji-Counts bleiben snapshot
+
+**Spawn-Tasks aus Cluster G (für Memory):**
+- ~70 Emojis in mid-files (count ≤4) schrittweise weiter migrieren (per_file_max-Werte in Baseline runter setzen)
+- `iconStringToComponent`-Helper in shared util extrahieren (duplicated in FavoritenTab + Favoriten.tsx)
+- `appNavigation.ts` Persist-Migration auf Lucide-Component-Keys (falls langfristig gewünscht)
+- Filter-Dropdown in FragenBrowserHeader auf Custom-Dropdown mit Lucide-Option-Prefixes
+- Drift-Detection-Mode in `audit-no-emoji.mjs`: WARN wenn `count < baseline` (Baseline-Auto-Tighten)
+- Storybook-Setup für Icon-Galerie (Spec §13)
+
+**Browser-E2E Sub-Task 7 (User-Aktion):** vollständige Verifikation Header + Toolbars + Material/Status/Domain-Icons + FragetypIcon nach Deploy.
+
 **Was in dieser Session passiert ist (15.05.2026 nachmittag-abend):**
 
 1. **Cluster D Spec + Plan + Reviewer-Loop:**
