@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Check, X, Pencil } from 'lucide-react'
 import { useUebenSettingsStore } from '../../../../store/ueben/settingsStore'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { useAuthStore } from '../../../../store/authStore'
@@ -101,15 +102,17 @@ export default function AllgemeinTab() {
               <button
                 onClick={handleNameSpeichern}
                 disabled={!neuerName.trim() || nameStatus === 'laden'}
-                className="px-3 py-2 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
+                className="px-3 py-2 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors inline-flex items-center justify-center"
+                aria-label="Speichern"
               >
-                {nameStatus === 'laden' ? '…' : '✓'}
+                {nameStatus === 'laden' ? '…' : <Check className="w-4 h-4" />}
               </button>
               <button
                 onClick={() => { setNameBearbeiten(false); setNameFehler('') }}
-                className="px-3 py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-sm min-h-[44px]"
+                className="px-3 py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 min-h-[44px] inline-flex items-center justify-center"
+                aria-label="Abbrechen"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
           ) : (
@@ -117,11 +120,12 @@ export default function AllgemeinTab() {
               <p className="font-medium dark:text-white">{aktiveGruppe.name}</p>
               <button
                 onClick={() => { setNeuerName(aktiveGruppe.name); setNameBearbeiten(true); setNameStatus('idle') }}
-                className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 inline-flex items-center"
+                aria-label="Umbenennen"
               >
-                ✏️
+                <Pencil className="w-3.5 h-3.5" />
               </button>
-              {nameStatus === 'ok' && <span className="text-xs text-green-500">Gespeichert ✓</span>}
+              {nameStatus === 'ok' && <span className="text-xs text-green-500 inline-flex items-center gap-1">Gespeichert <Check className="w-3 h-3" /></span>}
             </div>
           )}
           {nameFehler && <p className="text-xs text-red-500 mt-1">{nameFehler}</p>}
@@ -255,7 +259,7 @@ export default function AllgemeinTab() {
         disabled={speichern === 'laden'}
         className="w-full bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded-lg py-3 font-medium disabled:opacity-50 min-h-[44px] hover:bg-slate-900 dark:hover:bg-slate-100 transition-colors"
       >
-        {speichern === 'laden' ? 'Wird gespeichert…' : speichern === 'ok' ? 'Gespeichert ✓' : 'Speichern'}
+        {speichern === 'laden' ? 'Wird gespeichert…' : speichern === 'ok' ? (<span className="inline-flex items-center justify-center gap-1.5">Gespeichert <Check className="w-4 h-4" /></span>) : 'Speichern'}
       </button>
       {speichern === 'fehler' && (
         <p className="text-sm text-red-500">{fehlerText}</p>

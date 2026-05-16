@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { AlertTriangle, CheckCircle2, X } from 'lucide-react'
 import { useStammdatenStore } from '../../../store/stammdatenStore'
 import type { Stammdaten, KursDefinition, FachDefinition, FachschaftDefinition } from '../../../types/stammdaten'
 import { SettingsField } from './sharedFelder'
@@ -133,7 +134,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
             <span key={g} className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded inline-flex items-center gap-1">
               {g}
               {bearbeitungsModus && (
-                <button onClick={() => setGefaesse(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 cursor-pointer">✕</button>
+                <button onClick={() => setGefaesse(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 cursor-pointer inline-flex items-center" aria-label="Entfernen"><X className="w-3 h-3" /></button>
               )}
             </span>
           ))}
@@ -171,7 +172,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
               <span className="font-medium flex-1">{k.name}</span>
               <span className="text-xs text-slate-400">{k.gefaess} · {k.klassen.join(', ')}</span>
               {bearbeitungsModus && (
-                <button onClick={() => setKurse(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 text-xs cursor-pointer">✕</button>
+                <button onClick={() => setKurse(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 cursor-pointer inline-flex items-center" aria-label="Entfernen"><X className="w-3 h-3" /></button>
               )}
             </div>
           ))}
@@ -204,7 +205,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
                 <span key={t.name} className="text-[10px] px-1.5 py-0.5 rounded" style={{ backgroundColor: t.farbe + '20', color: t.farbe }}>{t.name}</span>
               ))}
               {bearbeitungsModus && (
-                <button onClick={() => setFachschaften(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 text-xs cursor-pointer">✕</button>
+                <button onClick={() => setFachschaften(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 cursor-pointer inline-flex items-center" aria-label="Entfernen"><X className="w-3 h-3" /></button>
               )}
             </div>
           ))}
@@ -240,7 +241,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
             <span key={f.id} className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded inline-flex items-center gap-1">
               {f.kuerzel} — {f.name}
               {bearbeitungsModus && (
-                <button onClick={() => setFaecher(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 cursor-pointer">✕</button>
+                <button onClick={() => setFaecher(prev => prev.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 cursor-pointer inline-flex items-center" aria-label="Entfernen"><X className="w-3 h-3" /></button>
               )}
             </span>
           ))}
@@ -277,7 +278,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
 
       {/* === Cluster H — Tag-Migration (einmalige Wartungs-Aktion) === */}
       <section className="mt-8 p-4 border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100">⚠ Cluster H — Tag-Migration (einmalig)</h3>
+        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100 inline-flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-amber-500" /> Cluster H — Tag-Migration (einmalig)</h3>
         <p className="text-sm mb-3 text-slate-700 dark:text-slate-300">
           Migriert alle Frage-Tags (string[]) zu Tag-Object-Referenzen (tagIds[]).
           Idempotent — kann nur einmal laufen. Tags-Sheet wird befüllt.
@@ -286,8 +287,8 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
           {migrLaeuft ? 'Läuft...' : 'Migration starten'}
         </Button>
         {migrErgebnis && (
-          <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded">
-            ✅ {migrErgebnis.neueTags} Tags erstellt, {migrErgebnis.fragenAktualisiert} Fragen aktualisiert ({migrErgebnis.dauerMs}ms)
+          <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded inline-flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" /> {migrErgebnis.neueTags} Tags erstellt, {migrErgebnis.fragenAktualisiert} Fragen aktualisiert ({migrErgebnis.dauerMs}ms)
           </div>
         )}
         {migrFehler && (
@@ -314,7 +315,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
 
       {/* === Cluster D Phase 0 — Status-Backfill (einmalige Wartungs-Aktion) === */}
       <section className="mt-8 p-4 border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100">⚠ Cluster D Phase 0 — Status-Backfill (einmalig)</h3>
+        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100 inline-flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-amber-500" /> Cluster D Phase 0 — Status-Backfill (einmalig)</h3>
         <p className="text-sm mb-3 text-slate-700 dark:text-slate-300">
           Füllt alle Frage-Sheets mit leerer Status-Spalte (Default „sammlung") auf.
           Idempotent — Zeilen mit bereits gesetztem Status („draft" oder „sammlung") bleiben unangetastet.
@@ -323,8 +324,8 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
           {statusBackfillLaeuft ? 'Läuft...' : 'Status-Backfill starten'}
         </Button>
         {statusBackfillErgebnis && (
-          <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded">
-            ✅ {statusBackfillErgebnis.count} Fragen mit Default „{statusBackfillErgebnis.defaultWert}" befüllt ({statusBackfillErgebnis.dauerMs}ms)
+          <div className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 text-green-900 dark:text-green-100 rounded inline-flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" /> {statusBackfillErgebnis.count} Fragen mit Default „{statusBackfillErgebnis.defaultWert}" befüllt ({statusBackfillErgebnis.dauerMs}ms)
           </div>
         )}
         {statusBackfillFehler && (

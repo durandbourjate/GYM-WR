@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { ChevronDown, ChevronRight, Lock, Flag, Link as LinkIcon, Check } from 'lucide-react'
 import { useThemenSichtbarkeitStore } from '../../../store/ueben/themenSichtbarkeitStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import { useAuthStore } from '../../../store/authStore'
@@ -198,15 +199,16 @@ export default function AdminThemensteuerung() {
                   {hatUnterthemen ? (
                     <button
                       onClick={() => toggleAusgeklappt(key)}
-                      className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-5 text-center shrink-0"
+                      className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-5 flex items-center justify-center shrink-0"
+                      aria-label={istOffen ? 'Einklappen' : 'Ausklappen'}
                     >
-                      {istOffen ? '▾' : '▸'}
+                      {istOffen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
                     </button>
                   ) : (
                     <span className="w-5" />
                   )}
                   <div className="min-w-0">
-                    <span className="font-medium text-sm dark:text-white">{eintrag.status === 'nicht_freigeschaltet' && <span className="mr-1">🔒</span>}{eintrag.thema}</span>
+                    <span className="font-medium text-sm dark:text-white inline-flex items-center gap-1">{eintrag.status === 'nicht_freigeschaltet' && <Lock className="w-3.5 h-3.5 text-slate-500" />}{eintrag.thema}</span>
                     <div className="text-xs text-slate-400">
                       {eintrag.fach} · {eintrag.anzahlFragen} Fragen
                       {hatUnterthemen && ` · ${eintrag.unterthemen.length} Unterthemen`}
@@ -295,7 +297,7 @@ export default function AdminThemensteuerung() {
                       className="filter-btn min-h-[36px]"
                       title={`${eintrag.anzahlLernziele} Lernziele`}
                     >
-                      🏁 {eintrag.anzahlLernziele}
+                      <span className="inline-flex items-center gap-1"><Flag className="w-3.5 h-3.5" /> {eintrag.anzahlLernziele}</span>
                     </button>
                   ) : (
                     <span className="text-[10px] text-slate-300 dark:text-slate-600 px-2 min-h-[36px] flex items-center" title="Keine Lernziele definiert">
@@ -309,7 +311,7 @@ export default function AdminThemensteuerung() {
                     className="filter-btn min-h-[36px]"
                     title="Deep-Link kopieren"
                   >
-                    {kopiert === key ? '✓ Kopiert' : '🔗 Link'}
+                    {kopiert === key ? (<span className="inline-flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Kopiert</span>) : (<span className="inline-flex items-center gap-1"><LinkIcon className="w-3.5 h-3.5" /> Link</span>)}
                   </button>
                 </div>
               </div>
@@ -374,7 +376,7 @@ export default function AdminThemensteuerung() {
                             className="text-xs px-2 py-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border border-slate-200 dark:border-slate-600 hover:border-slate-400 transition-colors"
                             title={`Deep-Link für ${ut.name} kopieren`}
                           >
-                            {kopiert === utKey ? '✓ Kopiert' : '🔗'}
+                            {kopiert === utKey ? (<span className="inline-flex items-center gap-1"><Check className="w-3 h-3" /> Kopiert</span>) : <LinkIcon className="w-3 h-3" />}
                           </button>
                         </div>
                       )

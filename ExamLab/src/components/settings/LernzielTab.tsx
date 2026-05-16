@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { Check, ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { postJson } from '../../services/apiClient'
 
 interface Lernziel {
@@ -39,7 +40,7 @@ export default function LernzielTab({ email }: Props) {
   const [neuDaten, setNeuDaten] = useState<Partial<Lernziel>>({ fach: '', thema: '', text: '', bloom: 'K2' })
 
   // Speicher-Status
-  const [speicherStatus, setSpeicherStatus] = useState<string | null>(null)
+  const [speicherStatus, setSpeicherStatus] = useState<{ art: 'info' | 'erfolg' | 'fehler'; text: string } | null>(null)
 
   // Einklapp-State (Default: alles eingeklappt). Key für Thema: `${fach}::${thema}`.
   const [expandedFaecher, setExpandedFaecher] = useState<Set<string>>(new Set())
@@ -117,7 +118,7 @@ export default function LernzielTab({ email }: Props) {
 
   async function erstelleLernziel() {
     if (!neuDaten.text || !neuDaten.fach) return
-    setSpeicherStatus('Speichere...')
+    setSpeicherStatus({ art: 'info', text: 'Speichere...' })
     try {
       const result = await postJson<{ erfolg: boolean; id: string }>('speichereLernziel', {
         email,
@@ -126,17 +127,17 @@ export default function LernzielTab({ email }: Props) {
       if (result?.erfolg) {
         setLernziele(prev => [...prev, { ...neuDaten, id: result.id } as Lernziel])
         setNeuDaten({ fach: neuDaten.fach, thema: '', text: '', bloom: 'K2' })
-        setSpeicherStatus('✓ Erstellt')
+        setSpeicherStatus({ art: 'erfolg', text: 'Erstellt' })
         setTimeout(() => setSpeicherStatus(null), 2000)
       }
     } catch (err) {
-      setSpeicherStatus('Fehler: ' + String(err))
+      setSpeicherStatus({ art: 'fehler', text: 'Fehler: ' + String(err) })
     }
   }
 
   async function aktualisiereLernziel() {
     if (!editId || !editDaten.text) return
-    setSpeicherStatus('Speichere...')
+    setSpeicherStatus({ art: 'info', text: 'Speichere...' })
     try {
       const result = await postJson<{ erfolg: boolean }>('aktualisiereLernziel', {
         email, callerEmail: email,
@@ -146,17 +147,17 @@ export default function LernzielTab({ email }: Props) {
         setLernziele(prev => prev.map(l => l.id === editId ? { ...l, ...editDaten } : l))
         setEditId(null)
         setEditDaten({})
-        setSpeicherStatus('✓ Gespeichert')
+        setSpeicherStatus({ art: 'erfolg', text: 'Gespeichert' })
         setTimeout(() => setSpeicherStatus(null), 2000)
       }
     } catch (err) {
-      setSpeicherStatus('Fehler: ' + String(err))
+      setSpeicherStatus({ art: 'fehler', text: 'Fehler: ' + String(err) })
     }
   }
 
   async function loescheLernziel(id: string) {
     if (!confirm('Lernziel wirklich löschen?')) return
-    setSpeicherStatus('Lösche...')
+    setSpeicherStatus({ art: 'info', text: 'Lösche...' })
     try {
       const result = await postJson<{ erfolg: boolean }>('loescheLernziel', {
         email, callerEmail: email,
@@ -164,11 +165,11 @@ export default function LernzielTab({ email }: Props) {
       })
       if (result?.erfolg) {
         setLernziele(prev => prev.filter(l => l.id !== id))
-        setSpeicherStatus('✓ Gelöscht')
+        setSpeicherStatus({ art: 'erfolg', text: 'Gelöscht' })
         setTimeout(() => setSpeicherStatus(null), 2000)
       }
     } catch (err) {
-      setSpeicherStatus('Fehler: ' + String(err))
+      setSpeicherStatus({ art: 'fehler', text: 'Fehler: ' + String(err) })
     }
   }
 
@@ -188,8 +189,9 @@ export default function LernzielTab({ email }: Props) {
     <div className="space-y-4">
       {/* Status-Anzeige */}
       {speicherStatus && (
-        <div className={`text-sm px-3 py-1.5 rounded-lg ${speicherStatus.startsWith('✓') ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : speicherStatus.startsWith('Fehler') ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'}`}>
-          {speicherStatus}
+        <div className={`text-sm px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 ${speicherStatus.art === 'erfolg' ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : speicherStatus.art === 'fehler' ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'}`}>
+          {speicherStatus.art === 'erfolg' && <Check className="w-3.5 h-3.5" />}
+          {speicherStatus.text}
         </div>
       )}
 
@@ -222,7 +224,7 @@ export default function LernzielTab({ email }: Props) {
           className="w-full px-4 py-3 text-left text-sm font-medium bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between"
         >
           <span className="dark:text-white">+ Neues Lernziel erstellen</span>
-          <span className={`text-slate-600 dark:text-slate-300 transition-transform ${zeigeNeu ? 'rotate-180' : ''}`}>▾</span>
+          <ChevronDown className={`w-4 h-4 text-slate-600 dark:text-slate-300 transition-transform ${zeigeNeu ? 'rotate-180' : ''}`} />
         </button>
         {zeigeNeu && (
           <div className="p-4 space-y-3 border-t dark:border-slate-700">
@@ -295,7 +297,7 @@ export default function LernzielTab({ email }: Props) {
             <h3 className="font-semibold text-sm dark:text-white">{fach}</h3>
             <span className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span>{fachAnzahl}</span>
-              <span className={`transition-transform ${fachOffen ? 'rotate-180' : ''}`}>▾</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform ${fachOffen ? 'rotate-180' : ''}`} />
             </span>
           </button>
           {fachOffen && Array.from(themaMap.entries()).map(([thema, lzListe]) => {
@@ -311,7 +313,7 @@ export default function LernzielTab({ email }: Props) {
                 <span className="text-xs font-medium text-slate-600 dark:text-slate-400">{thema}</span>
                 <span className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
                   <span>{lzListe.length}</span>
-                  <span className={`transition-transform ${themaOffen ? 'rotate-180' : ''}`}>▾</span>
+                  <ChevronDown className={`w-3 h-3 transition-transform ${themaOffen ? 'rotate-180' : ''}`} />
                 </span>
               </button>
               {themaOffen && lzListe.map(lz => (
@@ -340,8 +342,8 @@ export default function LernzielTab({ email }: Props) {
                       </span>
                       <p className="flex-1 text-sm text-slate-700 dark:text-slate-300">{lz.text}</p>
                       <div className="shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => startEdit(lz)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 text-xs" title="Bearbeiten">✏️</button>
-                        <button onClick={() => loescheLernziel(lz.id)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-red-500 text-xs" title="Löschen">🗑️</button>
+                        <button onClick={() => startEdit(lz)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 inline-flex items-center" title="Bearbeiten" aria-label="Bearbeiten"><Pencil className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => loescheLernziel(lz.id)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-red-500 inline-flex items-center" title="Löschen" aria-label="Löschen"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </>
                   )}

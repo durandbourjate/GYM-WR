@@ -1,6 +1,44 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ComponentType } from 'react'
+import {
+  ClipboardList, BarChart3, Eye, Target, Play, TrendingUp, BookOpen, Settings,
+  User, GraduationCap, Star, Wrench, MapPin, HelpCircle, FileText, ChevronDown, ChevronRight,
+  GripVertical, X, type LucideProps,
+} from 'lucide-react'
 import { useFavoritenStore, type Favorit } from '../../store/favoritenStore'
 import { APP_NAVIGATION, type NavigationsEintrag } from '../../config/appNavigation'
+
+/**
+ * Mappt persistierte Emoji-Strings (aus appNavigation/Store) auf Lucide-Komponenten.
+ * Unbekannte Strings fallen auf String-Render zurück (`null` Return).
+ */
+function iconStringToComponent(s: string): ComponentType<LucideProps> | null {
+  switch (s) {
+    case '📝': return ClipboardList
+    case '📊': return BarChart3
+    case '👁️': case '👁': return Eye
+    case '🎯': return Target
+    case '▶️': case '▶': return Play
+    case '📈': return TrendingUp
+    case '📚': return BookOpen
+    case '⚙️': case '⚙': return Settings
+    case '👤': return User
+    case '🎓': return GraduationCap
+    case '⭐': case '☆': return Star
+    case '🔧': return Wrench
+    case '📍': return MapPin
+    case '❓': return HelpCircle
+    case '📄': return FileText
+    default: return null
+  }
+}
+
+/** Render-Helper: Icon-String → Lucide-Komponente (falls bekannt) sonst String unverändert */
+function IconRender({ icon, className = 'w-4 h-4 inline-block' }: { icon?: string; className?: string }) {
+  if (!icon) return null
+  const Comp = iconStringToComponent(icon)
+  if (Comp) return <Comp className={className} />
+  return <span>{icon}</span>
+}
 import {
   DndContext,
   closestCenter,
@@ -122,25 +160,27 @@ function BaumEintrag({ eintrag, istAdmin, toggleFavorit, istFavorit, tiefe = 0 }
         {hatKinder ? (
           <button
             onClick={() => setOffen(!offen)}
-            className="w-5 text-center text-slate-400 dark:text-slate-500 cursor-pointer text-xs"
+            className="w-5 flex items-center justify-center text-slate-400 dark:text-slate-500 cursor-pointer"
+            aria-label={offen ? 'Einklappen' : 'Ausklappen'}
           >
-            {offen ? '▼' : '▶'}
+            {offen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
           </button>
         ) : (
           <span className="w-5" />
         )}
 
         {/* Icon + Label */}
-        <span className="text-sm">{eintrag.icon}</span>
+        <span className="text-sm inline-flex items-center"><IconRender icon={eintrag.icon} className="w-4 h-4 text-slate-500 dark:text-slate-400" /></span>
         <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{eintrag.label}</span>
 
         {/* Stern-Toggle */}
         <button
           onClick={() => toggleFavorit({ typ: 'ort', ziel: eintrag.pfad, label: eintrag.label, icon: eintrag.icon })}
-          className="text-lg leading-none cursor-pointer hover:scale-110 transition-transform"
+          className="cursor-pointer hover:scale-110 transition-transform"
           title={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
+          aria-label={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
         >
-          {istFav ? '⭐' : '☆'}
+          <Star className={`w-5 h-5 ${istFav ? 'fill-yellow-400 text-yellow-500' : 'text-slate-400'}`} />
         </button>
       </div>
 
@@ -184,22 +224,24 @@ function SortableFavoritItem({ fav, onEntfernen }: { fav: Favorit; onEntfernen: 
       <button
         {...attributes}
         {...listeners}
-        className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 cursor-grab active:cursor-grabbing"
+        className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 cursor-grab active:cursor-grabbing inline-flex items-center"
         title="Verschieben"
+        aria-label="Verschieben"
       >
-        ⠿
+        <GripVertical className="w-4 h-4" />
       </button>
 
-      <span className="text-sm">{fav.icon || typIcon(fav.typ)}</span>
+      <span className="text-sm inline-flex items-center"><IconRender icon={fav.icon || typIcon(fav.typ)} className="w-4 h-4 text-slate-500 dark:text-slate-400" /></span>
       <span className="flex-1 text-sm text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</span>
       <span className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</span>
 
       <button
         onClick={onEntfernen}
-        className="text-slate-600 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 cursor-pointer"
+        className="text-slate-600 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 cursor-pointer inline-flex items-center"
         title="Favorit entfernen"
+        aria-label="Favorit entfernen"
       >
-        ✕
+        <X className="w-4 h-4" />
       </button>
     </div>
   )
