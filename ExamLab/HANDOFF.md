@@ -8,7 +8,7 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD beider Branches:** `a579633` — main + preview identisch, beide gepusht, beide deployed.
+**HEAD beider Branches:** `81689e2` — main + preview identisch, beide gepusht, beide deployed.
 
 **Bei Wiedereinstieg:**
 ```bash
@@ -19,10 +19,11 @@ git log --oneline -10                  # letzte commits anschauen
 
 **Working tree clean.** vitest 1839 + 4 todo. ci-check vollständig grün.
 
-**Letzte Sessions (17.05.2026):**
-- Batch 2 (`4b986f9`) + Batch 3 (`35e9020`) + Batch 4 (`12dca6f`) + Batch 5 (`a579633`) → -63 Emojis insgesamt (138 → 75 Baseline). 42 Files migriert.
-- Batch 5 (Editor-Typen + LP-Startseite + Durchführung): BildbeschriftungEditor (X), DragDropBildEditor (AlertTriangle), HotspotEditor (AlertTriangle), MCEditor (Check), SortierungEditor (ClipboardList/X), LPPruefungenAnsicht (ClipboardList Hero), LPUebungenAnsicht (Dumbbell Hero), MultiDashboardDialog (X), SusDetailPanel (X), ZeitzuschlagInline (Timer 2×).
-- Browser-Test auf staging: R/F-Badge + OptionenMenu + MultiDashboardDialog X-Icon visuell verifiziert. Pattern: `inline-flex items-center gap-X` + `<Icon className="w-X h-X" aria-hidden="true" />`.
+**Letzte Sessions (17.05.2026):** **Cluster G Icon-Migration KOMPLETT abgeschlossen.**
+- 6 Batches: Top-15 (`1c56633`) + Batch 2 (`4b986f9`) + Batch 3 (`35e9020`) + Batch 4 (`12dca6f`) + Batch 5 (`a579633`) + Mega-Batch (`81689e2`).
+- **Baseline 138 → 0 Emojis** (Cluster G abgeschlossen). 92 Files migriert.
+- Mega-Batch (50 Files in einem Rutsch): alle verbleibenden Mid-Files inkl. JSX-Restructures (SaveStatusIndikator/AntwortZeile ReactNode), pdfAnnotationenSVG 💬→K + Test, ★/☆ Star-Toggle via fill-current, ⌘K→Cmd+K, GlobalSuche-Icon, KI-Buttons, FeedbackModal Send, AktivePruefungen ClipboardList/Dumbbell, etc.
+- Browser-Test auf staging: 0 sichtbare Emojis im DOM. Pattern: `inline-flex items-center gap-X` + `<Icon className="w-X h-X" aria-hidden="true" />`.
 
 **Pre-Push-Pflicht:** `cd ExamLab && npm run ci-check` (matched CI 1:1). Bei `packages/shared/package.json`-Änderungen zusätzlich `cd packages/shared && npm install` damit lock-Datei synchron bleibt (Memory `feedback_npm_ci_lock_drift.md`).
 
@@ -38,7 +39,7 @@ Nach 2 Wochen Live-Beobachtung Tag-Modell:
 #### 2. Verbleibende Spawn-Tasks (gross, brauchen Vorsicht)
 - **I-3 + M-1 (Cluster D S3):** `updateFrageMitPatch_` Performance bei >500-ID-Batches — Apps-Script-Refactor (ID→{tab,row,headers}-Map einmal pro endpoint, setValues-Batch statt per-Field-setValue). Braucht Deploy + LIVE-Verifikation. Ca. 0.5 Tag.
 - **appNavigation.ts Persist-Migration auf Lucide-Component-Keys:** vorsichtig, weil `favoritenStore.icon` persistiert User-Favoriten als Emoji-Strings. Migration-Path: alte Strings → neue Keys + Auto-Migration im Store. Aktuell pragmatisch über `NavIcon`-Helper gelöst (Mapping Emoji→Lucide bei Render). Längerfristig sauberer mit Keys.
-- **50 Mid-Files (Count 1-2) Emojis schrittweise migrieren:** ~75 Emojis Rest in Baseline (Stand 17.05.2026 nach Batch 2 + 3 + 4 + 5). Weniger UX-Impact, aber Baseline immer kleiner = besser.
+- ~~Mid-Files Emoji-Migration~~ **ABGESCHLOSSEN 17.05.2026.** Baseline = 0. Cluster G Icon-Migration vollständig. Künftige Drift wird vom `lint:no-emoji`-Gate automatisch geblockt (strict mode aktiv).
 
 #### 3. Komplett neue Cluster
 - **Cluster E.2-E.5** (Typografie + Favoriten-Backend-Sync + Star-Toggle + Favoriten-Picker) — 4 separate Sub-Cluster, je 2-3 Tage
