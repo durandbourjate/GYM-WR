@@ -10,15 +10,13 @@
 
 **HEAD main + preview:** `280b4d2` — TODO-Sweep #1-#6 KOMPLETT auf main + preview synchron (17.05.2026 SEHR SPÄT).
 
-**⚠️ Apps-Script-Deploy ausstehend (DU):** `ExamLab/apps-script-code.js` enthält Änderungen aus #5 + #6 (apiTestdatenLetzterSeed-Endpoint + ScriptProperties-Helpers + buildFragenIndex_ + setValues-Batch in updateFrageMitPatch_). EIN gemeinsamer Deploy für beide:
-1. `apps-script-code.js`-Inhalt komplett kopieren und im Editor einfügen
-2. „Bereitstellung verwalten" → ⚙️ → „Neue Version" → „Bereitstellen"
-3. URL bleibt gleich (gleiche Bereitstellung, nur neue Version)
-4. Nach Deploy LIVE-Verifikation:
-   - **#5:** TestdatenTab (Admin-Login) → „Testdaten zurücksetzen" → Status zeigt „(zuletzt: 17.05.2026 …)"
-   - **#6:** FragensammlungBrowser → 100+ Fragen selektieren → Batch-Edit (z.B. Tag hinzufügen) → Dauer-Vergleich vor/nach Deploy
+**Apps-Script:** Deployed (DU 17.05.2026 nach Code-Push). URL unverändert.
 
-**Browser-E2E ausstehend (DU)** für #3 (Filter-Dropdown) + #4 (NavIcon-Persist) — siehe Notes pro Item unten.
+**Browser-E2E:** Durchgeführt am 17.05.2026 nach Deploy auf Staging mit LP-Login (wr.test):
+- **#3 Filter-Dropdown ✅:** Alle 4 Filter (Fach/Fragetyp/Bloom/Status) mit Lucide-Icons live verifiziert. Filter-Application funktioniert (VWL → 1059 von 2363). Tastatur (ArrowDown/Enter → "Pool geprüft"), Typeahead ("r" → Recht), Escape-Close. 0 Console-Errors.
+- **#4 NavIcon-Persist ✅:** Favorit "Prüfen" gesetzt → ClipboardList-Lucide-Icon rendert in Favoriten-Card. Nach Reload mit Cache-Buster: Favorit + Icon persistiert korrekt (Persist v2 + Lucide-Key-Mapping).
+- **#5 letzterSeedAm Fallback ✅:** TestdatenTab zeigt "✓ Initialisiert" ohne "(zuletzt: ...)" weil seit Deploy noch kein Re-Seed lief (ScriptProperties leer). Frontend-Fallback funktioniert. **Volle Datum-Anzeige** ausstehend bis erster Re-Seed (Admin-Login → "Zurücksetzen").
+- **#6 Apps-Script Perf:** E2E auf Live-Daten geskippt (User-Entscheidung). Code ist intern-equivalent zu altem Pfad, vitest 1872 grün, externe Verhaltensweise unverändert. Live-Verifikation passiert organisch durch normale Bulk-Edit-Nutzung.
 
 **Bei Wiedereinstieg:**
 ```bash
