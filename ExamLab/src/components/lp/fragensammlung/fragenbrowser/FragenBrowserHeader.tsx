@@ -1,10 +1,38 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo, type ReactNode } from 'react'
+import { CircleDot, CheckCircle2, ShieldCheck, Sparkles, Layers } from 'lucide-react'
 import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../../../../types/fragen-storage'
 import type { Sortierung, FilterPoolStatus, FilterKontext } from '../../../../hooks/useFragenFilter.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 import { typLabel } from '../../../../utils/fachUtils.ts'
 import Button from '../../../ui/Button.tsx'
+import Dropdown from '../../../ui/Dropdown.tsx'
+import { FragetypIcon, type Fragetyp } from '../../../ui/icons/FragetypIcon.tsx'
 import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
+
+const FACHBEREICH_FARBE: Record<string, string> = {
+  VWL: '#f97316',
+  BWL: '#3b82f6',
+  Recht: '#22c55e',
+  Informatik: '#6b7280',
+}
+
+const STATUS_ICONS: Record<FilterPoolStatus, ReactNode> = {
+  alle: null,
+  ungeprueft: <CircleDot className="w-3.5 h-3.5" aria-hidden="true" />,
+  pool_geprueft: <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />,
+  pruefungstauglich: <ShieldCheck className="w-3.5 h-3.5" aria-hidden="true" />,
+  update: <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />,
+}
+
+const STATUS_LABELS: Record<FilterPoolStatus, string> = {
+  alle: 'Alle Status',
+  ungeprueft: 'Ungeprüft',
+  pool_geprueft: 'Pool geprüft',
+  pruefungstauglich: 'Prüfungstauglich',
+  update: 'Update verfügbar',
+}
+
+const BLOOM_STUFEN: BloomStufe[] = ['K1', 'K2', 'K3', 'K4', 'K5', 'K6']
 
 interface Props {
   // Daten
@@ -98,6 +126,62 @@ export default function FragenBrowserHeader({
 
   const [exportOffen, setExportOffen] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
+
+  // Dropdown-Optionen (memoisiert, weil Maps stabile Identity pro Render brauchen).
+  const fachbereichOptionen = useMemo(
+    () => [
+      { value: '' as const, label: 'Alle Fächer' },
+      ...Array.from(dropdownStats.fachbereiche.entries()).map(([fb, count]) => ({
+        value: fb as Fachbereich,
+        label: fb,
+        count,
+        icon: (
+          <span
+            aria-hidden="true"
+            className="inline-block w-2.5 h-2.5 rounded-full"
+            style={{ backgroundColor: FACHBEREICH_FARBE[fb] ?? '#94a3b8' }}
+          />
+        ),
+      })),
+    ],
+    [dropdownStats.fachbereiche],
+  )
+
+  const typOptionen = useMemo(
+    () => [
+      { value: '', label: 'Alle Typen' },
+      ...Array.from(dropdownStats.typen.entries())
+        .sort((a, b) => b[1] - a[1])
+        .map(([typ, count]) => ({
+          value: typ,
+          label: typLabel(typ),
+          count,
+          icon: <FragetypIcon typ={typ as Fragetyp} className="w-3.5 h-3.5" aria-hidden="true" />,
+        })),
+    ],
+    [dropdownStats.typen],
+  )
+
+  const bloomOptionen = useMemo(
+    () => [
+      { value: '' as const, label: 'Alle Bloom' },
+      ...BLOOM_STUFEN.map((k) => ({
+        value: k,
+        label: k,
+        icon: <Layers className="w-3.5 h-3.5" aria-hidden="true" />,
+      })),
+    ],
+    [],
+  )
+
+  const statusOptionen = useMemo<{ value: FilterPoolStatus; label: string; icon: ReactNode }[]>(
+    () => (Object.keys(STATUS_LABELS) as FilterPoolStatus[]).map((s) => ({
+      value: s,
+      label: STATUS_LABELS[s],
+      icon: STATUS_ICONS[s],
+    })),
+    [],
+  )
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -213,18 +297,13 @@ export default function FragenBrowserHeader({
       <div className="flex items-center gap-2 mt-2 flex-wrap">
         <span className="text-[10px] text-slate-600 dark:text-slate-300 uppercase tracking-wide font-medium">Filter:</span>
 
-        {/* Fach — immer sichtbar */}
-        <select
-            value={filterFachbereich}
-            onChange={(e) => { setFilterFachbereich(e.target.value as Fachbereich | '') }}
-            className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
-          >
-            <option value="">Alle Fächer</option>
-            {Array.from(dropdownStats.fachbereiche.entries())
-              .map(([fb, count]) => (
-                <option key={fb} value={fb}>{fb} ({count})</option>
-              ))}
-          </select>
+        {/* Fach — Custom Dropdown mit Farbpunkt-Prefix */}
+        <Dropdown<Fachbereich | ''>
+          value={filterFachbereich}
+          onChange={setFilterFachbereich}
+          ariaLabel="Fachbereich filtern"
+          options={fachbereichOptionen}
+        />
 
         {/* Thema — immer sichtbar */}
         <select
@@ -250,44 +329,32 @@ export default function FragenBrowserHeader({
             ))}
           </select>
 
-        {/* Typ */}
-        <select
+        {/* Typ — Custom Dropdown mit FragetypIcon-Prefix */}
+        <Dropdown<string>
           value={filterTyp}
-          onChange={(e) => { setFilterTyp(e.target.value) }}
-          className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
-        >
-          <option value="">Alle Typen</option>
-          {Array.from(dropdownStats.typen.entries())
-            .sort((a, b) => b[1] - a[1])
-            .map(([typ, anzahl]) => (
-              <option key={typ} value={typ}>{typLabel(typ)} ({anzahl})</option>
-            ))}
-        </select>
+          onChange={setFilterTyp}
+          ariaLabel="Fragetyp filtern"
+          options={typOptionen}
+          panelClassName="min-w-[220px]"
+        />
 
-        {/* Bloom */}
-        <select
+        {/* Bloom — Custom Dropdown mit Layers-Prefix */}
+        <Dropdown<BloomStufe | ''>
           value={filterBloom}
-          onChange={(e) => { setFilterBloom(e.target.value as BloomStufe | '') }}
-          className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
-        >
-          <option value="">Alle Bloom</option>
-          {['K1', 'K2', 'K3', 'K4', 'K5', 'K6'].map((k) => (
-            <option key={k} value={k}>{k}</option>
-          ))}
-        </select>
+          onChange={setFilterBloom}
+          ariaLabel="Bloom-Stufe filtern"
+          options={bloomOptionen}
+          panelClassName="min-w-[140px]"
+        />
 
-        {/* Status */}
-        <select
+        {/* Status — Custom Dropdown mit Status-Icons */}
+        <Dropdown<FilterPoolStatus>
           value={filterPoolStatus}
-          onChange={(e) => { setFilterPoolStatus(e.target.value as FilterPoolStatus) }}
-          className="text-xs px-2 py-1.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
-        >
-          <option value="alle">Alle Status</option>
-          <option value="ungeprueft">Ungeprüft</option>
-          <option value="pool_geprueft">Pool geprüft</option>
-          <option value="pruefungstauglich">Prüfungstauglich</option>
-          <option value="update">Update verfügbar</option>
-        </select>
+          onChange={setFilterPoolStatus}
+          ariaLabel="Status filtern"
+          options={statusOptionen}
+          panelClassName="min-w-[200px]"
+        />
 
         {/* Anhang */}
         <button
