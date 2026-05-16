@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { X, Columns2 } from 'lucide-react'
 import DOMPurify from 'dompurify'
 import { useResizableHandle } from '@shared/ui/useResizableHandle'
 import type { PruefungsMaterial } from '../types/pruefung.ts'
@@ -69,9 +70,7 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
               className="w-7 h-7 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md transition-colors cursor-pointer"
             >
               <Tooltip text="Schliessen">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" />
               </Tooltip>
             </button>
           </div>
@@ -135,9 +134,7 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
               className="hidden md:flex w-8 h-8 items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
             >
               <Tooltip text="Split-Ansicht">
-                <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v18m0 0H5a2 2 0 01-2-2V5a2 2 0 012-2h4m0 18h10a2 2 0 002-2V5a2 2 0 00-2-2H9" />
-                </svg>
+                <Columns2 className="w-[18px] h-[18px]" />
               </Tooltip>
             </button>
             {/* Schliessen-Button */}
@@ -146,9 +143,7 @@ export default function MaterialPanel({ materialien, modus, onSchliessen, onModu
               className="w-8 h-8 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
             >
               <Tooltip text="Schliessen">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-5 h-5" />
               </Tooltip>
             </button>
           </div>
