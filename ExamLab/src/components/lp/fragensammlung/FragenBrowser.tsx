@@ -22,10 +22,8 @@ import ExcelImport from './ExcelImport.tsx'
 import BatchExportDialog from '../korrektur/BatchExportDialog.tsx'
 import BatchConfirmModal from './BatchConfirmModal.tsx'
 import BatchLoeschConfirmModal from './BatchLoeschConfirmModal.tsx'
-import { useFragenSelectionStore, useSelektierteIds } from '../../../store/fragenSelectionStore.ts'
 import { useTagsStore } from '../../../store/tagsStore.ts'
-import { useToastStore } from '../../../store/toastStore.ts'
-import { bulkUpdateFragen, bulkLoescheFragen } from '../../../services/fragenBulkApi.ts'
+import { useFragenBatchEdit } from './useFragenBatchEdit.ts'
 import type { FragenBulkPatch, TagsModus } from '@shared/types/fragen-core'
 
 interface Props {
@@ -118,22 +116,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
   const [zeigExcelImport, setZeigExcelImport] = useState(false)
   const [zeigBatchExport, setZeigBatchExport] = useState(false)
 
-  // Cluster D Phase 4 Batch-Edit: vollwertige State-Variablen (Phase 2 war Stub).
-  // Flow:
-  //   1. User klickt „Bearbeiten" in FragenSelektionBar → setBatchEditorOffen(true)
-  //   2. Editor öffnet im batchMode, User ändert Felder, Save-Button → onBatchSave(patch, modus)
-  //   3. pendingPatch + pendingTagsModus werden gesetzt → BatchConfirmModal öffnet
-  //   4. „Endgültig anwenden" → bulkUpdateFragen + reload + toast + leereSelektion
-  const [batchEditorOffen, setBatchEditorOffen] = useState(false)
-  const [loeschConfirmOffen, setLoeschConfirmOffen] = useState(false)
-  const [batchConfirmOffen, setBatchConfirmOffen] = useState(false)
-  const [pendingPatch, setPendingPatch] = useState<FragenBulkPatch | null>(null)
-  const [pendingTagsModus, setPendingTagsModus] = useState<TagsModus>('hinzufuegen')
-  const [batchLaeuft, setBatchLaeuft] = useState(false)
-  const selektierteIds = useSelektierteIds()
-  const leereSelektion = useFragenSelectionStore((s) => s.leereSelektion)
-  const toastAdd = useToastStore((s) => s.add)
-
   // IDs der aktuell gefilterten Fragen für „Alle anzeigen"-Button + „Auf Filter beschränken".
   const gefilterteIds = useMemo(
     () => filter.gefilterteFragen.map((f) => f.id),
@@ -149,12 +131,13 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     [filter.gruppierteAnzeige],
   )
 
-  // Schnittmenge selektierte ∩ aktueller Filter — für die yellow-Warnung in den Confirm-Modals
-  // (Spec § 5.4/5.5: „X davon sind im aktuellen Filter nicht sichtbar").
-  const sichtbareSelektierteCount = useMemo(() => {
-    const setSichtbar = new Set(gefilterteIds)
-    return selektierteIds.filter((id) => setSichtbar.has(id)).length
-  }, [selektierteIds, gefilterteIds])
+  // Cluster D Phase 4 Batch-Edit — vollständig in eigenen Hook ausgelagert (SP-3, 16.05.2026).
+  // Flow:
+  //   1. User klickt „Bearbeiten" in FragenSelektionBar → batch.setBatchEditorOffen(true)
+  //   2. Editor öffnet im batchMode, User ändert Felder, Save-Button → batch.onEditorBatchSave(patch, modus)
+  //   3. pendingPatch + pendingTagsModus werden gesetzt → BatchConfirmModal öffnet
+  //   4. „Endgültig anwenden" → batch.onBatchUpdateBestaetigen → bulkUpdateFragen + reload + toast + leereSelektion
+  const batch = useFragenBatchEdit({ email: user?.email, gefilterteIds })
 
   // Resolver für Tag-Namen aus dem Patch — der ConfirmModal zeigt Namen, das Patch hat IDs.
   // tagsStore-getState ist Snapshot-Read (Cluster H Phase 2 etabliert).
@@ -166,54 +149,6 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
     if (ids.length === 0) return []
     return useTagsStore.getState().getByIds(ids).map((t) => t.name)
   }, [])
-
-  // Editor → Confirm: Patch + Modus zwischenspeichern, Editor schliessen, Confirm öffnen.
-  const onEditorBatchSave = useCallback((patch: FragenBulkPatch, modus: TagsModus): void => {
-    setPendingPatch(patch)
-    setPendingTagsModus(modus)
-    setBatchEditorOffen(false)
-    setBatchConfirmOffen(true)
-  }, [])
-
-  // Confirm-Bestätigt → bulkUpdateFragen + Store-Reload + Toast + Selektion leeren.
-  const onBatchUpdateBestaetigen = useCallback(async (): Promise<void> => {
-    if (!user?.email || !pendingPatch || batchLaeuft) return
-    setBatchLaeuft(true)
-    try {
-      const r = await bulkUpdateFragen(selektierteIds, pendingPatch, user.email)
-      // Backend-Return-Shape: { erfolgreich: number, affectedIds: string[], fehlgeschlagen: string[] }
-      const fehlText = r.fehlgeschlagen.length > 0 ? `, ${r.fehlgeschlagen.length} fehlgeschlagen` : ''
-      toastAdd(r.fehlgeschlagen.length > 0 ? 'warning' : 'success', `${r.erfolgreich} Fragen aktualisiert${fehlText}.`)
-      leereSelektion()
-      setBatchConfirmOffen(false)
-      setPendingPatch(null)
-      await useFragensammlungStore.getState().ladeAlleDetails(user.email)
-    } catch (e) {
-      console.error('[FragenBrowser] bulkUpdateFragen failed', e)
-      toastAdd('error', `Batch-Update fehlgeschlagen: ${String(e)}`)
-    } finally {
-      setBatchLaeuft(false)
-    }
-  }, [user, pendingPatch, batchLaeuft, selektierteIds, leereSelektion, toastAdd])
-
-  // Lösch-Confirm-Bestätigt → bulkLoescheFragen + Store-Reload + Toast + Selektion leeren.
-  const onBatchLoeschenBestaetigen = useCallback(async (): Promise<void> => {
-    if (!user?.email || batchLaeuft) return
-    setBatchLaeuft(true)
-    try {
-      const r = await bulkLoescheFragen(selektierteIds, user.email)
-      const fehlText = r.fehlgeschlagen.length > 0 ? `, ${r.fehlgeschlagen.length} fehlgeschlagen` : ''
-      toastAdd(r.fehlgeschlagen.length > 0 ? 'warning' : 'success', `${r.erfolgreich} Fragen in den Papierkorb verschoben${fehlText}.`)
-      leereSelektion()
-      setLoeschConfirmOffen(false)
-      await useFragensammlungStore.getState().ladeAlleDetails(user.email)
-    } catch (e) {
-      console.error('[FragenBrowser] bulkLoescheFragen failed', e)
-      toastAdd('error', `Batch-Löschen fehlgeschlagen: ${String(e)}`)
-    } finally {
-      setBatchLaeuft(false)
-    }
-  }, [user, batchLaeuft, selektierteIds, leereSelektion, toastAdd])
 
   const toggleFrageInPruefung = useCallback((frageId: string): void => {
     if (bereitsVerwendetSet.has(frageId)) {
@@ -332,42 +267,42 @@ export default function FragenBrowser({ onHinzufuegen, onEntfernen, onSchliessen
       {/* Cluster D Phase 2 Batch-Edit Floating-Bar — zeigt sich nur wenn ≥1 Frage selektiert. */}
       <FragenSelektionBar
         sichtbareIds={gefilterteIds}
-        onOeffneEditor={() => { setBatchEditorOffen(true) }}
-        onOeffneLoeschConfirm={() => { setLoeschConfirmOffen(true) }}
+        onOeffneEditor={() => { batch.setBatchEditorOffen(true) }}
+        onOeffneLoeschConfirm={() => { batch.setLoeschConfirmOffen(true) }}
       />
 
       {/* Cluster D Phase 4 — Batch-Editor (Editor im batchMode, ohne frage). */}
-      {batchEditorOffen && (
+      {batch.batchEditorOffen && (
         <FragenEditor
           key="batch-editor"
           frage={null}
           onSpeichern={() => { /* no-op im batchMode — Editor ruft onBatchSave */ }}
-          onAbbrechen={() => setBatchEditorOffen(false)}
-          batchMode={{ count: selektierteIds.length, sichtbareCount: sichtbareSelektierteCount }}
-          onBatchSave={onEditorBatchSave}
+          onAbbrechen={() => batch.setBatchEditorOffen(false)}
+          batchMode={{ count: batch.selektierteIds.length, sichtbareCount: batch.sichtbareSelektierteCount }}
+          onBatchSave={batch.onEditorBatchSave}
         />
       )}
 
       {/* Cluster D Phase 4 — Confirm-Modal nach Batch-Editor-Save. */}
-      {batchConfirmOffen && pendingPatch && user && (
+      {batch.batchConfirmOffen && batch.pendingPatch && user && (
         <BatchConfirmModal
-          patch={pendingPatch}
-          tagsModus={pendingTagsModus}
-          anzahl={selektierteIds.length}
-          sichtbarCount={sichtbareSelektierteCount}
-          tagNamen={resolveTagNamen(pendingPatch, pendingTagsModus)}
-          onBestaetigen={() => { void onBatchUpdateBestaetigen() }}
-          onAbbrechen={() => { setBatchConfirmOffen(false); setPendingPatch(null) }}
+          patch={batch.pendingPatch}
+          tagsModus={batch.pendingTagsModus}
+          anzahl={batch.selektierteIds.length}
+          sichtbarCount={batch.sichtbareSelektierteCount}
+          tagNamen={resolveTagNamen(batch.pendingPatch, batch.pendingTagsModus)}
+          onBestaetigen={() => { void batch.onBatchUpdateBestaetigen() }}
+          onAbbrechen={batch.onAbbrechenConfirm}
         />
       )}
 
       {/* Cluster D Phase 4 — Lösch-Confirm-Modal aus FragenSelektionBar. */}
-      {loeschConfirmOffen && user && (
+      {batch.loeschConfirmOffen && user && (
         <BatchLoeschConfirmModal
-          anzahl={selektierteIds.length}
-          sichtbarCount={sichtbareSelektierteCount}
-          onLoeschen={() => { void onBatchLoeschenBestaetigen() }}
-          onAbbrechen={() => setLoeschConfirmOffen(false)}
+          anzahl={batch.selektierteIds.length}
+          sichtbarCount={batch.sichtbareSelektierteCount}
+          onLoeschen={() => { void batch.onBatchLoeschen() }}
+          onAbbrechen={batch.onAbbrechenLoesch}
         />
       )}
     </>
