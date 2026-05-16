@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { useAuthStore } from '../store/authStore.ts'
 import ThemeToggle from './ThemeToggle.tsx'
 
@@ -19,9 +20,7 @@ export default function AbgabeBestaetigung() {
       </div>
       <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
         <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
+          <Check className="w-8 h-8 text-white dark:text-slate-800" strokeWidth={2.5} />
         </div>
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">
           Prüfung abgegeben

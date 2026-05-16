@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check } from 'lucide-react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import BaseDialog from './ui/BaseDialog'
 import { useAuthStore } from '../store/authStore.ts'
@@ -142,9 +143,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
       <BaseDialog open={true} onClose={onSchliessen} maxWidth="md">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-white dark:text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-            </svg>
+            <Check className="w-8 h-8 text-white dark:text-slate-800" strokeWidth={2.5} />
           </div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
             Prüfung abgegeben

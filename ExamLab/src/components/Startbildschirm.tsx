@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Clock } from 'lucide-react'
 import type { PruefungsConfig } from '../types/pruefung.ts'
 import type { Frage } from '../types/fragen-storage'
 import { usePruefungStore } from '../store/pruefungStore.ts'
@@ -154,9 +155,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
           <div className="text-center mb-8">
             <div className="relative w-20 h-20 mx-auto mb-6">
               <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                <svg className="w-10 h-10 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <Clock className="w-10 h-10 text-blue-500 dark:text-blue-400" strokeWidth={1.5} />
               </div>
               <div className="absolute inset-0 rounded-full bg-blue-200 dark:bg-blue-800/20 animate-ping opacity-20" />
             </div>
