@@ -13,6 +13,7 @@ import { berechneZeitbedarf } from '../../../../utils/zeitbedarf.ts'
 import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../../store/tagsStore'
 import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
+import { FragetypIcon } from '../../../ui/icons/FragetypIcon'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -58,6 +59,8 @@ function SortableFrageItem({ frageId, fIndex, abschnittIndex, abschnittLength, f
           <span className="flex items-center gap-2 flex-wrap">
             <span className="text-xs text-slate-400 dark:text-slate-500 w-5 text-center tabular-nums shrink-0">{fIndex + 1}.</span>
             {frage?.fachbereich && <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${fachbereichFarbe(frage.fachbereich)}`}>{frage.fachbereich}</span>}
+            {/* Typ (Icon + Label) — Cluster G Phase 5 */}
+            {frage && <FragetypIcon typ={frage.typ} className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden />}
             {frage && <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-300">{typLabel(frage.typ)}</span>}
             {frage && <span className="text-[10px] text-slate-500 dark:text-slate-400">{frage.bloom} · {frage.punkte}P.</span>}
             {zeit !== undefined && <span className="text-[10px] text-slate-400 dark:text-slate-500">~{zeit} Min.</span>}
@@ -88,6 +91,8 @@ function DragOverlayContent({ frage, fIndex }: { frage: Frage | undefined; fInde
         <span className="text-slate-400 dark:text-slate-500"><DragHandleIcon /></span>
         <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{fIndex + 1}.</span>
         {frage?.fachbereich && <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${fachbereichFarbe(frage.fachbereich)}`}>{frage.fachbereich}</span>}
+        {/* Typ (Icon + Label) — Cluster G Phase 5 */}
+        {frage && <FragetypIcon typ={frage.typ} className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden />}
         {frage && <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-300">{typLabel(frage.typ)}</span>}
       </div>
       {vorschau && <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 ml-9 line-clamp-1">{vorschau}</p>}

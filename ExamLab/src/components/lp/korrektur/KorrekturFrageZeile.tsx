@@ -8,6 +8,7 @@ import { apiService } from '../../../services/apiService.ts'
 import AudioRecorder from '../../AudioRecorder.tsx'
 import KorrekturFrageVollansicht from './KorrekturFrageVollansicht'
 import { useToast } from '../../../hooks/useToast'
+import { FragetypIcon } from '../../ui/icons/FragetypIcon'
 
 /** KI-korrigierbare Fragetypen (nicht-deterministische, brauchen Claude API) */
 const KI_KORRIGIERBARE_TYPEN = new Set(['freitext'])
@@ -160,6 +161,8 @@ export default function KorrekturFrageZeile({
             Aufgabe {aufgabeNr}
           </span>
         )}
+        {/* Typ (Icon + Label) — Cluster G Phase 5 */}
+        <FragetypIcon typ={fragenTyp} className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden />
         <span className={`inline-block px-1.5 py-0.5 text-xs rounded font-medium ${fragenTypFarbe(fragenTyp)}`}>
           {fragenTyp}
         </span>

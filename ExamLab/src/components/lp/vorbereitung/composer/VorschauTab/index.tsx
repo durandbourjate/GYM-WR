@@ -19,6 +19,7 @@ import KontenbestimmungVorschau from './KontenbestimmungVorschau'
 import BilanzERVorschau from './BilanzERVorschau'
 import AufgabengruppeVorschau from './AufgabengruppeVorschau'
 import { ermittlePdfQuelle } from '@shared/utils/mediaQuelleResolver'
+import { FragetypIcon } from '../../../../ui/icons/FragetypIcon'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -204,6 +205,8 @@ function FrageVorschau({ frage, nummer }: { frage: Frage; nummer: number }) {
           <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${fachbereichFarbe(frage.fachbereich)}`}>
             {frage.fachbereich}
           </span>
+          {/* Typ (Icon + Label) — Cluster G Phase 5 */}
+          <FragetypIcon typ={frage.typ} className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" aria-hidden />
           <span className="px-1.5 py-0.5 text-[10px] font-medium rounded bg-slate-100 text-slate-600 dark:bg-slate-600 dark:text-slate-300">
             {typLabel(frage.typ)}
           </span>
