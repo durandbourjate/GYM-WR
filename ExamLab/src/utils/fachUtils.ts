@@ -1,5 +1,7 @@
-import type { Tag } from '../types/tags'
 import { DEFAULT_STAMMDATEN, type Stammdaten } from '../types/stammdaten'
+
+/** Fachbereich-Tag mit Hex-Farbe (Stammdaten.fachschaften.fachbereichTags-Form). */
+export type FachbereichTag = { name: string; farbe: string }
 
 /** Fachschaft-Kürzel → Fach-Name aus Stammdaten (mit Fallback auf Default) */
 export function fachschaftZuFach(kuerzel: string, stammdaten?: Stammdaten): string {
@@ -30,8 +32,8 @@ export function schulFachbereiche(stammdaten?: Stammdaten): Set<string> {
   return bereiche
 }
 
-/** Tailwind Badge-Klassen für einen Tag */
-export function tagBadgeKlassen(tag: Tag): string {
+/** Tailwind Badge-Klassen für einen Fachbereich-Tag (hex-Farbe → Tailwind-Klassen). */
+export function tagBadgeKlassen(tag: FachbereichTag): string {
   // Dark-Mode: opacity-basiert (konsistent mit bestehendem Code)
   const farbenMap: Record<string, string> = {
     '#f97316': 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',

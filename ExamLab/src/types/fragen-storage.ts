@@ -6,8 +6,16 @@
 
 import type * as Core from '@shared/types/fragen-core'
 import type { EffektivesRecht, Berechtigung } from './auth'
-import type { Tag } from './tags'
 import type { PoolFrageSnapshot } from './pool'
+
+/** Pre-Cluster-H Legacy-Tag-Objekt-Form. `frage.tags` kann string ODER dieses
+ * Objekt enthalten. Konsumenten lesen primär `.name`. Wird in Cluster H Phase 3
+ * zusammen mit dem `frage.tags`-Fallback komplett entfernt. */
+export interface LegacyTag {
+  name: string
+  farbe: string
+  ebene: 'fachschaft' | 'querschnitt' | 'persoenlich'
+}
 
 /**
  * ExamLab-Storage-Erweiterung der FrageBase.
@@ -18,7 +26,7 @@ import type { PoolFrageSnapshot } from './pool'
  * - `poolVersion` ist ein Snapshot zur Update-Erkennung importierter Pool-Fragen.
  */
 export interface FrageBase extends Omit<Core.FrageBase, 'tags'> {
-  tags: (string | Tag)[]
+  tags: (string | LegacyTag)[]
   _recht?: EffektivesRecht
   poolVersion?: PoolFrageSnapshot
   // Cluster D Phase 0: `status` ist jetzt im Core (siehe `@shared/types/fragen-core` FrageBase).
@@ -72,7 +80,7 @@ export type FormelFrage = WithStorageBase<Core.FormelFrage>
  * Storage-Variante der diskriminierten Frage-Union.
  *
  * Strukturell kompatibel zu Core.Frage für alle Core-Felder, aber typisiert
- * mit der Storage-Erweiterung (FrageBase mit `tags: (string | Tag)[]`,
+ * mit der Storage-Erweiterung (FrageBase mit `tags: (string | LegacyTag)[]`,
  * `_recht`, `poolVersion`).
  */
 export type Frage =
@@ -113,7 +121,7 @@ export interface FrageSummary {
   fragetext: string  // Gekürzt auf max. 200 Zeichen
   bloom: Core.BloomStufe
   punkte: number
-  tags: (string | Tag)[]
+  tags: (string | LegacyTag)[]
   /** Tag-Object-Referenzen (Cluster H Phase 1+, parallel zu legacy `tags` bis Phase 3). */
   tagIds?: string[]
   quelle?: 'pool' | 'papier' | 'manuell' | 'ki-generiert'

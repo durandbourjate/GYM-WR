@@ -12,10 +12,13 @@
  * useEffect-Bodies und useMemo-Bodies (wo getState() pragmatisch akzeptabel ist).
  */
 import type { Tag as SharedTag } from '@shared/types/tag'
-import type { Tag as LegacyTag } from '../types/tags'
 import { useTagsStore } from '../store/tagsStore'
 
-type TagFeld = string | LegacyTag
+/** Cluster H Phase 2 Legacy-Form: `frage.tags` enthielt Pre-Cluster-H Tag-Objekte
+ * mit `name` (und weiteren Feldern wie `farbe`/`ebene`). Nur `name` wird konsumiert.
+ * Wird in Cluster H Phase 3 zusammen mit `frage.tags`-Fallback entfernt. */
+type LegacyTagShape = { name: string }
+type TagFeld = string | LegacyTagShape
 export type FrageMitTags = {
   tagIds?: string[]
   tags?: TagFeld[]

@@ -10,24 +10,24 @@ import {
   istWRFachschaft,
   defaultFachbereich,
   zeigeFachbereichBadge,
+  type FachbereichTag,
 } from './fachUtils'
-import type { Tag } from '../types/tags'
 
 // === Neue Funktionen ===
 
 describe('tagBadgeKlassen', () => {
   it('gibt orange Klassen für #f97316', () => {
-    const tag: Tag = { name: 'VWL', farbe: '#f97316', ebene: 'fachschaft' }
+    const tag: FachbereichTag = { name: 'VWL', farbe: '#f97316' }
     expect(tagBadgeKlassen(tag)).toContain('orange')
   })
 
   it('gibt blaue Klassen für #3b82f6', () => {
-    const tag: Tag = { name: 'BWL', farbe: '#3b82f6', ebene: 'fachschaft' }
+    const tag: FachbereichTag = { name: 'BWL', farbe: '#3b82f6' }
     expect(tagBadgeKlassen(tag)).toContain('blue')
   })
 
   it('gibt slate Klassen für unbekannte Farben', () => {
-    const tag: Tag = { name: 'Custom', farbe: '#aabbcc', ebene: 'persoenlich' }
+    const tag: FachbereichTag = { name: 'Custom', farbe: '#aabbcc' }
     expect(tagBadgeKlassen(tag)).toContain('slate')
   })
 })
