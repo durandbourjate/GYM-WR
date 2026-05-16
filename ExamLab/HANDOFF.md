@@ -8,6 +8,28 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
+**HEAD main + preview:** Spawn-Tasks-Sweep (17.05.2026 NACHT 2).
+
+## Spawn-Tasks-Sweep Stand 17.05.2026 NACHT 2
+
+**TestdatenTab Status-Refresh ✅:** `useTestdatenStatus` exportiert `setLetzterSeedAm`-Setter. TestdatenTab updated den Datum-Anzeige-State nach erfolgreichem Seed/Reset aus `seedResult.statistik.letzterSeedAm` — kein zweiter Backend-Roundtrip noetig (Response liefert ISO-Timestamp schon).
+
+**Apps-Script Lock-Serialisierung speichereFrage ✅:** `speichereFrage` haelt jetzt `LockService.getScriptLock()` waehrend des Save-Calls. Schliesst TOCTOU-Window gegen `apiHardDeleteTag` (Cluster H Phase 0). LP-A koennte Tag waehrend LP-B-Save unter den Fuessen wegloeschen → orphan tagId. Latency-Impact: <10ms im unkontentionierten Fall.
+
+**Apps-Script zaehleTagVerwendung_ includeTag-Option ✅:** Optional `opts.includeTag === true` liefert `{count, tag}` zurueck (Tag aus Tags-Sheet). Spart `ladeAlleTagsAusSheet_`-I/O in `apiHardDeleteTag` (war: 2× I/O fuer Differenzialfehlermeldung archiviert).
+
+**tagsStore-Test-Coverage erweitert ✅:** +11 Tests (Error-Pfad mit Mock-Rejection, Re-entry-Guard mit pending-Promise, getByIds-Edge-Cases [leeres Array / nur orphans / Reihenfolge], getByName-Edge-Cases [leerer String / whitespace], entferneLokal no-op, sequentielle ladeAlleTags).
+
+**useTagsByIds Memoized Hook ✅:** Neuer Helper im tagsStore. Subscribed `tags` via `useShallow`, memoized via `useMemo(..., [tags, key])` — referentielle Stabilitaet bei gleicher ids-Liste (testbar). Re-Render bei Tag-Rename funktioniert. +5 Tests fuer den Hook.
+
+**Tests:** vitest 1887 + 4 todo (+16 Tag-related). tsc -b + 7 lint-Gates clean.
+
+**Apps-Script-Deploy ausstehend (DU):** Nochmals Deploy fuer Lock-Serialisierung + zaehleTagVerwendung_-Erweiterung. URL unveraendert.
+
+---
+
+## Vorheriger Stand — Mega-Sweep (17.05.2026 NACHT)
+
 **HEAD main + preview:** Mega-Sweep — Reset-Timeout-UX + Cluster H Phase 3 (17.05.2026 NACHT).
 
 ## Mega-Sweep Stand 17.05.2026 SEHR SPÄT

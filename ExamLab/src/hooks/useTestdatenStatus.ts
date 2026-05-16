@@ -11,6 +11,11 @@ export interface TestdatenStatus {
   /** ISO-Timestamp des letzten Seed/Reset (leer = unbekannt oder Backend ohne
    *  letzterSeedAm-Support). */
   letzterSeedAm: string
+  /** Setter fuer letzterSeedAm — Caller (z.B. TestdatenTab nach erfolgreichem
+   *  Reset/Seed) kann den Wert aktualisieren ohne erneuten Backend-Roundtrip,
+   *  weil apiAdminSeedTestdaten den neuen ISO-Timestamp bereits in der Response
+   *  als `statistik.letzterSeedAm` mitliefert. */
+  setLetzterSeedAm: (iso: string) => void
 }
 
 /**
@@ -66,5 +71,6 @@ export function useTestdatenStatus(opts?: { email?: string }): TestdatenStatus {
     initialisiert: hatStammdatenMarker || hatPruefungsMarker,
     ladestand: pruefeFertig ? 'fertig' : 'pruefe',
     letzterSeedAm,
+    setLetzterSeedAm,
   }
 }

@@ -30,7 +30,7 @@ export default function TestdatenTab({ email }: Props) {
   const speichereLPProfil = useStammdatenStore(s => s.speichereLPProfil)
   const istAdmin = useStammdatenStore(s => s.istAdmin)
   const toastAdd = useToastStore(s => s.add)
-  const { initialisiert, ladestand, letzterSeedAm } = useTestdatenStatus({ email })
+  const { initialisiert, ladestand, letzterSeedAm, setLetzterSeedAm } = useTestdatenStatus({ email })
 
   const admin = istAdmin(email)
   const sichtbar = lpProfil?.testdatenSichtbar ?? false
@@ -55,6 +55,12 @@ export default function TestdatenTab({ email }: Props) {
     try {
       const result = await apiAdminSeedTestdaten({ email, mode })
       setSeedResult(result)
+      // Spawn-Task 17.05.2026: nach erfolgreichem Seed/Reset den Datum-Anzeige-State
+      // sofort aktualisieren — Response enthaelt den frischen ISO-Timestamp, also
+      // kein zweiter Backend-Roundtrip noetig.
+      if (result.success && result.statistik?.letzterSeedAm) {
+        setLetzterSeedAm(result.statistik.letzterSeedAm)
+      }
       if (result.success && mode === 'reset') setModalOffen(false)
     } finally {
       loadingRef.current = false

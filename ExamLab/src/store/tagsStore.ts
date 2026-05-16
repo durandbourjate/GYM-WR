@@ -4,7 +4,9 @@
  * Lädt einmal via apiListTags, hält im Memory-Cache, exportiert getById/getByIds/getByName-Lookups.
  * Lokale Mutations (upsertLokal/entferneLokal) für optimistic updates nach API-Calls.
  */
+import { useMemo } from 'react'
 import { create } from 'zustand'
+import { useShallow } from 'zustand/shallow'
 import type { Tag } from '@shared/types/tag'
 import { listeTags } from '../services/tagsApi'
 
@@ -64,3 +66,26 @@ export const useTagsStore = create<TagsState>((set, get) => ({
     return get().tags.find((t) => t.name.toLowerCase() === lower)
   },
 }))
+
+/**
+ * Memoisierter Hook: subscribed an tagsStore.tags + Auflösung via getByIds.
+ *
+ * Vorteil ggü. direkter `useTagsStore.getState().getByIds(ids)` (non-reactive)
+ * oder `useTagsStore(useShallow(s => s.getByIds(ids)))` (re-runs selector
+ * jeden Render, allokiert neues Array): Hier re-evaluieren wir nur bei
+ * Aenderung der tags-Reference oder der ids-Liste. Re-Render bei Tag-Rename
+ * funktioniert (tags-Reference wechselt). Stabile Reference fuer
+ * memoization-Konsumenten.
+ *
+ * Spawn-Task 17.05.2026 (Cluster H Phase 0).
+ */
+export function useTagsByIds(ids: string[] | undefined): Tag[] {
+  const tags = useTagsStore(useShallow((s) => s.tags))
+  const key = (ids ?? []).join(',')
+  return useMemo(() => {
+    if (!ids || ids.length === 0) return []
+    const map = new Map(tags.map((t) => [t.id, t]))
+    return ids.map((id) => map.get(id)).filter((t): t is Tag => Boolean(t))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tags, key])
+}

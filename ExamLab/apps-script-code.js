@@ -685,8 +685,14 @@ function apiUpdateTag(body) {
 
 /**
  * Cluster H Phase 0: Helper - zählt Verwendung einer tagId über alle Frage-Sheets.
+ *
+ * Spawn-Task 17.05.2026: optional opts.includeTag === true liefert zusaetzlich das
+ * Tag-Objekt aus dem Tags-Sheet zurueck. Spart einen separaten ladeAlleTagsAusSheet_-
+ * Read im apiHardDeleteTag-Pfad (war: 2× I/O fuer Differenzialfehlermeldung archiviert).
+ *
+ * @returns {number | {count: number, tag: {id, name, farbe, archiviert, erstelltAm, erstelltVon} | null}}
  */
-function zaehleTagVerwendung_(tagId) {
+function zaehleTagVerwendung_(tagId, opts) {
   var fachbereiche = FACHBEREICH_SHEETS; // siehe Tags-Sheet-Init-Helper-Block
   var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID); // Konstante existiert (Z.106)
   var count = 0;
@@ -702,6 +708,14 @@ function zaehleTagVerwendung_(tagId) {
       var ids = String(values[i][tagIdsIdx] || '').split(',').map(function(s) { return s.trim(); });
       if (ids.indexOf(tagId) >= 0) count++;
     }
+  }
+  if (opts && opts.includeTag) {
+    var alleTags = ladeAlleTagsAusSheet_();
+    var tag = null;
+    for (var t = 0; t < alleTags.length; t++) {
+      if (alleTags[t].id === tagId) { tag = alleTags[t]; break; }
+    }
+    return { count: count, tag: tag };
   }
   return count;
 }
@@ -726,14 +740,13 @@ function apiHardDeleteTag(body) {
     // Hinweis: Diese Lock-Sicherung schützt nur innerhalb hardDeleteTag. Vollständige
     // Race-Sicherheit gegen speichereFrageIntern_ würde dort denselben Lock erfordern
     // (Spawn-Task — würde alle Schreib-Operationen serialisieren).
-    var verwendungsCount = zaehleTagVerwendung_(id);
+    // Spawn-Task 17.05.2026: includeTag liefert sowohl count als auch Tag-Objekt
+    // in einer einzigen zaehleTagVerwendung_-Iteration (vermeidet zweites
+    // ladeAlleTagsAusSheet_-I/O fuer Archiv-Status-Differential-Meldung).
+    var ergebnis = zaehleTagVerwendung_(id, { includeTag: true });
+    var verwendungsCount = ergebnis.count;
+    var thisTag = ergebnis.tag;
     if (verwendungsCount > 0) {
-      // Differenzierte Fehlermeldung je nach Archiv-Status (verbessert Hinweis bei archivierten Tags).
-      var alleTags = ladeAlleTagsAusSheet_();
-      var thisTag = null;
-      for (var t2 = 0; t2 < alleTags.length; t2++) {
-        if (alleTags[t2].id === id) { thisTag = alleTags[t2]; break; }
-      }
       var msg = thisTag && thisTag.archiviert
         ? 'Tag ist bereits archiviert, wird aber noch von ' + verwendungsCount + ' Fragen verwendet. Bitte erst Fragen umtaggen.'
         : 'Tag wird noch von ' + verwendungsCount + ' Fragen verwendet. Erst archivieren oder Fragen umtaggen.';
@@ -5045,7 +5058,19 @@ function speichereFrage(body) {
       return jsonResponse({ error: 'Ungültige Frage-Daten' });
     }
 
-    const ergebnis = speichereFrageIntern_(frage, email);
+    // Spawn-Task 17.05.2026 (Cluster H Phase 0 Lock-Serialisierung): TOCTOU-Schutz
+    // gegen apiHardDeleteTag. LP-B speichert Frage mit tagIds=[tagX] waehrend
+    // LP-A apiHardDeleteTag(tagX) ausfuehrt → orphan tagId. Beide Endpoints
+    // teilen jetzt LockService.getScriptLock(). Latenz-Impact gering (<10ms im
+    // unkontentionierten Fall), Sicherheit massiv besser.
+    var lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    var ergebnis;
+    try {
+      ergebnis = speichereFrageIntern_(frage, email);
+    } finally {
+      try { lock.releaseLock(); } catch (_e) { /* ignore */ }
+    }
 
     // Kalibrierungs-Feedbacks schliessen (Spec 2026-04-20, Task 7)
     if (body.offeneKIFeedbacks && Array.isArray(body.offeneKIFeedbacks)) {
