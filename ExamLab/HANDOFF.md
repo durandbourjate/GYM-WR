@@ -146,17 +146,12 @@
 ✅ **Phase 4 (Status & Domain) erwartet LIVE** — siehe Build-Größe LPStartseite 852KB (Lucide-Icons gechunked dorthin)
 ✅ **Phase 6 (Lint-Gates) LIVE** — ci-check + neue 2 Gates grün, Baseline-Mode aktiv
 
-⚠ **Phase 2 (Header-Tab-Icons) NICHT LIVE — Vite tree-shaking-Bug:**
-- 5 Tabs (Favoriten/Prüfen/Üben/Fragensammlung/Papierkorb) zeigen **kein Lucide-Icon** im Browser
-- Code in `useTabKaskadeConfig.lp.ts` ist korrekt: `import { Star, SearchCheck, Dumbbell, List, Trash2 } from 'lucide-react'` + `icon: Star` etc. in L1Tab-Configs
-- `TabKaskade.renderTab` rendert korrekt `{Icon && <Icon className="w-4 h-4" aria-hidden />}`
-- Lokaler Build: Dumbbell/SearchCheck/Trash2-Strings sind NUR in `TestBadge`-Chunk (1× je), nicht im `LPStartseite`-Chunk
-- DOM-Inspect am Live-Deploy zeigt `<button title="Favoriten">Favoriten</button>` ohne `<svg>`-Child
-- vitest `TabBar.test.tsx` mit `import { Star }` läuft grün → JS-Pfad korrekt, Tree-Shaking-Issue Build-Time
-- **Hypothese:** Vite `manualChunks` oder lucide-react v1.14 ESM-Side-Effects-Annotation eliminiert die Icons aus useTabKaskadeConfig.lp.ts beim Bundling (während FragetypIcon-Imports in eigenem File überleben)
-- **Spawn-Task SP-G-1:** Phase 2 Tab-Icons-Tree-Shaking debuggen — z.B. `/* @__INCLUDE__ */`-Hints, expliziter Re-Export via `export { Star }` in eigenem Sub-Modul, oder Vite-Config `optimizeDeps` für lucide-react
+✅ **Phase 2 (Header-Tab-Icons) LIVE nach Cache-Reset:**
+- 5 Tabs alle mit korrekten Lucide-Icons: ☆Favoriten (Star) / 🔍✓Prüfen (SearchCheck) / 🏋Üben (Dumbbell) / ☰Fragensammlung (List) / 🗑Papierkorb (Trash2)
+- SP-G-1 war **KEIN Code-Bug** sondern ein HTTP/SW-Cache-Problem in der Browser-Session — `index-BPbSI66K.js` (alter Build) wurde aus Cache geliefert trotz `caches.delete()`. Erst nach SW-unregister + caches.delete + `location.replace('...?cb=ts')` lud Chrome den neuen `index-DOmYCY5a.js`-Bundle mit Icons.
+- **Memory-Lehre:** `feedback_http_cache_after_sw.md` greift hier — bei Browser-E2E nach Deploy MUSS `?cb=<timestamp>`-Buster auf der URL stehen, nicht nur Cache-Reset.
 
-Restlicher Cluster G ist sichtbar live + funktional. preview→main FF-Merge OK weil keine funktionalen Regressionen.
+Cluster G Phase 2-6 ist **100% LIVE**. preview→main bereits FF-merged auf `2ab4dab` (Hotfix Lock).
 
 **Was in dieser Session passiert ist (15.05.2026 nachmittag-abend):**
 
