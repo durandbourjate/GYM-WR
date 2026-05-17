@@ -245,6 +245,10 @@ Phase 5: Karten-Listen besuchen (LPStartseite, FragenBrowser, Korrektur-Vollansi
 - **BaseDialog Title-Default:** Existiert bereits ein zentraler Title-Style in BaseDialog, oder werden Title-Klassen pro Konsument neu gesetzt? Phase-4-Plan prüft + setzt ggf. Default in BaseDialog selbst (single source).
 - **Sub-Section-Header in komplexen Tabs:** Z.B. KI-Kalibrierung hat mehrere Sub-Sections — wie strukturieren? Plan-Phase definiert Faustregel: zweistufig (`TYPO.h1` für Tab, `TYPO.h2` für Sub-Sections), dreistufig (`+ TYPO.h2`+`TYPO.body font-semibold` für tieferes Nesting) nur wenn echt nötig.
 - **Tests die `getByText('Titel')` statt `getByRole('heading')` nutzen:** Migration kann Tests unbemerkt brechen wenn dort die Größe geprüft wird via class. Phase 1: greppen.
+- **Drift-Watch-Semantik bei Shrinkage:** Wenn die Trefferzahl unter Baseline fällt — soll CI mit Warnung passen (User updatet Baseline manuell), hart failen ("stale baseline"), oder automatisch Baseline updaten? `audit-no-emoji.mjs`-Präzedenz prüfen, identisches Verhalten wählen.
+- **Audit-Skript Heuristik (regex vs. AST):** Multi-Line-JSX wie `<h2\n className={…}>` ist mit Line-Based-Regex problematisch (False-Positives oder Misses). Plan-Phase entscheidet: einfacher Line-Regex mit Limitierung dokumentiert, oder leichtgewichtige JSX-Block-Erkennung (z.B. lookahead bis schliessendes `>`). Default: einfacher Regex, Whitelist für False-Positives.
+- **80%-Threshold als interim oder final?** Akzeptanzkriterien 5/6 erlauben 20% Baseline-Whitelist für Modals + Karten. Ist das der finale Zustand (Lint-Gate als „Drift-Stop" auf 80%-Niveau) oder ein Zwischenschritt mit Follow-up-Spec zur 100%-Migration? Plan-Phase entscheidet — Default: 80% final, Follow-up nur bei explizitem Bedarf.
+- **BaseDialog-Default vs. per-Konsument-Migration:** Phase-4-Aufwand variiert massiv. Wenn BaseDialog einen zentralen Title-Style-Default akzeptiert, ist Phase 4 ein 1-Datei-Refactor + Header-Cleanup in Konsumenten. Wenn nicht, sind 30-40 File-Edits nötig. Phase-1-Audit klärt das.
 
 ## 11. Akzeptanzkriterien
 
