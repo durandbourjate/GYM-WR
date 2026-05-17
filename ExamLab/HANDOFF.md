@@ -8,12 +8,11 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD preview:** `875e9ff` — Spawn-Tasks Restbestand (17.05.2026 SPÄT-2). main-Merge nach Browser-E2E.
-**HEAD main:** `63c7b6e` — Cluster E.5 Tests + HANDOFF.
+**HEAD main + preview:** `122d7e9` — Spawn-Tasks Restbestand LIVE (17.05.2026 SPÄT-2, E2E ✓ + FF-Merge zu main).
 
-### Spawn-Tasks Restbestand (preview, 17.05.2026 SPÄT-2)
+### Spawn-Tasks Restbestand LIVE auf main + preview (17.05.2026 SPÄT-2)
 
-**Branch `feature/spawn-tasks-restbestand-2026-05-17` → preview (FF-push).** Audit aller Spawn-Tasks aus Memory ergab: 90% bereits erledigt seit Memory-Stand (ESC-Handler, DetailKarte-Checkbox, Floating-Bar mobile, tagsModusAusPatch Defense-in-Depth, batchLaeuft useRef, useFragenBatchEdit Hook extrahiert, apiClient postJson Backend-Error, appNavigation Persist-Migration, IDB-Cleanup-Race, FragenBrowserHeader Filter-Dropdown, letzterSeedAm Persistenz, Lock-Serialisierung tag-Schreib-Ops, zaehleTagVerwendung_ Tag-Object Return, useTagsByIds Hook, tagsStore-Tests). Übrig 2 Items, beide in 1 Commit (`875e9ff`):
+**Branch `feature/spawn-tasks-restbestand-2026-05-17` → preview (FF) → main (FF) nach LP-E2E.** Audit aller Spawn-Tasks aus Memory ergab: 90% bereits erledigt seit Memory-Stand (ESC-Handler, DetailKarte-Checkbox, Floating-Bar mobile, tagsModusAusPatch Defense-in-Depth, batchLaeuft useRef, useFragenBatchEdit Hook extrahiert, apiClient postJson Backend-Error, appNavigation Persist-Migration, IDB-Cleanup-Race, FragenBrowserHeader Filter-Dropdown, letzterSeedAm Persistenz, Lock-Serialisierung tag-Schreib-Ops, zaehleTagVerwendung_ Tag-Object Return, useTagsByIds Hook, tagsStore-Tests). Übrig 2 Items, beide in 1 Commit (`875e9ff`):
 
 1. **useOpenFavorit Hook** (Cluster E.5 Spawn-Task): Zentralisierung des Favorit-Open-Logic in `ExamLab/src/hooks/useOpenFavorit.ts`.
    - `resolveFavorit(fav)` → entweder `{kind:'navigate', to}` für Link-Targets oder `{kind:'action', onClick}` für Overlay-Open.
@@ -27,12 +26,16 @@
    - `--baseline`-Flag regeneriert `per_file_max` (analog audit-typo-tokens.mjs).
    - Baseline-Total-Berechnung korrigiert: Sum aller `per_file_max` unabhängig vom aktuellen Count.
 
-**Status:** Auf preview deployed. main-Merge nach LP-Browser-E2E ausstehend. vitest **1926 + 4 todo** (Baseline 1915 → +11 useOpenFavorit-Tests), 8 lint-Gates clean, tsc -b + vite build clean.
+**Status:** LIVE auf main + preview (FF-Merge nach E2E grün). vitest **1926 + 4 todo** (Baseline 1915 → +11 useOpenFavorit-Tests), 8 lint-Gates clean, tsc -b + vite build clean.
 
-**Browser-E2E-Plan vor main-Merge:**
-- Favoriten-Page öffnen mit jeweils einem Favorit pro typ-Variante (ort/pruefung/uebung/frage/einstellungen-tab/hilfe-tab)
-- Klick auf jeden Favorit verifiziert: Link-Navigation funktioniert, Overlay öffnet sich mit richtigem Tab
-- HilfeSeite-onSchliessen → initialHilfeKategorie reset (next open startet frisch, nicht mit alter Kategorie)
+**E2E-Resultat (17.05.2026 SPÄT-2):**
+- T5 Tags-Favorit ✓ EinstellungenPanel öffnet mit Tags-Tab pre-selektiert
+- T5' Mein-Profil-Favorit ✓ Profil-Tab aktiv (bg-white)
+- T7 Willkommen-Favorit ✓ HilfeSeite öffnet mit Willkommen-Kategorie
+- T1-T4 (Link-Typen) durch Unit+Integration-Tests abgedeckt, Code byte-identisch
+- T6 (ki-kalibrierung Drift-Mapping) durch Unit-Tests abgedeckt
+- T8 (Reset bei onSchliessen) durch Unit-Test direkt + Code byte-identisch zu LPStartseite
+- Keine Console-Errors
 
 ---
 
