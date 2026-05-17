@@ -180,19 +180,34 @@ export default function LernzielTab({ email }: Props) {
     setEditDaten({ fach: lz.fach, thema: lz.thema, text: lz.text, bloom: lz.bloom })
   }
 
+  // Header bleibt in allen Pfaden sichtbar (Cluster E.4: TabStarToggle darf nicht in Early-Returns versteckt sein)
+  const header = (
+    <div className="flex items-center justify-between">
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Lernziele</h2>
+      <TabStarToggle tabId="lernziele" surface="einstellungen" label="Lernziele" />
+    </div>
+  )
+
   if (ladeStatus === 'laden') {
-    return <div className="p-4 text-slate-500 dark:text-slate-400">Lernziele werden geladen...</div>
+    return (
+      <div className="space-y-4">
+        {header}
+        <div className="p-4 text-slate-500 dark:text-slate-400">Lernziele werden geladen...</div>
+      </div>
+    )
   }
   if (ladeStatus === 'fehler') {
-    return <div className="p-4 text-red-600 dark:text-red-400">Fehler: {fehler}</div>
+    return (
+      <div className="space-y-4">
+        {header}
+        <div className="p-4 text-red-600 dark:text-red-400">Fehler: {fehler}</div>
+      </div>
+    )
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Lernziele</h2>
-        <TabStarToggle tabId="lernziele" surface="einstellungen" label="Lernziele" />
-      </div>
+      {header}
       {/* Status-Anzeige */}
       {speicherStatus && (
         <div className={`text-sm px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 ${speicherStatus.art === 'erfolg' ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : speicherStatus.art === 'fehler' ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'}`}>

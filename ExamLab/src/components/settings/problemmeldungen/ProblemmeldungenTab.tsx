@@ -63,23 +63,38 @@ export default function ProblemmeldungenTab({ email, istAdmin, onSchliessen }: P
     })
   }, [loeschKandidat, email, toast])
 
+  // Header bleibt in allen Pfaden sichtbar (Cluster E.4: TabStarToggle darf nicht in Early-Returns versteckt sein)
+  const header = (
+    <div className="flex items-center justify-between mb-4">
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>
+        Problemmeldungen
+      </h2>
+      <TabStarToggle tabId="problemmeldungen" surface="einstellungen" label="Problemmeldungen" />
+    </div>
+  )
+
   if (fehler && meldungen === null) {
-    return <div className="p-4 text-sm text-red-600 dark:text-red-400">Fehler beim Laden: {fehler}</div>
+    return (
+      <div>
+        {header}
+        <div className="p-4 text-sm text-red-600 dark:text-red-400">Fehler beim Laden: {fehler}</div>
+      </div>
+    )
   }
   if (meldungen === null) {
-    return <div className="p-4 text-sm text-slate-500 dark:text-slate-400">Lade Meldungen…</div>
+    return (
+      <div>
+        {header}
+        <div className="p-4 text-sm text-slate-500 dark:text-slate-400">Lade Meldungen…</div>
+      </div>
+    )
   }
 
   const gefiltert = filterMeldungen(meldungen, filter)
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>
-          Problemmeldungen
-        </h2>
-        <TabStarToggle tabId="problemmeldungen" surface="einstellungen" label="Problemmeldungen" />
-      </div>
+      {header}
       {fehler && <div className="mb-3 p-2 text-xs bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded">{fehler}</div>}
       <ProblemmeldungenFilter
         config={filter}
