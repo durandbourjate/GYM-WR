@@ -4199,11 +4199,12 @@ function parseFrage(row, fachbereich) {
         return { ...base, typ: row.typ, fragetext: row.fragetext || '', ...typDaten };
       }
       // 3. Letzter Fallback: Alle nicht-base Spalten aus der Row übernehmen
+      // Cluster H Phase 3: tagIds als base-key; tags bleibt fuer Backwards-Compat (Backup-Restore).
       var baseKeys = ['id','typ','version','erstelltAm','geaendertAm','fachbereich','thema','unterthema',
-        'semester','gefaesse','bloom','tags','punkte','musterlosung','bewertungsraster','fragetext',
-        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','poolId','poolGeprueft',
-        'pruefungstauglich','poolContentHash','poolUpdateVerfuegbar','poolVersion','lernzielIds',
-        'zeitbedarf','verwendungen','maxZeichen','typDaten'];
+        'semester','gefaesse','bloom','tagIds','tags','punkte','musterlosung','bewertungsraster','fragetext',
+        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','schwierigkeit','status','geloescht_am',
+        'poolId','poolGeprueft','pruefungstauglich','poolContentHash','poolUpdateVerfuegbar','poolVersion',
+        'lernzielIds','zeitbedarf','verwendungen','maxZeichen','typDaten'];
       var extra = {};
       Object.keys(row).forEach(function(k) {
         if (!baseKeys.includes(k) && row[k] !== '' && row[k] !== undefined) {
@@ -5778,11 +5779,12 @@ function getTypDaten(frage) {
       return { korrekteFormel: frage.korrekteFormel, vergleichsModus: frage.vergleichsModus, formelTyp: frage.formelTyp, variablen: frage.variablen };
     default:
       // Fallback: alle Felder ausser Base-Felder als typDaten speichern
+      // Cluster H Phase 3: tagIds als base-key; tags bleibt fuer Backwards-Compat (Backup-Restore).
       var baseKeys = ['id','typ','version','erstelltAm','geaendertAm','fachbereich','thema','unterthema',
-        'semester','gefaesse','bloom','tags','punkte','musterlosung','bewertungsraster','fragetext',
-        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','poolId','poolGeprueft',
-        'pruefungstauglich','poolContentHash','poolUpdateVerfuegbar','poolVersion','lernzielIds',
-        'zeitbedarf','verwendungen','maxZeichen'];
+        'semester','gefaesse','bloom','tagIds','tags','punkte','musterlosung','bewertungsraster','fragetext',
+        'quelle','anhaenge','autor','geteilt','geteiltVon','fach','schwierigkeit','status','geloescht_am',
+        'poolId','poolGeprueft','pruefungstauglich','poolContentHash','poolUpdateVerfuegbar','poolVersion',
+        'lernzielIds','zeitbedarf','verwendungen','maxZeichen'];
       var extra = {};
       Object.keys(frage).forEach(function(k) { if (!baseKeys.includes(k)) extra[k] = frage[k]; });
       return extra;
@@ -6729,14 +6731,15 @@ function importierePoolFragen(body) {
     var aktualisiert = 0;
     var fehler = [];
 
-    // Standard-Headers für neue Tabs (gleiche Reihenfolge wie bestehende Tabs)
+    // Standard-Headers für neue Tabs (Cluster H Phase 3: tagIds statt tags)
     var standardHeaders = [
       'id', 'typ', 'version', 'erstelltAm', 'geaendertAm',
-      'thema', 'unterthema', 'semester', 'gefaesse', 'bloom', 'tags',
+      'thema', 'unterthema', 'semester', 'gefaesse', 'bloom', 'tagIds',
       'punkte', 'musterlosung', 'bewertungsraster', 'fragetext', 'quelle',
       'anhaenge', 'typDaten', 'autor', 'geteilt', 'geteiltVon',
       'poolId', 'poolGeprueft', 'pruefungstauglich', 'poolContentHash',
-      'poolUpdateVerfuegbar', 'poolVersion', 'lernzielIds'
+      'poolUpdateVerfuegbar', 'poolVersion', 'lernzielIds',
+      'fach', 'schwierigkeit', 'status', 'geloescht_am'
     ];
 
     for (var i = 0; i < fragen.length; i++) {
