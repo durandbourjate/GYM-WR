@@ -26,6 +26,7 @@ export default function Favoriten() {
   const user = useAuthStore(s => s.user)
   const istDemoModus = useAuthStore(s => s.istDemoModus)
   const rawFavoriten = useFavoritenStore(s => s.favoriten)
+  const favoritenLadeStatus = useFavoritenStore(s => s.ladeStatus)
   const testdatenSichtbar = useTestdatenSichtbar()
   const favoriten = useMemo(() => {
     const sortiert = [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung)
@@ -117,28 +118,43 @@ export default function Favoriten() {
         </p>
 
         {/* Favoriten — Klick navigiert direkt ins Ziel (Durchführen statt Composer, Spec §2.6) */}
-        <Sektion titel="Favoriten" leer={favoriten.length === 0} leerText="Noch keine Favoriten gesetzt. In den Einstellungen oder per Stern-Icon hinzufügen.">
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {favoriten.map(fav => (
-              <Link
-                key={fav.ziel}
-                to={
-                  fav.typ === 'ort'
-                    ? fav.ziel
-                    : fav.typ === 'frage'
-                      ? `/fragensammlung/${fav.ziel}`
-                      : `/${fav.typ}?id=${fav.ziel}` // pruefung/uebung → DurchfuehrenDashboard
-                }
-                className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px]"
-              >
-                <span className="text-lg inline-flex items-center"><NavIcon icon={fav.icon || typIcon(fav.typ)} className="w-5 h-5 text-slate-500 dark:text-slate-400" /></span>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+        <Sektion
+          titel="Favoriten"
+          leer={favoritenLadeStatus === 'fertig' && favoriten.length === 0}
+          leerText="Noch keine Favoriten gesetzt. In den Einstellungen oder per Stern-Icon hinzufügen."
+        >
+          {favoritenLadeStatus === 'laeuft' ? (
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {[0, 1, 2].map(i => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 h-[58px] w-[140px] bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {favoriten.map(fav => (
+                <Link
+                  key={fav.ziel}
+                  to={
+                    fav.typ === 'ort'
+                      ? fav.ziel
+                      : fav.typ === 'frage'
+                        ? `/fragensammlung/${fav.ziel}`
+                        : `/${fav.typ}?id=${fav.ziel}` // pruefung/uebung → DurchfuehrenDashboard
+                  }
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px]"
+                >
+                  <span className="text-lg inline-flex items-center"><NavIcon icon={fav.icon || typIcon(fav.typ)} className="w-5 h-5 text-slate-500 dark:text-slate-400" /></span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </Sektion>
 
         {/* Offene Korrekturen */}

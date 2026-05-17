@@ -76,10 +76,13 @@ vi.mock('../store/stammdatenStore', () => ({
   ),
 }))
 
+const { ladeAusBackendMock } = vi.hoisted(() => ({
+  ladeAusBackendMock: vi.fn().mockResolvedValue(undefined),
+}))
 vi.mock('../store/favoritenStore', () => ({
   useFavoritenStore: Object.assign(
     (selector: (s: { favoriten: [] }) => unknown) => selector({ favoriten: [] }),
-    { getState: () => ({ favoriten: [], ladeAusBackend: vi.fn().mockResolvedValue(undefined) }), setState: vi.fn() },
+    { getState: () => ({ favoriten: [], ladeAusBackend: ladeAusBackendMock }), setState: vi.fn() },
   ),
 }))
 
@@ -220,5 +223,19 @@ describe('LPStartseite Skeleton-Rendering', { timeout: 15000 }, () => {
     })
     // Empty-State sichtbar
     expect(screen.getByText('Noch keine Prüfungen')).toBeInTheDocument()
+  })
+
+  it('ruft favoritenStore.ladeAusBackend nach ladeLPProfil-Erfolg (Cluster E.3)', async () => {
+    mockModus = 'pruefung'
+    mockListenTab = 'pruefungen'
+    const LPStartseite = await ladeKomponente()
+    render(
+      <MemoryRouter>
+        <LPStartseite />
+      </MemoryRouter>,
+    )
+    await waitFor(() => {
+      expect(ladeAusBackendMock).toHaveBeenCalled()
+    })
   })
 })
