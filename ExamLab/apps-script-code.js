@@ -2335,6 +2335,10 @@ function doPost(e) {
       return apiTestdatenLetzterSeed_(body);
     case 'apiCleanupTagsLegacy':
       return apiCleanupTagsLegacy_(body);
+    case 'apiMigriereOrphanTags':
+      return apiMigriereOrphanTags_(body);
+    case 'apiCleanupTagsSpalte':
+      return apiCleanupTagsSpalte_(body);
     case 'loescheFrage':
       return loescheFrage(body);
     case 'stelleWiederHer':
@@ -15996,6 +16000,239 @@ function runCleanupTagsLegacy() {
   var response = apiCleanupTagsLegacy_({ email: email });
   var payload = response.getContent ? response.getContent() : String(response);
   Logger.log('runCleanupTagsLegacy Resultat: ' + payload);
+  return payload;
+}
+
+/**
+ * Cluster H Phase 3 Post-Cleanup: migriert "Orphan"-Fragen (tags-Spalte befuellt,
+ * aber tagIds leer) nachtraeglich. Tritt auf wenn Fragen NACH der Phase-1-Migration
+ * via Pool-Import (z.B. einrichtungsFragen.ts) hinzugefuegt wurden — der Import-Pfad
+ * schreibt tags als Strings, nicht tagIds.
+ *
+ * Logik:
+ *  - Read existing Tags-Sheet → nameZuId-Map (case-insensitive)
+ *  - Pro Tab: sammle Orphan-Fragen (tagIds leer + tags non-empty)
+ *  - Fuer unbekannte tag-Strings: neue Tag-Objects erstellen (analog Phase 1)
+ *  - Batch-Write tagIds-Spalte nur fuer betroffene Zeilen
+ *  - Idempotent: bei keinen Orphans success mit migriertCount=0
+ */
+function apiMigriereOrphanTags_(body) {
+  var email = String((body && body.email) || '').toLowerCase().trim();
+  if (!istZugelasseneLP(email)) {
+    return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  }
+  var lpInfo = getLPInfo(email);
+  if (!lpInfo || lpInfo.rolle !== 'admin') {
+    return jsonResponse({ success: false, error: 'Nur Admins duerfen Orphan-Migration ausfuehren' });
+  }
+  var lock = LockService.getScriptLock();
+  try {
+    if (!lock.tryLock(10000)) {
+      return jsonResponse({ success: false, error: 'Migration laeuft bereits' });
+    }
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var tabs = getFragensammlungTabs_();
+    var jetzt = new Date().toISOString();
+
+    // Read existing tags → nameZuId-Map (case-insensitive)
+    var existierendeTags = ladeAlleTagsAusSheet_();
+    var nameZuId = {};
+    for (var ti = 0; ti < existierendeTags.length; ti++) {
+      var tag = existierendeTags[ti];
+      nameZuId[String(tag.name || '').toLowerCase()] = tag.id;
+    }
+
+    // Pro Tab: Orphan-Fragen sammeln + alle tag-Strings einsammeln
+    var tabsData = []; // { tab, sheet, values, tagsIdx, tagIdsIdx, idIdx, orphans: [{rowIdx, rawTags}] }
+    var alleNeuenStrings = {}; // lowercase → originalCasing (kanonisch = erstes Vorkommen)
+
+    for (var t = 0; t < tabs.length; t++) {
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
+      if (!sheet) continue;
+      var lastCol = sheet.getLastColumn();
+      if (lastCol === 0) continue;
+      var values = sheet.getDataRange().getValues();
+      if (values.length <= 1) continue;
+      var header = values[0];
+      var tagsIdx = header.indexOf('tags');
+      var tagIdsIdx = header.indexOf('tagIds');
+      var idIdx = header.indexOf('id');
+      if (tagsIdx < 0 || tagIdsIdx < 0 || idIdx < 0) continue;
+
+      var orphans = [];
+      for (var i = 1; i < values.length; i++) {
+        var tagsCell = String(values[i][tagsIdx] || '').trim();
+        var tagIdsCell = String(values[i][tagIdsIdx] || '').trim();
+        if (tagsCell.length > 0 && tagIdsCell.length === 0) {
+          var rawTags = tagsCell.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+          orphans.push({ rowIdx: i, rawTags: rawTags });
+          for (var rt = 0; rt < rawTags.length; rt++) {
+            var lk = rawTags[rt].toLowerCase();
+            if (!nameZuId[lk] && !alleNeuenStrings[lk]) {
+              alleNeuenStrings[lk] = rawTags[rt];
+            }
+          }
+        }
+      }
+      if (orphans.length > 0) {
+        tabsData.push({ tab: tabs[t], sheet: sheet, tagsIdx: tagsIdx, tagIdsIdx: tagIdsIdx, orphans: orphans });
+      }
+    }
+
+    if (tabsData.length === 0) {
+      return jsonResponse({ success: true, migriertCount: 0, neueTagsCount: 0, betroffenTabs: [] });
+    }
+
+    // Neue Tag-Objects erstellen
+    var neueTagsZeilen = [];
+    var neueTagsCount = 0;
+    for (var lname in alleNeuenStrings) {
+      var newId = Utilities.getUuid();
+      nameZuId[lname] = newId;
+      neueTagsZeilen.push([newId, alleNeuenStrings[lname], 'slate', false, jetzt, 'orphan-migration@system']);
+      neueTagsCount += 1;
+    }
+    if (neueTagsZeilen.length > 0) {
+      var tagsSheet = getOderErstelleTagsSheet_();
+      var startRow = tagsSheet.getLastRow() + 1;
+      tagsSheet.getRange(startRow, 1, neueTagsZeilen.length, TAGS_HEADER.length).setValues(neueTagsZeilen);
+    }
+
+    // Pro Tab: tagIds-Werte berechnen + per-row updaten
+    var migriertCount = 0;
+    var betroffenTabs = [];
+    for (var td = 0; td < tabsData.length; td++) {
+      var entry = tabsData[td];
+      for (var o = 0; o < entry.orphans.length; o++) {
+        var orphan = entry.orphans[o];
+        var ids = orphan.rawTags.map(function(name) { return nameZuId[name.toLowerCase()]; }).filter(Boolean);
+        entry.sheet.getRange(orphan.rowIdx + 1, entry.tagIdsIdx + 1).setValue(ids.join(','));
+        migriertCount += 1;
+      }
+      betroffenTabs.push(entry.tab + '(' + entry.orphans.length + ')');
+    }
+    cacheInvalidieren_();
+    return jsonResponse({
+      success: true,
+      migriertCount: migriertCount,
+      neueTagsCount: neueTagsCount,
+      betroffenTabs: betroffenTabs
+    });
+  } catch (e) {
+    Logger.log('apiMigriereOrphanTags_ Fehler: ' + e.message);
+    return jsonResponse({ success: false, error: 'Migration-Fehler: ' + e.message });
+  } finally {
+    try { lock.releaseLock(); } catch (_e) { /* ignore */ }
+  }
+}
+
+/** Dropdown-Wrapper fuer apiMigriereOrphanTags_. */
+function runMigriereOrphanTags() {
+  var email = Session.getActiveUser().getEmail();
+  Logger.log('runMigriereOrphanTags: Aufruf als ' + email);
+  var response = apiMigriereOrphanTags_({ email: email });
+  var payload = response.getContent ? response.getContent() : String(response);
+  Logger.log('runMigriereOrphanTags Resultat: ' + payload);
+  return payload;
+}
+
+/**
+ * Cluster H Phase 3 Post-Cleanup: entfernt die `tags`-Spalte aus allen Fragen-Tabs.
+ *
+ * VORAB-SICHERHEITSCHECK: scannt alle Tabs, sammelt Frage-IDs wo tags non-empty UND
+ * tagIds leer sind. Wenn welche gefunden werden → ABBRUCH mit IDs (User soll erst
+ * apiMigriereOrphanTags_ aufrufen). Verhindert Datenverlust.
+ *
+ * Idempotent: bei keinen tags-Spalten mehr success mit removed=0.
+ */
+function apiCleanupTagsSpalte_(body) {
+  var email = String((body && body.email) || '').toLowerCase().trim();
+  if (!istZugelasseneLP(email)) {
+    return jsonResponse({ success: false, error: 'Nicht autorisiert' });
+  }
+  var lpInfo = getLPInfo(email);
+  if (!lpInfo || lpInfo.rolle !== 'admin') {
+    return jsonResponse({ success: false, error: 'Nur Admins duerfen Schema-Cleanup ausfuehren' });
+  }
+  var lock = LockService.getScriptLock();
+  try {
+    if (!lock.tryLock(10000)) {
+      return jsonResponse({ success: false, error: 'Cleanup laeuft bereits' });
+    }
+    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var tabs = getFragensammlungTabs_();
+
+    // Phase 1: Vorab-Sicherheitscheck — Orphan-Fragen sammeln
+    var orphans = []; // { tab, id }
+    var tabsMitTags = []; // { tab, sheet, tagsIdx }
+    for (var t = 0; t < tabs.length; t++) {
+      var sheet = fragensammlung.getSheetByName(tabs[t]);
+      if (!sheet) continue;
+      var lastCol = sheet.getLastColumn();
+      if (lastCol === 0) continue;
+      var values = sheet.getDataRange().getValues();
+      if (values.length <= 1) {
+        // leer aber Header da: Spalte trotzdem entfernbar
+        var headerOnly = values[0];
+        var tagsIdxHO = headerOnly.indexOf('tags');
+        if (tagsIdxHO >= 0) tabsMitTags.push({ tab: tabs[t], sheet: sheet, tagsIdx: tagsIdxHO });
+        continue;
+      }
+      var header = values[0];
+      var tagsIdx = header.indexOf('tags');
+      if (tagsIdx < 0) continue; // schon entfernt
+      var tagIdsIdx = header.indexOf('tagIds');
+      var idIdx = header.indexOf('id');
+      for (var i = 1; i < values.length; i++) {
+        var tagsCell = String(values[i][tagsIdx] || '').trim();
+        var tagIdsCell = tagIdsIdx >= 0 ? String(values[i][tagIdsIdx] || '').trim() : '';
+        if (tagsCell.length > 0 && tagIdsCell.length === 0) {
+          orphans.push({ tab: tabs[t], id: idIdx >= 0 ? String(values[i][idIdx]) : '(row ' + (i + 1) + ')' });
+        }
+      }
+      tabsMitTags.push({ tab: tabs[t], sheet: sheet, tagsIdx: tagsIdx });
+    }
+
+    if (orphans.length > 0) {
+      return jsonResponse({
+        success: false,
+        error: 'Cleanup abgebrochen: ' + orphans.length + ' Orphan-Fragen gefunden (tags befuellt, tagIds leer). Erst runMigriereOrphanTags ausfuehren.',
+        orphans: orphans.slice(0, 20),
+        orphansTotal: orphans.length
+      });
+    }
+
+    // Phase 2: Sicher loeschen
+    var removed = 0;
+    var betroffen = [];
+    for (var tm = 0; tm < tabsMitTags.length; tm++) {
+      var entry2 = tabsMitTags[tm];
+      // Re-read header weil Spalten-Indizes sich nach jedem deleteColumn-Call NICHT verschieben innerhalb dieses Sheets,
+      // aber zur Sicherheit re-resolven
+      var freshHeader = entry2.sheet.getRange(1, 1, 1, entry2.sheet.getLastColumn()).getValues()[0];
+      var freshTagsIdx = freshHeader.indexOf('tags');
+      if (freshTagsIdx < 0) continue;
+      entry2.sheet.deleteColumn(freshTagsIdx + 1);
+      removed += 1;
+      betroffen.push(entry2.tab);
+    }
+    cacheInvalidieren_();
+    return jsonResponse({ success: true, removed: removed, betroffen: betroffen });
+  } catch (e) {
+    Logger.log('apiCleanupTagsSpalte_ Fehler: ' + e.message);
+    return jsonResponse({ success: false, error: 'Cleanup-Fehler: ' + e.message });
+  } finally {
+    try { lock.releaseLock(); } catch (_e) { /* ignore */ }
+  }
+}
+
+/** Dropdown-Wrapper fuer apiCleanupTagsSpalte_. */
+function runCleanupTagsSpalte() {
+  var email = Session.getActiveUser().getEmail();
+  Logger.log('runCleanupTagsSpalte: Aufruf als ' + email);
+  var response = apiCleanupTagsSpalte_({ email: email });
+  var payload = response.getContent ? response.getContent() : String(response);
+  Logger.log('runCleanupTagsSpalte Resultat: ' + payload);
   return payload;
 }
 
