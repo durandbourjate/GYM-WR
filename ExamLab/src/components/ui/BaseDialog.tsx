@@ -27,10 +27,14 @@ export default function BaseDialog({ open, onClose, title, maxWidth = 'md', chil
   useEffect(() => {
     if (!open) return
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key !== 'Escape') return
+      // Capture-phase + stopImmediatePropagation: dieser Dialog ist der "oberste"
+      // Layer, ESC darf NICHT zu darunterliegenden Sidebar/Back-Handlern durchschlagen.
+      e.stopImmediatePropagation()
+      onClose()
     }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
+    document.addEventListener('keydown', handler, true)
+    return () => document.removeEventListener('keydown', handler, true)
   }, [open, onClose])
 
   if (!open) return null

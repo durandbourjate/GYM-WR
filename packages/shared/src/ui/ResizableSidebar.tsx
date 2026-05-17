@@ -82,10 +82,13 @@ export function ResizableSidebar({
   useEffect(() => {
     if (!closeOnEsc) return;
     function handleKeyDown(e: KeyboardEvent): void {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
-      }
+      if (e.key !== 'Escape') return;
+      // Wenn ein Modal (role="dialog") oben drüber offen ist, schliesst dessen
+      // ESC-Handler zuerst — Sidebar bleibt stehen. Verhindert ESC-Cascade
+      // (Modal -> Sidebar -> Back-Navigation).
+      if (document.querySelector('[role="dialog"]')) return;
+      e.stopPropagation();
+      onClose();
     }
     document.addEventListener('keydown', handleKeyDown, true);
     return () => document.removeEventListener('keydown', handleKeyDown, true);

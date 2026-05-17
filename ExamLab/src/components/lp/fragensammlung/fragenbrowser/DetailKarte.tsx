@@ -141,7 +141,7 @@ export default function DetailKarte({ frage, istInPruefung, onToggle, onEdit, on
           {performance && (
             <div className="mt-1">
               <span className={`text-xs ${loesungsquoteFarbe(performance.durchschnittLoesungsquote)}`}>
-                {'\u{1F4CA}'} {performance.durchschnittLoesungsquote}% · {performance.anzahlVerwendungen}\u00D7 verwendet · {performance.gesamtN} SuS
+                {'\u{1F4CA}'} {performance.durchschnittLoesungsquote}% · {performance.anzahlVerwendungen}× verwendet · {performance.gesamtN} SuS
               </span>
             </div>
           )}
