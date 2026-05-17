@@ -8,9 +8,60 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** Spawn-Tasks-Sweep (17.05.2026 NACHT 2).
+**HEAD main + preview:** Cluster E.2 Typografie + Post-E.2 Spawn-Tasks LIVE (17.05.2026 SPÄT-SPÄT, HEAD `3d8848d`).
 
-## Spawn-Tasks-Sweep Stand 17.05.2026 NACHT 2
+## Cluster E.2 Typografie-Migration KOMPLETT (17.05.2026)
+
+**Spec/Plan:**
+- `docs/superpowers/specs/2026-05-17-cluster-e-2-typografie-design.md`
+- `docs/superpowers/plans/2026-05-17-cluster-e-2-typografie.md`
+
+**Migration in 6 Phasen + Hotfix + Spawn-Tasks (11 Commits):**
+- Phase 1 (`1138e80`): `PageTitle.tsx` + `scripts/audit-typo-tokens.mjs` Foundation (TDD, 3 Tests)
+- Phase 2 (`7aa9df3`): PageTitle auf 4 Top-Level-Views (LPStartseite/EinstellungenPanel/HilfeSeite/SuSStartseite)
+- Phase 3 (`8691638`): 20 Tab-Header (10 Hilfe via shared `layoutHelpers.tsx` + 7 Einstellungen-Tabs)
+- Phase 4 (`3cbf693`): BaseDialog default → TYPO.h2 + 8 non-BaseDialog Modals + Color-Token-Normalization
+- Phase 5 (`4ab14f9`): Top-12 Karten/SuS-Screens
+- Phase 6 (`b9f5c54`): `lint:typo-tokens` als CI-Gate aktiviert
+- Phase 7 Hotfix (`c30f129`): Browser-E2E-Findings — Favoriten (5. LP-Surface) + FragenBrowserHeader `!inline`-Gate
+- Spawn-Tasks (`3d8848d`): Unicode-Escape-Bug DetailKarte + ESC-Cascade BaseDialog/ResizableSidebar
+
+**Stand-Metriken:**
+- vitest **1890 + 4 todo** (3 neue PageTitle-Tests, sonst unverändert)
+- audit-typo-tokens-Baseline locked: **56 violations / 44 files** (von 145/76 = -61%)
+- 8 lint-Gates clean (NEU: `lint:typo-tokens`)
+- Browser-E2E LP + SuS in Dark-Mode durchgetestet (10 Cases)
+
+**Bei Wiedereinstieg:**
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git fetch origin && git status
+git log --oneline -12
+```
+Pre-Push-Pflicht: `cd ExamLab && npm run ci-check`. Bei neuer `<h*>`-Heading in App-Chrome → `${TYPO.tier}`-Template Pflicht.
+
+### Was als nächstes (priorisiert)
+
+1. **E.3-E.5 (Folge-Cluster aus 2026-05-11-cluster-e-konsistenz-design.md):**
+   - E.3 Favoriten-Backend-Sync (localStorage → LPProfil.favoriten)
+   - E.4 Star-Toggle in Tab-Headers
+   - E.5 Favoriten-Picker (Modal mit Tab-Registry)
+2. **Globale Suche Phase 2** (C.2-C.5): Schüler-Suche / ?suche=-Pre-Fill / Volltext / Fuzzy-Match
+3. **Storybook für Icon-Galerie** (Cluster G Spec §13)
+4. **F.4 OoS:** Klassenlisten-Filter, Live-Durchführen Schüler-Filter
+5. **Defer-able tier-Debates (Browser-Visual-Judgement nötig):**
+   - I-1: Dashboard.tsx „Hallo Vorname!" — `TYPO.h1` oder `TYPO.display`?
+   - I-2: AdminLayout h1/h2-Inversion (pre-existing pattern preserved)
+   - Vorschlag: `MODAL_TITLE`-const in `typografie.ts` (analog Cluster D `BATCH_HEADING_CLASSES`)
+
+### Memory-Lehren aus dieser Session
+- **JSX text-content escape-trap** — `×` als JSX-Text wird literal gerendert. Pattern: `{'×'}` in String-Literal oder literales Unicode-Char direkt im Source. Wurde durch Cluster G nicht erfasst (audit-no-emoji greppt nach Unicode-Range, nicht nach Escape-Sequenzen).
+- **ESC-Cascade Modal/Sidebar/Back-Nav** — Mehrere document-level keydown-Listener mit capture-phase fire in registration-order (= mount-order parent-first). `stopImmediatePropagation` im Child kommt zu spät. Fix-Pattern: Parent (Sidebar) checkt `document.querySelector('[role="dialog"]')` vor onClose-Call.
+- **Route-Audit bei Top-Level-Surface-Migration** — nicht nur Component-Name greppen, auch `Router.tsx` checken. Favoriten war eigene Route (`FavoritenFlow`), nicht via LPStartseite gerendert → Phase 2 hatte's übersehen.
+
+---
+
+## Vorheriger Stand — Spawn-Tasks-Sweep (17.05.2026 NACHT 2)
 
 **TestdatenTab Status-Refresh ✅:** `useTestdatenStatus` exportiert `setLetzterSeedAm`-Setter. TestdatenTab updated den Datum-Anzeige-State nach erfolgreichem Seed/Reset aus `seedResult.statistik.letzterSeedAm` — kein zweiter Backend-Roundtrip noetig (Response liefert ISO-Timestamp schon).
 
