@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { NavIcon } from '../ui/icons/NavIcon'
 import { useAuthStore } from '../../store/authStore'
 import { useFavoritenStore } from '../../store/favoritenStore'
+import { useStammdatenStore } from '../../store/stammdatenStore'
 import { useConfigsListStore } from '../../store/configsListStore'
 import { apiService } from '../../services/apiService'
 import { useLPNavigationStore } from '../../store/lpUIStore'
@@ -47,14 +48,27 @@ export default function Favoriten() {
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
 
-  // Configs laden
+  // Configs laden + LPProfil/Favoriten hydraten (Cluster E.3: LoginScreen routet LP zu /favoriten,
+  // aber useLPDashboardData läuft nur auf der Startseite. Ohne diesen Hook bleibt favoritenStore
+  // bei `ladeStatus: 'idle'` → Favoriten-Sektion leer auch wenn Backend Favoriten hat.)
   useEffect(() => {
     if (!user) return
     if (istDemoModus || !apiService.istKonfiguriert()) {
       setConfigs([])
       useConfigsListStore.getState().setConfigs([])
       setLadeStatus('fertig')
+      // Demo-Mode: kein Backend-Sync, favoritenStore bleibt frontend-only
+      useFavoritenStore.getState().ladeAusBackend()
       return
+    }
+    // Backend-Pfad: LP-Profil laden falls noch nicht da, dann favoritenStore hydraten
+    const { lpProfil, ladeLPProfil } = useStammdatenStore.getState()
+    if (lpProfil) {
+      useFavoritenStore.getState().ladeAusBackend()
+    } else {
+      ladeLPProfil(user.email).then(() => {
+        useFavoritenStore.getState().ladeAusBackend()
+      })
     }
     apiService.ladeAlleConfigs(user.email).then(result => {
       if (result) {
