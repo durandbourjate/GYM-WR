@@ -29,6 +29,8 @@ export const TAB_REGISTRY: TabDefinition[] = [
   // === Einstellungen ===
   { id: 'profil',            surface: 'einstellungen', titel: 'Mein Profil',         route: '/einstellungen/profil' },
   { id: 'lernziele',         surface: 'einstellungen', titel: 'Lernziele',           route: '/einstellungen/lernziele' },
+  { id: 'klassenlisten',     surface: 'einstellungen', titel: 'Klassenlisten',       route: '/einstellungen/klassenlisten',
+                             icon: 'Users' },
   { id: 'favoriten',         surface: 'einstellungen', titel: 'Favoriten',           route: '/einstellungen/favoriten' },
   { id: 'problemmeldungen',  surface: 'einstellungen', titel: 'Problemmeldungen',    route: '/einstellungen/problemmeldungen' },
   { id: 'uebungen',          surface: 'einstellungen', titel: 'Übungen',             route: '/einstellungen/uebungen' },

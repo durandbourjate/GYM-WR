@@ -126,6 +126,19 @@ function LPStartseiteInner() {
     }
   }, [queryParams, zeigHilfe, toggleHilfe, setQueryParams])
 
+  // Cluster C.2: Schüler-Search-Treffer navigiert zu /einstellungen?tab=klassenlisten&suche=...
+  // LPStartseite triggert EinstellungenPanel-Open mit klassenlisten-Tab pre-selektiert.
+  // `?suche=` + `?schueler=` werden vom KlassenlistenTab selber gelesen — hier nicht strippen.
+  useEffect(() => {
+    const tabParam = queryParams.get('tab')
+    if (tabParam === 'klassenlisten' && !zeigEinstellungen) {
+      setZeigEinstellungen(true, 'klassenlisten')
+      const next = new URLSearchParams(queryParams)
+      next.delete('tab')
+      setQueryParams(next, { replace: true })
+    }
+  }, [queryParams, zeigEinstellungen, setZeigEinstellungen, setQueryParams])
+
   // UI-State (nicht Hook-extrahiert)
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
   const [multiDashboardOffen, setMultiDashboardOffen] = useState(false)

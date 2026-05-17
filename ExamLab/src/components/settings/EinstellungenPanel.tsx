@@ -13,6 +13,7 @@ import FragensammlungTab from './fragensammlung/FragensammlungTab'
 import { listeProblemmeldungen } from '../../services/problemmeldungenApi'
 import type { Problemmeldung } from '../../types/problemmeldung'
 import ProfilTab from './einstellungen/ProfilTab'
+import KlassenlistenTab from './einstellungen/KlassenlistenTab'
 import AdminTab from './einstellungen/AdminTab'
 import TestdatenTab from './einstellungen/TestdatenTab'
 import { TagsTab } from '../lp/einstellungen/tags/TagsTab'
@@ -65,6 +66,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   const tabs: { key: EinstellungenTab; label: string; sichtbar: boolean }[] = [
     { key: 'profil', label: 'Mein Profil', sichtbar: true },
     { key: 'lernziele', label: 'Lernziele', sichtbar: true },
+    { key: 'klassenlisten', label: 'Klassenlisten', sichtbar: true },
     { key: 'favoriten', label: 'Favoriten', sichtbar: true },
     { key: 'problemmeldungen', label: `Problemmeldungen${offeneCount > 0 ? ` (${offeneCount})` : ''}`, sichtbar: true },
     { key: 'uebungen', label: 'Übungen', sichtbar: true },
@@ -118,6 +120,9 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         )}
         {tab === 'lernziele' && user?.email && (
           <LernzielTab email={user.email} />
+        )}
+        {tab === 'klassenlisten' && (
+          <KlassenlistenTab />
         )}
         {tab === 'favoriten' && (
           <FavoritenTab istAdmin={admin} />

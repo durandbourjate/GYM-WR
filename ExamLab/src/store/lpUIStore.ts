@@ -4,7 +4,7 @@ export type LPModus = 'pruefung' | 'uebung' | 'fragensammlung' | 'papierkorb'
 export type LPAnsicht = 'dashboard' | 'composer'
 export type ListenTab = 'pruefungen' | 'tracker'
 export type UebungsTab = 'uebungen' | 'durchfuehren' | 'analyse'
-export type EinstellungenTab = 'profil' | 'lernziele' | 'favoriten' | 'uebungen' | 'admin' | 'kiKalibrierung' | 'problemmeldungen' | 'fragensammlung' | 'testdaten' | 'tags'
+export type EinstellungenTab = 'profil' | 'lernziele' | 'klassenlisten' | 'favoriten' | 'uebungen' | 'admin' | 'kiKalibrierung' | 'problemmeldungen' | 'fragensammlung' | 'testdaten' | 'tags'
 
 export interface BreadcrumbEintrag {
   label: string
