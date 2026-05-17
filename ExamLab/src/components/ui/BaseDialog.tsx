@@ -1,5 +1,6 @@
 import { useRef, useEffect, useId, type ReactNode } from 'react'
 import { useFocusTrap } from '../../hooks/useFocusTrap.ts'
+import { TYPO } from '../../styles/typografie'
 
 interface BaseDialogProps {
   open: boolean
@@ -49,7 +50,7 @@ export default function BaseDialog({ open, onClose, title, maxWidth = 'md', chil
         className={`bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 w-full ${MAX_WIDTH_CLASSES[maxWidth]}`}
       >
         {title && (
-          <h2 id={titleId} className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">
+          <h2 id={titleId} className={`${TYPO.h2} text-slate-800 dark:text-slate-100 mb-4`}>
             {title}
           </h2>
         )}

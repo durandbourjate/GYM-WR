@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import type { PruefungsConfig } from '../../../types/pruefung'
+import { TYPO } from '../../../styles/typografie'
 
 export interface MultiDashboardDialogProps {
   summativeConfigs: PruefungsConfig[]
@@ -15,7 +16,7 @@ export function MultiDashboardDialog({ summativeConfigs, auswahl, setAuswahl, on
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 shadow-lg space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold dark:text-white">Prüfungen für Multi-Dashboard wählen</h3>
+        <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Prüfungen für Multi-Dashboard wählen</h2>
         <button onClick={onSchliessen} className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 inline-flex items-center" aria-label="Schliessen"><X className="w-4 h-4" aria-hidden="true" /></button>
       </div>
       <div className="space-y-1 max-h-60 overflow-y-auto">

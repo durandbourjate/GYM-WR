@@ -13,6 +13,7 @@ import {
   type SendeErgebnis,
 } from '../../../utils/batchExportLogic'
 import { useAuthStore } from '../../../store/authStore'
+import { TYPO } from '../../../styles/typografie'
 import { fachbereichFarbe, typLabel } from '../../../utils/fachUtils'
 
 interface Props {
@@ -163,7 +164,7 @@ export default function BatchExportDialog({ fragen, onSchliessen, onErfolg }: Pr
 
         {/* Header */}
         <div className="px-6 py-4 border-b dark:border-gray-700 shrink-0">
-          <h2 className="text-lg font-bold dark:text-white">
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>
             Batch-Export in Pools
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

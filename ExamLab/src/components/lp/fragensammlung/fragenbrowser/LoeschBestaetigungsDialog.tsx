@@ -1,5 +1,6 @@
 // ExamLab/src/components/lp/fragensammlung/fragenbrowser/LoeschBestaetigungsDialog.tsx
 import { typLabel } from '../../../../utils/fachUtils.ts'
+import { TYPO } from '../../../../styles/typografie'
 
 interface LoeschKandidat {
   id: string
@@ -20,7 +21,7 @@ export default function LoeschBestaetigungsDialog({ kandidat, onAbbrechen, onBes
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 pointer-events-auto" onClick={onAbbrechen}>
       <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 max-w-md" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-lg font-bold dark:text-white mb-2">Frage löschen?</h3>
+        <h2 className={`${TYPO.h2} mb-2 text-slate-800 dark:text-slate-100`}>Frage löschen?</h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
           <strong>{kandidat.id}</strong> · {kandidat.fachbereich} · {typLabel(kandidat.typ)}
         </p>

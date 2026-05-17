@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import type { KIFeedbackEintragLP } from '../../../services/kalibrierungApi'
+import { TYPO } from '../../../styles/typografie'
 
 const KIAKTION_LABELS: Record<string, string> = {
   generiereMusterloesung: 'Musterlösung',
@@ -16,9 +17,9 @@ export default function DiffModal({ eintrag, onSchliessen }: { eintrag: KIFeedba
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-4">
-          <h3 className="font-bold dark:text-white">
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>
             Vergleich KI ↔ LP — {KIAKTION_LABELS[eintrag.kiAktion] ?? eintrag.kiAktion}
-          </h3>
+          </h2>
           <button
             onClick={onSchliessen}
             className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 inline-flex items-center"
@@ -30,13 +31,13 @@ export default function DiffModal({ eintrag, onSchliessen }: { eintrag: KIFeedba
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-2">KI-Vorschlag</h4>
+            <h3 className={`${TYPO.body} font-semibold text-blue-700 dark:text-blue-400 mb-2`}>KI-Vorschlag</h3>
             <pre className="whitespace-pre-wrap break-words bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs dark:text-slate-200 max-h-[50vh] overflow-y-auto">
 {JSON.stringify(eintrag.kiOutputJson, null, 2)}
             </pre>
           </div>
           <div>
-            <h4 className="font-semibold text-green-700 dark:text-green-400 mb-2">Deine Endversion</h4>
+            <h3 className={`${TYPO.body} font-semibold text-green-700 dark:text-green-400 mb-2`}>Deine Endversion</h3>
             <pre className="whitespace-pre-wrap break-words bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs dark:text-slate-200 max-h-[50vh] overflow-y-auto">
 {JSON.stringify(eintrag.finaleVersionJson, null, 2)}
             </pre>

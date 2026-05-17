@@ -9,6 +9,7 @@ import { berechneRueckSyncDiff, ladePoolIndex, ladePoolConfig } from '../../../s
 import { konvertiereZuPoolFormat } from '../../../utils/poolExporter'
 import { apiService } from '../../../services/apiService'
 import { useAuthStore } from '../../../store/authStore'
+import { TYPO } from '../../../styles/typografie'
 
 type Phase = 'diff' | 'pool-wahl' | 'senden' | 'fertig' | 'fehler'
 
@@ -169,7 +170,7 @@ export default function RueckSyncDialog({ frage, offen, onSchliessen, onErfolg }
       <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-6">
 
         {/* Header */}
-        <h2 className="text-lg font-bold mb-4 dark:text-white">
+        <h2 className={`${TYPO.h2} mb-4 text-slate-800 dark:text-slate-100`}>
           {istUpdate ? 'Änderungen an Pool zurückschreiben' : 'Frage in Pool exportieren'}
         </h2>
 

@@ -1,4 +1,5 @@
 import { Loader2 } from 'lucide-react'
+import { TYPO } from '../../../../styles/typografie'
 
 interface Props {
   offen: boolean
@@ -12,9 +13,9 @@ export default function ResetConfirmModal({ offen, loading = false, onAbbrechen,
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40">
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+        <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 mb-3`}>
           Testdaten zurücksetzen?
-        </h3>
+        </h2>
         <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
           Alle Testdaten werden gelöscht und neu erzeugt. Eigene Änderungen am Testkurs
           (zusätzliche Prüfungen, Antworten, …) gehen dauerhaft verloren. Echtdaten sind

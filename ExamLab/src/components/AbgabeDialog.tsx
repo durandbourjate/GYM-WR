@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Check, AlertTriangle } from 'lucide-react'
 import { usePruefungStore } from '../store/pruefungStore.ts'
 import BaseDialog from './ui/BaseDialog'
+import { TYPO } from '../styles/typografie'
 import { useAuthStore } from '../store/authStore.ts'
 import { apiService } from '../services/apiService.ts'
 import { cleanupNachAbgabe } from '../utils/cleanupNachAbgabe.ts'
@@ -145,7 +146,7 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-700 dark:bg-slate-300 rounded-full flex items-center justify-center">
             <Check className="w-8 h-8 text-white dark:text-slate-800" strokeWidth={2.5} />
           </div>
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 mb-2`}>
             Prüfung abgegeben
           </h2>
           <p className="text-slate-500 dark:text-slate-400">
@@ -195,9 +196,9 @@ export default function AbgabeDialog({ onSchliessen }: Props) {
       <BaseDialog open={true} onClose={onSchliessen} maxWidth="md">
         <div className="text-center py-2">
           <div className="w-12 h-12 mx-auto mb-4 border-4 border-slate-200 dark:border-slate-600 border-t-slate-700 dark:border-t-slate-300 rounded-full animate-spin" />
-          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
+          <h3 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100`}>
             {config?.typ === 'formativ' ? 'Übung' : 'Prüfung'} wird abgegeben…
-          </h2>
+          </h3>
         </div>
       </BaseDialog>
     )

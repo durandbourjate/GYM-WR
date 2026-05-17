@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { CheckCircle2, Circle, Lightbulb, Send } from 'lucide-react'
+import { TYPO } from '../../styles/typografie'
 
 // ExamLab Problemmeldungen — Sheet "ExamLab Problemmeldungen", Tab "ExamLab-Problemmeldungen"
 const FEEDBACK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSxIOqGhAbnNM2-Y4ulgBY3usVEC6cKT4S5sEk4sf2CMognF5qxopj3FJtnTpm3nq7TQ/exec'
@@ -123,9 +124,9 @@ export default function FeedbackModal({ isOpen, onClose, context }: Props) {
       <div className="bg-white dark:bg-slate-800 rounded-xl max-w-md w-full shadow-2xl overflow-hidden animate-[slideUp_0.2s_ease]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-700">
-          <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>
             Rückmeldung geben
-          </h3>
+          </h2>
           <button
             onClick={handleClose}
             className="text-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 leading-none cursor-pointer"

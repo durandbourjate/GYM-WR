@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Check } from 'lucide-react'
 import type { ThemaQuelle } from '../../types/ueben/uebung'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
+import { TYPO } from '../../styles/typografie'
 
 interface ThemenInfo {
   fach: string
@@ -70,7 +71,7 @@ export default function MixSessionDialog({ themen, fachFarben, onStarte, onSchli
       >
         {/* Header */}
         <div className="p-5 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="text-lg font-bold dark:text-white">Gemischte Übung</h2>
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Gemischte Übung</h2>
           <p className="text-sm text-slate-400 mt-1">Wähle Themen aus verschiedenen Fächern für eine gemischte Session (max. 10 Fragen).</p>
         </div>
 

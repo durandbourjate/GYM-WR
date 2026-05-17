@@ -6,6 +6,7 @@ import { ladePoolIndex, ladePoolConfig, berechneDelta } from '../../../services/
 import { apiService } from '../../../services/apiService'
 import type { Frage } from '../../../types/fragen-storage'
 import type { PoolConfig, PoolSyncErgebnis, Lernziel } from '../../../types/pool'
+import { TYPO } from '../../../styles/typografie'
 
 interface Props {
   offen: boolean
@@ -174,7 +175,7 @@ export default function PoolSyncDialog({ offen, onSchliessen, bestehendeFragen, 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50">
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-auto p-6">
-        <h2 className="text-xl font-bold mb-4 dark:text-white">Pools synchronisieren</h2>
+        <h2 className={`${TYPO.h2} mb-4 text-slate-800 dark:text-slate-100`}>Pools synchronisieren</h2>
 
         {phase === 'idle' && (
           <div>
