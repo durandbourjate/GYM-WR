@@ -6,6 +6,7 @@ import {
   indexPruefungen,
   indexUebungen,
   indexFragen,
+  SAMMELVIEW_ROUTE_BUILDERS,
 } from './sucheAdapter'
 import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
@@ -149,5 +150,29 @@ describe('indexFragen', () => {
     const langeFrage = 'A'.repeat(150)
     const treffer = indexFragen('aaa', [stubFrage('f1', langeFrage)])
     expect(treffer[0].titel.length).toBeLessThanOrEqual(80)
+  })
+})
+
+describe('SAMMELVIEW_ROUTE_BUILDERS', () => {
+  it('einstellungen-tab routes to /einstellungen', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS['einstellungen-tab']('xy')).toBe('/einstellungen')
+  })
+  it('hilfe-tab routes to /hilfe', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS['hilfe-tab']('xy')).toBe('/hilfe')
+  })
+  it('kurs routes to / mit ?suche', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.kurs('BWL')).toBe('/?suche=BWL')
+  })
+  it('pruefung routes to / mit ?suche', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.pruefung('Bilanz')).toBe('/?suche=Bilanz')
+  })
+  it('uebung routes to / mit ?suche und ?modus=uebung', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.uebung('Aktien')).toBe('/?suche=Aktien&modus=uebung')
+  })
+  it('frage routes to /fragensammlung mit ?suche', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.frage('Wert')).toBe('/fragensammlung?suche=Wert')
+  })
+  it('encoded Sonderzeichen werden via encodeURIComponent escaped', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.frage('a&b')).toBe('/fragensammlung?suche=a%26b')
   })
 })
