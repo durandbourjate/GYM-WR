@@ -10,6 +10,8 @@ import { SAMMELVIEW_ROUTE_BUILDERS } from '../../../utils/sucheAdapter'
 import { QUELLEN_REIHENFOLGE } from '../../../types/suche'
 import type { SucheTreffer, SucheQuelle } from '../../../types/suche'
 import { QuellSektion, EmptyState } from '../../shared/header/sucheUI'
+import { useFragensammlungStore } from '../../../store/fragensammlungStore'
+import { useAuthStore } from '../../../store/authStore'
 
 const DEBOUNCE_MS = 300
 
@@ -28,7 +30,30 @@ export function LPGlobalSuche() {
   const navigate = useNavigate()
   const index = useSucheIndex()
 
-  const ergebnis = useMemo(() => fuehreSucheAus(debouncedQuery, index), [debouncedQuery, index])
+  // Volltext-Daten aus fragensammlungStore
+  const fragenVoll = useFragensammlungStore(s => s.fragen)
+  const sammlungStatus = useFragensammlungStore(s => s.status)
+  const ladeAlleDetails = useFragensammlungStore(s => s.ladeAlleDetails)
+  const email = useAuthStore(s => s.user?.email)
+
+  const volltextLaedt = sammlungStatus === 'summary_laden' || sammlungStatus === 'detail_laden'
+  const volltextBereit = fragenVoll.length > 0
+
+  // Lazy-Load: nur triggern wenn Toggle AN, noch nicht geladen, nicht aktuell ladend, und LP-User
+  useEffect(() => {
+    if (volltextAktiv && !volltextBereit && !volltextLaedt && email) {
+      ladeAlleDetails(email)
+    }
+  }, [volltextAktiv, volltextBereit, volltextLaedt, email, ladeAlleDetails])
+
+  const ergebnis = useMemo(
+    () => fuehreSucheAus(
+      debouncedQuery,
+      { ...index, fragenVoll: volltextAktiv && volltextBereit ? fragenVoll : undefined },
+      { volltext: volltextAktiv && volltextBereit },
+    ),
+    [debouncedQuery, index, volltextAktiv, volltextBereit, fragenVoll],
+  )
 
   // Cmd+K / Ctrl+K — fokussiert Input (Pattern aus alter GlobalSuche)
   useEffect(() => {
@@ -118,8 +143,13 @@ export function LPGlobalSuche() {
         </button>
       </div>
 
-      {istOffen && debouncedQuery.length >= 2 && (
+      {istOffen && debouncedQuery.length >= (volltextAktiv ? 3 : 2) && (
         <div className="absolute top-full mt-1 right-0 w-96 max-h-[60vh] overflow-y-auto bg-white dark:bg-slate-800 shadow-lg rounded-lg border border-slate-200 dark:border-slate-700 z-50">
+          {volltextAktiv && volltextLaedt && (
+            <div className="px-4 py-2 text-xs text-violet-600 dark:text-violet-300 border-b border-slate-200 dark:border-slate-700">
+              Volltext wird vorbereitet …
+            </div>
+          )}
           {ergebnis.treffer.length === 0 ? (
             <EmptyState query={debouncedQuery} />
           ) : (
