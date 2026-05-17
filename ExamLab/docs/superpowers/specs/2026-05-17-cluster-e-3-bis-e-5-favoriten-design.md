@@ -35,18 +35,37 @@ E.4 und E.5 sind kleine UI-Adds (~40 + ~150 Zeilen) die direkt auf E.3 aufbauen.
 
 | # | Entscheidung | Begründung |
 |---|---|---|
-| 1 | **`LPProfil.favoriten` von `AppOrt[]` zu `Favorit[]` umtypisieren.** | `AppOrt` ist Pre-Cluster-E-Datenstruktur, nirgends mehr aktiv konsumiert. `Favorit` ist der etablierte Type mit Discriminator. Nicht-in-Produktion erlaubt breaking-Backend-Wire-Vertrag-Änderung ohne Migration. |
-| 2 | **`favoritenStore` bleibt API-Facade, hat selbst keinen Persist-Layer mehr.** | 9+ bestehende Component-Konsumenten (`useFavoritenStore()`) müssen nicht angepasst werden. Klare Aktions-API (toggleFavorit/istFavorit/updateSortierung) bleibt erhalten. Implementation delegiert an `stammdatenStore`. |
-| 3 | **Backend = Source of Truth. Frontend-Store ist Read-Through-Cache.** | Konsistent mit `stammdatenStore`-Pattern. Bei Konflikten (z.B. zwei Tabs, verschiedene Geräte) ist Backend-State final. Kein Multi-Master-Sync nötig. |
+| 1 | **`LPProfil.favoriten` von `AppOrt[]` zu `Favorit[]` umtypisieren.** | `AppOrt` ist Pre-Cluster-E-Datenstruktur. Der einzige verbliebene Konsument ist ein One-shot-Migrator in `useLPDashboardData.ts` Z. 74-89 (AppOrt → Favorit Mapping), der in der neuen Architektur obsolet wird und in Phase 1 entfernt wird. Nicht-in-Produktion erlaubt breaking-Backend-Wire-Vertrag-Änderung ohne Migration. |
+| 2 | **`favoritenStore` bleibt API-Facade, hat selbst keinen Persist-Layer mehr.** | 9+ bestehende Component-Konsumenten (`useFavoritenStore()`) müssen nicht angepasst werden. Klare Aktions-API (toggleFavorit/istFavorit/updateSortierung) bleibt erhalten. Implementation delegiert Save-Operations an `stammdatenStore.speichereLPProfil`. |
+| 3 | **Backend = Source of Truth. Frontend-Store wird via explizite Trigger hydratet (KEIN Subscriber).** | Subscriber von `stammdatenStore.lpProfil.favoriten` würde zu redundanten Re-Sets führen und mit optimistic-Updates im favoritenStore racen. Stattdessen: zwei explizite Trigger — (a) App-Mount nach LP-Login, (b) Error-Refetch nach Save-Fehler. Vorteil: klarer Datenfluss, kein Subscriber-Loop-Risiko (Memory `feedback_zustand_selector_useshallow.md`), Demo-Mode kann favoritenStore unabhängig befüllen. |
 | 4 | **Optimistic Update + Server-Refetch on Error (kein Client-Rollback).** | Pre-Edit-State-Buchhaltung entfällt → ~30 Z. weniger Code. Refetch ist nach Backend-Migration <100ms = günstig. Während Apps-Script-Phase: Refetch ~1.5s nach Fehler ist akzeptabel weil Fehler selten. |
 | 5 | **Kein Migration-Code von localStorage zu Backend.** | Nicht in Produktion. Bestehende `examlab-favoriten`-localStorage-Einträge sind Test-State der Dev-User. Beim ersten App-Start nach Update ist Backend-State leer → Dev-Users fügen Favoriten einmal neu hinzu. Spart ~30 Z. Code + 4 Edge-Case-Tests. |
 | 6 | **Loading-Skeleton während initial Backend-Load (~1.5-2s).** | Kein Cache, kein Flackern. Konsistent mit anderen Backend-loaded Surfaces (tagsStore, schulConfigStore). |
 | 7 | **Save schickt das KOMPLETTE LPProfil-Objekt, nicht nur das `favoriten`-Feld.** | Apps-Script-Endpoint `speichereLPProfilEndpoint` schreibt das ganze Profil als JSON-Blob in eine Sheet-Zelle. Field-Level-Patch erfordert Backend-Endpoint-Erweiterung. Out of scope. |
-| 8 | **Combined Spec/Plan/Implementation E.3+E.4+E.5.** | Tightly coupled (gleicher Store, gleiche API). Einzeln-Bundling wäre 3× Spec/Plan-Overhead ohne technischen Mehrwert. |
+| 8 | **`Favorit`-Type wird nach `src/types/favorit.ts` ausgelagert.** | Verhindert circular import `stammdaten.ts ← favoritenStore.ts ← stammdaten.ts`. `favoritenStore` re-exportiert `Favorit` für Backwards-Compat mit den 9+ Konsumenten. |
+| 9 | **Demo-Mode bleibt frontend-only (kein Backend-Sync).** | `authStore.ts` Z. 210ff seeded Demo-Favoriten direkt via `useFavoritenStore.setState`. Im Demo-Modus ist kein LP-Login aktiv → kein `ladeLPProfil`-Trigger, kein `speichereLPProfil`-Call. Demo-Favoriten leben nur im Frontend-Store, gehen mit Tab-Reload verloren (so wie auch sonst alle Demo-Daten). |
+| 10 | **Combined Spec/Plan/Implementation E.3+E.4+E.5.** | Tightly coupled (gleicher Store, gleiche API). Einzeln-Bundling wäre 3× Spec/Plan-Overhead ohne technischen Mehrwert. |
 
 ## 4. Daten-Modell
 
-### 4.1 `LPProfil` (`src/types/stammdaten.ts` Änderung)
+### 4.1 `Favorit`-Type Auslagerung (NEU `src/types/favorit.ts`)
+
+Um circular import (`stammdaten.ts ← favoritenStore.ts ← stammdaten.ts`) zu vermeiden, wird der `Favorit`-Type aus `favoritenStore.ts` extrahiert nach `src/types/favorit.ts`:
+
+```ts
+// src/types/favorit.ts (NEU)
+export interface Favorit {
+  typ: 'ort' | 'pruefung' | 'uebung' | 'frage' | 'einstellungen-tab' | 'hilfe-tab'
+  ziel: string
+  label: string
+  icon?: string  // Lucide-Component-Name (canonical Form seit v2)
+  sortierung: number
+}
+```
+
+`favoritenStore.ts` importiert + re-exportiert `Favorit` für Backwards-Compat (die 9+ existierenden Konsumenten `import type { Favorit } from '../store/favoritenStore'` müssen NICHT angepasst werden).
+
+### 4.2 `LPProfil` (`src/types/stammdaten.ts` Änderung)
 
 **Vorher:**
 ```ts
@@ -62,7 +81,7 @@ export interface LPProfil {
 
 **Nachher:**
 ```ts
-import type { Favorit } from '../store/favoritenStore'
+import type { Favorit } from './favorit'
 
 export interface LPProfil {
   email: string
@@ -74,11 +93,7 @@ export interface LPProfil {
 }
 ```
 
-`AppOrt`-Type wird aus `stammdaten.ts` entfernt (kein Konsument mehr — falls Code-Audit überraschende Konsumenten findet, separater Cleanup vor E.3-Start).
-
-### 4.2 `Favorit` (`src/store/favoritenStore.ts` unverändert)
-
-Bestehender Type bleibt wie heute. Backwards-Compat: `icon` ist `string | undefined`, Lucide-Component-Name als String seit v2-Migration.
+`AppOrt`-Type wird aus `stammdaten.ts` entfernt nachdem der einzige Konsument (`useLPDashboardData.ts` Z. 74-89 Migrator) in Phase 1 mitentfernt wurde.
 
 ### 4.3 `favoritenStore` Refactor
 
@@ -93,12 +108,9 @@ interface FavoritenStore {
   favoriten: Favorit[]
   ladeStatus: 'idle' | 'laeuft' | 'fertig' | 'fehler'
 
-  // Read-only (computed from stammdatenStore via subscriber)
-  // OR direct mirror via setState in subscriber.
-
   // Actions
-  ladeAusBackend: () => void  // Hydratet aus stammdatenStore.lpProfil
-  toggleFavorit: (...) => Promise<void>  // optimistic + speichereLPProfil
+  ladeAusBackend: () => Promise<void>  // hydratet aus stammdatenStore.lpProfil (siehe unten)
+  toggleFavorit: (...) => Promise<void>
   istFavorit: (ziel: string) => boolean
   updateSortierung: (zielReihenfolge: string[]) => Promise<void>
   entferneFavorit: (ziel: string) => Promise<void>
@@ -106,49 +118,55 @@ interface FavoritenStore {
 }
 ```
 
-**Subscriber-Pattern:** `favoritenStore` subscribed via `stammdatenStore.subscribe()` auf Änderungen von `lpProfil.favoriten`. Wenn das Backend-Load oder ein anderer Tab die Favoriten ändert, spiegelt favoritenStore das automatisch.
+**Sync-Mechanik: KEIN Subscriber.** Architektur-Entscheidung #3 — favoritenStore wird via zwei explizite Trigger befüllt:
+
+1. **Initial-Load:** App-Mount nach LP-Login ruft `favoritenStore.ladeAusBackend()`. Diese liest synchron `useStammdatenStore.getState().lpProfil?.favoriten ?? []` und setzt sie in favoritenStore. Voraussetzung: `stammdatenStore.ladeLPProfil()` muss bereits aufgelöst sein (siehe Phase 3 Wiring).
+2. **Error-Refetch:** Nach gescheitertem Save ruft die Action erst `useStammdatenStore.getState().ladeLPProfil(email)` (Backend-Roundtrip), dann `favoritenStore.ladeAusBackend()` (re-hydrate aus dem nun aktualisierten stammdatenStore).
+
+Demo-Mode (siehe Entscheidung #9): Demo-Pfad in `authStore.ts` befüllt `useFavoritenStore.setState({ favoriten: [...demo] })` direkt, ohne `ladeAusBackend` zu triggern. Da kein `lpProfil` existiert und kein Save-Pfad läuft, bleibt der Demo-State unangetastet.
 
 **Action-Pattern (Beispiel `toggleFavorit`):**
 ```ts
 toggleFavorit: async (fav) => {
   const { favoriten } = get()
   const exists = favoriten.find(f => f.ziel === fav.ziel)
-  const next = exists
+  const maxSort = favoriten.reduce((max, f) => Math.max(max, f.sortierung), -1)
+  const next: Favorit[] = exists
     ? favoriten.filter(f => f.ziel !== fav.ziel)
-    : [...favoriten, { ...fav, sortierung: maxSort + 1 }]
+    : [...favoriten, { ...fav, sortierung: fav.sortierung ?? maxSort + 1 }]
 
-  // Optimistic
+  // Optimistic: Frontend-Store sofort aktualisieren
   set({ favoriten: next })
 
-  // Persist via stammdatenStore (komplettes LPProfil + neue Favoriten-Liste)
-  const { lpProfil, speichereLPProfil } = useStammdatenStore.getState()
-  if (!lpProfil) return  // nicht eingeloggt — nichts zu speichern
+  // Persist: Demo-Mode skipped (kein lpProfil)
+  const { lpProfil, speichereLPProfil, ladeLPProfil } = useStammdatenStore.getState()
+  if (!lpProfil) return
+
   const ok = await speichereLPProfil({ ...lpProfil, favoriten: next })
   if (!ok) {
-    // Error: refetch from server
+    // Error: Toast + refetch from server, dann re-hydrate favoritenStore
     useToastStore.getState().add({ kind: 'error', text: 'Favorit konnte nicht synchronisiert werden — wird neu geladen' })
-    await useStammdatenStore.getState().ladeLPProfil(lpProfil.email)
-    // Subscriber spiegelt neue Backend-Wahrheit
+    await ladeLPProfil(lpProfil.email)
+    get().ladeAusBackend()
   }
 }
 ```
 
 ### 4.4 `stammdatenStore` Änderungen
 
-Keine direkten Änderungen. `speichereLPProfil` funktioniert bereits korrekt mit komplettem Profil-Objekt inkl. neuem `favoriten`-Feld.
+`speichereLPProfil` funktioniert bereits korrekt mit komplettem Profil-Objekt inkl. neuem `favoriten`-Feld. KEINE Änderung der Action-Signaturen.
 
-Optional: Type-Check beim `ladeLPProfil`-Response — wenn Backend ein altes `AppOrt[]`-Array liefert (von vor Cluster-E.3), wird `favoriten` mit `[]` initialisiert statt einem Type-Fehler. Defensive-Pattern:
+**Hinzufügen:** Defensive-Drop für Legacy-AppOrt-Daten im `ladeLPProfil`-Response (Dev-User mit Pre-E.3-Daten verlieren ihre Test-Favoriten beim ersten Load — akzeptabel weil nicht-in-Produktion):
 
 ```ts
 ladeLPProfil: async (email: string) => {
   ...
   if (result?.profil) {
-    // E.3: Drop legacy AppOrt-favoriten (kein Migration-Code, siehe Entscheidung #5)
     const profil = result.profil
+    // E.3: Drop legacy AppOrt-favoriten (kein Migration-Code, siehe Entscheidung #5)
     if (Array.isArray(profil.favoriten) && profil.favoriten.length > 0) {
       const first = profil.favoriten[0]
       if (!first.typ || !first.ziel) {
-        // Legacy AppOrt format detected — drop
         profil.favoriten = []
       }
     }
@@ -157,7 +175,18 @@ ladeLPProfil: async (email: string) => {
 }
 ```
 
-Drop-on-load-Pattern statt Migration: Dev-User mit Legacy-Daten verlieren ihre Test-Favoriten beim ersten Load. Akzeptabel weil nicht-in-Produktion.
+### 4.5 `useLPDashboardData.ts` Änderung (Pflicht für tsc-clean Phase 1)
+
+**Vorher (Z. 73-89):** ladeLPProfil-then-Block konvertiert `lpProfil.favoriten` (AppOrt-Shape) zu Favorit[] und schreibt via `useFavoritenStore.setState`.
+
+**Nachher:** Block wird entfernt. Ersatz-Logik in `favoritenStore.ladeAusBackend()`:
+```ts
+ladeLPProfil(user.email).then(() => {
+  useFavoritenStore.getState().ladeAusBackend()
+})
+```
+
+Diese Änderung ist Teil von Phase 1 (zusammen mit Type-Switch), sonst kompiliert die Codebase nach Type-Switch nicht (Mapper destructured `f.titel/f.screen/f.params.configId` die auf neuem Favorit-Type nicht existieren).
 
 ## 5. UI-Komponenten
 
@@ -177,9 +206,9 @@ export function TabStarToggle({ tabId, surface, label, icon }: Props) {
       onClick={() => toggle({ typ, ziel: tabId, label, icon })}
       aria-label={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
       title={istFav ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
-      className="text-slate-400 hover:text-yellow-500 transition-colors"
+      className="text-slate-400 hover:text-amber-500 transition-colors"
     >
-      <Star className={`w-5 h-5 ${istFav ? 'fill-current text-yellow-500' : ''}`} />
+      <Star className={`w-5 h-5 ${istFav ? 'fill-current text-amber-500' : ''}`} />
     </button>
   )
 }
@@ -206,7 +235,7 @@ Pattern aus Spec §5.3:
 - Tab-Bar oben: 2 Tabs „Einstellungen" + „Hilfe" (Surface-Filter)
 - Suchfeld im Header für Titel-Substring-Filter
 - Liste der Tabs aus Tab-Registry (`tabsFuerSurface('einstellungen', ctx)` + `tabsFuerSurface('hilfe', ctx)`)
-- Pro Tab-Item: Icon (Lucide), Titel, Surface-Badge, „+ Hinzufügen"-Button (oder „✓ Bereits Favorit" disabled)
+- Pro Tab-Item: Icon (Lucide), Titel, Surface-Badge, „+ Hinzufügen"-Button (oder `<Check />`-Lucide-Icon + Label „Bereits Favorit" disabled — KEIN ✓-Emoji wegen Cluster-G `lint:no-emoji`-Gate)
 - Sortierung: alphabetisch nach Titel
 - Bereits-Favorit-Zustand: `useFavoritenStore(s => s.istFavorit(tab.id))`
 
@@ -228,23 +257,25 @@ Bei `ladeStatus === 'fehler'`: leerer Bereich + Toast wurde schon getriggert von
 
 Phasen sind sequentiell, je 1 Commit. Jede Phase tsc-clean + vitest-grün + ci-check-grün.
 
-### Phase 1 — Foundation (E.3 Step 1)
-- `LPProfil.favoriten` Type-Wechsel `AppOrt[]` → `Favorit[]` in `stammdaten.ts`
-- `AppOrt`-Type entfernen falls keine Konsumenten (Code-Audit vor Commit)
-- `ladeLPProfil` defensive-Drop für Legacy-Format
-- Vitest-Update für stammdatenStore-Tests
+### Phase 1 — Foundation (E.3 Step 1) — Atomic-Bundle für tsc-clean
+Alle 4 Edits MÜSSEN im selben Commit sein, sonst kompiliert die Codebase nicht:
+- `src/types/favorit.ts` NEU: `Favorit`-Type aus favoritenStore extrahiert (siehe §4.1)
+- `favoritenStore.ts`: importiert + re-exportiert `Favorit` von `types/favorit` (Backwards-Compat)
+- `LPProfil.favoriten` Type-Wechsel `AppOrt[]` → `Favorit[]` in `stammdaten.ts`. `AppOrt`-Type entfernen.
+- `useLPDashboardData.ts` Z. 73-89: alten AppOrt→Favorit-Migrator entfernen, durch `useFavoritenStore.getState().ladeAusBackend()`-Call ersetzen (siehe §4.5)
+- `ladeLPProfil` defensive-Drop für Legacy-Format ergänzen (siehe §4.4)
+- Vitest-Update für stammdatenStore-Tests (Legacy-Drop)
 
 ### Phase 2 — favoritenStore Refactor (E.3 Step 2)
-- `persist`-Middleware raus
-- `ladeAusBackend`, `ladeStatus` ergänzen
+- `persist`-Middleware raus (alle Backwards-Compat-Migrationen entfernt: v1→v2 + lp-favoriten→examlab-favoriten)
+- `ladeAusBackend`, `ladeStatus` ergänzen (siehe §4.3)
 - `toggleFavorit`/`updateSortierung`/`entferneFavorit` async + optimistic + speichereLPProfil-Delegation + Error-Refetch
-- Subscriber zu stammdatenStore.lpProfil.favoriten
-- `favoritenStore.test.ts` Update: Mock stammdatenStore, teste Optimistic-Path + Error-Refetch-Path
+- KEIN Subscriber zu stammdatenStore (siehe Entscheidung #3)
+- `favoritenStore.test.ts` Update: Mock stammdatenStore, teste Optimistic-Path + Error-Refetch-Path + Demo-Mode-Pfad (kein lpProfil → keine Save-Calls)
 
 ### Phase 3 — App-Mount Backend-Load (E.3 Step 3)
-- In existing LP-Login-Flow (`LPStartseite.tsx` oder `App.tsx`): nach `ladeLPProfil(email)` Erfolg → `favoritenStore.ladeAusBackend()` triggern
-- Falls via Subscriber: kein expliziter Trigger nötig, nur subscriber-Setup in Store-Init
-- `Favoriten.tsx` Loading-Skeleton (~15 Z.)
+- `useLPDashboardData.ts`: nach `ladeLPProfil(email)` Erfolg → `favoritenStore.ladeAusBackend()` triggern (Ersatz für Phase-1-entfernten Migrator)
+- `Favoriten.tsx` Loading-Skeleton (~15 Z., Tailwind `animate-pulse`-Pattern, 3 Karten)
 - Browser-E2E: LP-Login → Skeleton sichtbar → Favoriten erscheinen nach ~1.5s
 
 ### Phase 4 — TabStarToggle Komponente (E.4 Step 1)
@@ -252,8 +283,8 @@ Phasen sind sequentiell, je 1 Commit. Jede Phase tsc-clean + vitest-grün + ci-c
 - Unit-Test: toggle on/off, label, icon-State, aria-label
 
 ### Phase 5 — TabStarToggle Einbindung (E.4 Step 2)
-- 7 Tabs in EinstellungenPanel + 10 Tabs in HilfeSeite bekommen `<TabStarToggle>` im Header
-- Snapshot-Tests aktualisieren
+- 7 Tabs in EinstellungenPanel + 10 Tabs in HilfeSeite bekommen `<TabStarToggle>` im Tab-Header
+- Bestehende Component-Tests (TabHeader-Tests falls vorhanden) regenerieren wo Snapshot enthalten; ansonsten kein neuer Snapshot-Test (entspricht Repo-Konvention colocated `.test.tsx`)
 - Browser-E2E: 1 Tab favorisieren, Reload, Favorit persistiert via Backend
 
 ### Phase 6 — FavoritenPicker Modal (E.5)
@@ -273,10 +304,11 @@ Phasen sind sequentiell, je 1 Commit. Jede Phase tsc-clean + vitest-grün + ci-c
 ### Unit-Tests (vitest, neu/erweitert)
 | File | Coverage |
 |---|---|
-| `favoritenStore.test.ts` (erweitert) | toggleFavorit-optimistic, error-refetch, subscriber-sync, ladeStatus-transitions |
+| `favoritenStore.test.ts` (erweitert) | toggleFavorit-optimistic, error-refetch, ladeStatus-transitions, Demo-Mode-Pfad (kein lpProfil → kein speichereLPProfil-Call) |
 | `TabStarToggle.test.tsx` (neu) | rendering on/off, click-handler, aria-label, label-prop |
 | `FavoritenPicker.test.tsx` (neu) | renders all tabs from registry, click toggles, disabled-state for existing favs, filter by title |
 | `stammdatenStore.test.ts` (erweitert) | ladeLPProfil drops legacy AppOrt favoriten |
+| `useLPDashboardData.test.ts` (oder Test in `LPStartseite.test.tsx` erweitert) | nach Phase 1: ladeLPProfil-resolve triggert `favoritenStore.ladeAusBackend`, alter Migrator nicht mehr aufgerufen |
 
 ### Browser-E2E (manuell auf Staging, jeweils mit `?cb=<ts>` Cache-Buster)
 1. LP-Login → Loading-Skeleton sichtbar → Favoriten erscheinen (Backend-Load)
@@ -295,8 +327,8 @@ Phasen sind sequentiell, je 1 Commit. Jede Phase tsc-clean + vitest-grün + ci-c
 
 | Risiko | Wahrscheinlichkeit | Impact | Mitigation |
 |---|---|---|---|
-| `AppOrt`-Konsument übersehen → tsc-Fehler nach Type-Switch | Niedrig (grep schnell) | Niedrig (Build-Time) | Phase 1: vor Type-Switch `grep -rn "AppOrt"` exhaustiv |
-| Subscriber-Sync von stammdatenStore zu favoritenStore re-render-loop | Mittel | Hoch (React #185) | useShallow-Pattern. Vitest-Test mit Multi-Update-Szenario. Memory-Lehre `feedback_zustand_selector_useshallow.md` |
+| `AppOrt`-Konsument übersehen → tsc-Fehler nach Type-Switch | Mittel (war initial Niedrig; Reviewer entdeckte useLPDashboardData-Migrator) | Niedrig (Build-Time, fail fast) | Phase 1: vor Type-Switch `grep -rn "AppOrt\|f\\.titel\\|f\\.screen" ExamLab/src` exhaustiv. Atomic-Bundle (siehe Phase 1) verhindert Inkrement-Tsc-Fail. |
+| Subscriber-Sync Race-Condition (early-version-Risiko) | Beseitigt durch Entscheidung #3 | — | Architektur ohne Subscriber. Explizite Trigger via `ladeAusBackend()`. |
 | User klickt schnell mehrfach (race) | Hoch im UX | Niedrig (last-write-wins) | Optimistic + Refetch ist designt für genau diesen Fall. Komplette Liste pro Save → letzter Save gewinnt natürlicherweise |
 | Backend-Save-Fehler beim ersten Login (kein LP-Profil im Backend) | Niedrig | Mittel (User sieht Toast) | speichereLPProfil legt LP-Profil-Zeile an wenn nicht vorhanden (Backend-Endpoint Z. 12793). Funktioniert bereits. |
 | User mit altem Browser-localStorage `examlab-favoriten` (Test-Daten) verliert Favoriten | Hoch (jeder Dev-User) | Niedrig (Test-Daten) | Bewusste Design-Entscheidung #5. Dev-User fügen Favoriten einmal neu hinzu. |
@@ -306,11 +338,12 @@ Phasen sind sequentiell, je 1 Commit. Jede Phase tsc-clean + vitest-grün + ci-c
 
 - Migration-Code von localStorage zu Backend (Entscheidung #5)
 - LPProfil Field-Level-Patch-Endpoint (Backend-Endpoint-Erweiterung)
-- Drag&Drop-Sortierung der Favoriten (falls heute nicht im Store, separat)
-- Multi-Tab-Sync via BroadcastChannel/storage-Events (Refetch reicht für jetzt)
+- Multi-Tab-Sync via BroadcastChannel/storage-Events (Refetch reicht für jetzt; nach Backend-Migration evtl. SSE/Websocket-Variante)
 - Defer-able tier-Debates aus E.2 (I-1 Hallo-Vorname, I-2 AdminLayout)
 - `appNavigation.ts` Persist-Migration auf Lucide-Keys (separater Spawn-Task)
 - Storybook für Favoriten-Komponenten (Cluster G Spec §13)
+
+**NICHT Out of Scope (war in initialer Spec-Version falsch markiert):** Drag&Drop-Sortierung der Favoriten — `updateSortierung` ist bereits Teil des Stores und wird in Phase 2 mit auf den Backend-Sync-Pfad umgestellt.
 
 ## 10. Erfolgs-Kriterien
 
