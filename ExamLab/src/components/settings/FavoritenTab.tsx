@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
-import { ChevronDown, ChevronRight, GripVertical, Star, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, GripVertical, Plus, Star, X } from 'lucide-react'
 import { useFavoritenStore, type Favorit } from '../../store/favoritenStore'
 import { APP_NAVIGATION, type NavigationsEintrag } from '../../config/appNavigation'
 import { NavIcon } from '../ui/icons/NavIcon'
 import { TYPO } from '../../styles/typografie'
 import { TabStarToggle } from '../lp/TabStarToggle'
+import { FavoritenPicker } from '../lp/FavoritenPicker'
 import {
   DndContext,
   closestCenter,
@@ -29,6 +30,7 @@ export default function FavoritenTab({ istAdmin }: { istAdmin: boolean }) {
     [...rawFavoriten].sort((a, b) => a.sortierung - b.sortierung),
   [rawFavoriten])
   const { updateSortierung, entferneFavorit } = useFavoritenStore()
+  const [pickerOpen, setPickerOpen] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -77,6 +79,19 @@ export default function FavoritenTab({ istAdmin }: { istAdmin: boolean }) {
           </DndContext>
         )}
       </div>
+
+      {/* Picker für Einstellungen-/Hilfe-Tabs (Cluster E.5) */}
+      <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+        <button
+          onClick={() => setPickerOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white text-sm rounded-md transition-colors cursor-pointer"
+        >
+          <Plus className="w-4 h-4" aria-hidden="true" />
+          Tab-Favorit hinzufügen
+        </button>
+      </div>
+
+      <FavoritenPicker open={pickerOpen} onClose={() => setPickerOpen(false)} />
 
       {/* App-Struktur als Baum */}
       <div>
