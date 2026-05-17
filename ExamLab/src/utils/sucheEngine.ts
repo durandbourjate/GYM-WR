@@ -155,6 +155,11 @@ export function gruppiereUndLimitiere(
   return { treffer: result, proQuelleSichtbar, proQuelleGesamt }
 }
 
+/** Cluster C.4: Minimale Query-Länge im normalen Modus (2 = "ek", "wr" etc.). */
+export const MIN_QUERY_LENGTH = 2
+/** Cluster C.4: Minimale Query-Länge im Volltext-Modus (3 = vermeidet zu viele Treffer in Fragetexten). */
+export const MIN_VOLLTEXT_QUERY_LENGTH = 3
+
 /**
  * Orchestrator: führt Suche aus allen 6 Adaptern aus und gruppiert.
  * Min-Query-Guard zentral hier — Adapter dürfen davon ausgehen, dass query gültig ist.
@@ -169,7 +174,7 @@ export function fuehreSucheAus(
   opts?: { volltext?: boolean },
 ): SucheErgebnis {
   const normalized = normalizeForSuche(query)
-  const minLen = opts?.volltext ? 3 : 2
+  const minLen = opts?.volltext ? MIN_VOLLTEXT_QUERY_LENGTH : MIN_QUERY_LENGTH
   if (normalized.length < minLen) return LEERES_ERGEBNIS
 
   const fragenTreffer = opts?.volltext && index.fragenVoll

@@ -5,7 +5,7 @@ import { useSucheIndex } from '../../../hooks/useSucheIndex'
 import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
 import { useKeyboardNavigation } from '../../../hooks/useKeyboardNavigation'
 import { useClickOutside } from '../../../hooks/useClickOutside'
-import { fuehreSucheAus } from '../../../utils/sucheEngine'
+import { fuehreSucheAus, MIN_QUERY_LENGTH, MIN_VOLLTEXT_QUERY_LENGTH } from '../../../utils/sucheEngine'
 import { SAMMELVIEW_ROUTE_BUILDERS } from '../../../utils/sucheAdapter'
 import { QUELLEN_REIHENFOLGE } from '../../../types/suche'
 import type { SucheTreffer, SucheQuelle } from '../../../types/suche'
@@ -146,7 +146,7 @@ export function LPGlobalSuche() {
         </button>
       </div>
 
-      {istOffen && debouncedQuery.length >= (volltextAktiv ? 3 : 2) && (
+      {istOffen && debouncedQuery.length >= (volltextAktiv ? MIN_VOLLTEXT_QUERY_LENGTH : MIN_QUERY_LENGTH) && (
         <div className="absolute top-full mt-1 right-0 w-96 max-h-[60vh] overflow-y-auto bg-white dark:bg-slate-800 shadow-lg rounded-lg border border-slate-200 dark:border-slate-700 z-50">
           {volltextAktiv && volltextLaedt && (
             <div className="px-4 py-2 text-xs text-violet-600 dark:text-violet-300 border-b border-slate-200 dark:border-slate-700">

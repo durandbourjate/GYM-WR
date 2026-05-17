@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { fuehreSucheAus } from './sucheEngine'
+import { indexFragenVolltext } from './sucheAdapter'
 import type { SucheIndex } from '../types/suche'
+import type { Frage } from '../types/fragen-storage'
 
 function syntheticIndex(): SucheIndex {
   const fragen = Array.from({ length: 1000 }, (_, i) => ({
@@ -83,6 +85,34 @@ describe('Performance — Fuzzy-Match (C.5)', () => {
       fuehreSucheAus(q, index)
     }
     const dauer = performance.now() - start
+    expect(dauer).toBeLessThan(200)
+  })
+})
+
+describe('Performance — Volltext (C.4)', () => {
+  it('1000 Fragen × 5 Volltext-queries < 200ms', () => {
+    // 1000 synthetic full Frage objects with realistic fragetext + musterlosung
+    const fragen: Frage[] = Array.from({ length: 1000 }, (_, i) => ({
+      id: `q-${i}`,
+      typ: 'freitext',
+      fachbereich: 'WR',
+      thema: 'BWL',
+      fragetext: `Fragetext ${i} mit Begriff Bilanz und Konjunktur und 20 weiteren Wörtern lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor`,
+      musterlosung: `Musterloesung mit Aktien Passiva Bilanz Anlagevermoegen ${i} und weiteren Begriffen lorem ipsum`,
+      bloom: 'K1',
+      punkte: 1,
+      tagIds: [],
+      erstelltAm: '2026-05-18',
+    })) as unknown as Frage[] /* Defensive: synthetic test objects, full Frage shape not needed */
+    const queries = ['Bilanz', 'Anlagevermoegen', 'Konjunktur', 'Aktien', 'Passiva']
+    // Warmup-Pass (JIT) gegen ersten-Call-Overhead — analog Fuzzy-Test darunter
+    indexFragenVolltext(queries[0], fragen)
+    const start = performance.now()
+    for (const q of queries) {
+      indexFragenVolltext(q, fragen)
+    }
+    const dauer = performance.now() - start
+    console.log(`Volltext-Perf: ${dauer.toFixed(1)} ms (Threshold: 200ms)`)
     expect(dauer).toBeLessThan(200)
   })
 })
