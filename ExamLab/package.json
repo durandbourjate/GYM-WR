@@ -16,6 +16,7 @@
     "lint:wire-contract": "node ../scripts/audit-wire-contract.mjs --strict",
     "lint:no-emoji": "node ../scripts/audit-no-emoji.mjs --strict",
     "lint:no-inline-svg": "node ../scripts/audit-no-inline-svg.mjs --strict",
+    "lint:typo-tokens": "node ../scripts/audit-typo-tokens.mjs --strict",
     "preview": "vite preview",
     "preview:lernen": "VITE_APP_MODE=lernen vite preview --outDir dist-lernen",
     "test": "vitest run",
