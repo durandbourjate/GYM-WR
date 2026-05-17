@@ -8,9 +8,58 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** Cluster E.2 Typografie + Post-E.2 Spawn-Tasks LIVE (17.05.2026 SPÄT-SPÄT, HEAD `3d8848d`).
+**HEAD main + preview:** Cluster H Phase 3 KOMPLETT (17.05.2026 NACHT-3, HEAD `05b8441`).
 
-## Cluster E.2 Typografie-Migration KOMPLETT (17.05.2026)
+## Cluster H Phase 3 KOMPLETT (17.05.2026)
+
+**Was passiert ist:** Phase 3 war bisher als "frühstens 29.05.2026" geplant (2-Wochen-Live-Beobachtung). Beim manuellen Aufruf von `apiCleanupTagsLegacy` wurde entdeckt, dass das Sheet KEINE `tagsLegacy`-Spalte mehr hat, sondern noch eine alte `tags`-Spalte parallel zu `tagIds`. Audit ergab: 46 Orphan-Fragen aus der Einrichtungspruefung (importiert via `einrichtungsFragen.ts` nach Phase 1) hatten tags-Strings ohne tagIds-UUIDs.
+
+**3 Commits auf main + preview:**
+- `26ee492` — `runCleanupTagsLegacy` Dropdown-Wrapper (Apps-Script-Funktionen mit `_`-Suffix erscheinen nicht im Editor-Dropdown)
+- `293a9fe` — `apiMigriereOrphanTags_` + `apiCleanupTagsSpalte_` + Wrapper. Migration mappt tags-Strings via existierender Tags-Sheet auf tagIds. Cleanup mit Vorab-Sicherheitscheck verhindert Datenverlust.
+- `05b8441` — `standardHeaders` Z. ~6733 + Fallback-baseKeys Z. ~4202/~5781: `tags` → `tagIds`, plus `fach`/`schwierigkeit`/`status`/`geloescht_am` ergänzt (war drift vs. Sheet-Realität).
+
+**Manuelle Schritte (alle DU am 17.05.2026 NACHT-3 durchgeführt):**
+1. Apps-Script deployed (3× nach jedem Commit-Set)
+2. `runMigriereOrphanTags` ausgeführt → `{success:true, migriertCount:46, neueTagsCount:0, betroffenTabs:["BWL(17)","VWL(19)","Recht(10)"]}` — alle Tag-Namen existierten bereits in den 183 Phase-1-Tags.
+3. `runCleanupTagsSpalte` ausgeführt → `{success:true, removed:3, betroffen:["BWL","VWL","Recht"]}` — Informatik hatte keine `tags`-Spalte.
+4. Browser-E2E: Tags in Einführungsprüfung sichtbar ✅
+
+**Cluster H insgesamt:** Tag-Modell-Migration komplett abgeschlossen (Phase 0/1/2 + Phase 3 + Post-Cleanup). Frontend liest ausschliesslich `tagIds`, Backend schreibt `tagIds`, alte `tags`-Spalte entfernt. Nur noch defensive Backwards-Compat-Pfade falls Backup-Restore die Spalte wiederbringt.
+
+**Stand-Metriken:** vitest 1890 + 4 todo (unverändert, Apps-Script nicht im vitest). 8 lint-Gates clean. tsc -b + vite build clean.
+
+**Bei Wiedereinstieg:**
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git fetch origin && git status
+git log --oneline -10
+```
+
+### Was als nächstes (priorisiert)
+
+Alle Apps-Script-Deploy-Backlog-Items sind jetzt LIVE. Cluster H ist final abgeschlossen. Verbleibende Top-Picks:
+
+1. **Cluster E.3–E.5** (Folge-Cluster aus 2026-05-11-cluster-e-konsistenz-design.md):
+   - E.3 Favoriten-Backend-Sync (localStorage → LPProfil.favoriten)
+   - E.4 Star-Toggle in Tab-Headers
+   - E.5 Favoriten-Picker (Modal mit Tab-Registry)
+2. **Globale Suche Phase 2** (C.2-C.5): Schüler-Suche / ?suche=-Pre-Fill / Volltext / Fuzzy-Match
+3. **Storybook für Icon-Galerie** (Cluster G Spec §13)
+4. **`autoSave.ts::clearIndexedDB` + `authStore.ts::resetPruefungState`** — IDB ohne `tx.oncomplete`-await vor Hard-Nav (Privacy-Risk Klasse aus S149, noch nicht in G.c gefixt)
+5. **F.4 OoS:** Klassenlisten-Filter, Live-Durchführen Schüler-Filter
+6. **Defer-able tier-Debates aus E.2** (Browser-Visual-Judgement nötig):
+   - I-1: Dashboard.tsx „Hallo Vorname!" — `TYPO.h1` oder `TYPO.display`?
+   - I-2: AdminLayout h1/h2-Inversion (pre-existing pattern preserved)
+   - Vorschlag: `MODAL_TITLE`-const in `typografie.ts`
+
+### Memory-Lehren aus dieser Session
+- **Apps-Script-Dropdown-Wrapper-Pattern** — Funktionen mit `_`-Suffix sind privat und erscheinen nicht im Run-Dropdown des Editors. Für manuelle Admin-Aktionen (Migrationen, Schema-Cleanups) braucht es einen Wrapper ohne `_` der `Session.getActiveUser().getEmail()` weiterreicht. Logger.log das Resultat damit es im Execution-Log sichtbar ist.
+- **Post-Migration-Orphans bei Pool-Import** — Cluster H Phase 1 Migration lief am 15.05.2026 mit 183 Tags + 2416 Fragen. Aber die Einrichtungspruefung-Fragen wurden DANACH via `einrichtungsFragen.ts`-Pool-Import importiert. Der Import-Pfad (`importierePoolFragen`) schrieb `tags` als Strings (alte Schema-Variante, da `standardHeaders` Z. 6733 noch `tags` enthielt). Resultat: 46 Orphan-Fragen mit tags-Strings ohne tagIds-UUIDs. **Lehre:** Bei Schema-Migrationen ALLE Import-Pfade auf das neue Schema umstellen, nicht nur den Migrations-Code. Sonst „rückwirken" alte Import-Pfade auf neue Daten und erzeugen erneut den Pre-Migrations-Zustand.
+
+---
+
+## Vorheriger Stand — Cluster E.2 Typografie-Migration KOMPLETT (17.05.2026)
 
 **Spec/Plan:**
 - `docs/superpowers/specs/2026-05-17-cluster-e-2-typografie-design.md`
