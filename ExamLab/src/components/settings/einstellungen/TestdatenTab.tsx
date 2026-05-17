@@ -6,6 +6,7 @@ import { useTestdatenStatus } from '../../../hooks/useTestdatenStatus'
 import { apiAdminSeedTestdaten, type SeedResponse } from '../../../services/testdatenApi'
 import ResetConfirmModal from './testdaten/ResetConfirmModal'
 import type { LPProfil } from '../../../types/stammdaten'
+import { TYPO } from '../../../styles/typografie'
 
 /** ISO-Timestamp -> 'DD.MM.YYYY HH:mm' (Europe/Zurich-Lokalzeit). Bei
  *  ungueltigem Input wird der Original-String zurueckgegeben (defensiv). */
@@ -70,12 +71,12 @@ export default function TestdatenTab({ email }: Props) {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>
         Testdaten
-      </h3>
+      </h2>
 
       <section>
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Status</h4>
+        <h3 className={`${TYPO.h2} text-slate-700 dark:text-slate-200 mb-2`}>Status</h3>
         {ladestand === 'pruefe' ? (
           <p className="text-sm text-slate-500 dark:text-slate-400 inline-flex items-center gap-1.5"><Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> Prüfe…</p>
         ) : initialisiert ? (
@@ -95,7 +96,7 @@ export default function TestdatenTab({ email }: Props) {
       </section>
 
       <section>
-        <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Sichtbarkeit</h4>
+        <h3 className={`${TYPO.h2} text-slate-700 dark:text-slate-200 mb-2`}>Sichtbarkeit</h3>
         <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
           <input
             type="checkbox"
@@ -113,7 +114,7 @@ export default function TestdatenTab({ email }: Props) {
 
       {admin && (
         <section>
-          <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Admin-Aktionen</h4>
+          <h3 className={`${TYPO.h2} text-slate-700 dark:text-slate-200 mb-2`}>Admin-Aktionen</h3>
           <div className="flex items-center gap-3">
             {!initialisiert && (
               <button

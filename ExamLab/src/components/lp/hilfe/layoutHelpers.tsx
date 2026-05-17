@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
+import { TYPO } from '../../../styles/typografie'
 
 export function Titel({ children }: { children: ReactNode }) {
-  return <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-3">{children}</h3>
+  return <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-3`}>{children}</h2>
 }
 
 export function Untertitel({ children }: { children: ReactNode }) {
-  return <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mt-5 mb-2">{children}</h4>
+  return <h3 className={`${TYPO.h2} text-slate-700 dark:text-slate-200 mt-5 mb-2`}>{children}</h3>
 }
 
 export function Text({ children }: { children: ReactNode }) {

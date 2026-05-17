@@ -11,6 +11,7 @@ import { migriereTagsZuObjects } from '../../../services/tagsApi'
 import { backfillStatusDefault } from '../../../services/maintenanceApi'
 import Button from '../../ui/Button'
 import BaseDialog from '../../ui/BaseDialog'
+import { TYPO } from '../../../styles/typografie'
 
 export default function AdminTab({ email, stammdaten }: { email: string; stammdaten: Stammdaten }) {
   const { speichereStammdaten: speichereStammdatenAction } = useStammdatenStore()
@@ -109,7 +110,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Admin-Einstellungen</h3>
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Admin-Einstellungen</h2>
         {!bearbeitungsModus && (
           <button onClick={() => setBearbeitungsModus(true)} className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
             Bearbeiten
@@ -278,7 +279,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
 
       {/* === Cluster H — Tag-Migration (einmalige Wartungs-Aktion) === */}
       <section className="mt-8 p-4 border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100 inline-flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-amber-500" /> Cluster H — Tag-Migration (einmalig)</h3>
+        <h3 className={`${TYPO.h2} mb-2 text-slate-800 dark:text-slate-100 inline-flex items-center gap-2`}><AlertTriangle className="w-5 h-5 text-amber-500" /> Cluster H — Tag-Migration (einmalig)</h3>
         <p className="text-sm mb-3 text-slate-700 dark:text-slate-300">
           Migriert alle Frage-Tags (string[]) zu Tag-Object-Referenzen (tagIds[]).
           Idempotent — kann nur einmal laufen. Tags-Sheet wird befüllt.
@@ -315,7 +316,7 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
 
       {/* === Cluster D Phase 0 — Status-Backfill (einmalige Wartungs-Aktion) === */}
       <section className="mt-8 p-4 border-2 border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-        <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100 inline-flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-amber-500" /> Cluster D Phase 0 — Status-Backfill (einmalig)</h3>
+        <h3 className={`${TYPO.h2} mb-2 text-slate-800 dark:text-slate-100 inline-flex items-center gap-2`}><AlertTriangle className="w-5 h-5 text-amber-500" /> Cluster D Phase 0 — Status-Backfill (einmalig)</h3>
         <p className="text-sm mb-3 text-slate-700 dark:text-slate-300">
           Füllt alle Frage-Sheets mit leerer Status-Spalte (Default „sammlung") auf.
           Idempotent — Zeilen mit bereits gesetztem Status („draft" oder „sammlung") bleiben unangetastet.

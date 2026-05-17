@@ -8,6 +8,7 @@ import ProblemmeldungZeile from './ProblemmeldungZeile'
 import { useDeepLink } from './useDeepLink'
 import { optimisticDelete } from '../../../utils/optimisticDelete'
 import { useToast } from '../../../hooks/useToast'
+import { TYPO } from '../../../styles/typografie'
 
 interface Props {
   email: string
@@ -72,9 +73,9 @@ export default function ProblemmeldungenTab({ email, istAdmin, onSchliessen }: P
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide mb-4">
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-4`}>
         Problemmeldungen
-      </h3>
+      </h2>
       {fehler && <div className="mb-3 p-2 text-xs bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded">{fehler}</div>}
       <ProblemmeldungenFilter
         config={filter}

@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight, GripVertical, Star, X } from 'lucide-react'
 import { useFavoritenStore, type Favorit } from '../../store/favoritenStore'
 import { APP_NAVIGATION, type NavigationsEintrag } from '../../config/appNavigation'
 import { NavIcon } from '../ui/icons/NavIcon'
+import { TYPO } from '../../styles/typografie'
 import {
   DndContext,
   closestCenter,
@@ -51,7 +52,7 @@ export default function FavoritenTab({ istAdmin }: { istAdmin: boolean }) {
     <div className="space-y-6">
       {/* Aktive Favoriten (sortierbar) */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1">Favoriten verwalten</h3>
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-1`}>Favoriten verwalten</h2>
         <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
           Per Drag & Drop umsortieren. Favoriten erscheinen auf der Favoriten-Seite.
         </p>
@@ -75,7 +76,7 @@ export default function FavoritenTab({ istAdmin }: { istAdmin: boolean }) {
 
       {/* App-Struktur als Baum */}
       <div>
-        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">App-Ort hinzufügen</h3>
+        <h3 className={`${TYPO.h2} text-slate-700 dark:text-slate-200 mb-2`}>App-Ort hinzufügen</h3>
         <NavigationsBaum istAdmin={istAdmin} />
       </div>
     </div>

@@ -4,6 +4,7 @@ import type { Stammdaten, LPProfil } from '../../../types/stammdaten'
 import { CheckboxChip } from './sharedFelder'
 import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
 import SpeicherButton from './SpeicherButton'
+import { TYPO } from '../../../styles/typografie'
 
 export default function ProfilTab({ email, stammdaten, profil }: { email: string; stammdaten: Stammdaten; profil: LPProfil | null }) {
   const { speichereLPProfil } = useStammdatenStore()
@@ -33,7 +34,7 @@ export default function ProfilTab({ email, stammdaten, profil }: { email: string
 
   return (
     <div className="space-y-6">
-      <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Mein Profil</h3>
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Mein Profil</h2>
 
       {/* Fachschaften */}
       <div>

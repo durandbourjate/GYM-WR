@@ -18,6 +18,7 @@ import { useTagsStore } from '../../../../store/tagsStore'
 import { useFragensammlungStore } from '../../../../store/fragensammlungStore'
 import { useIstAdmin } from '../../../../hooks/useIstAdmin'
 import { TagsListe } from './TagsListe'
+import { TYPO } from '../../../../styles/typografie'
 
 interface Props {
   email: string
@@ -52,9 +53,9 @@ export function TagsTab({ email }: Props) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>
         Tags
-      </h3>
+      </h2>
       <p className="text-xs text-slate-500 dark:text-slate-400">
         Verwalte alle Tags der Fragensammlung. Neue Tags entstehen direkt im Frage-Editor;
         hier kannst du sie umbenennen, einfärben{istAdmin ? ', mergen oder archivieren' : ''}.
