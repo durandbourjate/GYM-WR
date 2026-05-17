@@ -160,6 +160,10 @@ function LPStartseiteInner() {
     const suche = queryParams.get('suche')
     if (!suche || suche === lastSeenSucheParam.current) return
 
+    // Cluster C.2: Wenn ein anderer Surface-Owner via ?tab=… den Param explizit
+    // beansprucht (z.B. KlassenlistenTab), darf LPStartseite ihn NICHT strippen.
+    if (queryParams.get('tab') === 'klassenlisten') return
+
     const aktiverModus = useLPNavigationStore.getState().modus
     if (aktiverModus !== 'pruefung' && aktiverModus !== 'uebung') return  // Fragensammlung übernimmt selber
 
