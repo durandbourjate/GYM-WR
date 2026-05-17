@@ -12,6 +12,7 @@ import TestBadge from '../shared/TestBadge'
 import type { PruefungsConfig } from '../../types/pruefung'
 // Status direkt aus PruefungsConfig ableiten (ohne TrackerDaten)
 import { LPAppHeaderContainer } from './LPAppHeaderContainer'
+import { PageTitle } from '../shared/PageTitle'
 import LPSkeleton from './LPSkeleton'
 import LazyFallback from '../ui/LazyFallback'
 import { lazyMitRetry } from '../../utils/lazyMitRetry'
@@ -109,10 +110,11 @@ export default function Favoriten() {
         onEinstellungen={() => toggleEinstellungen()}
       />
 
+      <PageTitle titel="Favoriten" />
       <main className="max-w-6xl mx-auto p-6 space-y-8">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+        <p className="text-slate-600 dark:text-slate-300">
           Willkommen{user?.vorname ? `, ${user.vorname}` : ''}
-        </h1>
+        </p>
 
         {/* Favoriten — Klick navigiert direkt ins Ziel (Durchführen statt Composer, Spec §2.6) */}
         <Sektion titel="Favoriten" leer={favoriten.length === 0} leerText="Noch keine Favoriten gesetzt. In den Einstellungen oder per Stern-Icon hinzufügen.">

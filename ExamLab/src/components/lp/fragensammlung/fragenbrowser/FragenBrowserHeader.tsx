@@ -8,6 +8,7 @@ import Button from '../../../ui/Button.tsx'
 import Dropdown from '../../../ui/Dropdown.tsx'
 import { FragetypIcon, type Fragetyp } from '../../../ui/icons/FragetypIcon.tsx'
 import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
+import { TYPO } from '../../../../styles/typografie'
 
 const FACHBEREICH_FARBE: Record<string, string> = {
   VWL: '#f97316',
@@ -197,9 +198,11 @@ export default function FragenBrowserHeader({
     <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700" onWheel={(e) => { listeRef.current?.scrollBy(0, e.deltaY) }}>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-            Fragensammlung
-          </h2>
+          {!inline && (
+            <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>
+              Fragensammlung
+            </h2>
+          )}
           {ladeStatus === 'fertig' && (
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               {stats.gesamt} Frage{stats.gesamt !== 1 ? 'n' : ''}

@@ -1,5 +1,5 @@
 {
-  "totalCount": 58,
+  "totalCount": 56,
   "byFile": {
     "ExamLab/src/AppUeben.tsx": 1,
     "ExamLab/src/components/AbgabeBestaetigung.tsx": 1,
@@ -13,7 +13,7 @@
     "ExamLab/src/components/fragetypen/BilanzERAufgabe.tsx": 2,
     "ExamLab/src/components/fragetypen/pdf/PDFToolbar.tsx": 1,
     "ExamLab/src/components/fragetypen/zeichnen/ZeichnenToolbar.tsx": 1,
-    "ExamLab/src/components/lp/Favoriten.tsx": 2,
+    "ExamLab/src/components/lp/Favoriten.tsx": 1,
     "ExamLab/src/components/lp/TrackerSection.tsx": 2,
     "ExamLab/src/components/lp/durchfuehrung/FehlendeSuSPanel.tsx": 1,
     "ExamLab/src/components/lp/durchfuehrung/MultiDurchfuehrenDashboard.tsx": 2,
@@ -21,7 +21,6 @@
     "ExamLab/src/components/lp/durchfuehrung/ZeitzuschlagEditor.tsx": 1,
     "ExamLab/src/components/lp/fragensammlung/ExcelImport.tsx": 1,
     "ExamLab/src/components/lp/fragensammlung/FragenImport.tsx": 1,
-    "ExamLab/src/components/lp/fragensammlung/fragenbrowser/FragenBrowserHeader.tsx": 1,
     "ExamLab/src/components/lp/korrektur/KorrekturPDFAnsicht.tsx": 1,
     "ExamLab/src/components/lp/startseite/PruefungsKarte.tsx": 1,
     "ExamLab/src/components/lp/ueben/AnalyseDashboard.tsx": 2,
