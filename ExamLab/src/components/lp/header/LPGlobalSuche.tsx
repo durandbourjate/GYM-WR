@@ -6,20 +6,12 @@ import { useDebouncedValue } from '../../../hooks/useDebouncedValue'
 import { useKeyboardNavigation } from '../../../hooks/useKeyboardNavigation'
 import { useClickOutside } from '../../../hooks/useClickOutside'
 import { fuehreSucheAus } from '../../../utils/sucheEngine'
+import { SAMMELVIEW_ROUTE_BUILDERS } from '../../../utils/sucheAdapter'
 import { QUELLEN_REIHENFOLGE } from '../../../types/suche'
 import type { SucheTreffer, SucheQuelle } from '../../../types/suche'
 import { QuellSektion, EmptyState } from '../../shared/header/sucheUI'
 
 const DEBOUNCE_MS = 300
-
-const SURFACE_ROUTE: Record<SucheQuelle, string> = {
-  'einstellungen-tab': '/einstellungen',
-  'hilfe-tab': '/einstellungen',
-  kurs: '/pruefung',
-  pruefung: '/pruefung',
-  uebung: '/uebung',
-  frage: '/fragensammlung',
-}
 
 /**
  * LP-spezifische globale Suche im App-Header (Cluster C).
@@ -64,11 +56,11 @@ export function LPGlobalSuche() {
 
   const alleAnzeigen = useCallback(
     (q: SucheQuelle) => {
-      navigate(SURFACE_ROUTE[q])
+      navigate(SAMMELVIEW_ROUTE_BUILDERS[q](debouncedQuery))
       setIstOffen(false)
       setQuery('')
     },
-    [navigate],
+    [navigate, debouncedQuery],
   )
 
   const { activeIndex, handleKeyDown, reset: resetActiveIndex } = useKeyboardNavigation({
