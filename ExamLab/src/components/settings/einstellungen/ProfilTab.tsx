@@ -5,6 +5,7 @@ import { CheckboxChip } from './sharedFelder'
 import { useSpeicherStatus } from '../../../hooks/useSpeicherStatus'
 import SpeicherButton from './SpeicherButton'
 import { TYPO } from '../../../styles/typografie'
+import { TabStarToggle } from '../../lp/TabStarToggle'
 
 export default function ProfilTab({ email, stammdaten, profil }: { email: string; stammdaten: Stammdaten; profil: LPProfil | null }) {
   const { speichereLPProfil } = useStammdatenStore()
@@ -34,7 +35,10 @@ export default function ProfilTab({ email, stammdaten, profil }: { email: string
 
   return (
     <div className="space-y-6">
-      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Mein Profil</h2>
+      <div className="flex items-center justify-between">
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Mein Profil</h2>
+        <TabStarToggle tabId="profil" surface="einstellungen" label="Mein Profil" icon="User" />
+      </div>
 
       {/* Fachschaften */}
       <div>

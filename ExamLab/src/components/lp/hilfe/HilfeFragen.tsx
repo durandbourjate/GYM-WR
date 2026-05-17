@@ -1,9 +1,9 @@
-import { Titel, Untertitel, Text } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text } from './layoutHelpers'
 
 export default function HilfeFragen() {
   return (
     <div>
-      <Titel>Fragen & Fragensammlung</Titel>
+      <TitelMitStern tabId="fragen">Fragen & Fragensammlung</TitelMitStern>
       <Text>
         Die Fragensammlung ist der zentrale Ort für alle Prüfungsfragen. Fragen können in mehreren Prüfungen wiederverwendet werden.
       </Text>

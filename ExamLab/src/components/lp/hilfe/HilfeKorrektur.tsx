@@ -1,10 +1,10 @@
 import { FileText, AlertTriangle } from 'lucide-react'
-import { Titel, Untertitel, Text, Schritt, Hinweis } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text, Schritt, Hinweis } from './layoutHelpers'
 
 export default function HilfeKorrektur() {
   return (
     <div>
-      <Titel>Korrektur & Feedback</Titel>
+      <TitelMitStern tabId="korrektur">Korrektur & Feedback</TitelMitStern>
 
       <Text>
         Nach der Prüfung können Sie über &laquo;Korrektur&raquo; auf der Startseite das Korrektur-Dashboard öffnen.

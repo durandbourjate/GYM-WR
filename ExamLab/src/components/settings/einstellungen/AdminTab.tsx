@@ -12,6 +12,7 @@ import { backfillStatusDefault } from '../../../services/maintenanceApi'
 import Button from '../../ui/Button'
 import BaseDialog from '../../ui/BaseDialog'
 import { TYPO } from '../../../styles/typografie'
+import { TabStarToggle } from '../../lp/TabStarToggle'
 
 export default function AdminTab({ email, stammdaten }: { email: string; stammdaten: Stammdaten }) {
   const { speichereStammdaten: speichereStammdatenAction } = useStammdatenStore()
@@ -111,11 +112,14 @@ export default function AdminTab({ email, stammdaten }: { email: string; stammda
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Admin-Einstellungen</h2>
-        {!bearbeitungsModus && (
-          <button onClick={() => setBearbeitungsModus(true)} className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
-            Bearbeiten
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {!bearbeitungsModus && (
+            <button onClick={() => setBearbeitungsModus(true)} className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
+              Bearbeiten
+            </button>
+          )}
+          <TabStarToggle tabId="admin" surface="einstellungen" label="Admin" />
+        </div>
       </div>
 
       <SettingsField label="Admins (E-Mails, eine pro Zeile)" value={admins} onChange={setAdmins} multiline readonly={!bearbeitungsModus} />

@@ -8,6 +8,8 @@ import AllgemeinTab from './settings/AllgemeinTab'
 import FaecherTab from './settings/FaecherTab'
 import FarbenTab from './settings/FarbenTab'
 import MitgliederTab from './settings/MitgliederTab'
+import { TabStarToggle } from '../../lp/TabStarToggle'
+import { TYPO } from '../../../styles/typografie'
 
 type SettingsTab = 'allgemein' | 'faecher' | 'farben' | 'mitglieder'
 
@@ -37,6 +39,10 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Übungen</h2>
+        <TabStarToggle tabId="uebungen" surface="einstellungen" label="Übungen" />
+      </div>
       {/* Save-Fehler-Banner */}
       {aktiveGruppe && saveFehler && (
         <div className="flex items-start gap-3 p-3 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-700">

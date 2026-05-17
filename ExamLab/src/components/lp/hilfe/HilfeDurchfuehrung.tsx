@@ -1,10 +1,10 @@
 import { Clock, AlertTriangle, Lock, X } from 'lucide-react'
-import { Titel, Untertitel, Text, Schritt } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text, Schritt } from './layoutHelpers'
 
 export default function HilfeDurchfuehrung() {
   return (
     <div>
-      <Titel>Prüfung durchführen</Titel>
+      <TitelMitStern tabId="durchfuehrung">Prüfung durchführen</TitelMitStern>
       <Text>
         Klicken Sie auf &laquo;Durchführen&raquo; bei der gewünschten Prüfung auf der Startseite. Der 4-Phasen-Workflow führt Sie durch den gesamten Ablauf:
       </Text>

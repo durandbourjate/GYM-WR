@@ -4,6 +4,7 @@ import { useFavoritenStore, type Favorit } from '../../store/favoritenStore'
 import { APP_NAVIGATION, type NavigationsEintrag } from '../../config/appNavigation'
 import { NavIcon } from '../ui/icons/NavIcon'
 import { TYPO } from '../../styles/typografie'
+import { TabStarToggle } from '../lp/TabStarToggle'
 import {
   DndContext,
   closestCenter,
@@ -52,7 +53,10 @@ export default function FavoritenTab({ istAdmin }: { istAdmin: boolean }) {
     <div className="space-y-6">
       {/* Aktive Favoriten (sortierbar) */}
       <div>
-        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-1`}>Favoriten verwalten</h2>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Favoriten verwalten</h2>
+          <TabStarToggle tabId="favoriten" surface="einstellungen" label="Favoriten" />
+        </div>
         <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
           Per Drag & Drop umsortieren. Favoriten erscheinen auf der Favoriten-Seite.
         </p>

@@ -1,9 +1,9 @@
-import { Titel, Untertitel, Text, Schritt } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text, Schritt } from './layoutHelpers'
 
 export default function HilfeUeben() {
   return (
     <div>
-      <Titel>Üben — Formative Übungen</Titel>
+      <TitelMitStern tabId="ueben">Üben — Formative Übungen</TitelMitStern>
       <Text>
         Der Bereich <strong>Üben</strong> ermöglicht formative Übungen ohne Notendruck. Übungen verwenden die gleichen Fragetypen und den gleichen Workflow wie Prüfungen — aber ohne Punkte, Noten und strenge Sicherheitsmassnahmen.
       </Text>

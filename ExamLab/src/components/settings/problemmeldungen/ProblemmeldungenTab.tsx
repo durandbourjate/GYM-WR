@@ -9,6 +9,7 @@ import { useDeepLink } from './useDeepLink'
 import { optimisticDelete } from '../../../utils/optimisticDelete'
 import { useToast } from '../../../hooks/useToast'
 import { TYPO } from '../../../styles/typografie'
+import { TabStarToggle } from '../../lp/TabStarToggle'
 
 interface Props {
   email: string
@@ -73,9 +74,12 @@ export default function ProblemmeldungenTab({ email, istAdmin, onSchliessen }: P
 
   return (
     <div>
-      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-4`}>
-        Problemmeldungen
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>
+          Problemmeldungen
+        </h2>
+        <TabStarToggle tabId="problemmeldungen" surface="einstellungen" label="Problemmeldungen" />
+      </div>
       {fehler && <div className="mb-3 p-2 text-xs bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded">{fehler}</div>}
       <ProblemmeldungenFilter
         config={filter}

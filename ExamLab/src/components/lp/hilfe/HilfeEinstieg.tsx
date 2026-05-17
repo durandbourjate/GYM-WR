@@ -1,9 +1,9 @@
-import { Titel, Untertitel, Text, Schritt } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text, Schritt } from './layoutHelpers'
 
 export default function HilfeEinstieg() {
   return (
     <div>
-      <Titel>Willkommen bei ExamLab</Titel>
+      <TitelMitStern tabId="einstieg">Willkommen bei ExamLab</TitelMitStern>
       <Text>
         ExamLab ermöglicht digitale Prüfungen direkt im Browser — für alle Fachschaften am Gymnasium Hofwil. Sie erstellen Prüfungen im Composer, die Schülerinnen und Schüler bearbeiten sie online, und die Korrektur kann KI-unterstützt erfolgen.
       </Text>

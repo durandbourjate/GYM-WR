@@ -1,9 +1,9 @@
-import { Titel, Untertitel, Text } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text } from './layoutHelpers'
 
 export default function HilfeZusammenarbeit() {
   return (
     <div>
-      <Titel>Zusammenarbeit & Sharing</Titel>
+      <TitelMitStern tabId="zusammenarbeit">Zusammenarbeit & Sharing</TitelMitStern>
       <Text>
         Fragen und Prüfungen können mit anderen Lehrpersonen geteilt werden. Das Rechte-System folgt dem Google-Docs-Modell mit drei Rollen.
       </Text>

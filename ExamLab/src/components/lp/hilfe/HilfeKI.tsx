@@ -1,9 +1,9 @@
-import { Titel, Untertitel, Text, Hinweis } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text, Hinweis } from './layoutHelpers'
 
 export default function HilfeKI() {
   return (
     <div>
-      <Titel>KI-Assistent</Titel>
+      <TitelMitStern tabId="ki">KI-Assistent</TitelMitStern>
       <Text>
         Der KI-Assistent unterstützt Sie beim Erstellen und Prüfen von Fragen. Alle KI-Buttons folgen dem gleichen Muster:
       </Text>

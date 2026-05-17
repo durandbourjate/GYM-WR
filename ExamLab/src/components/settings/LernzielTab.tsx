@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Check, ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { postJson } from '../../services/apiClient'
+import { TYPO } from '../../styles/typografie'
+import { TabStarToggle } from '../lp/TabStarToggle'
 
 interface Lernziel {
   id: string
@@ -187,6 +189,10 @@ export default function LernzielTab({ email }: Props) {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>Lernziele</h2>
+        <TabStarToggle tabId="lernziele" surface="einstellungen" label="Lernziele" />
+      </div>
       {/* Status-Anzeige */}
       {speicherStatus && (
         <div className={`text-sm px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 ${speicherStatus.art === 'erfolg' ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : speicherStatus.art === 'fehler' ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'}`}>

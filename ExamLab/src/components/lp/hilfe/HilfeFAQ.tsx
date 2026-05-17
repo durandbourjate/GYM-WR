@@ -1,11 +1,11 @@
 import { useState, type ReactNode } from 'react'
 import { Flag, Check, AlertTriangle } from 'lucide-react'
-import { Titel } from './layoutHelpers'
+import { TitelMitStern } from './layoutHelpers'
 
 export default function HilfeFAQ() {
   return (
     <div>
-      <Titel>Häufige Fragen</Titel>
+      <TitelMitStern tabId="faq">Häufige Fragen</TitelMitStern>
 
       <FAQItem frage="Was sind die drei Bereiche (Prüfen, Üben, Fragensammlung)?">
         <strong>Prüfen</strong> ist für summative (benotete) Prüfungen. <strong>Üben</strong> ist für formative (unbenotete) Übungen und den Selbststudium-Bereich der SuS. <strong>Fragensammlung</strong> ist die zentrale Sammlung aller Fragen — Fragen können sowohl in Prüfungen als auch in Übungen verwendet werden.

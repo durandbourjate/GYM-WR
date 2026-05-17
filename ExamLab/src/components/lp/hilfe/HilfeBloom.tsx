@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Titel, Text, Hinweis } from './layoutHelpers'
+import { TitelMitStern, Text, Hinweis } from './layoutHelpers'
 
 export default function HilfeBloom() {
   return (
     <div>
-      <Titel>Bloom-Taxonomie (K1–K6)</Titel>
+      <TitelMitStern tabId="bloom">Bloom-Taxonomie (K1–K6)</TitelMitStern>
       <Text>
         Die Bloom-Taxonomie ordnet Prüfungsfragen nach kognitivem Anforderungsniveau ein. Jede Frage in der Fragensammlung wird einer Stufe K1–K6 zugeordnet. Der Analyse-Tab zeigt die Verteilung über die gesamte Prüfung.
       </Text>

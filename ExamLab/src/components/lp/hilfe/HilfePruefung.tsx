@@ -1,9 +1,9 @@
-import { Titel, Untertitel, Text } from './layoutHelpers'
+import { TitelMitStern, Untertitel, Text } from './layoutHelpers'
 
 export default function HilfePruefung() {
   return (
     <div>
-      <Titel>Prüfung erstellen</Titel>
+      <TitelMitStern tabId="pruefung">Prüfung erstellen</TitelMitStern>
       <Text>
         Klicken Sie auf &laquo;+ Neue Prüfung&raquo; um den Prüfungs-Composer zu öffnen. Der Composer hat 4 Tabs:
       </Text>

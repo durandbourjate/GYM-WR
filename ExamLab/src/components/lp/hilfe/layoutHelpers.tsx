@@ -1,8 +1,22 @@
 import type { ReactNode } from 'react'
 import { TYPO } from '../../../styles/typografie'
+import { TabStarToggle } from '../TabStarToggle'
 
 export function Titel({ children }: { children: ReactNode }) {
   return <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-3`}>{children}</h2>
+}
+
+/**
+ * Titel mit Star-Toggle rechts (Cluster E.4 — für Hilfe-Tabs).
+ * Ersetzt <Titel> in Tab-Komponenten die Favoriten-Toggle haben sollen.
+ */
+export function TitelMitStern({ tabId, children }: { tabId: string; children: string }) {
+  return (
+    <div className="flex items-center justify-between mb-3">
+      <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100`}>{children}</h2>
+      <TabStarToggle tabId={tabId} surface="hilfe" label={children} />
+    </div>
+  )
 }
 
 export function Untertitel({ children }: { children: ReactNode }) {
