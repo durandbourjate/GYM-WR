@@ -9,7 +9,61 @@
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
 **HEAD main + preview:** `e5466d9` — Cluster C.2-C.5 Phasen 1-3 LIVE (17.05.2026 NACHT, E2E ✓ + FF-Merge zu main).
-**Aktiver Feature-Branch:** `feature/cluster-c-4-volltext-2026-05-18` (C.4 Volltext-Toggle in Arbeit).
+**Aktiver Feature-Branch:** `feature/cluster-c-4-volltext-2026-05-18` HEAD `528b860` — **Cluster C.4 ci-check-grün, wartet auf Browser-E2E + Push** (18.05.2026).
+
+### Cluster C.4 Phase 4 KOMPLETT (lokal, 12 Commits seit `e5466d9`)
+
+Subagent-driven-development mit 7 Tasks + 5 polish-Commits. Final-Review approved.
+
+| Commit | Task |
+|---|---|
+| `7a8da01` | 4.0 Backend-Decision A dokumentiert |
+| `24f1a82` | 4.2 generiereSnippet Helper + 5 Tests |
+| `32a057f` | 4.3 indexFragenVolltext Adapter + 10 Tests |
+| `5bacc14` | 4.3 polish: Doku + Test-Polish |
+| `a93f3f7` | 4.4 fuehreSucheAus opts.volltext + SucheIndex.fragenVoll |
+| `5e80474` | 4.5 Volltext-Toggle UI im Suche-Dropdown |
+| `25432af` | 4.5 polish: Focus-Ring + min-h-Cleanup |
+| `b702d7f` | 4.6 useGlobalSuche Volltext-State + Lazy-Load |
+| `6b2dba4` | 4.6 polish: Lazy-Load Status-Race-Fixes (I-1/I-2) |
+| `a9ec02a` | 4.7 Volltext-Perf-Smoke + MIN_QUERY_LENGTH-Konstanten |
+| `2d3ed9e` | 4.7 polish: Doku-Kommentare |
+| `528b860` | 4.8 pre-push fixes: Test-Mock + musterloesung-Baseline |
+
+**Gates:** vitest **1995 + 4 todo** (+26 neue Tests), 8 lint-Gates clean (`musterlosung`-Baseline 310 → 326), tsc -b + vite build clean. Volltext-Perf ~30ms / 200ms-Threshold (7× margin).
+
+**Was als nächstes:**
+1. Push `git push origin feature/cluster-c-4-volltext-2026-05-18:preview`
+2. Browser-E2E auf staging (siehe **E2E-Plan C.4** unten)
+3. Nach Freigabe: FF-Merge zu main + Push, Memory-Update
+
+### E2E-Plan Cluster C.4 (auf staging, vor main-Merge)
+
+LP-Test (echter Login, kein Demo):
+1. App-Mount → Globale Suche öffnen (Cmd+K) → "Volltext"-Pill rechts neben Input sichtbar (slate)
+2. Toggle aktivieren → Pill wird violet, `aria-pressed=true`, kurzer Spinner "Volltext wird vorbereitet …" sichtbar im Dropdown (sofern fragensammlungStore noch nicht in `'fertig'`)
+3. Nach Spinner-Ende: Query `"Anlagevermoegen"` (Substring nur in `fragetext` und `musterlosung`, nicht in `titel`) → Treffer-Sektion "Frage" mit Snippet-subTitel sichtbar, Highlight im Snippet
+4. Query `"ab"` (2 Chars) im Volltext-Modus → Dropdown bleibt zu (Min-Length = 3)
+5. Toggle deaktivieren → Pill slate, gleiche Query → keine Volltext-Treffer, nur titel/tag-Matches
+6. Console: 0 Errors
+7. Network: keine doppelten `ladeFragensammlung`-Calls (Cache + Status-Guard)
+
+Falls LP schon im FragenBrowser war (fragensammlungStore = `'fertig'`): kein Spinner sichtbar, Volltext-Treffer instant.
+
+### Erkenntnisse Phase 4 (für Memory)
+
+1. **Spec-Annahme ≠ Repo-Realität (wiederholt):** Plan-Task 4.1 referenzierte fiktiven `useFragenStore`. Audit ergab `useFragensammlungStore` mit `ladeAlleDetails` deckt das ab — Task 4.1 entfällt, Lazy-Load wandert in 4.6.
+2. **Discriminated-Union-Schmerz im neuen Adapter:** `Frage` als Union hat KEIN universelles `fragetext`-Feld (BuchungssatzFrage→`geschaeftsfall`, TKontoFrage/Kontenbestimmung/BilanzER→`aufgabentext`, AufgabengruppeFrage→nur `kontext`). Plan-Spec hatte das übersehen. Helper `fragetextVonFrage()` in `sucheAdapter.ts` löst es file-private mit `'field' in f && typeof f.field === 'string'`-Guards.
+3. **`as string`-Cast vermeiden durch `loesungText`-local:** Plan-Pseudocode hatte `f.musterlosung as string` an der `generiereSnippet`-Call-Site. Implementer hat es durch `const loesungText = typeof f.musterlosung === 'string' ? f.musterlosung : ''` ersetzt — kein Cast, gleiche Semantik.
+4. **Lazy-Load Status-Race (Code-Review I-1):** `ladeAlleDetails` returnt früh wenn Store-Status ≠ `'summary_fertig'`. Erster `useEffect`-Versuch feuerte bei `'idle'` und triggerte nie wieder. Fix: `sammlungStatus` als useEffect-Dep + Guard `sammlungStatus === 'summary_fertig'` → Effect re-feuert auf Status-Übergang.
+5. **`volltextBereit` muss `'fertig'`-Status decken:** Bei LP mit genuinely leerer Fragensammlung (`fragenVoll.length === 0` aber `status === 'fertig'`) sonst Effect-Spam (no-op-Schleife). Fix: `volltextBereit = fragenVoll.length > 0 || sammlungStatus === 'fertig'`.
+6. **Vi.mock + Komponente-Re-Import:** Bei Modul-Mock muss JEDES vom Komponenten-Import erfasste Symbol im Mock-Object stehen. Task 4.7 hat 2 neue Konstanten in `sucheEngine.ts` exportiert, LPGlobalSuche-Test-Mock musste mit-erweitert werden (sonst Render-Error: "No export defined on the mock").
+
+### Phase-4 Spawn-Tasks (aus Final-Review, noch nicht erledigt)
+
+1. **`AufgabengruppeFrage.kontext` in Volltext-Suche einbeziehen:** `fragetextVonFrage()` in `ExamLab/src/utils/sucheAdapter.ts:179` fällt für AufgabengruppeFrage auf `''` zurück. Eltern-Frage-Volltext-Suche ist out-of-scope von C.4, kann aber gewünscht sein wenn LP-Feedback in Produktion das einfordert.
+2. **`scoreFromMatch` Fuzzy-min-length-Konstante extrahieren:** `ExamLab/src/utils/sucheEngine.ts:79` hat `n.length >= 3` hardcoded (Fuzzy-Fallback). Separat von `MIN_VOLLTEXT_QUERY_LENGTH`, aktuell same value. Drift-Risiko wenn nur eine geändert wird → als `MIN_FUZZY_NEEDLE_LENGTH` extrahieren mit Kommentar über bewusste Unabhängigkeit.
+3. **`generiereSnippet` Umlaut-Offset-Comment:** In `ExamLab/src/utils/sucheVolltextHelpers.ts` warnen, dass `idx` auf normalisiertem Text berechnet wird, `text.slice` aber auf Original → Drift von 1-3 Zeichen pro Umlaut vor der Match-Stelle. Bei `kontext ≥ 20` inert; Comment verhindert künftige Caller mit kleinem `kontext`.
 
 ### C.4 Backend-Entscheidung (Plan-Phase 4.0)
 
