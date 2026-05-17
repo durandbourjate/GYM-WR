@@ -1324,6 +1324,10 @@ describe('useFragenStore — ladeAlleVollDaten (C.4)', () => {
 
 - [ ] **Step 2: `ladeAlleVollDaten` Action im Store**
 
+Die Implementation HÄNGT VON OPTION A oder B aus Task 4.0 ab:
+
+**Option A (Batch-Endpoint vorhanden):**
+
 ```ts
 // store/fragenStore.ts
 fragenVoll: null as Frage[] | null,
@@ -1334,7 +1338,30 @@ ladeAlleVollDaten: async (email: string) => {
   if (state.fragenVoll || state.volltextLaedt) return
   set({ volltextLaedt: true })
   try {
-    const fragen = await ladeFragenVolltextApi(email)  // aus Task 4.0
+    const fragen = await ladeFragenVolltextApi(email)  // Batch aus Task 4.0 Option A
+    set({ fragenVoll: fragen, volltextLaedt: false })
+  } catch (err) {
+    set({ volltextLaedt: false })
+    throw err
+  }
+}
+```
+
+**Option B (Universe-Cap auf aktive Pools):**
+
+```ts
+ladeAlleVollDaten: async (email: string) => {
+  const state = get()
+  if (state.fragenVoll || state.volltextLaedt) return
+  set({ volltextLaedt: true })
+  try {
+    // Nur aktive Fachschaft-Pools (max ~200 Fragen)
+    const aktiveFachschaften = useStammdatenStore.getState().lpProfil?.fachschaften ?? []
+    const fragen: Frage[] = []
+    for (const fs of aktiveFachschaften) {
+      const poolFragen = await ladePoolFragenVollAdapter(email, fs)  // existierender API-Call
+      fragen.push(...poolFragen)
+    }
     set({ fragenVoll: fragen, volltextLaedt: false })
   } catch (err) {
     set({ volltextLaedt: false })
