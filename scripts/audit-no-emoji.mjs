@@ -17,11 +17,16 @@
  * Aufruf:
  *   node scripts/audit-no-emoji.mjs            # report-only
  *   node scripts/audit-no-emoji.mjs --strict   # exit 1 bei Regression (CI-Gate)
+ *   node scripts/audit-no-emoji.mjs --baseline # regeneriert per_file_max aus aktuellem Stand
+ *
+ * Drift-Detection: Wenn ein File unter seinem per_file_max-Wert liegt (z.B. nach
+ * Migration), wird das als „IMPROVEMENT" gemeldet — Vorschlag, mit `--baseline`
+ * die Baseline zu senken, damit zukünftige Regressions schärfer gefangen werden.
  *
  * Spec: ExamLab/docs/superpowers/specs/2026-05-11-cluster-g-icon-system-design.md §12.4
  */
 
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -31,6 +36,7 @@ const __dirname = dirname(__filename)
 const ROOT = join(__dirname, '..')
 
 const STRICT = process.argv.includes('--strict')
+const UPDATE_BASELINE = process.argv.includes('--baseline')
 
 // Emoji-Range (analog Baseline-Generator):
 // - U+1F300-U+1FAFF: Misc Symbols & Pictographs, Emoticons, Transport, Supplemental
@@ -61,9 +67,13 @@ const filesRaw = execSync(
 const files = filesRaw.split('\n').filter(Boolean)
 
 const regressions = []
+const drifts = []
 const allowlistedCount = []
 let totalEmojis = 0
-let baselineTotal = 0
+const currentCounts = {}
+
+// Baseline-Total: Sum aller per_file_max-Werte (unabhängig vom aktuellen Stand).
+const baselineTotal = Object.values(PER_FILE).reduce((sum, n) => sum + n, 0)
 
 for (const relPath of files) {
   const absPath = join(ROOT, relPath)
@@ -78,11 +88,31 @@ for (const relPath of files) {
   }
 
   totalEmojis += count
+  currentCounts[relPath] = count
   const max = PER_FILE[relPath] ?? 0
-  baselineTotal += max
   if (count > max) {
     regressions.push({ path: relPath, found: count, baseline: max, diff: count - max })
+  } else if (count < max) {
+    drifts.push({ path: relPath, found: count, baseline: max, diff: max - count })
   }
+}
+
+// Drift-only-Files: per_file_max-Eintrag existiert, aktuell 0 Treffer.
+// Auch diese zählen für die Baseline-Tighten-Suggestion.
+for (const [relPath, max] of Object.entries(PER_FILE)) {
+  if (currentCounts[relPath] !== undefined) continue
+  if (max === 0) continue
+  drifts.push({ path: relPath, found: 0, baseline: max, diff: max })
+}
+
+if (UPDATE_BASELINE) {
+  const sortedKeys = Object.keys(currentCounts).sort()
+  const sortedCounts = {}
+  for (const k of sortedKeys) sortedCounts[k] = currentCounts[k]
+  const next = { ...BASELINE, per_file_max: sortedCounts }
+  writeFileSync(baselinePath, JSON.stringify(next, null, 2) + '\n')
+  console.log(`Baseline updated: ${totalEmojis} emojis across ${sortedKeys.length} files`)
+  process.exit(0)
 }
 
 console.log('')
@@ -92,6 +122,7 @@ console.log(`  Files in per_file_max baseline:   ${Object.keys(PER_FILE).length}
 console.log(`  Baseline-Total (per_file_max):    ${baselineTotal}`)
 console.log(`  Aktuelle Emoji-Count (non-allow): ${totalEmojis}`)
 console.log(`  Regressions (über Baseline):      ${regressions.length}`)
+console.log(`  Drifts (unter Baseline):          ${drifts.length}`)
 
 if (regressions.length > 0) {
   console.log('')
@@ -112,4 +143,18 @@ if (regressions.length > 0) {
 } else {
   console.log('')
   console.log('OK: Keine Emoji-Regression über Baseline.')
+}
+
+if (drifts.length > 0) {
+  console.log('')
+  console.log(`IMPROVEMENT: ${drifts.length} File(s) unter ihrem per_file_max — Baseline kann gesenkt werden.`)
+  // Erste 5 Drift-Files zeigen, dann zusammenfassen.
+  const preview = drifts.slice(0, 5)
+  for (const d of preview) {
+    console.log(`  ${d.path} — aktuell ${d.found}, baseline ${d.baseline} (−${d.diff})`)
+  }
+  if (drifts.length > preview.length) {
+    console.log(`  … +${drifts.length - preview.length} weitere`)
+  }
+  console.log('  Run mit --baseline um per_file_max neu zu schreiben (entfernt 0-counts, senkt drifts).')
 }

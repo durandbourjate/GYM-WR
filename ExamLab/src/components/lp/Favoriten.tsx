@@ -6,7 +6,8 @@ import { useFavoritenStore } from '../../store/favoritenStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
 import { useConfigsListStore } from '../../store/configsListStore'
 import { apiService } from '../../services/apiService'
-import { useLPNavigationStore, type EinstellungenTab } from '../../store/lpUIStore'
+import { useLPNavigationStore } from '../../store/lpUIStore'
+import { useOpenFavorit } from '../../hooks/useOpenFavorit'
 import { useTestdatenSichtbar } from '../../hooks/useTestdatenSichtbar'
 import { istTestdaten, filtereTestdatenWennDeaktiviert } from '../../utils/testdaten/filter'
 import TestBadge from '../shared/TestBadge'
@@ -45,8 +46,9 @@ export default function Favoriten() {
   const toggleEinstellungen = useLPNavigationStore(s => s.toggleEinstellungen)
   const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
 
-  // Cluster E.5 Hotfix: Tab-Favorit-Click öffnet Einstellungen/Hilfe-Overlay mit Tab pre-selektiert.
-  const [initialHilfeKategorie, setInitialHilfeKategorie] = useState<string | undefined>(undefined)
+  // Cluster E.5 Spawn-Task: Favorit-Open zentralisiert via useOpenFavorit.
+  // Liefert resolveFavorit(fav) → entweder Link-Target oder Button-Action.
+  const { resolveFavorit, initialHilfeKategorie, setInitialHilfeKategorie } = useOpenFavorit()
 
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
@@ -163,40 +165,16 @@ export default function Favoriten() {
                 )
                 const klassen = "flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px] cursor-pointer text-left"
 
-                // Tab-Typen: Overlay öffnen statt Route-Navigation
-                if (fav.typ === 'einstellungen-tab') {
+                const open = resolveFavorit(fav)
+                if (open.kind === 'action') {
                   return (
-                    <button
-                      key={fav.ziel}
-                      type="button"
-                      onClick={() => setZeigEinstellungen(true, einstellungenTabKey(fav.ziel))}
-                      className={klassen}
-                    >
+                    <button key={fav.ziel} type="button" onClick={open.onClick} className={klassen}>
                       {inner}
                     </button>
                   )
                 }
-                if (fav.typ === 'hilfe-tab') {
-                  return (
-                    <button
-                      key={fav.ziel}
-                      type="button"
-                      onClick={() => { setInitialHilfeKategorie(fav.ziel); if (!zeigHilfe) toggleHilfe() }}
-                      className={klassen}
-                    >
-                      {inner}
-                    </button>
-                  )
-                }
-
-                // Sonstige: Route-Link
-                const to = fav.typ === 'ort'
-                  ? fav.ziel
-                  : fav.typ === 'frage'
-                    ? `/fragensammlung/${fav.ziel}`
-                    : `/${fav.typ}?id=${fav.ziel}` // pruefung/uebung → DurchfuehrenDashboard
                 return (
-                  <Link key={fav.ziel} to={to} className={klassen}>
+                  <Link key={fav.ziel} to={open.to} className={klassen}>
                     {inner}
                   </Link>
                 )
@@ -239,7 +217,10 @@ export default function Favoriten() {
       {/* Hilfe-Overlay */}
       {zeigHilfe && (
         <Suspense fallback={<LazyFallback />}>
-          <HilfeSeite onSchliessen={toggleHilfe} initialKategorie={initialHilfeKategorie} />
+          <HilfeSeite
+            onSchliessen={() => { toggleHilfe(); setInitialHilfeKategorie(undefined) }}
+            initialKategorie={initialHilfeKategorie}
+          />
         </Suspense>
       )}
     </div>
@@ -296,17 +277,6 @@ function ConfigListe({ configs, linkPrefix, linkSuffix = '' }: {
       })}
     </div>
   )
-}
-
-/**
- * Mapping kebab-case Tab-Registry-ID → camelCase EinstellungenTab-Type (Cluster E.5 Hotfix).
- * Drift seit Pre-Cluster-E: EinstellungenTab in lpUIStore nutzt 'kiKalibrierung'
- * (camelCase), aber TabRegistry.id = 'ki-kalibrierung' (kebab-case).
- * Memory: "EinstellungenPanel-Migration auf Tab-Registry (blockiert durch ki-kalibrierung-ID-Konflikt)".
- */
-function einstellungenTabKey(tabId: string): EinstellungenTab {
-  if (tabId === 'ki-kalibrierung') return 'kiKalibrierung'
-  return tabId as EinstellungenTab
 }
 
 function typIcon(typ: string): string {
