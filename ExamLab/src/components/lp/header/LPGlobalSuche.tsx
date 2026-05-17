@@ -37,14 +37,17 @@ export function LPGlobalSuche() {
   const email = useAuthStore(s => s.user?.email)
 
   const volltextLaedt = sammlungStatus === 'summary_laden' || sammlungStatus === 'detail_laden'
-  const volltextBereit = fragenVoll.length > 0
+  // 'fertig' deckt auch den Fall ab, dass die LP-Sammlung leer ist (keine Re-Trigger-Schleife).
+  const volltextBereit = fragenVoll.length > 0 || sammlungStatus === 'fertig'
 
-  // Lazy-Load: nur triggern wenn Toggle AN, noch nicht geladen, nicht aktuell ladend, und LP-User
+  // Lazy-Load: nur triggern wenn Toggle AN, noch nicht geladen, nicht aktuell ladend, und LP-User.
+  // `sammlungStatus` als Dep, weil ladeAlleDetails im Store frueh-returnt wenn status !== 'summary_fertig' —
+  // bei status='idle' (App-Mount vor ladeSummaries) erneut feuern sobald status auf 'summary_fertig' wechselt.
   useEffect(() => {
-    if (volltextAktiv && !volltextBereit && !volltextLaedt && email) {
+    if (volltextAktiv && !volltextBereit && !volltextLaedt && sammlungStatus === 'summary_fertig' && email) {
       ladeAlleDetails(email)
     }
-  }, [volltextAktiv, volltextBereit, volltextLaedt, email, ladeAlleDetails])
+  }, [volltextAktiv, volltextBereit, volltextLaedt, sammlungStatus, email, ladeAlleDetails])
 
   const ergebnis = useMemo(
     () => fuehreSucheAus(
