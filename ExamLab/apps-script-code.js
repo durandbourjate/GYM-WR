@@ -15985,6 +15985,20 @@ function apiCleanupTagsLegacy_(body) {
   }
 }
 
+/**
+ * Dropdown-Wrapper fuer apiCleanupTagsLegacy_. Im Apps-Script-Editor manuell ausfuehrbar.
+ * Nutzt die E-Mail des aktiven Google-Users (muss Admin-LP sein).
+ * Resultat steht im Execution-Log (Logger.log + return-Wert).
+ */
+function runCleanupTagsLegacy() {
+  var email = Session.getActiveUser().getEmail();
+  Logger.log('runCleanupTagsLegacy: Aufruf als ' + email);
+  var response = apiCleanupTagsLegacy_({ email: email });
+  var payload = response.getContent ? response.getContent() : String(response);
+  Logger.log('runCleanupTagsLegacy Resultat: ' + payload);
+  return payload;
+}
+
 /** ScriptProperties-Key fuer den ISO-Timestamp des letzten erfolgreichen Seed/Reset. */
 var TESTDATEN_LETZTER_SEED_PROP = 'TESTDATEN_LETZTER_SEED_AM';
 
