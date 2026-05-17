@@ -132,11 +132,19 @@ function LPStartseiteInner() {
   const [multiDashboardAuswahl, setMultiDashboardAuswahl] = useState<Set<string>>(new Set())
 
   // Such- und Filterstate
-  // Cluster C.3: ?suche= Pre-Fill — initial aus URL lesen
-  const [suchtext, setSuchtext] = useState(queryParams.get('suche') ?? '')
+  // Cluster C.3: ?suche= Pre-Fill — initial aus URL lesen, ABER nur für Pruefen/Üben-Modus.
+  // Fragensammlung-Modus hat eigenen useFragenFilter-Hook der den Param selber liest;
+  // dort darf LPStartseite NICHT vorher strippen (Race-Condition).
+  const [suchtext, setSuchtext] = useState(() => {
+    const m = queryParams.get('modus')
+    const aktiv = useLPNavigationStore.getState().modus
+    const istPruefenOderUeben = m === 'pruefung' || m === 'uebung' || aktiv === 'pruefung' || aktiv === 'uebung'
+    return istPruefenOderUeben ? (queryParams.get('suche') ?? '') : ''
+  })
   const lastSeenSucheParam = useRef<string | null>(null)
 
   // Cluster C.3: ?suche= + ?modus= URL-Params auswerten + cleanup
+  // ?suche= wird nur für Pruefen/Üben-Modus konsumiert (Fragensammlung übernimmt es selber).
   useEffect(() => {
     const suche = queryParams.get('suche')
     const modusParam = queryParams.get('modus')
@@ -144,17 +152,26 @@ function LPStartseiteInner() {
     let updated = false
     const next = new URLSearchParams(queryParams)
 
-    if (suche && suche !== lastSeenSucheParam.current) {
-      lastSeenSucheParam.current = suche
-      setSuchtext(suche)
-      next.delete('suche')
-      updated = true
-    }
+    // Modus-Switch zuerst, damit anschliessende ?suche=-Auswertung den korrekten Modus sieht
     if (modusParam === 'uebung' || modusParam === 'pruefung') {
       useLPNavigationStore.getState().setModus(modusParam)
       next.delete('modus')
       updated = true
     }
+
+    // ?suche= NUR für Pruefen/Üben übernehmen — Fragensammlung hat eigenen Hook.
+    const aktiverModus = (modusParam === 'pruefung' || modusParam === 'uebung')
+      ? modusParam
+      : useLPNavigationStore.getState().modus
+    const istPruefenOderUeben = aktiverModus === 'pruefung' || aktiverModus === 'uebung'
+
+    if (suche && istPruefenOderUeben && suche !== lastSeenSucheParam.current) {
+      lastSeenSucheParam.current = suche
+      setSuchtext(suche)
+      next.delete('suche')
+      updated = true
+    }
+
     if (updated) setQueryParams(next, { replace: true })
   }, [queryParams, setQueryParams])
   const [filterFach, setFilterFach] = useState<string[]>([])
