@@ -47,13 +47,14 @@ export function scoreFromMatch(haystack, needle, feld): number {
   if (!n) return 0
   if (h.includes(n)) { /* … bestehende Logik … */ }
 
-  // Fuzzy-Fallback nur für titel/id (False-Positive-Schutz)
-  if ((feld === 'titel' || feld === 'id') && n.length >= 3) {
+  // Fuzzy-Fallback nur für titel (False-Positive-Schutz)
+  // ID-Fuzzy bewusst NICHT: ID_EXACT-Penalty würde fuzzy-id (85) über
+  // TITEL_SUBSTRING (70) ranken — verfälscht Ranking. Spawn-Task wenn nötig.
+  if (feld === 'titel' && n.length >= 3) {
     const tokens = h.split(/\s+/)
     const minDist = Math.min(...tokens.map(t => levenshtein(t, n)))
     if (minDist <= 2) {
-      const baseScore = feld === 'titel' ? SCORE_BOUNDS.TITEL_SUBSTRING : SCORE_BOUNDS.ID_EXACT
-      return Math.max(0, baseScore - (minDist === 1 ? 10 : 20))
+      return Math.max(0, SCORE_BOUNDS.TITEL_SUBSTRING - (minDist === 1 ? 10 : 20))
     }
   }
   return 0
@@ -63,8 +64,8 @@ export function scoreFromMatch(haystack, needle, feld): number {
 ### 3.3 Bounds + Edge-Cases
 
 - **Min-Length:** needle ≥ 3 Zeichen, sonst zu viele False-Positives ("ab" matched alles dist≤2).
-- **Felder:** Fuzzy nur auf `titel` + `id`. `tag`/`subTitel` bleiben exact-only.
-- **Score-Penalty:** dist=1 → −10, dist=2 → −20, dist≥3 → 0 (kein Match).
+- **Felder:** Fuzzy NUR auf `titel`. ID/tag/subTitel bleiben exact-only. ID-Fuzzy verworfen weil `ID_EXACT - Penalty` (z.B. 85) über `TITEL_SUBSTRING` (70) ranken würde — ein Tippfehler bei der ID dürfte nicht über einen sauberen Titel-Treffer.
+- **Score-Penalty:** dist=1 → TITEL_SUBSTRING − 10 = 60, dist=2 → TITEL_SUBSTRING − 20 = 50. dist≥3 → 0 (kein Match).
 - **Highlight:** Bei Fuzzy-Match keine Highlight-Stellen (kein exakter Substring im Original) — analog zur existierenden Diakritik-Behandlung.
 - **Performance:** Levenshtein early-exit wenn `Math.abs(a.length - b.length) > 2`. 1000 Items × Levenshtein-DP O(20×6) ≈ 120k ops, < 50ms.
 
@@ -97,36 +98,41 @@ Header-Komponente `sucheUI` ruft `SAMMELVIEW_ROUTE_BUILDERS[quelle](query)` für
 ### 4.2 Surface-Patches (~5-10 Z. pro Surface)
 
 ```tsx
-// Pattern für jede Surface:
+// Pattern für jede Surface — handelt sowohl Mount als auch Re-Click ab:
 const [params, setParams] = useSearchParams()
-const initialSuche = params.get('suche') ?? ''
-const [suchtext, setSuchtext] = useState(initialSuche)
+const [suchtext, setSuchtext] = useState(params.get('suche') ?? '')
+const lastSeenParam = useRef<string | null>(null)
 
-// Cleanup: URL-Param nach Mount entfernen damit nachträgliches Tippen URL nicht trackt
 useEffect(() => {
-  if (initialSuche && params.has('suche')) {
-    const next = new URLSearchParams(params)
-    next.delete('suche')
-    setParams(next, { replace: true })
-  }
-}, []) // Mount-only
+  const suche = params.get('suche')
+  if (!suche || suche === lastSeenParam.current) return
+  lastSeenParam.current = suche
+  setSuchtext(suche)
+  // Param sofort entfernen damit nachträgliches Tippen URL nicht trackt
+  const next = new URLSearchParams(params)
+  next.delete('suche')
+  setParams(next, { replace: true })
+}, [params, setParams])
 ```
 
+**`uebung`-Modus-Switch:** Sammelview-Route `/?suche=<term>&modus=uebung` triggert sowohl Pre-Fill (`suche`) als auch Modus-Switch (`modus`). LPStartseite liest `modus`-Param und setzt `useLPNavigationStore.setModus('uebung')` im selben useEffect. Cleanup entfernt beide Params via `replace`.
+
 **Patch-Liste C.3:**
-- `src/components/lp/LPStartseite.tsx` — Prüfungen-Modus + Übungen-Modus (gemeinsamer `suchtext`-State)
+- `src/components/lp/LPStartseite.tsx` — gemeinsamer `suchtext`-State + Modus-Switch via `?modus=uebung`
 - `src/components/lp/fragensammlung/fragenbrowser/FragenBrowserHeader.tsx` (via Container) — Fragen-Suchtext
 
-**Klassenlisten-Tab Pre-Fill wandert in C.2** (kommt mit Tab-Bau).
+**Klassenlisten-Tab Pre-Fill wandert in C.2** (kommt mit Tab-Bau, gleiches Pattern).
 
 ### 4.3 Edge-Cases
 
 | Szenario | Verhalten |
 |---|---|
 | URL ohne `?suche=` | Surface mountet normal, kein Pre-Fill |
-| User tippt nach Pre-Fill | URL-Param wurde bereits entfernt, kein replace mehr |
-| Cross-Surface-Navigate (z.B. von Pruefungen zu FragenBrowser) | Neuer Mount → neuer Param-Read; sicher |
+| User tippt nach Pre-Fill | URL-Param wurde bereits entfernt, kein Re-Trigger |
+| Cross-Surface-Navigate | Neuer Mount → neuer Param-Read; sicher |
 | URL-encoded Sonderzeichen | `URLSearchParams` decoded automatisch |
-| Surface bereits offen + Re-Click "Alle Treffer" | React-Router triggert keine Re-Mount; URL ändert sich, aber `useEffect [],` läuft nicht erneut. **Mitigation:** Param-Read in `useEffect [params]`-Listener, mit `lastSeenParam`-Ref um Doppel-Trigger zu vermeiden. Detail im Plan. |
+| Re-Click "Alle Treffer" auf bereits offener Surface | `useEffect [params]` + `lastSeenParam.current` greift, neuer Param wird als Update erkannt und übernommen |
+| `?modus=uebung` ohne `?suche=` | nur Modus-Switch, kein suchtext-Update |
 
 ### 4.4 Tests
 
@@ -154,7 +160,7 @@ useEffect(() => {
 - Daten-Loading: bei `ladeStatus === 'idle'` triggert Mount `klassenlistenStore.lade(email)`; Skeleton bis `'fertig'`
 
 **EinstellungenPanel-Integration:**
-- Klassenlisten-Tab erscheint in Tab-Reihenfolge nach "Lernziele" (Konvention: organisatorische Tabs vor Daten-Tabs)
+- Klassenlisten-Tab erscheint in Tab-Reihenfolge nach `lernziele` (existiert in TAB_REGISTRY, Z.30). Konvention: organisatorische Tabs vor Daten-Tabs.
 - Permission: alle LPs (kein Admin-Gate)
 
 ### 5.2 Schüler-Adapter
@@ -250,7 +256,7 @@ const index = useMemo(() => ({ …, schueler }), [/* deps */])
 
 - Unit `indexSchueler` 8 Cases: vorname-Match, nachname-Match, email-Match, klasse-Match, fuzzy-Match via C.5, F.4-Filter aktiv, leeres Array, score-fallthrough.
 - Integration `KlassenlistenTab.test.tsx`: Filter funktioniert, Pre-Fill via URL, Schüler-Highlighting bei `&schueler=`.
-- Permission-Test in SuS-Hook: kein Schüler-Adapter im Index.
+- **Permission-Pflicht-Test `useGlobalSucheSuS.test.ts`:** Index-Objekt enthält keine `schueler`-Property. Test scheitert wenn Adapter versehentlich in SuS-Pfad gewired wird → Privacy-Schutz.
 - E2E (preview): LP sucht "Müller" → Klick → Klassenlisten-Tab mit Müller highlighted + Filter "Müller" aktiv.
 
 ## 6. Phase 4 — C.4 Volltext-Toggle
@@ -392,7 +398,8 @@ C.4 (Volltext) ───────────┤ — implizit nutzt C.5 (Fuzz
 | C.2 Klassenlisten-Lade-Latenz blockiert Suche | Adapter zeigt leere Quelle bei `ladeStatus !== 'fertig'`, kein Crash |
 | C.4 Volltext-Frage-Load erhöht Memory drastisch | Lazy + Session-Cache; reversibler Toggle |
 | C.4 1000+ Fragen-Volltext zu langsam | Debounce 300ms + min-length=3 + Worker-Migration (OoS-Eskalation) |
-| C.4 Backend-Endpoint `ladeAlleVollDaten` existiert nicht | Plan-Detail: Apps-Script-Backend-Erweiterung als Phase-4-Pre-Requisite oder serieller Per-Frage-Load als Fallback |
+| C.4 Backend-Endpoint `ladeAlleVollDaten` existiert nicht | **Hard-Plan-Decision vor C.4-Start:** entweder (a) Apps-Script-Batch-Endpoint hinzufügen ODER (b) Volltext-Universe auf "aktive Kurse" begrenzen. Serieller Per-Frage-Load über `ladeFrageVoll(id)` × 1000 = ~30 min Apps-Script-Latenz, daher NICHT akzeptabler Fallback (siehe code-quality.md Apps-Script-Latenz-Regel). |
+| **C.2 SuS-Permission-Lapse: Schüler-Adapter leakt in SuS-Hook** | Privacy-Breach (SuS sieht andere Schüler). Mitigation: `useGlobalSucheSuS.ts` wired KEIN Schüler-Adapter. **Pflicht-Permission-Test** in §5.7 (Test: `useGlobalSucheSuS` Index enthält keine `schueler`-Property). Test scheitert wenn jemand das ändert. |
 
 ## 11. Abhängigkeiten zu anderen Clustern
 
