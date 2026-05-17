@@ -15,6 +15,20 @@ const ROUTE_BUILDERS = {
   frage: (frageId: string) => `/fragensammlung/${frageId}`,
 } as const
 
+/**
+ * Sammelview-Routes für "Alle X Treffer in"-Klick im Suche-Dropdown.
+ * Pre-Fill via `?suche=<query>` URL-Param; Surface-Komponente liest den Param.
+ * Cluster C.3 (17.05.2026). `schueler`-Eintrag wird in C.2 Task 3.2 ergänzt.
+ */
+export const SAMMELVIEW_ROUTE_BUILDERS: Record<'einstellungen-tab' | 'hilfe-tab' | 'kurs' | 'pruefung' | 'uebung' | 'frage', (query: string) => string> = {
+  'einstellungen-tab': () => '/einstellungen',
+  'hilfe-tab':         () => '/hilfe',
+  kurs:                (q) => `/?suche=${encodeURIComponent(q)}`,
+  pruefung:            (q) => `/?suche=${encodeURIComponent(q)}`,
+  uebung:              (q) => `/?suche=${encodeURIComponent(q)}&modus=uebung`,
+  frage:               (q) => `/fragensammlung?suche=${encodeURIComponent(q)}`,
+}
+
 function tabZuTreffer(
   tab: TabDefinition,
   query: string,
