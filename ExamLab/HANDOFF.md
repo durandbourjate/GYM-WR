@@ -8,7 +8,33 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** Cluster E.3-E.5 KOMPLETT LIVE (17.05.2026 SPÄT, HEAD `8a5e006`).
+**HEAD preview:** `875e9ff` — Spawn-Tasks Restbestand (17.05.2026 SPÄT-2). main-Merge nach Browser-E2E.
+**HEAD main:** `63c7b6e` — Cluster E.5 Tests + HANDOFF.
+
+### Spawn-Tasks Restbestand (preview, 17.05.2026 SPÄT-2)
+
+**Branch `feature/spawn-tasks-restbestand-2026-05-17` → preview (FF-push).** Audit aller Spawn-Tasks aus Memory ergab: 90% bereits erledigt seit Memory-Stand (ESC-Handler, DetailKarte-Checkbox, Floating-Bar mobile, tagsModusAusPatch Defense-in-Depth, batchLaeuft useRef, useFragenBatchEdit Hook extrahiert, apiClient postJson Backend-Error, appNavigation Persist-Migration, IDB-Cleanup-Race, FragenBrowserHeader Filter-Dropdown, letzterSeedAm Persistenz, Lock-Serialisierung tag-Schreib-Ops, zaehleTagVerwendung_ Tag-Object Return, useTagsByIds Hook, tagsStore-Tests). Übrig 2 Items, beide in 1 Commit (`875e9ff`):
+
+1. **useOpenFavorit Hook** (Cluster E.5 Spawn-Task): Zentralisierung des Favorit-Open-Logic in `ExamLab/src/hooks/useOpenFavorit.ts`.
+   - `resolveFavorit(fav)` → entweder `{kind:'navigate', to}` für Link-Targets oder `{kind:'action', onClick}` für Overlay-Open.
+   - `einstellungenTabKey`-Drift-Mapping (`ki-kalibrierung` → `kiKalibrierung`) jetzt im Hook.
+   - 11 Unit-Tests, alle 6 typ-Varianten + Edge-Cases (Hilfe-Toggle bei zeigHilfe=true).
+   - Favoriten.tsx refactored: 56 → 16 Z. Render-Logik, plus `initialHilfeKategorie`-Reset bei `HilfeSeite onSchliessen` (Parity mit LPStartseite.tsx).
+
+2. **audit-no-emoji.mjs Drift-Detection**: WARN wenn `count < baseline`, Vorschlag zur Tightening.
+   - IMPROVEMENT-Message zeigt erste 5 Drift-Files mit baseline / current / diff.
+   - Files mit `count === 0` aber `baseline > 0` zählen als Drift (Cleanup obsoleter Baseline-Einträge).
+   - `--baseline`-Flag regeneriert `per_file_max` (analog audit-typo-tokens.mjs).
+   - Baseline-Total-Berechnung korrigiert: Sum aller `per_file_max` unabhängig vom aktuellen Count.
+
+**Status:** Auf preview deployed. main-Merge nach LP-Browser-E2E ausstehend. vitest **1926 + 4 todo** (Baseline 1915 → +11 useOpenFavorit-Tests), 8 lint-Gates clean, tsc -b + vite build clean.
+
+**Browser-E2E-Plan vor main-Merge:**
+- Favoriten-Page öffnen mit jeweils einem Favorit pro typ-Variante (ort/pruefung/uebung/frage/einstellungen-tab/hilfe-tab)
+- Klick auf jeden Favorit verifiziert: Link-Navigation funktioniert, Overlay öffnet sich mit richtigem Tab
+- HilfeSeite-onSchliessen → initialHilfeKategorie reset (next open startet frisch, nicht mit alter Kategorie)
+
+---
 
 ## Cluster E.3-E.5 LIVE auf main + preview (17.05.2026 SPÄT)
 
