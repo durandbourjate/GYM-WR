@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeForSuche, scoreFromMatch, findeHighlightStellen, gruppiereUndLimitiere, fuehreSucheAus } from './sucheEngine'
+import { normalizeForSuche, scoreFromMatch, findeHighlightStellen, gruppiereUndLimitiere, fuehreSucheAus, levenshtein } from './sucheEngine'
 import type { SucheTreffer, SucheIndex } from '../types/suche'
 import type { TabDefinition } from './tabRegistry'
 
@@ -179,5 +179,42 @@ describe('fuehreSucheAus', () => {
     expect(ergebnis.treffer.length).toBeGreaterThanOrEqual(2)
     expect(ergebnis.proQuelleGesamt['einstellungen-tab']).toBe(1)
     expect(ergebnis.proQuelleGesamt.kurs).toBe(1)
+  })
+})
+
+describe('levenshtein', () => {
+  it('returns 0 for identical strings', () => {
+    expect(levenshtein('bilanz', 'bilanz')).toBe(0)
+  })
+  it('returns length for empty input', () => {
+    expect(levenshtein('', 'bilanz')).toBe(6)
+    expect(levenshtein('bilanz', '')).toBe(6)
+    expect(levenshtein('', '')).toBe(0)
+  })
+  it('handles single-char insertion (dist 1)', () => {
+    expect(levenshtein('bilanz', 'bilanze')).toBe(1)
+  })
+  it('handles single-char deletion (dist 1)', () => {
+    expect(levenshtein('bilantz', 'bilanz')).toBe(1)
+  })
+  it('handles single-char substitution (dist 1)', () => {
+    expect(levenshtein('bilanz', 'bilanc')).toBe(1)
+  })
+  it('handles multi-char edit (dist 3: 1 sub + 2 ins)', () => {
+    // bilanz → bilanc (sub z→c) → bilance (ins e) → bilancen (ins n) = 3
+    expect(levenshtein('bilanz', 'bilancen')).toBe(3)
+  })
+  it('handles transposition as 2 edits', () => {
+    expect(levenshtein('abc', 'bac')).toBe(2)
+  })
+  it('early-exit when length-diff > maxDist', () => {
+    // Mit maxDist=2 sollte 'ab' vs 'abcdef' früh abbrechen (length-diff 4 > 2)
+    expect(levenshtein('ab', 'abcdef', 2)).toBeGreaterThan(2)  // korrekt: 4
+  })
+  it('handles case-sensitive (caller normalizes)', () => {
+    expect(levenshtein('Bilanz', 'bilanz')).toBe(1)  // 1 substitution
+  })
+  it('handles longer strings', () => {
+    expect(levenshtein('konjunktur', 'konjunkturzyklus')).toBe(6)
   })
 })

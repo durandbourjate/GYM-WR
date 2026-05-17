@@ -22,6 +22,36 @@ export function normalizeForSuche(text: string): string {
 export type MatchFeld = 'titel' | 'id' | 'tag' | 'subTitel'
 
 /**
+ * Levenshtein-Distanz mit klassischem DP-Tableau.
+ * Optionaler maxDist-Parameter erlaubt early-exit (ungenutzt = ∞).
+ * Cluster C.5 (17.05.2026).
+ */
+export function levenshtein(a: string, b: string, maxDist: number = Infinity): number {
+  if (a === b) return 0
+  if (a.length === 0) return b.length
+  if (b.length === 0) return a.length
+  // Early-exit wenn Längen-Diff schon > maxDist
+  if (Math.abs(a.length - b.length) > maxDist) return Math.abs(a.length - b.length)
+
+  let prev = new Array(b.length + 1).fill(0).map((_, j) => j)
+  let curr = new Array(b.length + 1).fill(0)
+
+  for (let i = 1; i <= a.length; i++) {
+    curr[0] = i
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1
+      curr[j] = Math.min(
+        curr[j - 1] + 1,      // insertion
+        prev[j] + 1,          // deletion
+        prev[j - 1] + cost,   // substitution
+      )
+    }
+    ;[prev, curr] = [curr, prev]
+  }
+  return prev[b.length]
+}
+
+/**
  * Bewertet ein Match. Score-Tabelle: Titel-Prefix=100, ID-Exact=95,
  * Titel-Substring=70, Tag/Thema=50, Subtitel=30. No-match=0.
  */
