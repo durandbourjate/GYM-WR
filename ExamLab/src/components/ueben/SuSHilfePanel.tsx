@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Lightbulb, Star, Flag, Circle, CheckCircle2, Shuffle, RotateCw, Play } from 'lucide-react'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
+import { TYPO } from '../../styles/typografie'
 
 interface Props {
   onSchliessen: () => void
@@ -86,7 +87,7 @@ function Tipp({ children }: { children: React.ReactNode }) {
 
 function HilfeStart() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Willkommen bei ExamLab Üben</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Willkommen bei ExamLab Üben</h3>
     <p>Hier kannst du Übungsfragen zu deinen Unterrichtsthemen bearbeiten und deinen Fortschritt verfolgen.</p>
     <ol className="list-decimal list-inside space-y-2">
       <li>Logge dich über Google ein (oder per Code).</li>
@@ -101,14 +102,14 @@ function HilfeStart() {
 
 function HilfeUeben() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Übung starten</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Übung starten</h3>
     <ol className="list-decimal list-inside space-y-2">
       <li>Klicke auf ein <strong>Thema</strong> im Dashboard.</li>
       <li>Filtere nach <strong>Unterthema</strong>, <strong>Schwierigkeit</strong> oder <strong>Fragetyp</strong>.</li>
       <li>Klicke <strong>"Übung starten"</strong>.</li>
     </ol>
     <p>Pro Übung bekommst du <strong>maximal 10 Fragen</strong>, sortiert nach dem, was du am meisten üben musst.</p>
-    <h4 className="font-medium dark:text-white mt-3">Filter</h4>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3`}>Filter</h4>
     <ul className="list-disc list-inside space-y-1">
       <li><strong>Unterthemen:</strong> Wähle gezielt einen Teilbereich aus.</li>
       <li><strong>Schwierigkeit:</strong> <Star className="w-3.5 h-3.5 inline text-yellow-500" /> Einfach, <Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> Mittel, <Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> Schwer.</li>
@@ -120,7 +121,7 @@ function HilfeUeben() {
 
 function HilfeWaehrend() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Während der Übung</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Während der Übung</h3>
     <ul className="list-disc list-inside space-y-2">
       <li><strong>Beantworten:</strong> Wähle deine Antwort und erhalte sofort Feedback.</li>
       <li><strong>Weiter/Zurück:</strong> Navigiere mit den Buttons oder den <strong>Pfeiltasten</strong>.</li>
@@ -134,7 +135,7 @@ function HilfeWaehrend() {
 
 function HilfeMastery() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Mastery-System</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Mastery-System</h3>
     <p>Jede Frage hat eine <strong>Mastery-Stufe</strong>, die sich durch deine Antworten verändert:</p>
     <div className="space-y-2 mt-2">
       <div className="flex items-center gap-2">
@@ -154,7 +155,7 @@ function HilfeMastery() {
         <span><strong>Gemeistert</strong> — oft richtig, über mehrere Sessions.</span>
       </div>
     </div>
-    <h4 className="font-medium dark:text-white mt-3">Verblassen</h4>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3`}>Verblassen</h4>
     <p>Wenn du eine Frage <strong>über 30 Tage</strong> nicht übst, sinkt die Mastery-Stufe. Nach 90 Tagen fällt sie auf "Üben" zurück.</p>
     <Tipp>Regelmässig kurze Sessions sind besser als selten lange. Das System belohnt Konsistenz.</Tipp>
   </>
@@ -162,15 +163,15 @@ function HilfeMastery() {
 
 function HilfeMix() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Gemischte Übung & Repetition</h3>
-    <h4 className="font-medium dark:text-white mt-2 inline-flex items-center gap-1.5"><Shuffle className="w-4 h-4" /> Gemischte Übung</h4>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Gemischte Übung & Repetition</h3>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-2 inline-flex items-center gap-1.5`}><Shuffle className="w-4 h-4" /> Gemischte Übung</h4>
     <p>Wähle <strong>mehrere Themen</strong> aus verschiedenen Fächern für eine gemischte Session — ideal zur Prüfungsvorbereitung.</p>
     <ol className="list-decimal list-inside space-y-1">
       <li>Klicke "Gemischte Übung" auf dem Dashboard.</li>
       <li>Wähle mindestens 2 Themen aus (auch fachübergreifend).</li>
       <li>Klicke "Übung starten" — du bekommst 10 Fragen, gleichmässig verteilt.</li>
     </ol>
-    <h4 className="font-medium dark:text-white mt-3 inline-flex items-center gap-1.5"><RotateCw className="w-4 h-4" /> Repetition</h4>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3 inline-flex items-center gap-1.5`}><RotateCw className="w-4 h-4" /> Repetition</h4>
     <p>Trainiert automatisch deine <strong>Schwächen über alle Themen</strong>. Perfekt wenn du nicht weisst, wo du anfangen sollst.</p>
     <ul className="list-disc list-inside space-y-1">
       <li>Dauerbaustellen (oft falsch) werden bevorzugt.</li>
@@ -183,7 +184,7 @@ function HilfeMix() {
 
 function HilfeFortschritt() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Mein Fortschritt</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Mein Fortschritt</h3>
     <p>Im Tab <strong>"Mein Fortschritt"</strong> siehst du:</p>
     <ul className="list-disc list-inside space-y-1">
       <li><strong>Level</strong> — steigt mit jedem Thema, das du meisterst.</li>
@@ -191,7 +192,7 @@ function HilfeFortschritt() {
       <li><strong>Gemeistert</strong> — Anzahl gemeisterter Themen.</li>
       <li><strong>Versuche</strong> — Gesamtanzahl beantworteter Fragen.</li>
     </ul>
-    <h4 className="font-medium dark:text-white mt-3">Sterne</h4>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3`}>Sterne</h4>
     <p>Jedes Thema hat bis zu <strong>3 Sterne</strong>:</p>
     <ul className="list-disc list-inside space-y-1">
       <li><Star className="w-3.5 h-3.5 inline text-yellow-500" /> — mehr als 30% gefestigt.</li>
@@ -203,14 +204,14 @@ function HilfeFortschritt() {
 
 function HilfeLernziele() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Lernziele</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Lernziele</h3>
     <p>Lernziele zeigen dir, was du am Ende eines Themas können solltest. Sie helfen dir, deinen Fortschritt einzuschätzen.</p>
-    <h4 className="font-medium dark:text-white mt-3">Wo finde ich Lernziele?</h4>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3`}>Wo finde ich Lernziele?</h4>
     <ul className="list-disc list-inside space-y-1">
       <li><strong className="inline-flex items-center gap-1"><Flag className="w-3.5 h-3.5" /> Button im Header</strong> — Öffnet alle Lernziele als Akkordeon (Fach → Thema → Unterthema).</li>
       <li><strong className="inline-flex items-center gap-1"><Flag className="w-3.5 h-3.5" /> auf Themen-Karten</strong> — Zeigt die Lernziele für dieses spezifische Thema in einem Mini-Modal.</li>
     </ul>
-    <h4 className="font-medium dark:text-white mt-3">Mastery-Status pro Lernziel</h4>
+    <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3`}>Mastery-Status pro Lernziel</h4>
     <div className="space-y-1.5 mt-2">
       <div className="flex items-center gap-2"><Flag className="w-4 h-4 text-slate-400" /> <span>Offen — noch nicht bearbeitet.</span></div>
       <div className="flex items-center gap-2"><Circle className="w-4 h-4 fill-yellow-500 text-yellow-500" /> <span>In Arbeit — erste Fragen beantwortet.</span></div>
@@ -223,7 +224,7 @@ function HilfeLernziele() {
 
 function HilfeErgebnisse() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Ergebnisse</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Ergebnisse</h3>
     <p>Im Tab <strong>"Ergebnisse"</strong> siehst du alle deine abgeschlossenen Übungs-Sessions.</p>
     <ul className="list-disc list-inside space-y-1">
       <li>Pro Session: Fach, Thema, Datum, Richtig/Falsch-Quote.</li>
@@ -235,7 +236,7 @@ function HilfeErgebnisse() {
 
 function HilfeFAQ() {
   return <>
-    <h3 className="font-semibold dark:text-white text-base">Häufige Fragen</h3>
+    <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Häufige Fragen</h3>
     <div className="space-y-3">
       <div>
         <p className="font-medium dark:text-white">Warum sehe ich ein Thema nicht?</p>

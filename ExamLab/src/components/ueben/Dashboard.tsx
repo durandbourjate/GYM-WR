@@ -28,6 +28,7 @@ import type { ThemenInfo } from '../../hooks/ueben/useThemenKomputationen'
 import MixSessionDialog from './MixSessionDialog'
 import UebungsEinsicht from './UebungsEinsicht'
 import { LernzieleMiniModal } from './LernzieleAkkordeon'
+import { TYPO } from '../../styles/typografie'
 
 interface DashboardProps {
   deepLinkZiel?: DeepLinkZiel | null
@@ -247,7 +248,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   return (
     <div>
       <main className="max-w-5xl mx-auto p-6">
-        <h2 className="text-xl font-bold dark:text-white mb-3">
+        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-3`}>
           Hallo {user?.vorname || 'dort'}!
         </h2>
         {dashboardTab === 'ergebnisse' ? (
@@ -259,7 +260,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
         {/* Empfehlungen */}
         {!aktivesThema && empfehlungen.length > 0 && (
           <div className="mb-6 space-y-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Für dich empfohlen</h3>
+            <h3 className={`${TYPO.caption} font-bold uppercase tracking-wider text-slate-400 mb-2`}>Für dich empfohlen</h3>
             {empfehlungen.map((e, i) => (
               <EmpfehlungsKarte
                 key={i}
@@ -418,7 +419,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               {/* Aktuelle Themen */}
               {themenSektionen.aktuelle.length > 0 && (
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 flex items-center gap-1.5">
+                  <h3 className={`${TYPO.caption} font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 flex items-center gap-1.5`}>
                     <Star className="w-3.5 h-3.5" fill="currentColor" aria-hidden="true" /> Aktuelle Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
@@ -455,7 +456,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               {/* Weitere Themen (nicht freigeschaltet) */}
               {themenSektionen.weitere.length > 0 && (
                 <div className="opacity-60">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 flex items-center gap-1.5">
+                  <h3 className={`${TYPO.caption} font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 flex items-center gap-1.5`}>
                     <Lock className="w-3.5 h-3.5" aria-hidden="true" /> Weitere Themen
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">

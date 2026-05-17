@@ -4,6 +4,7 @@ import type { Lernziel } from '../../types/pool'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 import { lernzielStatus } from '../../utils/ueben/mastery'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
+import { TYPO } from '../../styles/typografie'
 
 interface Props {
   lernziele: Lernziel[]
@@ -81,7 +82,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onSchliessen}>
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-md mx-4" onClick={e => e.stopPropagation()}>
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold dark:text-white inline-flex items-center gap-2"><Flag className="w-5 h-5" /> Lernziele</h2>
+            <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 inline-flex items-center gap-2`}><Flag className="w-5 h-5" /> Lernziele</h2>
             <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-5 h-5" /></button>
           </div>
           <p className="text-slate-500 dark:text-slate-400">Lernziele werden von der Lehrperson definiert. Sobald Themen aktiviert sind, erscheinen hier die zugehörigen Lernziele.</p>
@@ -98,7 +99,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
       >
         {/* Header */}
         <div className="flex justify-between items-center p-5 pb-3 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="text-lg font-bold dark:text-white inline-flex items-center gap-2"><Flag className="w-5 h-5" /> Alle Lernziele</h2>
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 inline-flex items-center gap-2`}><Flag className="w-5 h-5" /> Alle Lernziele</h2>
           <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-5 h-5" /></button>
         </div>
 
@@ -246,7 +247,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: farbe }} />
-            <h3 className="font-semibold dark:text-white text-sm">{thema}</h3>
+            <h3 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100`}>{thema}</h3>
           </div>
           <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-4 h-4" /></button>
         </div>

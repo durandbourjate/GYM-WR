@@ -7,6 +7,7 @@ import { uebenApiClient } from '../../services/ueben/apiClient'
 import { UebenKontextProvider } from '../../context/ueben/UebenKontextProvider'
 import AdminDashboard from '../ueben/admin/AdminDashboard'
 import { apiService } from '../../services/apiService'
+import { TYPO } from '../../styles/typografie'
 
 const LP_AUTH_KEY = 'ueben-auth'
 
@@ -159,7 +160,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
       <div className="flex items-center justify-center py-24">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
           <div className="flex justify-center mb-3"><AlertTriangle className="w-10 h-10 text-amber-500" aria-hidden="true" /></div>
-          <h2 className="text-xl font-bold mb-2 dark:text-white">Verbindung fehlgeschlagen</h2>
+          <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-2`}>Verbindung fehlgeschlagen</h2>
           <p className="text-slate-500 dark:text-slate-400">
             Das Backend konnte nicht erreicht werden.
           </p>
@@ -180,7 +181,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
       <div className="flex items-center justify-center py-24">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 text-center max-w-sm">
           <div className="flex justify-center mb-3"><BookOpen className="w-10 h-10 text-slate-400" aria-hidden="true" /></div>
-          <h2 className="text-xl font-bold mb-2 dark:text-white">Keine Gruppen</h2>
+          <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-2`}>Keine Gruppen</h2>
           <p className="text-slate-500 dark:text-slate-400">
             Keine Übungsgruppen gefunden. Erstellen Sie eine Gruppe unter Üben.
           </p>
@@ -193,7 +194,7 @@ export default function UebungsToolView({ onFachKlick, aktiverKursId }: UebungsT
   if (!aktiveGruppe) {
     return (
       <div className="max-w-7xl mx-auto p-6">
-        <h2 className="text-lg font-bold mb-4 dark:text-white">Gruppe wählen</h2>
+        <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 mb-4`}>Gruppe wählen</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {gruppen.map(g => (
             <button

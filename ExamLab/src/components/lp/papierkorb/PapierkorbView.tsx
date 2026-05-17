@@ -126,7 +126,6 @@ export default function PapierkorbView() {
   if (ladestatus === 'laden' || ladestatus === 'idle') {
     return (
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Papierkorb</h1>
         <p className="text-gray-500">Wird geladen …</p>
       </div>
     )
@@ -136,7 +135,6 @@ export default function PapierkorbView() {
   if (ladestatus === 'fehler') {
     return (
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Papierkorb</h1>
         <div className="bg-red-50 border border-red-200 rounded p-4 mb-4">
           <p className="text-red-700 font-medium mb-2">
             Fehler beim Laden des Papierkorbs
@@ -158,7 +156,6 @@ export default function PapierkorbView() {
   if (fragen.length === 0) {
     return (
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Papierkorb</h1>
         <p className="text-gray-500">Der Papierkorb ist leer.</p>
         <p className="text-gray-400 text-sm mt-2">
           Gelöschte Fragen erscheinen hier und werden nach 90 Tagen automatisch
@@ -171,7 +168,7 @@ export default function PapierkorbView() {
   // Liste
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Papierkorb ({fragen.length})</h1>
+      <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">Papierkorb ({fragen.length})</p>
       <p className="text-gray-500 text-sm mb-4">
         Gelöschte Fragen werden nach 90 Tagen automatisch endgültig entfernt.
       </p>

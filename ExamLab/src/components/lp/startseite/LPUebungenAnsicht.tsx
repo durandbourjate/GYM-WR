@@ -1,4 +1,5 @@
 import { Dumbbell } from 'lucide-react'
+import { TYPO } from '../../../styles/typografie'
 import LPUebungenSkeleton from '../skeletons/LPUebungenSkeleton'
 import Button from '../../ui/Button'
 import { FilterLeiste } from './FilterLeiste'
@@ -52,7 +53,7 @@ export function LPUebungenAnsicht(props: LPUebungenAnsichtProps) {
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
             <Dumbbell className="w-7 h-7 text-slate-500 dark:text-slate-400" aria-hidden="true" />
           </div>
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">Noch keine Übungen</h2>
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 mb-2`}>Noch keine Übungen</h2>
           <p className="text-slate-500 dark:text-slate-400 mb-4">Erstellen Sie Ihre erste formative Übung.</p>
           <Button variant="primary" size="md" onClick={handleNeueUebung}>
             + Neue Übung erstellen
@@ -83,7 +84,7 @@ export function LPUebungenAnsicht(props: LPUebungenAnsichtProps) {
           />
 
           {/* Zähler */}
-          <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">
+          <h2 className={`${TYPO.body} font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide`}>
             {hatAktiveFilter
               ? `${gefilterteUebungen.length} von ${formativeConfigs.length} Übungen`
               : `${formativeConfigs.length} Übung${formativeConfigs.length !== 1 ? 'en' : ''}`}
@@ -92,7 +93,7 @@ export function LPUebungenAnsicht(props: LPUebungenAnsichtProps) {
           {/* Favoriten-Sektion für Übungen */}
           {!hatAktiveFilter && favoritenUebungen.length > 0 && (
             <div className="space-y-2">
-              <h3 className="text-xs font-semibold text-amber-500 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+              <h3 className={`${TYPO.caption} font-semibold text-amber-500 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5`}>
                 <span>⭐</span> Favoriten
               </h3>
               {favoritenUebungen.map(c => (

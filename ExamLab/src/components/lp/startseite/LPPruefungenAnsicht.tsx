@@ -1,4 +1,5 @@
 import { ClipboardList } from 'lucide-react'
+import { TYPO } from '../../../styles/typografie'
 import LPCardsSkeleton from '../skeletons/LPCardsSkeleton'
 import LPTrackerSkeleton from '../skeletons/LPTrackerSkeleton'
 import TrackerSection from '../TrackerSection'
@@ -93,7 +94,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
             <ClipboardList className="w-7 h-7 text-slate-500 dark:text-slate-400" aria-hidden="true" />
           </div>
-          <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
+          <h2 className={`${TYPO.h2} text-slate-800 dark:text-slate-100 mb-2`}>
             Noch keine Prüfungen
           </h2>
           <p className="text-slate-500 dark:text-slate-400 mb-4">
@@ -130,7 +131,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
 
           {/* Zähler + Multi-Dashboard */}
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">
+            <h2 className={`${TYPO.body} font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide`}>
               {hatAktiveFilter
                 ? `${gefilterteConfigs.length} von ${summativeConfigs.length} Prüfungen`
                 : `${summativeConfigs.length} Prüfungen`}
@@ -161,7 +162,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
           {/* Favoriten-Sektion (nur wenn Favoriten vorhanden und kein aktiver Filter) */}
           {!hatAktiveFilter && favoritenPruefungen.length > 0 && (
             <div className="space-y-2">
-              <h3 className="text-xs font-semibold text-amber-500 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+              <h3 className={`${TYPO.caption} font-semibold text-amber-500 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5`}>
                 <span>⭐</span> Favoriten
               </h3>
               {favoritenPruefungen.map(c => (
@@ -174,14 +175,14 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
           {/* Zuletzt-Sektion (nur ohne Filter und wenn >5 Prüfungen) */}
           {letzteFuenf.length > 0 && (
             <div className="space-y-2">
-              <h3 className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+              <h3 className={`${TYPO.caption} font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide`}>
                 Zuletzt
               </h3>
               {letzteFuenf.map(c => (
                 <PruefungsKarte key={`recent-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
               ))}
               <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
-              <h3 className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide pt-1">
+              <h3 className={`${TYPO.caption} font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide pt-1`}>
                 Alle Prüfungen
               </h3>
             </div>

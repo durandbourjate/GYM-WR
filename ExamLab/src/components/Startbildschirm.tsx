@@ -10,6 +10,7 @@ import { erkenneGeraet } from '../hooks/useGeraetErkennung.ts'
 import { formatDatum } from '../utils/zeit.ts'
 import ThemeToggle from './ThemeToggle.tsx'
 import FeedbackButton from './shared/FeedbackButton.tsx'
+import { TYPO } from '../styles/typografie'
 
 interface Props {
   config: PruefungsConfig
@@ -162,7 +163,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2">
               Warteraum
             </p>
-            <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+            <h1 className={`${TYPO.display} text-slate-800 dark:text-slate-100 mb-2`}>
               {config.titel}
             </h1>
             {heartbeatErfolgreich && lobbyOffen ? (
@@ -222,7 +223,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
           <div className="w-16 h-16 mx-auto mb-4 bg-slate-800 dark:bg-slate-200 rounded-2xl flex items-center justify-center">
             <span className="text-white dark:text-slate-800 text-2xl font-bold">WR</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-1">
+          <h1 className={`${TYPO.display} text-slate-800 dark:text-slate-100 mb-1`}>
             {config.titel}
           </h1>
           <p className="text-slate-500 dark:text-slate-400">
@@ -292,7 +293,7 @@ export default function Startbildschirm({ config, fragen, alleFragen, wiederherg
 
         {/* Abschnitte mit Punkten */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-2">Aufbau</h3>
+          <h3 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mb-2`}>Aufbau</h3>
           <div className="space-y-1.5">
             {config.abschnitte.map((a) => {
               const punkte = punkteFuerAbschnitt(a.fragenIds)

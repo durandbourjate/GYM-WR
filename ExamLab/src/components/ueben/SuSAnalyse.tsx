@@ -13,6 +13,7 @@ import { istEinrichtungsfrage } from '../../utils/frageTagNamen'
 import type { Frage } from '../../types/ueben/fragen'
 import type { ThemenFortschritt } from '../../types/ueben/fortschritt'
 import { useEffect, useState } from 'react'
+import { TYPO } from '../../styles/typografie'
 
 interface ThemaAnalyse {
   fach: string
@@ -144,7 +145,7 @@ export default function SuSAnalyse() {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-bold dark:text-white">Mein Fortschritt</h3>
+      <h3 className={`${TYPO.h2} text-slate-800 dark:text-slate-100`}>Mein Fortschritt</h3>
 
       {/* Übersicht: Level + Streak */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -157,7 +158,7 @@ export default function SuSAnalyse() {
       {/* Meilensteine */}
       {stats.meilensteine.some(m => m.erreicht) && (
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Meilensteine</h4>
+          <h4 className={`${TYPO.caption} font-semibold uppercase tracking-wide text-slate-400 mb-3`}>Meilensteine</h4>
           <div className="flex flex-wrap gap-2">
             {stats.meilensteine.filter(m => m.erreicht).map(m => (
               <span key={m.id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-xs font-medium dark:text-slate-300" title={m.titel}>
@@ -170,7 +171,7 @@ export default function SuSAnalyse() {
 
       {/* Themen-Übersicht (schwächste zuerst) — A7: ausklappbar mit Fehler-Details */}
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Themen (schwächste zuerst)</h4>
+        <h4 className={`${TYPO.caption} font-semibold uppercase tracking-wide text-slate-400 mb-3`}>Themen (schwächste zuerst)</h4>
         {themenAnalyse.length === 0 ? (
           <p className="text-sm text-slate-500 dark:text-slate-400 py-2">Noch keine freigeschalteten Themen geübt.</p>
         ) : (
