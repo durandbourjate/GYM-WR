@@ -21,6 +21,7 @@ const DEBOUNCE_MS = 300
 export function LPGlobalSuche() {
   const [query, setQuery] = useState('')
   const [istOffen, setIstOffen] = useState(false)
+  const [volltextAktiv, setVolltextAktiv] = useState(false)
   const debouncedQuery = useDebouncedValue(query, DEBOUNCE_MS)
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -81,25 +82,40 @@ export function LPGlobalSuche() {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="relative">
-        <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-          aria-hidden="true"
-        />
-        <input
-          ref={inputRef}
-          type="search"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            setIstOffen(true)
-          }}
-          onFocus={() => setIstOffen(true)}
-          onKeyDown={handleKeyDown}
-          placeholder="Suche …"
-          className="w-64 pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
-          aria-label="Globale Suche"
-        />
+      <div className="flex items-center gap-2">
+        <div className="relative">
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+            aria-hidden="true"
+          />
+          <input
+            ref={inputRef}
+            type="search"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              setIstOffen(true)
+            }}
+            onFocus={() => setIstOffen(true)}
+            onKeyDown={handleKeyDown}
+            placeholder="Suche …"
+            className="w-64 pl-9 pr-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+            aria-label="Globale Suche"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => setVolltextAktiv((v) => !v)}
+          aria-pressed={volltextAktiv}
+          title="Sucht zusätzlich in Fragetext und Musterlösung. Langsamer."
+          className={`px-3 py-1.5 min-h-[36px] text-xs font-medium rounded-full border transition-colors ${
+            volltextAktiv
+              ? 'bg-violet-100 dark:bg-violet-900/40 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-200'
+              : 'bg-slate-100 dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+          }`}
+        >
+          Volltext
+        </button>
       </div>
 
       {istOffen && debouncedQuery.length >= 2 && (
