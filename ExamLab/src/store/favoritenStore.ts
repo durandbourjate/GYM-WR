@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { iconStringToCanonicalKey } from '../components/ui/icons/NavIcon'
 import type { Favorit } from '../types/favorit'
+import { useStammdatenStore } from './stammdatenStore'
+import { useToastStore } from './toastStore'
 
 // Re-Export für Backwards-Compat (9+ Konsumenten importieren von hier)
 export type { Favorit } from '../types/favorit'
@@ -13,99 +13,98 @@ export function selectFavoritenSortiert(state: { favoriten: Favorit[] }): Favori
 
 interface FavoritenStore {
   favoriten: Favorit[]
+  ladeStatus: 'idle' | 'laeuft' | 'fertig' | 'fehler'
 
   // Actions
-  ladeAusBackend: () => Promise<void>  // Phase 2: echte Logik (Cluster E.3)
-  toggleFavorit: (fav: Omit<Favorit, 'sortierung'> & { sortierung?: number }) => void
+  ladeAusBackend: () => Promise<void>
+  toggleFavorit: (fav: Omit<Favorit, 'sortierung'> & { sortierung?: number }) => Promise<void>
   istFavorit: (ziel: string) => boolean
-  updateSortierung: (zielReihenfolge: string[]) => void
-  entferneFavorit: (ziel: string) => void
+  updateSortierung: (zielReihenfolge: string[]) => Promise<void>
+  entferneFavorit: (ziel: string) => Promise<void>
   reset: () => void
 }
 
-export const useFavoritenStore = create<FavoritenStore>()(
-  persist(
-    (set, get) => ({
-      favoriten: [],
+/**
+ * Cluster E.3: Backend-Sync via stammdatenStore.lpProfil.favoriten
+ * (kein eigener Persist mehr). Optimistic-Update + Server-Refetch bei Error.
+ */
+export const useFavoritenStore = create<FavoritenStore>()((set, get) => ({
+  favoriten: [],
+  ladeStatus: 'idle',
 
-      ladeAusBackend: async () => { /* Phase 2: hydrate aus stammdatenStore */ },
+  ladeAusBackend: async () => {
+    set({ ladeStatus: 'laeuft' })
+    const profil = useStammdatenStore.getState().lpProfil
+    set({ favoriten: profil?.favoriten ?? [], ladeStatus: 'fertig' })
+  },
 
-      toggleFavorit: (fav) => {
-        const { favoriten } = get()
-        const exists = favoriten.find(f => f.ziel === fav.ziel)
-        if (exists) {
-          set({ favoriten: favoriten.filter(f => f.ziel !== fav.ziel) })
-        } else {
-          const maxSort = favoriten.reduce((max, f) => Math.max(max, f.sortierung), -1)
-          set({
-            favoriten: [
-              ...favoriten,
-              { ...fav, sortierung: fav.sortierung ?? maxSort + 1 },
-            ],
-          })
-        }
-      },
+  toggleFavorit: async (fav) => {
+    const { favoriten } = get()
+    const exists = favoriten.find(f => f.ziel === fav.ziel)
+    const maxSort = favoriten.reduce((max, f) => Math.max(max, f.sortierung), -1)
+    const next: Favorit[] = exists
+      ? favoriten.filter(f => f.ziel !== fav.ziel)
+      : [...favoriten, { ...fav, sortierung: fav.sortierung ?? maxSort + 1 }]
 
-      istFavorit: (ziel) => {
-        return get().favoriten.some(f => f.ziel === ziel)
-      },
+    // Optimistic: Frontend sofort
+    set({ favoriten: next })
 
-      updateSortierung: (zielReihenfolge) => {
-        const { favoriten } = get()
-        const updated = favoriten.map(f => ({
-          ...f,
-          sortierung: zielReihenfolge.indexOf(f.ziel),
-        }))
-        set({ favoriten: updated })
-      },
+    // Persist (skip in Demo-Mode wenn kein lpProfil)
+    const { lpProfil, speichereLPProfil, ladeLPProfil } = useStammdatenStore.getState()
+    if (!lpProfil) return
 
-      entferneFavorit: (ziel) => {
-        set({ favoriten: get().favoriten.filter(f => f.ziel !== ziel) })
-      },
-
-      reset: () => set({ favoriten: [] }),
-    }),
-    {
-      name: 'examlab-favoriten',
-      version: 2,
-      /** v1 → v2 (17.05.2026): icon-Strings von Emoji auf Lucide-Component-Name umstellen.
-       *  Defensiv: unbekannte Strings (z.B. User-Custom) bleiben unverändert — Render-Helper
-       *  in NavIcon.tsx kann beide Formen lesen. */
-      migrate: (persistedState: unknown, version: number) => {
-        const state = (persistedState ?? {}) as { favoriten?: Favorit[] }
-        if (version < 2 && Array.isArray(state.favoriten)) {
-          state.favoriten = state.favoriten.map((f) => {
-            if (!f.icon) return f
-            const key = iconStringToCanonicalKey(f.icon)
-            return key ? { ...f, icon: key } : f
-          })
-        }
-        return state as FavoritenStore
-      },
-      // Migration: Alte AppOrt[] aus 'lp-favoriten' übernehmen
-      onRehydrateStorage: () => (state) => {
-        if (!state || state.favoriten.length > 0) return
-        try {
-          const alteDaten = localStorage.getItem('lp-favoriten')
-          if (!alteDaten) return
-          const alte = JSON.parse(alteDaten) as Array<{
-            titel?: string
-            screen?: string
-            params?: { configId?: string; tab?: string }
-          }>
-          if (!Array.isArray(alte) || alte.length === 0) return
-
-          const migriert: Favorit[] = alte.map((a, i) => ({
-            typ: (a.params?.configId ? (a.screen as Favorit['typ']) : 'ort') || 'ort',
-            ziel: a.params?.configId ?? `/${a.screen ?? 'pruefung'}`,
-            label: a.titel || '',
-            sortierung: i,
-          }))
-          state.favoriten = migriert
-          // Alte Daten aufräumen
-          localStorage.removeItem('lp-favoriten')
-        } catch { /* Migration fehlgeschlagen — ignorieren */ }
-      },
+    const ok = await speichereLPProfil({ ...lpProfil, favoriten: next })
+    if (!ok) {
+      useToastStore.getState().add(
+        'error',
+        'Favorit konnte nicht synchronisiert werden — wird neu geladen',
+      )
+      await ladeLPProfil(lpProfil.email)
+      await get().ladeAusBackend()
     }
-  )
-)
+  },
+
+  istFavorit: (ziel) => get().favoriten.some(f => f.ziel === ziel),
+
+  updateSortierung: async (zielReihenfolge) => {
+    const { favoriten } = get()
+    const next = favoriten.map(f => ({
+      ...f,
+      sortierung: zielReihenfolge.indexOf(f.ziel),
+    }))
+    set({ favoriten: next })
+
+    const { lpProfil, speichereLPProfil, ladeLPProfil } = useStammdatenStore.getState()
+    if (!lpProfil) return
+
+    const ok = await speichereLPProfil({ ...lpProfil, favoriten: next })
+    if (!ok) {
+      useToastStore.getState().add(
+        'error',
+        'Reihenfolge konnte nicht synchronisiert werden — wird neu geladen',
+      )
+      await ladeLPProfil(lpProfil.email)
+      await get().ladeAusBackend()
+    }
+  },
+
+  entferneFavorit: async (ziel) => {
+    const next = get().favoriten.filter(f => f.ziel !== ziel)
+    set({ favoriten: next })
+
+    const { lpProfil, speichereLPProfil, ladeLPProfil } = useStammdatenStore.getState()
+    if (!lpProfil) return
+
+    const ok = await speichereLPProfil({ ...lpProfil, favoriten: next })
+    if (!ok) {
+      useToastStore.getState().add(
+        'error',
+        'Favorit konnte nicht entfernt werden — wird neu geladen',
+      )
+      await ladeLPProfil(lpProfil.email)
+      await get().ladeAusBackend()
+    }
+  },
+
+  reset: () => set({ favoriten: [], ladeStatus: 'idle' }),
+}))
