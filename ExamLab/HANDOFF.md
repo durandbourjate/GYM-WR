@@ -9,33 +9,37 @@
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
 **HEAD main + preview:** `e5466d9` — Cluster C.2-C.5 Phasen 1-3 LIVE (17.05.2026 NACHT, E2E ✓ + FF-Merge zu main).
+**Aktiver Feature-Branch:** `feature/cluster-c-4-volltext-2026-05-18` (C.4 Volltext-Toggle in Arbeit).
 
-### Was als nächstes — Cluster C Phase 4 (C.4 Volltext-Toggle)
+### C.4 Backend-Entscheidung (Plan-Phase 4.0)
 
-**Plan-Referenz:** [`ExamLab/docs/superpowers/plans/2026-05-17-cluster-c-2-bis-c-5-globale-suche-phase-2.md`](docs/superpowers/plans/2026-05-17-cluster-c-2-bis-c-5-globale-suche-phase-2.md) Tasks 4.0-4.8.
+**Option gewählt: A — existierender Endpoint wiederverwenden (kein Apps-Script-Deploy nötig).**
 
-**Hard-Plan-Decision-Gate (Task 4.0) VORHER:** Apps-Script-Audit ob `ladeFragenVolltext`-Batch-Endpoint baubar:
-```bash
-cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
-grep -n "ladeAlleFragen\|ladeFragenVoll\|getAllFragenVoll\|action.*frage" ExamLab/apps-script-code.js | head -20
-```
+**Begründung:** Audit hat ergeben, dass die Plan-Annahme („kein Vollobjekt-Batch-Endpoint vorhanden") falsch war. Der Backend-Endpoint existiert seit Bundle 3 unter anderem Namen:
 
-Option A (Batch-Endpoint): Apps-Script-Funktion `ladeFragenVolltext_` + Dispatcher-Case + `apiClient`-Wrapper.
-Option B (Universe-Cap): nur aktive Fachschaft-Pools (~200 Fragen, serieller Load).
+- `apps-script-code.js:6033` — `ladeFragensammlung(email)` liefert Vollobjekte aller Fragen inkl. `fragetext`, `musterlosung`. Cache `cacheGet_('alle_fragen')` macht Folge-Calls günstig.
+- `apps-script-code.js:6085` — `ladeFragensammlungSummary(email)` liefert die Lite-Version (200B/Frage).
 
-Memory Apps-Script-Latenz-Regel: 1000× pro-Frage-Load = ~30 min nicht akzeptabel → bei fehlendem Batch-Endpoint Option B verpflichtend.
+Frontend-Wrapper existiert ebenfalls bereits:
+- [`fragensammlungApi.ts:13`](src/services/fragensammlungApi.ts:13) — `ladeFragensammlung(email): Promise<Frage[] | null>` mit 90s Timeout.
+- [`fragensammlungStore.ts`](src/store/fragensammlungStore.ts) — `state.fragen: Frage[]`, `fragenMap`, `ladeAlleDetails(email)`-Action, Status-Machine `summary_fertig → detail_laden → fertig`, IDB-Cache, Stale-While-Revalidate. **Erfüllt Task-4.1-Spezifikation ohne neuen Code.**
 
-**Tasks 4.1-4.8 dann:**
-- 4.1 useFragenStore.ladeAlleVollDaten (Option-fork)
+**Plan-Anpassungen gegenüber Markdown-Spec:**
+
+- Plan-Task 4.1 referenziert `useFragenStore.ladeAlleVollDaten()` — der reale Store heisst `useFragensammlungStore` und hat bereits `ladeAlleDetails`. Task 4.1 reduziert sich auf einen Lazy-Load-Trigger im Hook (verlagert zu Task 4.6).
+- Performance-Bonus: Wenn LP-User schon im FragenBrowser war, ist `state.status === 'fertig'` und Volltext-Suche ist instant ohne Spinner.
+
+**Tasks 4.1-4.8 dann (angepasst):**
+- 4.1 Lazy-Load-Trigger-Bauteil im useGlobalSuche (Vorbereitung für Task 4.6 — kein neuer Store)
 - 4.2 generiereSnippet Helper + Tests
 - 4.3 indexFragenVolltext Adapter + 10 Tests
-- 4.4 fuehreSucheAus opts.volltext-Branch
+- 4.4 fuehreSucheAus opts.volltext-Branch + SucheIndex.fragenVoll
 - 4.5 Volltext-Toggle UI in LPGlobalSuche
-- 4.6 Hook-Integration volltextAktiv + Lazy-Load
+- 4.6 Hook-Integration volltextAktiv + Lazy-Load via fragensammlungStore.ladeAlleDetails
 - 4.7 Performance-Smoke 1000 Fragen × 5 queries < 200ms
 - 4.8 Push + E2E + main-Merge
 
-**Skill für Execution:** `superpowers:subagent-driven-development` mit Plan + frischem Branch `feature/cluster-c-4-volltext-2026-05-18` o.ä.
+**Skill für Execution:** `superpowers:subagent-driven-development` auf Branch `feature/cluster-c-4-volltext-2026-05-18`.
 
 ### Erkenntnisse aus Phasen 1-3 (für Memory)
 
