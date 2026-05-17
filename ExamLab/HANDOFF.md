@@ -8,39 +8,46 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** Cluster E.3-E.5 Spec + Plan ready-to-execute (17.05.2026 NACHT-4, HEAD `f50df5c`).
+**HEAD main + preview:** Cluster E.3-E.5 KOMPLETT LIVE (17.05.2026 SPÄT, HEAD `8a5e006`).
 
-## Cluster E.3-E.5 BEREIT FÜR IMPLEMENTIERUNG (17.05.2026 NACHT-4)
+## Cluster E.3-E.5 LIVE auf main + preview (17.05.2026 SPÄT)
 
-**Spec:** `docs/superpowers/specs/2026-05-17-cluster-e-3-bis-e-5-favoriten-design.md` (Reviewer-approved Iteration 2)
-**Plan:** `docs/superpowers/plans/2026-05-17-cluster-e-3-bis-e-5-favoriten.md` (Reviewer-approved Iteration 2)
+**10 Commits** auf main: 6 Core-Phasen + 4 Hotfixes (E2E-Discoveries):
 
-**Was zu tun ist nächste Session:**
-1. Fresh session öffnen
-2. HANDOFF.md lesen (diese Sektion)
-3. Plan-Datei laden
-4. `superpowers:subagent-driven-development` skill invoken mit Plan-Pfad
-5. Fresh subagent pro Phase mit two-stage review
+| Phase | SHA | Beschreibung |
+|---|---|---|
+| 1 | `48cd16a` | Favorit-Type-Auslagerung + LPProfil-Type-Switch (atomic, 7 Files) |
+| 2 | `0f51757` | favoritenStore Refactor — persist raus, Backend-Sync via stammdatenStore |
+| 3 | `68c5353` | App-Mount ladeAusBackend + Favoriten-Skeleton (3 animate-pulse-Karten) |
+| 4 | `ddb18f6` | TabStarToggle-Komponente (5 TDD-Tests) |
+| 5 | `e996eb3` | TabStarToggle in 20 Tab-Headers (10 Hilfe + 10 Einstellungen) |
+| 6 | `4233d97` | FavoritenPicker-Modal + FavoritenTab-Wiring (5 TDD-Tests) |
+| Hotfix #1 | `e275598` | Favoriten.tsx triggert ladeLPProfil + ladeAusBackend (LoginScreen routet zu /favoriten, useLPDashboardData lief nur auf /) |
+| Hotfix #2 | `cef8369` | TitelMitStern in Loading-/Fehler-Early-Returns sichtbar (LernzielTab + ProblemmeldungenTab) |
+| Hotfix #3 | `450527a` | Default-LPProfil setzen wenn Backend `profil: null` liefert (Test-LP hatte noch keinen Profil-Eintrag) |
+| Hotfix #4 | `8a5e006` | Tab-Favorit-Klick öffnet Overlay statt Sackgasse `/einstellungen-tab?id=X` |
 
-**7 Phasen (je 1 Commit):**
-- Phase 1 Foundation — Atomic Type-Switch (Favorit-Type isoliert, LPProfil-Type-Wechsel, useLPDashboardData-Migrator raus, in 1 Commit für tsc-clean)
-- Phase 2 favoritenStore Refactor (persist raus, ladeAusBackend + optimistic + Server-Refetch)
-- Phase 3 App-Mount Hook + Skeleton (3 Karten während Loading)
-- Phase 4 TabStarToggle Komponente (~40 Z. + 5 TDD-Tests)
-- Phase 5 TabStarToggle Einbindung in 20 Tab-Headers (10 Hilfe + 10 Einstellungen, Pfade in 5 Verzeichnissen)
-- Phase 6 FavoritenPicker Modal mit Tab-Registry
-- Phase 7 Browser-E2E Cross-Device
+**Status:**
+- vitest **1906 + 4 todo** (Baseline 1890 → +16 neue Tests)
+- 8 lint-Gates clean, tsc -b + vite build clean
+- Browser-E2E auf staging 5/5 ✅ (Tests 6+7 nicht benötigt — Persist + Click-Nav verifiziert)
 
-**Architektur-Hauptpunkte (Memory):**
-- Backend = Source of Truth, KEIN Subscriber (explizite Trigger)
-- Optimistic Update + Server-Refetch bei Error (kein Client-Rollback)
-- Kein Migration-Code von localStorage (nicht in Produktion)
-- Demo-Mode bleibt frontend-only
-- `Favorit`-Type wird nach `src/types/favorit.ts` ausgelagert (no circular import)
-- LPProfil.favoriten: AppOrt[] → Favorit[] (breaking change OK)
-- `speichereLPProfil` schickt komplettes Profil (Apps-Script-Endpoint limit)
+**Was funktioniert:**
+- Cross-Device Backend-Sync via `LPProfil.favoriten`
+- 17 Tab-Headers mit Star-Toggle (10 Hilfe + 9 sichtbare Einstellungen, Admin admin-only)
+- FavoritenPicker mit Filter + alphabetischer Sortierung
+- Tab-Favorit-Klick öffnet EinstellungenPanel/HilfeSeite mit korrektem Tab pre-selektiert
+- Optimistic UI + Server-Refetch bei Error
+- Skeleton während Initial-Load
 
-**Pre-Push-Pflicht:** `cd ExamLab && npm run ci-check`. Push-Reihenfolge: preview-first, dann main.
+**Bei Wiedereinstieg:**
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+git fetch origin && git status
+git log --oneline -10
+```
+
+**Pre-Push-Pflicht:** `cd ExamLab && npm run ci-check` (matched CI 1:1).
 
 ---
 
