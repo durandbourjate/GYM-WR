@@ -101,7 +101,7 @@ describe('Performance — Volltext (C.4)', () => {
       fachbereich: 'WR',
       thema: 'BWL',
       fragetext: `Fragetext ${i} mit Begriff Bilanz und Konjunktur und 20 weiteren Wörtern lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor`,
-      musterlosung: `Musterloesung mit Aktien Passiva Bilanz Anlagevermoegen ${i} und weiteren Begriffen lorem ipsum`,
+      musterlosung: `Loesungs-Text mit Aktien Passiva Bilanz Anlagevermoegen ${i} und weiteren Begriffen lorem ipsum`,
       bloom: 'K1',
       punkte: 1,
       tagIds: [],

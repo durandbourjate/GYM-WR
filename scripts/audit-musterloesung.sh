@@ -36,7 +36,7 @@ TOKENS=(
   "musterLoesung"
   "MusterLoesung"
 )
-BASELINES=(310 0 70 14 12 0)
+BASELINES=(326 0 70 14 12 0)  # Cluster C.4 (2026-05-18): musterlosung 310→326 für indexFragenVolltext + Tests + perf-test.
 
 # Counts werden parallel zu TOKENS in COUNTS[] geschrieben.
 COUNTS=()

@@ -51,6 +51,9 @@ vi.mock('../../../utils/sucheEngine', () => ({
   ) => fuehreSucheAusMockImpl(q, idx, opts),
   normalizeForSuche: (s: string) => s,
   LEERES_ERGEBNIS: { treffer: [], proQuelleGesamt: {} },
+  // Cluster C.4: Konstanten werden auch in LPGlobalSuche für den Dropdown-Gate genutzt
+  MIN_QUERY_LENGTH: 2,
+  MIN_VOLLTEXT_QUERY_LENGTH: 3,
 }))
 
 vi.mock('../../../hooks/useSucheIndex', () => ({
