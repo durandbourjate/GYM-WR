@@ -6,7 +6,7 @@ import { useFavoritenStore } from '../../store/favoritenStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
 import { useConfigsListStore } from '../../store/configsListStore'
 import { apiService } from '../../services/apiService'
-import { useLPNavigationStore } from '../../store/lpUIStore'
+import { useLPNavigationStore, type EinstellungenTab } from '../../store/lpUIStore'
 import { useTestdatenSichtbar } from '../../hooks/useTestdatenSichtbar'
 import { istTestdaten, filtereTestdatenWennDeaktiviert } from '../../utils/testdaten/filter'
 import TestBadge from '../shared/TestBadge'
@@ -44,6 +44,9 @@ export default function Favoriten() {
   const toggleHilfe = useLPNavigationStore(s => s.toggleHilfe)
   const toggleEinstellungen = useLPNavigationStore(s => s.toggleEinstellungen)
   const setZeigEinstellungen = useLPNavigationStore(s => s.setZeigEinstellungen)
+
+  // Cluster E.5 Hotfix: Tab-Favorit-Click öffnet Einstellungen/Hilfe-Overlay mit Tab pre-selektiert.
+  const [initialHilfeKategorie, setInitialHilfeKategorie] = useState<string | undefined>(undefined)
 
   const [configs, setConfigs] = useState<PruefungsConfig[]>([])
   const [ladeStatus, setLadeStatus] = useState<'laden' | 'fertig'>('laden')
@@ -148,25 +151,56 @@ export default function Favoriten() {
             </div>
           ) : (
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {favoriten.map(fav => (
-                <Link
-                  key={fav.ziel}
-                  to={
-                    fav.typ === 'ort'
-                      ? fav.ziel
-                      : fav.typ === 'frage'
-                        ? `/fragensammlung/${fav.ziel}`
-                        : `/${fav.typ}?id=${fav.ziel}` // pruefung/uebung → DurchfuehrenDashboard
-                  }
-                  className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px]"
-                >
-                  <span className="text-lg inline-flex items-center"><NavIcon icon={fav.icon || typIcon(fav.typ)} className="w-5 h-5 text-slate-500 dark:text-slate-400" /></span>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</p>
-                    <p className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</p>
-                  </div>
-                </Link>
-              ))}
+              {favoriten.map(fav => {
+                const inner = (
+                  <>
+                    <span className="text-lg inline-flex items-center"><NavIcon icon={fav.icon || typIcon(fav.typ)} className="w-5 h-5 text-slate-500 dark:text-slate-400" /></span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{fav.label || fav.ziel}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">{typLabel(fav.typ)}</p>
+                    </div>
+                  </>
+                )
+                const klassen = "flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-500 transition-colors shadow-sm min-w-[140px] cursor-pointer text-left"
+
+                // Tab-Typen: Overlay öffnen statt Route-Navigation
+                if (fav.typ === 'einstellungen-tab') {
+                  return (
+                    <button
+                      key={fav.ziel}
+                      type="button"
+                      onClick={() => setZeigEinstellungen(true, einstellungenTabKey(fav.ziel))}
+                      className={klassen}
+                    >
+                      {inner}
+                    </button>
+                  )
+                }
+                if (fav.typ === 'hilfe-tab') {
+                  return (
+                    <button
+                      key={fav.ziel}
+                      type="button"
+                      onClick={() => { setInitialHilfeKategorie(fav.ziel); if (!zeigHilfe) toggleHilfe() }}
+                      className={klassen}
+                    >
+                      {inner}
+                    </button>
+                  )
+                }
+
+                // Sonstige: Route-Link
+                const to = fav.typ === 'ort'
+                  ? fav.ziel
+                  : fav.typ === 'frage'
+                    ? `/fragensammlung/${fav.ziel}`
+                    : `/${fav.typ}?id=${fav.ziel}` // pruefung/uebung → DurchfuehrenDashboard
+                return (
+                  <Link key={fav.ziel} to={to} className={klassen}>
+                    {inner}
+                  </Link>
+                )
+              })}
             </div>
           )}
         </Sektion>
@@ -205,7 +239,7 @@ export default function Favoriten() {
       {/* Hilfe-Overlay */}
       {zeigHilfe && (
         <Suspense fallback={<LazyFallback />}>
-          <HilfeSeite onSchliessen={toggleHilfe} />
+          <HilfeSeite onSchliessen={toggleHilfe} initialKategorie={initialHilfeKategorie} />
         </Suspense>
       )}
     </div>
@@ -264,6 +298,17 @@ function ConfigListe({ configs, linkPrefix, linkSuffix = '' }: {
   )
 }
 
+/**
+ * Mapping kebab-case Tab-Registry-ID → camelCase EinstellungenTab-Type (Cluster E.5 Hotfix).
+ * Drift seit Pre-Cluster-E: EinstellungenTab in lpUIStore nutzt 'kiKalibrierung'
+ * (camelCase), aber TabRegistry.id = 'ki-kalibrierung' (kebab-case).
+ * Memory: "EinstellungenPanel-Migration auf Tab-Registry (blockiert durch ki-kalibrierung-ID-Konflikt)".
+ */
+function einstellungenTabKey(tabId: string): EinstellungenTab {
+  if (tabId === 'ki-kalibrierung') return 'kiKalibrierung'
+  return tabId as EinstellungenTab
+}
+
 function typIcon(typ: string): string {
   // Liefert Lucide-Component-Name (canonical Form seit #4, 17.05.2026).
   switch (typ) {
@@ -271,6 +316,8 @@ function typIcon(typ: string): string {
     case 'pruefung': return 'ClipboardList'
     case 'uebung': return 'Target'
     case 'frage': return 'HelpCircle'
+    case 'einstellungen-tab': return 'Settings'
+    case 'hilfe-tab': return 'HelpCircle'
     default: return 'FileText'
   }
 }
@@ -281,6 +328,8 @@ function typLabel(typ: string): string {
     case 'pruefung': return 'Prüfung'
     case 'uebung': return 'Übung'
     case 'frage': return 'Frage'
+    case 'einstellungen-tab': return 'Einstellungen'
+    case 'hilfe-tab': return 'Hilfe'
     default: return ''
   }
 }
