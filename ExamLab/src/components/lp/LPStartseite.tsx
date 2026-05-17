@@ -22,6 +22,7 @@ import { lazyMitRetry } from '../../utils/lazyMitRetry'
 import { leereUebung } from './vorbereitung/configVorlagen'
 import { LPUebungenAnsicht } from './startseite/LPUebungenAnsicht'
 import { LPPruefungenAnsicht } from './startseite/LPPruefungenAnsicht'
+import { PageTitle } from '../shared/PageTitle'
 
 // Lazy-loaded Komponenten: Werden erst bei Bedarf geladen (spart ~400KB beim Initial Load)
 // lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
@@ -254,6 +255,13 @@ function LPStartseiteInner() {
     reload()
   }
 
+  const surfaceTitel = ({
+    pruefung: 'Prüfen',
+    uebung: 'Üben',
+    fragensammlung: 'Fragensammlung',
+    papierkorb: 'Papierkorb',
+  } as const)[modus] ?? 'Übersicht'
+
   return (
     <div className="h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header nur im Dashboard-Modus — Composer hat eigenen Header */}
@@ -269,6 +277,8 @@ function LPStartseiteInner() {
       {/* Scrollbarer Hauptinhalt — bei Fragensammlung scrollt die virtualisierte Liste selbst,
           deshalb hier overflow-hidden + min-h-0, damit `h-full` der inneren Liste greift. */}
       <div className={`flex-1 min-h-0 ${ansicht !== 'composer' && modus === 'fragensammlung' ? 'overflow-hidden' : 'overflow-y-auto'}`}>
+
+      {ansicht !== 'composer' && <PageTitle titel={surfaceTitel} />}
 
       {ansicht === 'composer' && (
         <Suspense fallback={<LazyFallback />}>

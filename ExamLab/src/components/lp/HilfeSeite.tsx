@@ -12,6 +12,7 @@ import HilfeDurchfuehrung from './hilfe/HilfeDurchfuehrung'
 import HilfeKorrektur from './hilfe/HilfeKorrektur'
 import HilfeBloom from './hilfe/HilfeBloom'
 import HilfeFAQ from './hilfe/HilfeFAQ'
+import { PageTitle } from '../shared/PageTitle'
 
 interface Props {
   onSchliessen: () => void
@@ -56,11 +57,9 @@ export default function HilfeSeite({ onSchliessen, initialKategorie }: Props) {
       storageKey="hilfe-breite"
     >
       <div ref={panelRef} className="flex flex-col h-full">
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between shrink-0">
-          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-            Hilfe & Anleitung
-          </h2>
+        <PageTitle titel="Hilfe" />
+        {/* Schliessen-Aktion */}
+        <div className="px-6 py-2 border-b border-slate-200 dark:border-slate-700 flex items-center justify-end shrink-0">
           <button
             onClick={onSchliessen}
             className="px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"

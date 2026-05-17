@@ -16,6 +16,7 @@ import ProfilTab from './einstellungen/ProfilTab'
 import AdminTab from './einstellungen/AdminTab'
 import TestdatenTab from './einstellungen/TestdatenTab'
 import { TagsTab } from '../lp/einstellungen/tags/TagsTab'
+import { PageTitle } from '../shared/PageTitle'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -86,11 +87,20 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   return (
     <ResizableSidebar
       mode="overlay"
-      title="Einstellungen"
       onClose={onSchliessen}
       topOffset={headerH}
       storageKey="einstellungen-breite"
     >
+      <PageTitle titel="Einstellungen" />
+      {/* Schliessen-Aktion (analog HilfeSeite, ersetzt das interne ResizableSidebar-Header-X) */}
+      <div className="px-6 py-2 border-b border-slate-200 dark:border-slate-700 flex items-center justify-end shrink-0">
+        <button
+          onClick={onSchliessen}
+          className="px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors cursor-pointer"
+        >
+          Schliessen
+        </button>
+      </div>
       <div className="p-4">
       {/* Tabs */}
       <div className="pb-3">

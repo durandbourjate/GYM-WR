@@ -10,6 +10,7 @@ import KorrekturListe from './KorrekturListe'
 import KorrekturEinsicht from './KorrekturEinsicht'
 import AktivePruefungen from './AktivePruefungen'
 import { SuSAppHeaderContainer } from './SuSAppHeaderContainer'
+import { PageTitle } from '../shared/PageTitle'
 
 // AppUeben lazy laden — bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
 const AppUeben = lazyMitRetry(() => import('../../AppUeben'))
@@ -32,6 +33,10 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
   // Modus aus URL ableiten
   const location = useLocation()
   const modus = location.pathname.startsWith('/sus/pruefen') ? 'pruefen' as const : 'ueben' as const
+  const surfaceTitel = ({
+    ueben: 'Üben',
+    pruefen: 'Prüfen',
+  } as const)[modus]
 
   const [korrekturId, setKorrekturId] = useState<string | null>(null)
   const [loginBridged, setLoginBridged] = useState(false)
@@ -148,6 +153,8 @@ export default function SuSStartseite({ onKorrekturWaehle: _onKorrekturWaehle }:
       <SuSAppHeaderContainer
         onHilfe={() => {}}
       />
+
+      <PageTitle titel={surfaceTitel} />
 
       <main className="max-w-7xl mx-auto p-6">
         {/* Aktive Prüfungen (pollt Backend) */}
