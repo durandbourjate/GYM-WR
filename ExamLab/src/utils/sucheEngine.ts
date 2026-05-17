@@ -54,17 +54,42 @@ export function levenshtein(a: string, b: string, maxDist: number = Infinity): n
 /**
  * Bewertet ein Match. Score-Tabelle: Titel-Prefix=100, ID-Exact=95,
  * Titel-Substring=70, Tag/Thema=50, Subtitel=30. No-match=0.
+ *
+ * Fuzzy-Fallback (C.5): Bei title-Feld und needle.length >= 3 wird
+ * Levenshtein-Distanz pro Token im Haystack berechnet (max. dist=2).
+ * ID/tag/subTitel bleiben exact-only (ID-Fuzzy würde Ranking verfälschen).
  */
 export function scoreFromMatch(haystack: string, needle: string, feld: MatchFeld): number {
   const h = normalizeForSuche(haystack)
   const n = normalizeForSuche(needle)
-  if (!n || !h.includes(n)) return 0
-  if (feld === 'id') return SCORE_BOUNDS.ID_EXACT
-  if (feld === 'titel') {
-    return h.startsWith(n) ? SCORE_BOUNDS.TITEL_PREFIX : SCORE_BOUNDS.TITEL_SUBSTRING
+  if (!n) return 0
+
+  // 1. Exact-Substring (Phase-1-Pfad)
+  if (h.includes(n)) {
+    if (feld === 'id') return SCORE_BOUNDS.ID_EXACT
+    if (feld === 'titel') {
+      return h.startsWith(n) ? SCORE_BOUNDS.TITEL_PREFIX : SCORE_BOUNDS.TITEL_SUBSTRING
+    }
+    if (feld === 'tag') return SCORE_BOUNDS.TAG_THEMA
+    return SCORE_BOUNDS.SUBTITEL
   }
-  if (feld === 'tag') return SCORE_BOUNDS.TAG_THEMA
-  return SCORE_BOUNDS.SUBTITEL
+
+  // 2. Fuzzy-Fallback (C.5): NUR für titel, min-length 3
+  // ID/tag/subTitel bleiben exact-only (Spec §3.3: ID-Fuzzy würde Ranking verfälschen)
+  if (feld === 'titel' && n.length >= 3) {
+    const tokens = h.split(/\s+/)
+    let minDist = Infinity
+    for (const t of tokens) {
+      const d = levenshtein(t, n, 2)
+      if (d < minDist) minDist = d
+      if (minDist === 0) break
+    }
+    if (minDist <= 2) {
+      return Math.max(0, SCORE_BOUNDS.TITEL_SUBSTRING - (minDist === 1 ? 10 : 20))
+    }
+  }
+
+  return 0
 }
 
 /**

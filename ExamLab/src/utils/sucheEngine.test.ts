@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { normalizeForSuche, scoreFromMatch, findeHighlightStellen, gruppiereUndLimitiere, fuehreSucheAus, levenshtein } from './sucheEngine'
 import type { SucheTreffer, SucheIndex } from '../types/suche'
+import { SCORE_BOUNDS } from '../types/suche'
 import type { TabDefinition } from './tabRegistry'
 
 describe('normalizeForSuche', () => {
@@ -179,6 +180,38 @@ describe('fuehreSucheAus', () => {
     expect(ergebnis.treffer.length).toBeGreaterThanOrEqual(2)
     expect(ergebnis.proQuelleGesamt['einstellungen-tab']).toBe(1)
     expect(ergebnis.proQuelleGesamt.kurs).toBe(1)
+  })
+})
+
+describe('scoreFromMatch — Fuzzy-Fallback (C.5)', () => {
+  it('liefert exact-Score wenn substring matched (Fuzzy nicht aktiv)', () => {
+    // 'bilan' ist Substring von 'bilanz' → exact-Pfad → startsWith → TITEL_PREFIX
+    expect(scoreFromMatch('Bilanz', 'bilan', 'titel')).toBe(SCORE_BOUNDS.TITEL_PREFIX)
+  })
+  it('liefert TITEL_SUBSTRING - 10 bei dist=1 titel', () => {
+    // 'bilantz' gegen token 'bilanz' → dist=1 → 70 - 10 = 60
+    expect(scoreFromMatch('Bilanz', 'bilantz', 'titel')).toBe(SCORE_BOUNDS.TITEL_SUBSTRING - 10)
+  })
+  it('liefert TITEL_SUBSTRING - 20 bei dist=2 titel', () => {
+    // 'bilance' gegen token 'bilanz' → sub z→c + ins e = dist 2 → 70 - 20 = 50
+    expect(scoreFromMatch('Bilanz', 'bilance', 'titel')).toBe(SCORE_BOUNDS.TITEL_SUBSTRING - 20)
+  })
+  it('liefert 0 bei dist >= 3 titel', () => {
+    // 'xyzabc' gegen token 'bilanz' → dist=5 → kein Match
+    expect(scoreFromMatch('Bilanz', 'xyzabc', 'titel')).toBe(0)
+  })
+  it('respektiert min-length 3 (kurze needle kein fuzzy)', () => {
+    // 'ab' (2 chars) → kein Substring-Match + zu kurz für Fuzzy → 0
+    expect(scoreFromMatch('Bilanz', 'ab', 'titel')).toBe(0)
+  })
+  it('fuzzy NICHT auf id-Feld (verworfen, würde Ranking verfälschen)', () => {
+    expect(scoreFromMatch('abc-123', 'abc-124', 'id')).toBe(0)
+  })
+  it('fuzzy NICHT auf tag-Feld', () => {
+    expect(scoreFromMatch('Konjunktur', 'konjuncture', 'tag')).toBe(0)
+  })
+  it('fuzzy NICHT auf subTitel-Feld', () => {
+    expect(scoreFromMatch('Konjunktur', 'konjuncture', 'subTitel')).toBe(0)
   })
 })
 
