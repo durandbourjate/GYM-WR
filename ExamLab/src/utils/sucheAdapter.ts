@@ -3,9 +3,10 @@ import type { SucheTreffer, SucheIconKey, SucheQuelle } from '../types/suche'
 import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
 import type { PruefungsConfig } from '../types/pruefung'
-import type { FrageSummary } from '../types/fragen-storage'
+import type { FrageSummary, Frage } from '../types/fragen-storage'
 import type { KlassenlistenEintrag } from '../services/klassenlistenApi'
 import { tagNamenFuerFrage } from './frageTagNamen'
+import { generiereSnippet } from './sucheVolltextHelpers'
 
 const ROUTE_BUILDERS = {
   einstellungenTab: (tab: TabDefinition) => tab.route,
@@ -162,6 +163,68 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
       titel,
       subTitel: f.thema || undefined,
       highlightStellen: findeHighlightStellen(titel, query, 'titel'),
+      navigation: { route: ROUTE_BUILDERS.frage(f.id) },
+      score,
+      iconKey: 'frage',
+    })
+  }
+  return treffer
+}
+
+/**
+ * Liefert den primären Fragetext eines beliebigen Frage-Subtyps.
+ * FiBu-Typen (buchungssatz, tkonto, kontenbestimmung, bilanzstruktur) haben
+ * kein `fragetext`-Feld — sie nutzen `aufgabentext` oder `geschaeftsfall`.
+ */
+function fragetextVonFrage(f: Frage): string {
+  if ('fragetext' in f && typeof f.fragetext === 'string') return f.fragetext
+  if ('aufgabentext' in f && typeof f.aufgabentext === 'string') return f.aufgabentext
+  if ('geschaeftsfall' in f && typeof f.geschaeftsfall === 'string') return f.geschaeftsfall
+  return ''
+}
+
+/**
+ * Cluster C.4 (18.05.2026): Volltext-Suche über vollständige Frage-Objekte.
+ * Matcht zusätzlich zu indexFragen auch auf fragetext (vollständig) und musterlosung.
+ * Bei Volltext-Match wird ein Kontext-Snippet als subTitel angezeigt.
+ * Arbeitet auf `Frage` (vollständig) statt `FrageSummary` (lite).
+ */
+export function indexFragenVolltext(query: string, fragen: Frage[]): SucheTreffer[] {
+  const treffer: SucheTreffer[] = []
+  for (const f of fragen) {
+    const haupttext = fragetextVonFrage(f)
+    const titel = haupttext.length > 80 ? haupttext.slice(0, 77) + '…' : haupttext
+    const titelScore = scoreFromMatch(titel, query, 'titel')
+    const idScore = scoreFromMatch(f.id, query, 'id')
+    const tagText = tagsAlsText(f.tagIds ?? [])
+    const tagScore = tagText ? scoreFromMatch(tagText, query, 'tag') : 0
+    const themaScore = f.thema ? scoreFromMatch(f.thema, query, 'tag') : 0
+
+    // Volltext-Felder: vollständiger Fragetext und Musterlösung
+    const fragetextScore = haupttext ? scoreFromMatch(haupttext, query, 'subTitel') : 0
+    // Lokale Variable verhindert `as string`-Cast: typeof-Guard bereits hier
+    const loesungText = typeof f.musterlosung === 'string' ? f.musterlosung : ''
+    const loesungScore = loesungText ? scoreFromMatch(loesungText, query, 'subTitel') : 0
+
+    const score = Math.max(titelScore, idScore, tagScore, themaScore, fragetextScore, loesungScore)
+    if (score === 0) continue
+
+    // volltextMatch: der beste Score kommt aus einem Volltext-Feld (nicht titel/id/tag)
+    const volltextMatch = score === fragetextScore || score === loesungScore
+    const snippet = volltextMatch
+      ? generiereSnippet(score === loesungScore ? loesungText : haupttext, query, 50)
+      : (f.thema || undefined)
+
+    treffer.push({
+      quelle: 'frage',
+      id: f.id,
+      titel,
+      subTitel: snippet,
+      highlightStellen: findeHighlightStellen(
+        volltextMatch ? (snippet ?? '') : titel,
+        query,
+        volltextMatch ? 'subTitel' : 'titel',
+      ),
       navigation: { route: ROUTE_BUILDERS.frage(f.id) },
       score,
       iconKey: 'frage',

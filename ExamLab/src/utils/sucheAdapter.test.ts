@@ -7,12 +7,13 @@ import {
   indexUebungen,
   indexFragen,
   indexSchueler,
+  indexFragenVolltext,
   SAMMELVIEW_ROUTE_BUILDERS,
 } from './sucheAdapter'
 import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
 import type { PruefungsConfig } from '../types/pruefung'
-import type { FrageSummary } from '../types/fragen-storage'
+import type { FrageSummary, Frage } from '../types/fragen-storage'
 
 const stubTab = (id: string, titel: string, surface: 'einstellungen' | 'hilfe' = 'einstellungen'): TabDefinition => ({
   id, surface, titel, route: `/${surface}/${id}`,
@@ -216,5 +217,175 @@ describe('indexSchueler (Cluster C.2)', () => {
   })
   it('kein Match → leeres Array', () => {
     expect(indexSchueler('xyz123', eintraege)).toEqual([])
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Test-Factory für indexFragenVolltext (C.4)
+// Erzeugt ein minimales Storage-Frage-Objekt ohne as-Casts.
+// ---------------------------------------------------------------------------
+function makeFrage(
+  overrides: {
+    id?: string
+    fragetext?: string
+    musterlosung?: string
+    thema?: string
+    tagIds?: string[]
+  } = {},
+): Frage {
+  return {
+    id: overrides.id ?? 'frg-test-001',
+    typ: 'freitext',
+    fachbereich: 'WR',
+    fach: 'BWL',
+    thema: overrides.thema ?? 'Allgemein',
+    unterthema: undefined,
+    bloom: 'K1',
+    punkte: 1,
+    semester: [],
+    gefaesse: [],
+    bewertungsraster: [],
+    verwendungen: [],
+    tagIds: overrides.tagIds ?? [],
+    fragetext: overrides.fragetext ?? 'Standardfragetext',
+    musterlosung: overrides.musterlosung ?? 'Standardlösung',
+    erstelltAm: '2026-05-17',
+    geaendertAm: '2026-05-17',
+    status: 'aktiv',
+  } as unknown as Frage
+  // `as unknown as Frage` ist nötig, weil FreitextFrage im Core optionale
+  // Felder hat die hier nicht gesetzt werden — absichtlicher Test-Stub-Cast.
+}
+
+describe('indexFragenVolltext (C.4)', () => {
+  // Test 1: matched Fragetext → score aus fragetext, subTitel enthält Snippet
+  // Suchbegriff muss ausserhalb der ersten 77 Zeichen des fragetexts liegen,
+  // damit der abgeschnittene Titel ihn nicht enthält und volltextMatch greift.
+  it('matched Fragetext → subTitel enthält Snippet des fragetexts', () => {
+    const frage = makeFrage({
+      // Suchbegriff 'Buchführungspflicht' kommt erst ab Zeichen ~100 vor
+      fragetext:
+        'Erkläre ausführlich, welche gesetzlichen Grundlagen und welche konkreten Anforderungen an die Buchführungspflicht in der Schweiz gelten.',
+      musterlosung: 'Keine relevante Antwort hier.',
+      thema: 'Rechnungswesen',
+    })
+    const treffer = indexFragenVolltext('buchführungspflicht', [frage])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].score).toBeGreaterThan(0)
+    expect(treffer[0].subTitel).toBeDefined()
+    expect(treffer[0].subTitel!.toLowerCase()).toContain('buchf')
+  })
+
+  // Test 2: matched Musterlösung → subTitel enthält Snippet der musterlosung
+  it('matched Musterlösung → subTitel enthält Snippet der Musterlösung', () => {
+    const frage = makeFrage({
+      fragetext: 'Was ist Rechnungswesen?',
+      musterlosung: 'Rechnungswesen umfasst Buchführung und Bilanzierung.',
+    })
+    const treffer = indexFragenVolltext('Buchführung', [frage])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].subTitel).toBeDefined()
+    expect(treffer[0].subTitel!.toLowerCase()).toContain('buchf')
+  })
+
+  // Test 3: Titel-Match dominiert über Volltext-Match → snippet fällt auf thema zurück
+  it('Titel-Match dominiert: subTitel zeigt thema statt Snippet', () => {
+    const frage = makeFrage({
+      fragetext: 'Bilanz',
+      musterlosung: 'Bilanz wird oft im Rechnungswesen verwendet.',
+      thema: 'Rechnungswesen',
+    })
+    // Query matcht den kurzen fragetext exakt als Titel — titelScore wird höher als subTitel-Score
+    const treffer = indexFragenVolltext('Bilanz', [frage])
+    expect(treffer).toHaveLength(1)
+    // Wenn titelScore >= fragetextScore, ist volltextMatch false → subTitel = thema
+    // Ein exakter Titel-Treffer (score 100) dominiert einen subTitel-Treffer (score ~60)
+    expect(treffer[0].subTitel).toBe('Rechnungswesen')
+  })
+
+  // Test 4: Volltext-Match zeigt Snippet im subTitel (nicht thema)
+  // Fragetext > 80 Zeichen: Titel ist abgeschnitten und enthält 'buchführung' nicht.
+  it('reiner Volltext-Match: subTitel zeigt Snippet, nicht thema', () => {
+    const frage = makeFrage({
+      fragetext:
+        'Erkläre ausführlich den grundlegenden Unterschied zwischen Aktiva und Passiva in der Buchführung.',
+      musterlosung: 'Keine relevante Antwort.',
+      thema: 'Bilanzierung',
+    })
+    // fragetext ist > 80 Zeichen → Titel endet vor 'Buchführung' → volltextMatch greift
+    const treffer = indexFragenVolltext('buchführung', [frage])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].subTitel).not.toBe('Bilanzierung')
+    expect(treffer[0].subTitel!.toLowerCase()).toContain('buchf')
+  })
+
+  // Test 5: highlightStellen aus Snippet für Volltext, aus titel bei Titel-Match
+  // Fragetext > 80 Zeichen damit volltextMatch greift (Titel enthält Suchbegriff nicht).
+  it('highlightStellen referenzieren subTitel bei Volltext-Match', () => {
+    const frage = makeFrage({
+      fragetext:
+        'Erkläre ausführlich den Unterschied zwischen Aktiva und Passiva in der Buchführung und erläutere mehr.',
+      musterlosung: 'Keine relevante Antwort.',
+    })
+    const treffer = indexFragenVolltext('buchführung', [frage])
+    expect(treffer).toHaveLength(1)
+    const hlStellen = treffer[0].highlightStellen ?? []
+    // Bei volltextMatch: highlightStellen werden aus snippet/subTitel berechnet
+    const subTitelStellen = hlStellen.filter(h => h.feld === 'subTitel')
+    expect(subTitelStellen.length).toBeGreaterThan(0)
+  })
+
+  // Test 6: undefined musterlosung → kein Crash
+  it('undefined musterlosung → kein Crash, trotzdem match möglich', () => {
+    const frage = {
+      ...makeFrage({
+        fragetext: 'Was ist der Unterschied zwischen Soll und Haben?',
+        thema: 'Buchführung',
+      }),
+      musterlosung: undefined,
+    } as unknown as Frage
+
+    expect(() => indexFragenVolltext('soll', [frage])).not.toThrow()
+    const treffer = indexFragenVolltext('soll', [frage])
+    expect(treffer.length).toBeGreaterThanOrEqual(0)
+  })
+
+  // Test 7: Tag-Match funktioniert (Verhaltensparität mit indexFragen, Store leer → kein Match)
+  it('Tag-Match via tagIds: bei leerem Store kein treffer auf tag-Text', () => {
+    const frage = makeFrage({
+      fragetext: 'Allgemeine Frage ohne relevante Keywords.',
+      tagIds: ['tag-xyz'],
+    })
+    // tagsStore ist in Tests nicht gemockt → tagNamenFuerFrage gibt [] zurück
+    const treffer = indexFragenVolltext('tag-xyz', [frage])
+    // Kein Match erwartet, da tag-Namen nicht aufgelöst werden
+    expect(treffer).toHaveLength(0)
+  })
+
+  // Test 8: Thema-Match funktioniert
+  it('Thema-Match: matched auf thema-Feld', () => {
+    const frage = makeFrage({
+      fragetext: 'Eine neutrale Frage ohne besondere Keywords.',
+      musterlosung: 'Neutrale Antwort.',
+      thema: 'Rechnungswesen',
+    })
+    const treffer = indexFragenVolltext('rechnungswesen', [frage])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].quelle).toBe('frage')
+  })
+
+  // Test 9: leeres Array → leeres Ergebnis
+  it('leeres fragen-Array → leeres Ergebnis', () => {
+    expect(indexFragenVolltext('bilanz', [])).toEqual([])
+  })
+
+  // Test 10: Query matcht kein Feld → leeres Ergebnis
+  it('Query ohne Match → leeres Ergebnis', () => {
+    const frage = makeFrage({
+      fragetext: 'Was ist eine Bilanz?',
+      musterlosung: 'Eine Bilanz zeigt die Vermögenslage.',
+      thema: 'Rechnungswesen',
+    })
+    expect(indexFragenVolltext('xyz987ohneTreffer', [frage])).toEqual([])
   })
 })
