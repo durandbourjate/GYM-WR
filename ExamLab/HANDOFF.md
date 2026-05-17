@@ -8,7 +8,43 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** Cluster H Phase 3 KOMPLETT (17.05.2026 NACHT-3, HEAD `05b8441`).
+**HEAD main + preview:** Cluster E.3-E.5 Spec + Plan ready-to-execute (17.05.2026 NACHT-4, HEAD `f50df5c`).
+
+## Cluster E.3-E.5 BEREIT FÜR IMPLEMENTIERUNG (17.05.2026 NACHT-4)
+
+**Spec:** `docs/superpowers/specs/2026-05-17-cluster-e-3-bis-e-5-favoriten-design.md` (Reviewer-approved Iteration 2)
+**Plan:** `docs/superpowers/plans/2026-05-17-cluster-e-3-bis-e-5-favoriten.md` (Reviewer-approved Iteration 2)
+
+**Was zu tun ist nächste Session:**
+1. Fresh session öffnen
+2. HANDOFF.md lesen (diese Sektion)
+3. Plan-Datei laden
+4. `superpowers:subagent-driven-development` skill invoken mit Plan-Pfad
+5. Fresh subagent pro Phase mit two-stage review
+
+**7 Phasen (je 1 Commit):**
+- Phase 1 Foundation — Atomic Type-Switch (Favorit-Type isoliert, LPProfil-Type-Wechsel, useLPDashboardData-Migrator raus, in 1 Commit für tsc-clean)
+- Phase 2 favoritenStore Refactor (persist raus, ladeAusBackend + optimistic + Server-Refetch)
+- Phase 3 App-Mount Hook + Skeleton (3 Karten während Loading)
+- Phase 4 TabStarToggle Komponente (~40 Z. + 5 TDD-Tests)
+- Phase 5 TabStarToggle Einbindung in 20 Tab-Headers (10 Hilfe + 10 Einstellungen, Pfade in 5 Verzeichnissen)
+- Phase 6 FavoritenPicker Modal mit Tab-Registry
+- Phase 7 Browser-E2E Cross-Device
+
+**Architektur-Hauptpunkte (Memory):**
+- Backend = Source of Truth, KEIN Subscriber (explizite Trigger)
+- Optimistic Update + Server-Refetch bei Error (kein Client-Rollback)
+- Kein Migration-Code von localStorage (nicht in Produktion)
+- Demo-Mode bleibt frontend-only
+- `Favorit`-Type wird nach `src/types/favorit.ts` ausgelagert (no circular import)
+- LPProfil.favoriten: AppOrt[] → Favorit[] (breaking change OK)
+- `speichereLPProfil` schickt komplettes Profil (Apps-Script-Endpoint limit)
+
+**Pre-Push-Pflicht:** `cd ExamLab && npm run ci-check`. Push-Reihenfolge: preview-first, dann main.
+
+---
+
+## Vorheriger Stand — Cluster H Phase 3 KOMPLETT (17.05.2026 NACHT-3, HEAD `05b8441`)
 
 ## Cluster H Phase 3 KOMPLETT (17.05.2026)
 
