@@ -6,6 +6,7 @@ import {
   indexPruefungen,
   indexUebungen,
   indexFragen,
+  indexSchueler,
   SAMMELVIEW_ROUTE_BUILDERS,
 } from './sucheAdapter'
 import type { TabDefinition } from './tabRegistry'
@@ -174,5 +175,46 @@ describe('SAMMELVIEW_ROUTE_BUILDERS', () => {
   })
   it('encoded Sonderzeichen werden via encodeURIComponent escaped', () => {
     expect(SAMMELVIEW_ROUTE_BUILDERS.frage('a&b')).toBe('/fragensammlung?suche=a%26b')
+  })
+})
+
+const eintraege = [
+  { vorname: 'Anna', name: 'Müller', email: 'anna.mueller@stud.gymhofwil.ch', klasse: '28c' },
+  { vorname: 'Ben', name: 'Schmidt', email: 'ben.s@stud.gymhofwil.ch', klasse: '27a' },
+  { vorname: 'Clara', name: 'Weber', email: 'clara.w@stud.gymhofwil.ch', klasse: '28c', kurs: 'WR-SF' },
+]
+
+describe('indexSchueler (Cluster C.2)', () => {
+  it('matched vorname → Anna Müller', () => {
+    const treffer = indexSchueler('anna', eintraege)
+    expect(treffer.length).toBeGreaterThanOrEqual(1)
+    expect(treffer[0].titel).toBe('Anna Müller')
+    expect(treffer[0].quelle).toBe('schueler')
+  })
+  it('matched nachname → Ben Schmidt', () => {
+    const treffer = indexSchueler('Schmidt', eintraege)
+    expect(treffer.map(t => t.titel)).toContain('Ben Schmidt')
+  })
+  it('matched email als id-exact → Anna Müller', () => {
+    const treffer = indexSchueler('anna.mueller', eintraege)
+    expect(treffer.map(t => t.titel)).toContain('Anna Müller')
+  })
+  it('matched klasse → 2 Schüler in 28c', () => {
+    const treffer = indexSchueler('28c', eintraege)
+    expect(treffer.map(t => t.titel).sort()).toEqual(['Anna Müller', 'Clara Weber'])
+  })
+  it('subTitel zeigt klasse + kurs wenn vorhanden', () => {
+    const treffer = indexSchueler('clara', eintraege)
+    expect(treffer[0].subTitel).toBe('28c · WR-SF')
+  })
+  it('subTitel nur klasse wenn kein kurs', () => {
+    const treffer = indexSchueler('anna', eintraege)
+    expect(treffer[0].subTitel).toBe('28c')
+  })
+  it('leere eintraege → leeres Array', () => {
+    expect(indexSchueler('anna', [])).toEqual([])
+  })
+  it('kein Match → leeres Array', () => {
+    expect(indexSchueler('xyz123', eintraege)).toEqual([])
   })
 })

@@ -3,6 +3,7 @@ import { useStammdatenStore } from '../store/stammdatenStore'
 import { useConfigsListStore } from '../store/configsListStore'
 import { useFragensammlungStore } from '../store/fragensammlungStore'
 import { useAuthStore } from '../store/authStore'
+import { useKlassenlistenStore } from '../store/klassenlistenStore'
 import { tabsFuerSurface } from '../utils/tabRegistry'
 import { filtereTestdatenWennDeaktiviert } from '../utils/testdaten/filter'
 import type { SucheIndex } from '../types/suche'
@@ -24,6 +25,7 @@ export function useSucheIndex(): SucheIndex {
   const istAdminFn = useStammdatenStore(s => s.istAdmin)
   const configs = useConfigsListStore(s => s.configs)
   const fragen = useFragensammlungStore(s => s.summaries)
+  const schueler = useKlassenlistenStore(s => s.daten)
 
   // istAdminFn ist im Produktiv-Store immer eine Funktion; in Test-Mocks
   // kann sie fehlen — Fallback auf false.
@@ -43,9 +45,10 @@ export function useSucheIndex(): SucheIndex {
       einstellungenTabs,
       hilfeTabs,
       kurse: kurseGefiltert,
+      schueler: schueler ?? [],    // NEU C.2: KlassenlistenEintrag[] aus klassenlistenStore
       pruefungen: configsGefiltert.filter(c => c.typ !== 'formativ'),
       uebungen: configsGefiltert.filter(c => c.typ === 'formativ'),
       fragen: fragenGefiltert,
     }
-  }, [istAdmin, stammdaten, configs, fragen, testdatenSichtbar])
+  }, [istAdmin, stammdaten, configs, fragen, testdatenSichtbar, schueler])
 }
