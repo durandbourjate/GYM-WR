@@ -1,6 +1,6 @@
 import type { SucheTreffer, SucheErgebnis, ProQuelleZahlen, SucheQuelle, HighlightStelle, SucheIndex } from '../types/suche'
 import { QUELLEN_REIHENFOLGE, LEERES_ERGEBNIS, SCORE_BOUNDS } from '../types/suche'
-import { indexEinstellungenTabs, indexHilfeTabs, indexKurse, indexSchueler, indexPruefungen, indexUebungen, indexFragen } from './sucheAdapter'
+import { indexEinstellungenTabs, indexHilfeTabs, indexKurse, indexSchueler, indexPruefungen, indexUebungen, indexFragen, indexFragenVolltext } from './sucheAdapter'
 
 /**
  * Normalisiert Text für Suche:
@@ -158,9 +158,23 @@ export function gruppiereUndLimitiere(
 /**
  * Orchestrator: führt Suche aus allen 6 Adaptern aus und gruppiert.
  * Min-Query-Guard zentral hier — Adapter dürfen davon ausgehen, dass query gültig ist.
+ *
+ * Cluster C.4: opts.volltext schaltet auf indexFragenVolltext (vollständige Frage-Objekte)
+ * um, sofern index.fragenVoll vorhanden ist. Ohne fragenVoll fällt der Modus auf
+ * indexFragen (Summary) zurück. Volltext-Modus erhöht Min-Query-Länge auf 3.
  */
-export function fuehreSucheAus(query: string, index: SucheIndex): SucheErgebnis {
-  if (normalizeForSuche(query).length < 2) return LEERES_ERGEBNIS
+export function fuehreSucheAus(
+  query: string,
+  index: SucheIndex,
+  opts?: { volltext?: boolean },
+): SucheErgebnis {
+  const normalized = normalizeForSuche(query)
+  const minLen = opts?.volltext ? 3 : 2
+  if (normalized.length < minLen) return LEERES_ERGEBNIS
+
+  const fragenTreffer = opts?.volltext && index.fragenVoll
+    ? indexFragenVolltext(query, index.fragenVoll)
+    : indexFragen(query, index.fragen)
 
   const alle: SucheTreffer[] = [
     ...indexEinstellungenTabs(query, index.einstellungenTabs),
@@ -169,7 +183,7 @@ export function fuehreSucheAus(query: string, index: SucheIndex): SucheErgebnis 
     ...indexSchueler(query, index.schueler),    // NEU C.2
     ...indexPruefungen(query, index.pruefungen),
     ...indexUebungen(query, index.uebungen),
-    ...indexFragen(query, index.fragen),
+    ...fragenTreffer,
   ]
 
   return gruppiereUndLimitiere(alle, { maxProQuelle: 5 })

@@ -3,6 +3,7 @@ import { normalizeForSuche, scoreFromMatch, findeHighlightStellen, gruppiereUndL
 import type { SucheTreffer, SucheIndex } from '../types/suche'
 import { SCORE_BOUNDS } from '../types/suche'
 import type { TabDefinition } from './tabRegistry'
+import type { Frage } from '../types/fragen-storage'
 
 describe('normalizeForSuche', () => {
   it('lowercase', () => {
@@ -213,6 +214,71 @@ describe('scoreFromMatch — Fuzzy-Fallback (C.5)', () => {
   })
   it('fuzzy NICHT auf subTitel-Feld', () => {
     expect(scoreFromMatch('Konjunktur', 'konjuncture', 'subTitel')).toBe(0)
+  })
+})
+
+describe('fuehreSucheAus — Volltext (C.4)', () => {
+  // Minimales Frage-Objekt für Volltext-Tests (nur benötigte Felder).
+  // Defensive: Test-Stub hat nicht alle FrageBase-Pflichtfelder — as unknown as Frage ist sicher
+  // weil indexFragenVolltext nur id, fragetext, musterlosung, tagIds, thema liest.
+  function makeFrageVoll(id: string, fragetext: string, musterlosung = ''): Frage {
+    return { id, typ: 'freitext', fragetext, musterlosung, tagIds: [] } as unknown as Frage /* Defensive: Test-Stub */
+  }
+
+  it('opts.volltext + index.fragenVoll → switcht zu indexFragenVolltext (findet Volltext-Treffer)', () => {
+    // Fragetext > 80 Zeichen: langer Satz, Keyword am Ende (nicht im Summary-Titel)
+    const langerText =
+      'Diese Frage handelt von etwas sehr langem sodass der Titel abgeschnitten wird aber: EOSAKWORT'
+    const index: SucheIndex = {
+      ...leererIndex(),
+      fragen: [], // Summary-Index leer → kein Treffer ohne Volltext
+      fragenVoll: [makeFrageVoll('fv1', langerText)],
+    }
+    // Ohne opts.volltext: query matcht nur den gekürzten Titel (77 Zeichen) → kein Treffer
+    const ohneVolltext = fuehreSucheAus('EOSAKWORT', index)
+    expect(ohneVolltext.treffer).toHaveLength(0)
+
+    // Mit opts.volltext: indexFragenVolltext sucht im vollen Text → Treffer
+    const mitVolltext = fuehreSucheAus('EOSAKWORT', index, { volltext: true })
+    expect(mitVolltext.treffer.length).toBeGreaterThanOrEqual(1)
+    expect(mitVolltext.treffer[0].id).toBe('fv1')
+  })
+
+  it('opts.volltext enforces min-length=3 (query "ab" → leer, "abc" → Suche)', () => {
+    const index: SucheIndex = {
+      ...leererIndex(),
+      fragenVoll: [makeFrageVoll('fv2', 'Eine Frage mit abc als Inhalt')],
+    }
+    // "ab" (2 Zeichen) → unter Volltext-MinLen 3 → LEERES_ERGEBNIS
+    const kurzeQuery = fuehreSucheAus('ab', index, { volltext: true })
+    expect(kurzeQuery.treffer).toHaveLength(0)
+
+    // "abc" (3 Zeichen) → Suche läuft, Treffer gefunden
+    const dreizeichen = fuehreSucheAus('abc', index, { volltext: true })
+    expect(dreizeichen.treffer.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('opts.volltext aber index.fragenVoll fehlt → fällt zurück auf indexFragen (summary)', () => {
+    const index: SucheIndex = {
+      ...leererIndex(),
+      fragen: [{ id: 'fs1', fragetext: 'Bilanzanalyse', tagIds: [] } as unknown as SucheIndex['fragen'][0]], /* Defensive: Test-Stub */
+      // fragenVoll absichtlich nicht gesetzt (undefined)
+    }
+    const ergebnis = fuehreSucheAus('Bilanz', index, { volltext: true })
+    // Sollte indexFragen verwenden und den Summary-Eintrag finden
+    expect(ergebnis.treffer.length).toBeGreaterThanOrEqual(1)
+    expect(ergebnis.treffer[0].id).toBe('fs1')
+  })
+
+  it('ohne opts → Verhalten unverändert, min-length=2 gilt weiterhin', () => {
+    const index: SucheIndex = {
+      ...leererIndex(),
+      fragen: [{ id: 'fs2', fragetext: 'EK', tagIds: [] } as unknown as SucheIndex['fragen'][0]], /* Defensive: Test-Stub */
+    }
+    // 2-Zeichen-Query läuft ohne opts (normal mode min-length=2)
+    const ergebnis = fuehreSucheAus('EK', index)
+    // EK ist exakter Treffer auf Titel
+    expect(ergebnis.treffer.length).toBeGreaterThanOrEqual(1)
   })
 })
 

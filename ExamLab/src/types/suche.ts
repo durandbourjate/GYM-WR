@@ -3,7 +3,7 @@ import { File, FileText, HelpCircle, BookOpen, Repeat, Settings, GraduationCap, 
 import type { TabDefinition } from '../utils/tabRegistry'
 import type { KursDefinition } from './stammdaten'
 import type { PruefungsConfig } from './pruefung'
-import type { FrageSummary } from './fragen-storage'
+import type { FrageSummary, Frage } from './fragen-storage'
 import type { KlassenlistenEintrag } from '../services/klassenlistenApi'
 
 export type SucheQuelle =
@@ -53,6 +53,7 @@ export interface SucheIndex {
   pruefungen: PruefungsConfig[]
   uebungen: PruefungsConfig[]
   fragen: FrageSummary[]
+  fragenVoll?: Frage[]   // Cluster C.4: lazy-geladene Vollobjekte für Volltext-Suche
 }
 
 export const QUELLEN_REIHENFOLGE: readonly SucheQuelle[] = [
