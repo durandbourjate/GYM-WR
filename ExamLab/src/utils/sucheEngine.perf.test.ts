@@ -39,6 +39,7 @@ function syntheticIndex(): SucheIndex {
     einstellungenTabs: [],
     hilfeTabs: [],
     kurse,
+    schueler: [],    // NEU C.2
     pruefungen,
     uebungen: [],
     fragen,

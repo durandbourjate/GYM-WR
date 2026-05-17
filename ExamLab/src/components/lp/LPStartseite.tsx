@@ -126,6 +126,19 @@ function LPStartseiteInner() {
     }
   }, [queryParams, zeigHilfe, toggleHilfe, setQueryParams])
 
+  // Cluster C.2: Schüler-Search-Treffer navigiert zu /einstellungen?tab=klassenlisten&suche=...
+  // LPStartseite triggert EinstellungenPanel-Open mit klassenlisten-Tab pre-selektiert.
+  // `?suche=` + `?schueler=` werden vom KlassenlistenTab selber gelesen — hier nicht strippen.
+  useEffect(() => {
+    const tabParam = queryParams.get('tab')
+    if (tabParam === 'klassenlisten' && !zeigEinstellungen) {
+      setZeigEinstellungen(true, 'klassenlisten')
+      const next = new URLSearchParams(queryParams)
+      next.delete('tab')
+      setQueryParams(next, { replace: true })
+    }
+  }, [queryParams, zeigEinstellungen, setZeigEinstellungen, setQueryParams])
+
   // UI-State (nicht Hook-extrahiert)
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
   const [multiDashboardOffen, setMultiDashboardOffen] = useState(false)
@@ -147,8 +160,15 @@ function LPStartseiteInner() {
     const suche = queryParams.get('suche')
     if (!suche || suche === lastSeenSucheParam.current) return
 
-    const aktiverModus = useLPNavigationStore.getState().modus
-    if (aktiverModus !== 'pruefung' && aktiverModus !== 'uebung') return  // Fragensammlung übernimmt selber
+    // Cluster C.2: Wenn ein anderer Surface-Owner via ?tab=… (Param noch da) ODER
+    // bereits geöffnetes EinstellungenPanel mit Klassenlisten-Tab den Param
+    // beansprucht — LPStartseite darf ihn NICHT strippen (Race-Condition mit
+    // KlassenlistenTab das selber `?suche=` liest).
+    if (queryParams.get('tab') === 'klassenlisten') return
+    const navStore = useLPNavigationStore.getState()
+    if (navStore.zeigEinstellungen && navStore.einstellungenTab === 'klassenlisten') return
+
+    if (navStore.modus !== 'pruefung' && navStore.modus !== 'uebung') return  // Fragensammlung übernimmt selber
 
     lastSeenSucheParam.current = suche
     setSuchtext(suche)

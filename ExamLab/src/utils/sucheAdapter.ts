@@ -1,9 +1,10 @@
 import { scoreFromMatch, findeHighlightStellen } from './sucheEngine'
-import type { SucheTreffer, SucheIconKey } from '../types/suche'
+import type { SucheTreffer, SucheIconKey, SucheQuelle } from '../types/suche'
 import type { TabDefinition } from './tabRegistry'
 import type { KursDefinition } from '../types/stammdaten'
 import type { PruefungsConfig } from '../types/pruefung'
 import type { FrageSummary } from '../types/fragen-storage'
+import type { KlassenlistenEintrag } from '../services/klassenlistenApi'
 import { tagNamenFuerFrage } from './frageTagNamen'
 
 const ROUTE_BUILDERS = {
@@ -24,10 +25,11 @@ const ROUTE_BUILDERS = {
  * LP-Default `/` redirected zu /favoriten — daher KEIN gemeinsamer `/`-Pfad mit
  * modus-Param; die Route selbst bestimmt den Modus.
  */
-export const SAMMELVIEW_ROUTE_BUILDERS: Record<'einstellungen-tab' | 'hilfe-tab' | 'kurs' | 'pruefung' | 'uebung' | 'frage', (query: string) => string> = {
+export const SAMMELVIEW_ROUTE_BUILDERS: Record<SucheQuelle, (query: string) => string> = {
   'einstellungen-tab': () => '/einstellungen',
   'hilfe-tab':         () => '/hilfe',
   kurs:                (q) => `/pruefung?suche=${encodeURIComponent(q)}`,
+  schueler:            (q) => `/einstellungen?tab=klassenlisten&suche=${encodeURIComponent(q)}`,
   pruefung:            (q) => `/pruefung?suche=${encodeURIComponent(q)}`,
   uebung:              (q) => `/uebung?suche=${encodeURIComponent(q)}`,
   frage:               (q) => `/fragensammlung?suche=${encodeURIComponent(q)}`,
@@ -163,6 +165,39 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
       navigation: { route: ROUTE_BUILDERS.frage(f.id) },
       score,
       iconKey: 'frage',
+    })
+  }
+  return treffer
+}
+
+/**
+ * Cluster C.2 (17.05.2026): Schüler-Suche über Klassenlisten-Einträge.
+ * Matcht auf Vorname+Name (titel), Email (id-score), Klasse (subTitel-score).
+ * Navigation: Sammelview-Route + `&schueler=<email>` für Direktaufruf.
+ */
+export function indexSchueler(
+  query: string,
+  eintraege: KlassenlistenEintrag[],
+): SucheTreffer[] {
+  const treffer: SucheTreffer[] = []
+  for (const e of eintraege) {
+    const titel = `${e.vorname} ${e.name}`
+    const titelScore = scoreFromMatch(titel, query, 'titel')
+    const emailScore = scoreFromMatch(e.email, query, 'id')
+    const klasseScore = scoreFromMatch(e.klasse, query, 'subTitel')
+    const score = Math.max(titelScore, emailScore, klasseScore)
+    if (score === 0) continue
+    treffer.push({
+      quelle: 'schueler',
+      id: e.email,
+      titel,
+      subTitel: `${e.klasse}${e.kurs ? ' · ' + e.kurs : ''}`,
+      highlightStellen: findeHighlightStellen(titel, query, 'titel'),
+      navigation: {
+        route: `${SAMMELVIEW_ROUTE_BUILDERS.schueler(titel)}&schueler=${encodeURIComponent(e.email)}`,
+      },
+      score,
+      iconKey: 'schueler',
     })
   }
   return treffer

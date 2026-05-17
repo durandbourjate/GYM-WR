@@ -1,6 +1,6 @@
 import type { SucheTreffer, SucheErgebnis, ProQuelleZahlen, SucheQuelle, HighlightStelle, SucheIndex } from '../types/suche'
 import { QUELLEN_REIHENFOLGE, LEERES_ERGEBNIS, SCORE_BOUNDS } from '../types/suche'
-import { indexEinstellungenTabs, indexHilfeTabs, indexKurse, indexPruefungen, indexUebungen, indexFragen } from './sucheAdapter'
+import { indexEinstellungenTabs, indexHilfeTabs, indexKurse, indexSchueler, indexPruefungen, indexUebungen, indexFragen } from './sucheAdapter'
 
 /**
  * Normalisiert Text für Suche:
@@ -166,6 +166,7 @@ export function fuehreSucheAus(query: string, index: SucheIndex): SucheErgebnis 
     ...indexEinstellungenTabs(query, index.einstellungenTabs),
     ...indexHilfeTabs(query, index.hilfeTabs),
     ...indexKurse(query, index.kurse),
+    ...indexSchueler(query, index.schueler),    // NEU C.2
     ...indexPruefungen(query, index.pruefungen),
     ...indexUebungen(query, index.uebungen),
     ...indexFragen(query, index.fragen),

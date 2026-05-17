@@ -1,14 +1,16 @@
 import type { LucideIcon } from 'lucide-react'
-import { File, FileText, HelpCircle, BookOpen, Repeat, Settings, GraduationCap } from 'lucide-react'
+import { File, FileText, HelpCircle, BookOpen, Repeat, Settings, GraduationCap, Users } from 'lucide-react'
 import type { TabDefinition } from '../utils/tabRegistry'
 import type { KursDefinition } from './stammdaten'
 import type { PruefungsConfig } from './pruefung'
 import type { FrageSummary } from './fragen-storage'
+import type { KlassenlistenEintrag } from '../services/klassenlistenApi'
 
 export type SucheQuelle =
   | 'einstellungen-tab'
   | 'hilfe-tab'
   | 'kurs'
+  | 'schueler'       // NEU C.2
   | 'pruefung'
   | 'uebung'
   | 'frage'
@@ -19,7 +21,7 @@ export interface HighlightStelle {
   feld: 'titel' | 'subTitel'
 }
 
-export type SucheIconKey = 'einstellungen' | 'hilfe' | 'kurs' | 'pruefung' | 'uebung' | 'frage' | 'default'
+export type SucheIconKey = 'einstellungen' | 'hilfe' | 'kurs' | 'schueler' | 'pruefung' | 'uebung' | 'frage' | 'default'
 
 export interface SucheTreffer {
   quelle: SucheQuelle
@@ -47,6 +49,7 @@ export interface SucheIndex {
   einstellungenTabs: TabDefinition[]
   hilfeTabs: TabDefinition[]
   kurse: KursDefinition[]
+  schueler: KlassenlistenEintrag[]   // NEU C.2
   pruefungen: PruefungsConfig[]
   uebungen: PruefungsConfig[]
   fragen: FrageSummary[]
@@ -56,6 +59,7 @@ export const QUELLEN_REIHENFOLGE: readonly SucheQuelle[] = [
   'einstellungen-tab',
   'hilfe-tab',
   'kurs',
+  'schueler',       // NEU C.2
   'pruefung',
   'uebung',
   'frage',
@@ -65,6 +69,7 @@ export const QUELL_LABEL: Record<SucheQuelle, string> = {
   'einstellungen-tab': 'Einstellungen',
   'hilfe-tab': 'Hilfe',
   kurs: 'Kurse',
+  schueler: 'Schüler',   // NEU C.2
   pruefung: 'Prüfungen',
   uebung: 'Übungen',
   frage: 'Fragen',
@@ -82,6 +87,7 @@ export const ICON_MAP: Record<SucheIconKey, LucideIcon> = {
   einstellungen: Settings,
   hilfe: BookOpen,
   kurs: GraduationCap,
+  schueler: Users,     // NEU C.2
   pruefung: FileText,
   uebung: Repeat,
   frage: HelpCircle,
