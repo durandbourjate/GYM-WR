@@ -8,7 +8,81 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `122d7e9` — Spawn-Tasks Restbestand LIVE (17.05.2026 SPÄT-2, E2E ✓ + FF-Merge zu main).
+**HEAD main + preview:** `e5466d9` — Cluster C.2-C.5 Phasen 1-3 LIVE (17.05.2026 NACHT, E2E ✓ + FF-Merge zu main).
+
+### Was als nächstes — Cluster C Phase 4 (C.4 Volltext-Toggle)
+
+**Plan-Referenz:** [`ExamLab/docs/superpowers/plans/2026-05-17-cluster-c-2-bis-c-5-globale-suche-phase-2.md`](docs/superpowers/plans/2026-05-17-cluster-c-2-bis-c-5-globale-suche-phase-2.md) Tasks 4.0-4.8.
+
+**Hard-Plan-Decision-Gate (Task 4.0) VORHER:** Apps-Script-Audit ob `ladeFragenVolltext`-Batch-Endpoint baubar:
+```bash
+cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
+grep -n "ladeAlleFragen\|ladeFragenVoll\|getAllFragenVoll\|action.*frage" ExamLab/apps-script-code.js | head -20
+```
+
+Option A (Batch-Endpoint): Apps-Script-Funktion `ladeFragenVolltext_` + Dispatcher-Case + `apiClient`-Wrapper.
+Option B (Universe-Cap): nur aktive Fachschaft-Pools (~200 Fragen, serieller Load).
+
+Memory Apps-Script-Latenz-Regel: 1000× pro-Frage-Load = ~30 min nicht akzeptabel → bei fehlendem Batch-Endpoint Option B verpflichtend.
+
+**Tasks 4.1-4.8 dann:**
+- 4.1 useFragenStore.ladeAlleVollDaten (Option-fork)
+- 4.2 generiereSnippet Helper + Tests
+- 4.3 indexFragenVolltext Adapter + 10 Tests
+- 4.4 fuehreSucheAus opts.volltext-Branch
+- 4.5 Volltext-Toggle UI in LPGlobalSuche
+- 4.6 Hook-Integration volltextAktiv + Lazy-Load
+- 4.7 Performance-Smoke 1000 Fragen × 5 queries < 200ms
+- 4.8 Push + E2E + main-Merge
+
+**Skill für Execution:** `superpowers:subagent-driven-development` mit Plan + frischem Branch `feature/cluster-c-4-volltext-2026-05-18` o.ä.
+
+### Erkenntnisse aus Phasen 1-3 (für Memory)
+
+1. **Implementer-Subagent kann Tasks versehentlich reverten:** Phase C.3 Task 2.3+2.4 Implementer hat sucheAdapter.ts + sucheAdapter.test.ts auf c48d0c4-State zurückgesetzt (Tasks 2.1+2.2 weg). Schutz: `git diff HEAD~1 --stat` nach Commit prüfen, Anti-Revert-Schutz im Implementer-Prompt verlangen. Hotfix `4ef14ca` restored.
+2. **Route-Audit vor Spec-Schreiben:** Spec C.3 nahm `/?suche=&modus=uebung` an, App-Router hatte separate `/pruefung` und `/uebung`-Routes. Hotfix `c853297` route-basierte Sammelview ohne `?modus=`.
+3. **URL-Param-Race-Conditions:** Mehrere Hooks die auf denselben URL-Param schauen brauchen Owner-Coordination. C.2 Hotfix `c752df1`: LPStartseite ?suche=-Handler skipt wenn EinstellungenPanel mit Klassenlisten-Tab offen ist (Store-State-Check statt nur Query-Param-Check).
+4. **lpUIStore.gespeicherterModus liest sessionStorage:** State-Initializer läuft vor useLPRouteSync → kann stale modus liefern. useEffect-Refresh fängt das ab.
+5. **Vite ?raw-Import statt node:fs:** Privacy-Tests die Source als String brauchen, importieren via `import X from './file.ts?raw'` (Vite-Feature, tsc-clean ohne @types/node).
+6. **KlassenlistenEintrag.name (nicht nachname):** Field-Naming aus apps-script-API — spec hatte falschen Field-Namen, Audit korrigiert.
+
+### Cluster C.2-C.5 Phasen 1-3 LIVE auf main + preview (17.05.2026 NACHT)
+
+**Phase 1 (C.5 Fuzzy-Match):**
+- `2a1e3b9` levenshtein() Helper + 10 Tests
+- `ba7e4d4` scoreFromMatch Fuzzy-Fallback (titel-only, dist≤2, min-length 3)
+- `5347867` + `c48d0c4` Performance-Smoke 1000 × 10 queries < 200ms
+
+**Phase 2 (C.3 Pre-Fill):**
+- `c03fbcb` SAMMELVIEW_ROUTE_BUILDERS + 7 Tests
+- `6c1d770` LPGlobalSuche alleAnzeigen nutzt Sammelview-Builder mit Query
+- `a167abf` + `4ef14ca` LPStartseite + useFragenFilter Pre-Fill (mit Restore-Hotfix)
+- `6c585d9` + `c853297` Hotfixes: Modus-aware Routing + Route-basierte Sammelview
+
+**Phase 3 (C.2 Schüler + Klassenlisten-Tab, löst F.4 OoS):**
+- `cd2f859` SucheQuelle += schueler, indexSchueler + 8 Tests, Engine-Wiring
+- `204e8a9` + `b72ccb6` SuS-Permission-Pflicht-Test (Privacy, Vite ?raw-Import)
+- `7ebb413` TAB_REGISTRY + KlassenlistenTab + EinstellungenPanel + URL-Routing
+- `a602eaf` + `c752df1` Hotfixes: LPStartseite ?suche=-Strip-Guard
+
+**Gates:** vitest **1969 + 4 todo**, 8 lint-Gates clean, tsc -b + vite build clean.
+
+**E2E-Resultate (staging):**
+- C.5: "Profl"→"Mein Profil" (Fuzzy dist=1) ✓, "Lernzile"→"Lernziele" ✓
+- C.3: `/fragensammlung?suche=Bilanz` → suchtext "Bilanz" pre-filled ✓, `/pruefung?suche=ZZZZZZ` → "Keine Prüfung" empty-state ✓, `/uebung` → modus=uebung ✓
+- C.2: Klassenlisten-Tab in Einstellungen ✓, 147 von 167 Schülern, Klasse-Filter, Suche, Empty-State ✓; Globale Suche "Lenny" → "Schüler"-Sektion mit 5 Treffern (inkl. Fuzzy "Leon", "Lynn") ✓; Click → /einstellungen?tab=klassenlisten&suche=&schueler= → Panel öffnet, Tab aktiv, suchtext "Lenny Bieri", counter "1 von 167", Highlight ✓
+- C.2 Privacy: SuS-Suche "Lenny" → 0 Schüler-Treffer ✓
+- Console: 0 Errors
+
+### Memory: F.4 Klassenlisten-Tab Filter RESOLVED
+
+Cluster F.4 Out-of-Scope "Klassenlisten-Tab Filter" wurde im Zuge von Cluster C.2 implementiert.
+
+---
+
+## Vorheriger Stand — Spawn-Tasks Restbestand LIVE (17.05.2026 SPÄT-2)
+
+**HEAD `122d7e9`** — Spawn-Tasks Restbestand LIVE (vor C.2-C.5 Phasen 1-3).
 
 ### Spawn-Tasks Restbestand LIVE auf main + preview (17.05.2026 SPÄT-2)
 
