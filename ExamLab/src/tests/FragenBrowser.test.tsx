@@ -13,6 +13,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import FragenBrowser from '../components/lp/fragensammlung/FragenBrowser'
 
 // --- apiService: konfiguriert, kein Demo ---
@@ -95,12 +96,14 @@ beforeEach(() => {
 describe('FragenBrowser G.f.2 Skeleton', () => {
   it('zeigt FragenListeSkeleton im inline-Modus wenn ladeStatus === laden', () => {
     const { container } = render(
-      <FragenBrowser
-        onHinzufuegen={() => {}}
-        onSchliessen={() => {}}
-        bereitsVerwendet={[]}
-        inline
-      />,
+      <MemoryRouter>
+        <FragenBrowser
+          onHinzufuegen={() => {}}
+          onSchliessen={() => {}}
+          bereitsVerwendet={[]}
+          inline
+        />
+      </MemoryRouter>,
     )
     const karten = container.querySelectorAll('[data-testid="fragen-liste-skeleton-karte"]')
     expect(karten.length).toBe(8)
@@ -110,11 +113,13 @@ describe('FragenBrowser G.f.2 Skeleton', () => {
 
   it('zeigt FragenListeSkeleton im overlay-Modus wenn ladeStatus === laden', () => {
     const { container } = render(
-      <FragenBrowser
-        onHinzufuegen={() => {}}
-        onSchliessen={() => {}}
-        bereitsVerwendet={[]}
-      />,
+      <MemoryRouter>
+        <FragenBrowser
+          onHinzufuegen={() => {}}
+          onSchliessen={() => {}}
+          bereitsVerwendet={[]}
+        />
+      </MemoryRouter>,
     )
     const karten = container.querySelectorAll('[data-testid="fragen-liste-skeleton-karte"]')
     expect(karten.length).toBe(8)

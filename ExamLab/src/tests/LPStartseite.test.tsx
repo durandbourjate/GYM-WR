@@ -41,21 +41,29 @@ vi.mock('../store/authStore', () => ({
 }))
 
 vi.mock('../store/lpUIStore', () => ({
-  useLPNavigationStore: (selector: (s: Record<string, unknown>) => unknown) =>
-    selector({
-      ansicht: 'dashboard',
-      modus: mockModus,
-      listenTab: mockListenTab,
-      uebungsTab: mockUebungsTab,
-      zeigHilfe: false,
-      zeigEinstellungen: false,
-      einstellungenTab: null,
-      composerKey: 0,
-      neuerComposerKey: vi.fn(),
-      toggleHilfe: vi.fn(),
-      toggleEinstellungen: vi.fn(),
-      setZeigEinstellungen: vi.fn(),
-    }),
+  useLPNavigationStore: Object.assign(
+    (selector: (s: Record<string, unknown>) => unknown) =>
+      selector({
+        ansicht: 'dashboard',
+        modus: mockModus,
+        listenTab: mockListenTab,
+        uebungsTab: mockUebungsTab,
+        zeigHilfe: false,
+        zeigEinstellungen: false,
+        einstellungenTab: null,
+        composerKey: 0,
+        neuerComposerKey: vi.fn(),
+        toggleHilfe: vi.fn(),
+        toggleEinstellungen: vi.fn(),
+        setZeigEinstellungen: vi.fn(),
+      }),
+    {
+      getState: () => ({
+        modus: mockModus,
+        setModus: vi.fn(),
+      }),
+    },
+  ),
 }))
 
 vi.mock('../store/ueben/gruppenStore', () => ({

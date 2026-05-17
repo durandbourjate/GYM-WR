@@ -19,13 +19,17 @@ const ROUTE_BUILDERS = {
  * Sammelview-Routes für "Alle X Treffer in"-Klick im Suche-Dropdown.
  * Pre-Fill via `?suche=<query>` URL-Param; Surface-Komponente liest den Param.
  * Cluster C.3 (17.05.2026). `schueler`-Eintrag wird in C.2 Task 3.2 ergänzt.
+ *
+ * Route-Pfade matchen die App-Router-Struktur (eigene Routes /pruefung + /uebung).
+ * LP-Default `/` redirected zu /favoriten — daher KEIN gemeinsamer `/`-Pfad mit
+ * modus-Param; die Route selbst bestimmt den Modus.
  */
 export const SAMMELVIEW_ROUTE_BUILDERS: Record<'einstellungen-tab' | 'hilfe-tab' | 'kurs' | 'pruefung' | 'uebung' | 'frage', (query: string) => string> = {
   'einstellungen-tab': () => '/einstellungen',
   'hilfe-tab':         () => '/hilfe',
-  kurs:                (q) => `/?suche=${encodeURIComponent(q)}`,
-  pruefung:            (q) => `/?suche=${encodeURIComponent(q)}`,
-  uebung:              (q) => `/?suche=${encodeURIComponent(q)}&modus=uebung`,
+  kurs:                (q) => `/pruefung?suche=${encodeURIComponent(q)}`,
+  pruefung:            (q) => `/pruefung?suche=${encodeURIComponent(q)}`,
+  uebung:              (q) => `/uebung?suche=${encodeURIComponent(q)}`,
   frage:               (q) => `/fragensammlung?suche=${encodeURIComponent(q)}`,
 }
 

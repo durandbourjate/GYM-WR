@@ -2,7 +2,8 @@
  * Hook für Filter-, Sortier- und Gruppierungslogik der Fragensammlung.
  * Extrahiert aus FragenBrowser.tsx.
  */
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { gruppenKey } from '../components/lp/fragensammlung/fragenbrowser/gruppenHelfer.ts'
 import type { Gruppierung } from '../components/lp/fragensammlung/fragenbrowser/gruppenHelfer.ts'
 import type { Frage, FrageSummary, Fachbereich, BloomStufe } from '../types/fragen-storage'
@@ -106,7 +107,20 @@ export function useFragenFilter(
   // tagNamenFuerFrage() / istEinrichtungsfrage() lesen via getState(), tagsVersion ist Memo-Trigger.
   const tagsVersion = useTagsStore(s => s.tags)
   // Filter
-  const [suchtext, setSuchtext] = useState('')
+  // Cluster C.3: ?suche= Pre-Fill für FragenBrowser — initial aus URL lesen
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [suchtext, setSuchtext] = useState(searchParams.get('suche') ?? '')
+  const lastSeenSucheParam = useRef<string | null>(null)
+
+  useEffect(() => {
+    const suche = searchParams.get('suche')
+    if (!suche || suche === lastSeenSucheParam.current) return
+    lastSeenSucheParam.current = suche
+    setSuchtext(suche)
+    const next = new URLSearchParams(searchParams)
+    next.delete('suche')
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
   const [filterFachbereich, setFilterFachbereich] = useState<Fachbereich | ''>('')
   const [filterTyp, setFilterTyp] = useState<string>('')
   const [filterBloom, setFilterBloom] = useState<BloomStufe | ''>('')
