@@ -11,19 +11,12 @@
  *
  * Architektur-Konvention: SuS-Hook nutzt eigenen gruppenStore-only-Pfad ohne
  * Berührung mit sucheAdapter.ts (= Pfad der die schueler-Quelle enthält).
+ *
+ * Implementation: Vite's `?raw`-import liefert den File-Inhalt als String —
+ * vermeidet Node-`fs` (das die tsc-app-config nicht in types hat).
  */
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { dirname, join } from 'node:path'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname_ = dirname(__filename)
-
-const hookSource = readFileSync(
-  join(__dirname_, 'useGlobalSucheSuS.ts'),
-  'utf-8',
-)
+import hookSource from './useGlobalSucheSuS.ts?raw'
 
 describe('useGlobalSucheSuS — Privacy-Guard (Cluster C.2)', () => {
   it('importiert KEIN indexSchueler aus sucheAdapter (Privacy-Invariant)', () => {
