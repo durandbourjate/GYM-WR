@@ -108,7 +108,7 @@ export function LPGlobalSuche() {
           onClick={() => setVolltextAktiv((v) => !v)}
           aria-pressed={volltextAktiv}
           title="Sucht zusätzlich in Fragetext und Musterlösung. Langsamer."
-          className={`px-3 py-1.5 min-h-[36px] text-xs font-medium rounded-full border transition-colors ${
+          className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 ${
             volltextAktiv
               ? 'bg-violet-100 dark:bg-violet-900/40 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-200'
               : 'bg-slate-100 dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
