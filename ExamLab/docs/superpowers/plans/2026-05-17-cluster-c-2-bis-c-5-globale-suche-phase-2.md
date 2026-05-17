@@ -104,8 +104,9 @@ describe('levenshtein', () => {
   it('handles single-char substitution (dist 1)', () => {
     expect(levenshtein('bilanz', 'bilanc')).toBe(1)
   })
-  it('handles two-char edit (dist 2)', () => {
-    expect(levenshtein('bilanz', 'bilancen')).toBe(2)
+  it('handles multi-char edit (dist 3: 1 sub + 2 ins)', () => {
+    // bilanz → bilanc (sub z→c) → bilance (ins e) → bilancen (ins n) = 3
+    expect(levenshtein('bilanz', 'bilancen')).toBe(3)
   })
   it('handles transposition as 2 edits', () => {
     expect(levenshtein('abc', 'bac')).toBe(2)
