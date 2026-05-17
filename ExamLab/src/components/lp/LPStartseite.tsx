@@ -160,12 +160,15 @@ function LPStartseiteInner() {
     const suche = queryParams.get('suche')
     if (!suche || suche === lastSeenSucheParam.current) return
 
-    // Cluster C.2: Wenn ein anderer Surface-Owner via ?tab=… den Param explizit
-    // beansprucht (z.B. KlassenlistenTab), darf LPStartseite ihn NICHT strippen.
+    // Cluster C.2: Wenn ein anderer Surface-Owner via ?tab=… (Param noch da) ODER
+    // bereits geöffnetes EinstellungenPanel mit Klassenlisten-Tab den Param
+    // beansprucht — LPStartseite darf ihn NICHT strippen (Race-Condition mit
+    // KlassenlistenTab das selber `?suche=` liest).
     if (queryParams.get('tab') === 'klassenlisten') return
+    const navStore = useLPNavigationStore.getState()
+    if (navStore.zeigEinstellungen && navStore.einstellungenTab === 'klassenlisten') return
 
-    const aktiverModus = useLPNavigationStore.getState().modus
-    if (aktiverModus !== 'pruefung' && aktiverModus !== 'uebung') return  // Fragensammlung übernimmt selber
+    if (navStore.modus !== 'pruefung' && navStore.modus !== 'uebung') return  // Fragensammlung übernimmt selber
 
     lastSeenSucheParam.current = suche
     setSuchtext(suche)
