@@ -868,47 +868,61 @@ export function TitelMitStern({ tabId, children }: { tabId: string; children: st
 }
 ```
 
-- [ ] **Step 2: 10 Hilfe-Tab-Komponenten umstellen**
+- [ ] **Step 2: 10 Hilfe-Komponenten umstellen**
 
-Liste der Files (alle in `ExamLab/src/components/lp/hilfe/`):
+Liste der Files (alle in `ExamLab/src/components/lp/hilfe/`, verifiziert):
 
 ```bash
 cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
 grep -l "<Titel>" ExamLab/src/components/lp/hilfe/*.tsx
 ```
 
-Erwartete Files (10): `EinstiegTab.tsx`, `FragenTab.tsx`, `PruefungTab.tsx`, `DurchfuehrungTab.tsx`, `KorrekturTab.tsx`, `UebenTab.tsx`, `KITab.tsx`, `BloomTab.tsx`, `ZusammenarbeitTab.tsx`, `FaqTab.tsx`.
+Erwartete Files (10): `HilfeEinstieg.tsx`, `HilfeFragen.tsx`, `HilfePruefung.tsx`, `HilfeDurchfuehrung.tsx`, `HilfeKorrektur.tsx`, `HilfeUeben.tsx`, `HilfeKI.tsx`, `HilfeBloom.tsx`, `HilfeZusammenarbeit.tsx`, `HilfeFAQ.tsx`.
 
 Für jedes File:
-- Import `TitelMitStern` ergänzen statt `Titel` (aus selbem layoutHelpers).
-- `<Titel>Titel-Text</Titel>` → `<TitelMitStern tabId="X">Titel-Text</TitelMitStern>` mit X aus `tabRegistry.ts` (z.B. `einstieg`, `fragen`, `pruefung`, ...).
+- Import: `import { TitelMitStern } from './layoutHelpers'` (statt oder zusätzlich zu `Titel`).
+- `<Titel>Titel-Text</Titel>` → `<TitelMitStern tabId="X">Titel-Text</TitelMitStern>` mit X aus `tabRegistry.ts`.
 
-Mapping aus Tab-Registry:
+Mapping File → tabId:
 | File | tabId |
 |---|---|
-| EinstiegTab.tsx | `einstieg` |
-| FragenTab.tsx | `fragen` |
-| PruefungTab.tsx | `pruefung` |
-| DurchfuehrungTab.tsx | `durchfuehrung` |
-| KorrekturTab.tsx | `korrektur` |
-| UebenTab.tsx | `ueben` |
-| KITab.tsx | `ki` |
-| BloomTab.tsx | `bloom` |
-| ZusammenarbeitTab.tsx | `zusammenarbeit` |
-| FaqTab.tsx | `faq` |
+| HilfeEinstieg.tsx | `einstieg` |
+| HilfeFragen.tsx | `fragen` |
+| HilfePruefung.tsx | `pruefung` |
+| HilfeDurchfuehrung.tsx | `durchfuehrung` |
+| HilfeKorrektur.tsx | `korrektur` |
+| HilfeUeben.tsx | `ueben` |
+| HilfeKI.tsx | `ki` |
+| HilfeBloom.tsx | `bloom` |
+| HilfeZusammenarbeit.tsx | `zusammenarbeit` |
+| HilfeFAQ.tsx | `faq` |
 
 - [ ] **Step 3: 10 Einstellungen-Tab-Komponenten ergänzen**
 
-Files in `ExamLab/src/components/settings/` mit Tab-Header. Audit:
+Tabs sind über **5 verschiedene Verzeichnisse** verteilt — verifizierte Pfade:
 
+| tabId | Datei | Import-Pfad für TabStarToggle |
+|---|---|---|
+| `profil` | `settings/einstellungen/ProfilTab.tsx` | `'../../lp/TabStarToggle'` |
+| `lernziele` | `settings/LernzielTab.tsx` (Singular!) | `'../lp/TabStarToggle'` |
+| `favoriten` | `settings/FavoritenTab.tsx` | `'../lp/TabStarToggle'` |
+| `problemmeldungen` | `settings/problemmeldungen/ProblemmeldungenTab.tsx` | `'../../lp/TabStarToggle'` |
+| `uebungen` | `components/ueben/admin/AdminSettings.tsx` (kein eigener Tab) | `'../../lp/TabStarToggle'` |
+| `fragensammlung` | `settings/fragensammlung/FragensammlungTab.tsx` | `'../../lp/TabStarToggle'` |
+| `testdaten` | `settings/einstellungen/TestdatenTab.tsx` | `'../../lp/TabStarToggle'` |
+| `tags` | `components/lp/einstellungen/tags/TagsTab.tsx` | `'../../../TabStarToggle'` |
+| `admin` | `settings/einstellungen/AdminTab.tsx` | `'../../lp/TabStarToggle'` |
+| `ki-kalibrierung` | `settings/kiKalibrierung/KIKalibrierungTab.tsx` | `'../../lp/TabStarToggle'` |
+
+Verifikation vor Edit:
 ```bash
 cd "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY"
-grep -l "TYPO.h1\|TYPO.display" ExamLab/src/components/settings/*Tab.tsx
+find ExamLab/src/components -name "*Tab.tsx" -o -name "AdminSettings.tsx" | grep -E "(ProfilTab|LernzielTab|FavoritenTab|ProblemmeldungenTab|AdminSettings|FragensammlungTab|TestdatenTab|TagsTab|AdminTab|KIKalibrierungTab)"
 ```
 
 Pro Tab-File:
-1. Import: `import { TabStarToggle } from '../lp/TabStarToggle'`
-2. Im Tab-Header `<h1 className={TYPO.h1}>...` Pattern umwickeln:
+1. Import: `import { TabStarToggle } from '<Pfad aus Tabelle oben>'`
+2. Im Tab-Header `<h1 className={TYPO.h1}>...` (oder `<h2>` bei FavoritenTab) Pattern umwickeln:
 
 ```tsx
 <div className="flex items-center justify-between mb-3">
@@ -917,21 +931,23 @@ Pro Tab-File:
 </div>
 ```
 
-Mapping aus Tab-Registry:
-| File (Beispiele, individuell prüfen) | tabId | label |
+**Tab-Labels für TabStarToggle aus Tab-Registry** (`titel`-Feld):
+| tabId | label | icon |
 |---|---|---|
-| `ProfilTab.tsx` (oder ähnlich) | `profil` | `Mein Profil` |
-| `LernzieleTab.tsx` | `lernziele` | `Lernziele` |
-| `FavoritenTab.tsx` | `favoriten` | `Favoriten` |
-| `ProblemmeldungenTab.tsx` | `problemmeldungen` | `Problemmeldungen` |
-| `UebungenTab.tsx` | `uebungen` | `Übungen` |
-| `FragensammlungTab.tsx` | `fragensammlung` | `Fragensammlung` |
-| `TestdatenTab.tsx` | `testdaten` | `Testdaten` |
-| `TagsTab.tsx` | `tags` | `Tags` (icon=`Tag`) |
-| `AdminTab.tsx` | `admin` | `Admin` |
-| `KIKalibrierungTab.tsx` | `ki-kalibrierung` | `KI-Kalibrierung` |
+| profil | `Mein Profil` | `User` |
+| lernziele | `Lernziele` | undefined |
+| favoriten | `Favoriten` | undefined |
+| problemmeldungen | `Problemmeldungen` | undefined |
+| uebungen | `Übungen` | undefined |
+| fragensammlung | `Fragensammlung` | undefined |
+| testdaten | `Testdaten` | undefined |
+| tags | `Tags` | `Tag` |
+| admin | `Admin` | undefined |
+| ki-kalibrierung | `KI-Kalibrierung` | undefined |
 
-**Falls eine Tab-Datei keinen sichtbaren H1-Titel hat** (z.B. weil sie sich nahtlos in den Tab-Wrapper einbettet) → in solchen Fällen einen neuen Header-Block einfügen oder den Tab-Wrapper auf TitelMitStern-Pattern umstellen. Implementer-Judgement.
+**Tabs ohne H1-Titel** (verifiziert: `AdminSettings.tsx` hat keinen sichtbaren H1):
+- In solchen Fällen einen neuen Header-Block einfügen: `<div className="flex items-center justify-between mb-3"><h1 className={TYPO.h1}>Übungen</h1><TabStarToggle .../></div>` am Top der Component.
+- FavoritenTab.tsx hat aktuell `<h2>` mit `TYPO.h1` (Z. 55). Pattern bleibt: Toggle daneben einfügen.
 
 - [ ] **Step 4: vitest + ci-check**
 
@@ -1013,13 +1029,13 @@ describe('FavoritenPicker', () => {
     })
   })
 
-  it('rendert nichts wenn isOpen=false', () => {
-    const { container } = render(<FavoritenPicker isOpen={false} onClose={() => {}} />)
+  it('rendert nichts wenn open=false', () => {
+    const { container } = render(<FavoritenPicker open={false} onClose={() => {}} />)
     expect(container.firstChild).toBeNull()
   })
 
   it('rendert Einstellungen- und Hilfe-Tabs aus Registry', () => {
-    render(<FavoritenPicker isOpen onClose={() => {}} />)
+    render(<FavoritenPicker open onClose={() => {}} />)
     // Stichprobe — Tabs aus Registry sollten erscheinen
     expect(screen.getByText('Mein Profil')).toBeTruthy()
     expect(screen.getByText('Erste Schritte')).toBeTruthy()
@@ -1029,13 +1045,13 @@ describe('FavoritenPicker', () => {
     useFavoritenStore.setState({
       favoriten: [{ typ: 'einstellungen-tab', ziel: 'profil', label: 'Mein Profil', sortierung: 0 }],
     })
-    render(<FavoritenPicker isOpen onClose={() => {}} />)
+    render(<FavoritenPicker open onClose={() => {}} />)
     expect(screen.getByText(/Bereits Favorit/i)).toBeTruthy()
   })
 
   it('Klick auf Hinzufügen-Button triggert toggleFavorit', () => {
     const toggleSpy = vi.spyOn(useFavoritenStore.getState(), 'toggleFavorit')
-    render(<FavoritenPicker isOpen onClose={() => {}} />)
+    render(<FavoritenPicker open onClose={() => {}} />)
     // Erster Tab in Liste (alphabetisch sortiert) — wir suchen einen Hinzufuegen-Button
     const firstAdd = screen.getAllByRole('button', { name: /Hinzufügen/i })[0]
     fireEvent.click(firstAdd)
@@ -1043,7 +1059,7 @@ describe('FavoritenPicker', () => {
   })
 
   it('Filter-Eingabe reduziert die Liste', () => {
-    render(<FavoritenPicker isOpen onClose={() => {}} />)
+    render(<FavoritenPicker open onClose={() => {}} />)
     const input = screen.getByRole('textbox', { name: /Suche/i })
     fireEvent.change(input, { target: { value: 'profil' } })
     // Andere Tabs verschwinden, "Mein Profil" bleibt
@@ -1068,7 +1084,7 @@ Expected: alle 5 fail mit "Cannot find module".
 // ExamLab/src/components/lp/FavoritenPicker.tsx
 import { useState, useMemo } from 'react'
 import { Check, Plus, Search } from 'lucide-react'
-import { BaseDialog } from '../ui/BaseDialog'
+import BaseDialog from '../ui/BaseDialog'
 import { TAB_REGISTRY, type TabDefinition } from '../../utils/tabRegistry'
 import { useFavoritenStore } from '../../store/favoritenStore'
 import { useStammdatenStore } from '../../store/stammdatenStore'
@@ -1076,7 +1092,7 @@ import { NavIcon } from '../ui/icons/NavIcon'
 import type { Favorit } from '../../types/favorit'
 
 interface Props {
-  isOpen: boolean
+  open: boolean
   onClose: () => void
 }
 
@@ -1086,13 +1102,12 @@ interface Props {
  * Bereits-Favorit-Tabs sind disabled. Click triggert toggleFavorit.
  * Modal bleibt offen (Multi-Add), schliesst via "Fertig"-Button oder ESC.
  */
-export function FavoritenPicker({ isOpen, onClose }: Props) {
+export function FavoritenPicker({ open, onClose }: Props) {
   const [filter, setFilter] = useState('')
   const istFavorit = useFavoritenStore(s => s.istFavorit)
   const toggleFavorit = useFavoritenStore(s => s.toggleFavorit)
   const lpProfil = useStammdatenStore(s => s.lpProfil)
-  const stammdaten = useStammdatenStore(s => s.stammdaten)
-  const istAdmin = lpProfil ? stammdaten.admins.includes(lpProfil.email) : false
+  const istAdmin = useStammdatenStore(s => s.istAdmin)(lpProfil?.email)
 
   const tabs = useMemo(() => {
     const ctx = { istAdmin }
@@ -1103,7 +1118,7 @@ export function FavoritenPicker({ isOpen, onClose }: Props) {
     return [...filtered].sort((a, b) => a.titel.localeCompare(b.titel, 'de'))
   }, [filter, istAdmin])
 
-  if (!isOpen) return null
+  if (!open) return null
 
   function handleAdd(tab: TabDefinition) {
     const typ: Favorit['typ'] = tab.surface === 'einstellungen' ? 'einstellungen-tab' : 'hilfe-tab'
@@ -1111,7 +1126,7 @@ export function FavoritenPicker({ isOpen, onClose }: Props) {
   }
 
   return (
-    <BaseDialog isOpen={isOpen} onClose={onClose} title="Favorit hinzufügen">
+    <BaseDialog open={open} onClose={onClose} title="Favorit hinzufügen">
       <div className="space-y-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" aria-hidden="true" />
@@ -1180,12 +1195,7 @@ export function FavoritenPicker({ isOpen, onClose }: Props) {
 }
 ```
 
-NOTE: `BaseDialog`-Prop-Signature kann abweichen — prüfen mit:
-```bash
-head -30 ExamLab/src/components/ui/BaseDialog.tsx
-```
-
-Falls Props anders heissen (`open` vs `isOpen`, `onSchliessen` vs `onClose`, `titel` vs `title`) → entsprechend anpassen.
+NOTE: BaseDialog ist ein **default export** mit Props `open` (nicht `isOpen`), `onClose`, `title` — verifiziert in `ExamLab/src/components/ui/BaseDialog.tsx`.
 
 - [ ] **Step 4: Tests laufen lassen → alle grün**
 
@@ -1220,7 +1230,7 @@ const [pickerOpen, setPickerOpen] = useState(false)
   </button>
 </div>
 
-<FavoritenPicker isOpen={pickerOpen} onClose={() => setPickerOpen(false)} />
+<FavoritenPicker open={pickerOpen} onClose={() => setPickerOpen(false)} />
 ```
 
 4. Import `Plus` ergänzen aus `lucide-react`.
