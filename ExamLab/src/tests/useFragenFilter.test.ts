@@ -6,8 +6,14 @@
  */
 import { describe, it, expect } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import React from 'react'
 import { useFragenFilter } from '../hooks/useFragenFilter'
 import type { FilterbareFrage } from '../hooks/useFragenFilter'
+
+// Cluster C.3: useFragenFilter nutzt useSearchParams — Router-Context erforderlich
+const wrapper = ({ children }: { children: React.ReactNode }) =>
+  React.createElement(MemoryRouter, null, children)
 
 const f = (id: string, override: Partial<FilterbareFrage> = {}): FilterbareFrage =>
   ({
@@ -32,24 +38,24 @@ describe('useFragenFilter', () => {
   ]
 
   it('liefert alle Fragen bei leerem Filter', () => {
-    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'))
+    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'), { wrapper })
     expect(result.current.gefilterteFragen.length).toBe(3)
   })
 
   it('Suchtext filtert nach Frage-Inhalt', () => {
-    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'))
+    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'), { wrapper })
     act(() => result.current.setSuchtext('1'))
     expect(result.current.gefilterteFragen.map(x => x.id)).toEqual(['1'])
   })
 
   it('Fachbereich-Filter wirkt', () => {
-    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'))
+    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'), { wrapper })
     act(() => result.current.setFilterFachbereich('VWL'))
     expect(result.current.gefilterteFragen.map(x => x.id)).toEqual(['2'])
   })
 
   it('Gruppierung "fachbereich" baut korrekte Gruppen', () => {
-    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'))
+    const { result } = renderHook(() => useFragenFilter(fragen, undefined, 'fertig'), { wrapper })
     act(() => result.current.setGruppierung('fachbereich'))
     const keys = result.current.gruppierteAnzeige.map(g => g.key).sort()
     expect(keys).toEqual(['BWL', 'VWL'])
@@ -57,7 +63,7 @@ describe('useFragenFilter', () => {
 
   it('liefert ALLE Fragen ohne Pagination-Slice (auch ohne Gruppierung)', () => {
     const grosseListe = Array.from({ length: 100 }, (_, i) => f(`${i}`))
-    const { result } = renderHook(() => useFragenFilter(grosseListe, undefined, 'fertig'))
+    const { result } = renderHook(() => useFragenFilter(grosseListe, undefined, 'fertig'), { wrapper })
     act(() => result.current.setGruppierung('keine'))
     expect(result.current.gefilterteFragen.length).toBe(100)
     // gruppierteAnzeige (gruppierung='keine') sollte alle 100 enthalten

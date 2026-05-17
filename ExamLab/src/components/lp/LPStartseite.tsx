@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, Suspense } from 'react'
+import { useState, useEffect, useMemo, useRef, Suspense } from 'react'
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore.ts'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore.ts'
@@ -132,7 +132,31 @@ function LPStartseiteInner() {
   const [multiDashboardAuswahl, setMultiDashboardAuswahl] = useState<Set<string>>(new Set())
 
   // Such- und Filterstate
-  const [suchtext, setSuchtext] = useState('')
+  // Cluster C.3: ?suche= Pre-Fill — initial aus URL lesen
+  const [suchtext, setSuchtext] = useState(queryParams.get('suche') ?? '')
+  const lastSeenSucheParam = useRef<string | null>(null)
+
+  // Cluster C.3: ?suche= + ?modus= URL-Params auswerten + cleanup
+  useEffect(() => {
+    const suche = queryParams.get('suche')
+    const modusParam = queryParams.get('modus')
+
+    let updated = false
+    const next = new URLSearchParams(queryParams)
+
+    if (suche && suche !== lastSeenSucheParam.current) {
+      lastSeenSucheParam.current = suche
+      setSuchtext(suche)
+      next.delete('suche')
+      updated = true
+    }
+    if (modusParam === 'uebung' || modusParam === 'pruefung') {
+      useLPNavigationStore.getState().setModus(modusParam)
+      next.delete('modus')
+      updated = true
+    }
+    if (updated) setQueryParams(next, { replace: true })
+  }, [queryParams, setQueryParams])
   const [filterFach, setFilterFach] = useState<string[]>([])
   const [filterTyp, setFilterTyp] = useState<string | null>(null)
   const [filterGefaess, setFilterGefaess] = useState<string | null>(null)
