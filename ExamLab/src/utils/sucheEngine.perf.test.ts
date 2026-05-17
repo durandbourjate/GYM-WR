@@ -64,3 +64,18 @@ describe('fuehreSucheAus performance', () => {
     expect(dauer).toBeLessThan(5)
   })
 })
+
+describe('Performance — Fuzzy-Match (C.5)', () => {
+  it('1000 Items × 10 fuzzy-queries < 100ms', () => {
+    const index = syntheticIndex()
+    // Queries mit Tippfehlern, sollten fuzzy-match auslösen
+    const queries = ['bilantz', 'eignkapital', 'frge', 'thima', 'biianz',
+                     'kapital', 'fragel', 'bilann', 'thema', 'frgen']
+    const start = performance.now()
+    for (const q of queries) {
+      fuehreSucheAus(q, index)
+    }
+    const dauer = performance.now() - start
+    expect(dauer).toBeLessThan(100)
+  })
+})
