@@ -1,9 +1,11 @@
 ---
 title: Cluster E — Konsistenz (Typografie / Favoriten / Hilfe-Tabs)
 date: 2026-05-11
-status: Spec-Review ausstehend
+status: E.1 LIVE / E.2 ausgelagert in 2026-05-17-cluster-e-2-typografie-design.md / E.3-E.5 ausstehend
 verwandt: Cluster F (Testdaten, LP-Settings-Backend), Cluster G (Icon-System), Cluster B (Header-Redesign)
 ---
+
+> **Update 2026-05-17:** Foundation-Teile sind teilweise schon umgesetzt (TYPO-Tokens, Tab-Registry, favoritenStore-Type-Erweiterung). E.1 (HilfeSeite konsumiert Tab-Registry) ist LIVE. **E.2 (Typografie-Migration + Lint-Gate)** wurde in eine eigene Spec ausgelagert: `2026-05-17-cluster-e-2-typografie-design.md`. Diese Spec bleibt als Master-Vision für E.3-E.5 (Favoriten-Backend-Migration, Star-Toggle, Favoriten-Picker), die noch ausstehen.
 
 # Cluster E — Konsistenz (Typografie / Favoriten / Hilfe-Tabs)
 
