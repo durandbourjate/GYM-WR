@@ -90,6 +90,9 @@ describe('Performance — Fuzzy-Match (C.5)', () => {
 })
 
 describe('Performance — Volltext (C.4)', () => {
+  // Threshold 200ms (analog Fuzzy oben): deckt CI-Load ab, isoliert läuft der Test < 50ms.
+  // Volltext arbeitet auf den vollen Frage-Objekten (Frage[]) statt FrageSummary[] —
+  // pro Item zwei zusätzliche Felder (fragetext-vollständig, musterlosung) im scoreFromMatch-Loop.
   it('1000 Fragen × 5 Volltext-queries < 200ms', () => {
     // 1000 synthetic full Frage objects with realistic fragetext + musterlosung
     const fragen: Frage[] = Array.from({ length: 1000 }, (_, i) => ({
@@ -105,7 +108,7 @@ describe('Performance — Volltext (C.4)', () => {
       erstelltAm: '2026-05-18',
     })) as unknown as Frage[] /* Defensive: synthetic test objects, full Frage shape not needed */
     const queries = ['Bilanz', 'Anlagevermoegen', 'Konjunktur', 'Aktien', 'Passiva']
-    // Warmup-Pass (JIT) gegen ersten-Call-Overhead — analog Fuzzy-Test darunter
+    // Warmup-Pass (JIT) gegen ersten-Call-Overhead — analog Fuzzy-Test oben
     indexFragenVolltext(queries[0], fragen)
     const start = performance.now()
     for (const q of queries) {

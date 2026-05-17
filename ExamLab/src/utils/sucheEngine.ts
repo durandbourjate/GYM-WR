@@ -155,6 +155,8 @@ export function gruppiereUndLimitiere(
   return { treffer: result, proQuelleSichtbar, proQuelleGesamt }
 }
 
+/* Min-Query-Längen: Orchestrator-Guard in fuehreSucheAus + UI-Gate in LPGlobalSuche. */
+
 /** Cluster C.4: Minimale Query-Länge im normalen Modus (2 = "ek", "wr" etc.). */
 export const MIN_QUERY_LENGTH = 2
 /** Cluster C.4: Minimale Query-Länge im Volltext-Modus (3 = vermeidet zu viele Treffer in Fragetexten). */
