@@ -252,9 +252,7 @@ function makeFrage(
     erstelltAm: '2026-05-17',
     geaendertAm: '2026-05-17',
     status: 'aktiv',
-  } as unknown as Frage
-  // `as unknown as Frage` ist nötig, weil FreitextFrage im Core optionale
-  // Felder hat die hier nicht gesetzt werden — absichtlicher Test-Stub-Cast.
+  } as unknown as Frage /* Defensive: FreitextFrage hat optionale Core-Felder, die im Test-Stub fehlen */
 }
 
 describe('indexFragenVolltext (C.4)', () => {
@@ -299,7 +297,7 @@ describe('indexFragenVolltext (C.4)', () => {
     const treffer = indexFragenVolltext('Bilanz', [frage])
     expect(treffer).toHaveLength(1)
     // Wenn titelScore >= fragetextScore, ist volltextMatch false → subTitel = thema
-    // Ein exakter Titel-Treffer (score 100) dominiert einen subTitel-Treffer (score ~60)
+    // Ein exakter Titel-Treffer (TITEL_PREFIX = 100) dominiert einen subTitel-Treffer (SUBTITEL = 30)
     expect(treffer[0].subTitel).toBe('Rechnungswesen')
   })
 
@@ -343,11 +341,14 @@ describe('indexFragenVolltext (C.4)', () => {
         thema: 'Buchführung',
       }),
       musterlosung: undefined,
-    } as unknown as Frage
+    } as unknown as Frage /* Defensive: erzwingt musterlosung=undefined gegen Core-Type */
 
     expect(() => indexFragenVolltext('soll', [frage])).not.toThrow()
     const treffer = indexFragenVolltext('soll', [frage])
-    expect(treffer.length).toBeGreaterThanOrEqual(0)
+    // fragetext > 80 Zeichen ist hier nicht der Fall (45 Zeichen) — titel === fragetext.
+    // Query "soll" matcht im titel → genau 1 Treffer, subTitel = thema (kein Crash bei undefined musterlosung).
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].subTitel).toBe('Buchführung')
   })
 
   // Test 7: Tag-Match funktioniert (Verhaltensparität mit indexFragen, Store leer → kein Match)

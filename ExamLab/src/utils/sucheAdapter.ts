@@ -175,6 +175,8 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
  * Liefert den primären Fragetext eines beliebigen Frage-Subtyps.
  * FiBu-Typen (buchungssatz, tkonto, kontenbestimmung, bilanzstruktur) haben
  * kein `fragetext`-Feld — sie nutzen `aufgabentext` oder `geschaeftsfall`.
+ * AufgabengruppeFrage trägt nur `kontext` — bewusst NICHT indiziert für C.4,
+ * weil Eltern-Frage-Volltext-Suche eigene Scope-Entscheidung wäre.
  */
 function fragetextVonFrage(f: Frage): string {
   if ('fragetext' in f && typeof f.fragetext === 'string') return f.fragetext
@@ -211,6 +213,8 @@ export function indexFragenVolltext(query: string, fragen: Frage[]): SucheTreffe
 
     // volltextMatch: der beste Score kommt aus einem Volltext-Feld (nicht titel/id/tag)
     const volltextMatch = score === fragetextScore || score === loesungScore
+    // Tie-break: bei gleichem Score in fragetext UND musterlosung wird die
+    // Musterlösung priorisiert (`score === loesungScore` zuerst geprüft).
     const snippet = volltextMatch
       ? generiereSnippet(score === loesungScore ? loesungText : haupttext, query, 50)
       : (f.thema || undefined)
