@@ -160,14 +160,14 @@ describe('SAMMELVIEW_ROUTE_BUILDERS', () => {
   it('hilfe-tab routes to /hilfe', () => {
     expect(SAMMELVIEW_ROUTE_BUILDERS['hilfe-tab']('xy')).toBe('/hilfe')
   })
-  it('kurs routes to / mit ?suche', () => {
-    expect(SAMMELVIEW_ROUTE_BUILDERS.kurs('BWL')).toBe('/?suche=BWL')
+  it('kurs routes to /pruefung mit ?suche', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.kurs('BWL')).toBe('/pruefung?suche=BWL')
   })
-  it('pruefung routes to / mit ?suche', () => {
-    expect(SAMMELVIEW_ROUTE_BUILDERS.pruefung('Bilanz')).toBe('/?suche=Bilanz')
+  it('pruefung routes to /pruefung mit ?suche', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.pruefung('Bilanz')).toBe('/pruefung?suche=Bilanz')
   })
-  it('uebung routes to / mit ?suche und ?modus=uebung', () => {
-    expect(SAMMELVIEW_ROUTE_BUILDERS.uebung('Aktien')).toBe('/?suche=Aktien&modus=uebung')
+  it('uebung routes to /uebung mit ?suche (separate Route, kein modus-Param)', () => {
+    expect(SAMMELVIEW_ROUTE_BUILDERS.uebung('Aktien')).toBe('/uebung?suche=Aktien')
   })
   it('frage routes to /fragensammlung mit ?suche', () => {
     expect(SAMMELVIEW_ROUTE_BUILDERS.frage('Wert')).toBe('/fragensammlung?suche=Wert')
