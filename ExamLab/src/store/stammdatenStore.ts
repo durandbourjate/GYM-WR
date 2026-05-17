@@ -83,6 +83,11 @@ export const useStammdatenStore = create<StammdatenState>((set, get) => ({
           }
         }
         set({ lpProfil: profil })
+      } else {
+        // Cluster E.3: Backend hat noch keinen Profil-Eintrag für diesen LP.
+        // Setze ein leeres Default-Profil, damit Save-Actions (toggleFavorit etc.)
+        // funktionieren — der erste Save legt die Profil-Zeile im Backend an.
+        set({ lpProfil: { email, kursIds: [], fachschaftIds: [], gefaesse: [] } })
       }
     } catch (error) {
       console.error('[Stammdaten] LP-Profil Fehler:', error)

@@ -45,4 +45,14 @@ describe('stammdatenStore.ladeLPProfil — Cluster E.3 Legacy-Drop', () => {
     expect(fav).toHaveLength(1)
     expect(fav?.[0].ziel).toBe('/a')
   })
+
+  it('setzt Default-Profil wenn Backend profil: null liefert (Cluster E.3 Hotfix)', async () => {
+    vi.mocked(postJson).mockResolvedValue({ profil: null })
+    await useStammdatenStore.getState().ladeLPProfil('lp@test.ch')
+    const profil = useStammdatenStore.getState().lpProfil
+    expect(profil).not.toBeNull()
+    expect(profil?.email).toBe('lp@test.ch')
+    expect(profil?.kursIds).toEqual([])
+    expect(profil?.favoriten).toBeUndefined()
+  })
 })
