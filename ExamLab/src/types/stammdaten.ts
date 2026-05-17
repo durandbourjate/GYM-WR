@@ -3,6 +3,8 @@
  * Ersetzt hardcoded Werte in fachUtils.ts, useFragenFilter.ts, etc.
  */
 
+import type { Favorit } from './favorit'
+
 export interface KursDefinition {
   id: string          // z.B. 'sf-wr-29c'
   name: string        // z.B. 'SF WR 29c'
@@ -36,22 +38,13 @@ export interface Stammdaten {
   fachschaften: FachschaftDefinition[]
 }
 
-/** Favorisierter App-Ort (Screen + Parameter für Direktlinks) */
-export interface AppOrt {
-  id: string                          // Unique ID (generiert)
-  titel: string                       // z.B. "SF WR 29c — Analyse"
-  screen: 'pruefung' | 'uebung' | 'fragensammlung' | 'einstellungen' | 'hilfe'
-  params: Record<string, string>      // z.B. { configId: 'abc', tab: 'analyse' }
-  erstelltAm: string                  // ISO timestamp
-}
-
 /** LP-Profil: Eigene Kurs-/Fachzuordnung */
 export interface LPProfil {
   email: string
   kursIds: string[]
   fachschaftIds: string[]
   gefaesse: string[]
-  favoriten?: AppOrt[]                // Account-verknüpfte Favoriten
+  favoriten?: Favorit[]               // E.3: cross-device sync
   /** Sichtbarkeit Test-Kurs in LP-Listen. Default false. Cluster F. */
   testdatenSichtbar?: boolean
 }

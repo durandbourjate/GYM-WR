@@ -71,21 +71,8 @@ export function useLPDashboardData(opts: {
       const { ladeStammdaten, ladeLPProfil } = useStammdatenStore.getState()
       ladeStammdaten(user.email)
       ladeLPProfil(user.email).then(() => {
-        // Backend-Favoriten in den neuen favoritenStore übernehmen (Legacy-Migration)
-        const profil = useStammdatenStore.getState().lpProfil
-        if (profil?.favoriten && profil.favoriten.length > 0) {
-          const { favoriten: lokal } = useFavoritenStore.getState()
-          if (lokal.length === 0) {
-            // Nur migrieren wenn lokal leer (Erstmigration)
-            const migriert = profil.favoriten.map((f: { id?: string; titel?: string; screen?: string; params?: { configId?: string } }, i: number) => ({
-              typ: (f.params?.configId ? (f.screen === 'uebung' ? 'uebung' : 'pruefung') : 'ort') as 'ort' | 'pruefung' | 'uebung' | 'frage',
-              ziel: f.params?.configId ?? `/${f.screen ?? 'pruefung'}`,
-              label: f.titel || '',
-              sortierung: i,
-            }))
-            useFavoritenStore.setState({ favoriten: migriert })
-          }
-        }
+        // Cluster E.3: Hydrate favoritenStore aus LPProfil.favoriten (Server-State)
+        useFavoritenStore.getState().ladeAusBackend()
       })
 
       // Configs + Fragensammlung-Summaries parallel laden (schnell ~3-5s)

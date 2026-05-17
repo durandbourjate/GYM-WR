@@ -1,20 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { iconStringToCanonicalKey } from '../components/ui/icons/NavIcon'
+import type { Favorit } from '../types/favorit'
 
-/**
- * Erweitertes Favoriten-Modell: App-Orte (Routes) + Inhalte (Prüfungen/Übungen/Fragen)
- * Ersetzt das alte AppOrt-basierte System aus lpNavigationStore.
- */
-export interface Favorit {
-  typ: 'ort' | 'pruefung' | 'uebung' | 'frage' | 'einstellungen-tab' | 'hilfe-tab'
-  ziel: string       // Route-Pfad ('/fragensammlung') oder Config-ID ('abc123')
-  label: string      // Anzeigename
-  /** Lucide-Component-Name als String (canonical Form seit #4 17.05.2026).
-   *  Persist-Migration v1→v2 konvertiert alte Emoji-Strings einmalig. */
-  icon?: string
-  sortierung: number // Drag & Drop Reihenfolge
-}
+// Re-Export für Backwards-Compat (9+ Konsumenten importieren von hier)
+export type { Favorit } from '../types/favorit'
 
 /** Selector: Favoriten sortiert nach sortierung-Feld */
 export function selectFavoritenSortiert(state: { favoriten: Favorit[] }): Favorit[] {
@@ -25,6 +15,7 @@ interface FavoritenStore {
   favoriten: Favorit[]
 
   // Actions
+  ladeAusBackend: () => Promise<void>  // Phase 2: echte Logik (Cluster E.3)
   toggleFavorit: (fav: Omit<Favorit, 'sortierung'> & { sortierung?: number }) => void
   istFavorit: (ziel: string) => boolean
   updateSortierung: (zielReihenfolge: string[]) => void
@@ -36,6 +27,8 @@ export const useFavoritenStore = create<FavoritenStore>()(
   persist(
     (set, get) => ({
       favoriten: [],
+
+      ladeAusBackend: async () => { /* Phase 2: hydrate aus stammdatenStore */ },
 
       toggleFavorit: (fav) => {
         const { favoriten } = get()

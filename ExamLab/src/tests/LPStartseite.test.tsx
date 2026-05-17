@@ -79,7 +79,7 @@ vi.mock('../store/stammdatenStore', () => ({
 vi.mock('../store/favoritenStore', () => ({
   useFavoritenStore: Object.assign(
     (selector: (s: { favoriten: [] }) => unknown) => selector({ favoriten: [] }),
-    { getState: () => ({ favoriten: [] }), setState: vi.fn() },
+    { getState: () => ({ favoriten: [], ladeAusBackend: vi.fn().mockResolvedValue(undefined) }), setState: vi.fn() },
   ),
 }))
 

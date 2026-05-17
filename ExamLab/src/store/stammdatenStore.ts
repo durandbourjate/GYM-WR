@@ -73,7 +73,16 @@ export const useStammdatenStore = create<StammdatenState>((set, get) => ({
     try {
       const result = await postJson<{ profil: LPProfil }>('ladeLPProfil', { callerEmail: email })
       if (result?.profil) {
-        set({ lpProfil: result.profil })
+        const profil = result.profil
+        // Cluster E.3: Drop legacy AppOrt-favoriten (kein Migration-Code, siehe Entscheidung #5).
+        // Heuristik: alter AppOrt-Type hat `id` aber kein `typ`/`ziel`.
+        if (Array.isArray(profil.favoriten) && profil.favoriten.length > 0) {
+          const first = profil.favoriten[0] as { typ?: string; ziel?: string }
+          if (!('typ' in first) || !first.typ || !first.ziel) {
+            profil.favoriten = []
+          }
+        }
+        set({ lpProfil: profil })
       }
     } catch (error) {
       console.error('[Stammdaten] LP-Profil Fehler:', error)
