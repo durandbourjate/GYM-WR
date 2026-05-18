@@ -74,9 +74,9 @@ export function scoreFromMatch(haystack: string, needle: string, feld: MatchFeld
     return SCORE_BOUNDS.SUBTITEL
   }
 
-  // 2. Fuzzy-Fallback (C.5): NUR für titel, min-length 3
+  // 2. Fuzzy-Fallback (C.5): NUR für titel, min-length MIN_FUZZY_NEEDLE_LENGTH
   // ID/tag/subTitel bleiben exact-only (Spec §3.3: ID-Fuzzy würde Ranking verfälschen)
-  if (feld === 'titel' && n.length >= 3) {
+  if (feld === 'titel' && n.length >= MIN_FUZZY_NEEDLE_LENGTH) {
     const tokens = h.split(/\s+/)
     let minDist = Infinity
     for (const t of tokens) {
@@ -161,6 +161,15 @@ export function gruppiereUndLimitiere(
 export const MIN_QUERY_LENGTH = 2
 /** Cluster C.4: Minimale Query-Länge im Volltext-Modus (3 = vermeidet zu viele Treffer in Fragetexten). */
 export const MIN_VOLLTEXT_QUERY_LENGTH = 3
+/**
+ * Cluster C.5: Minimale Needle-Länge für Fuzzy-Fallback in scoreFromMatch.
+ *
+ * Bewusst UNABHÄNGIG von MIN_VOLLTEXT_QUERY_LENGTH: hier geht es um den
+ * Levenshtein-Tokenizer (kurze Needles erzeugen zu viele Treffer mit dist≤2),
+ * nicht um den Orchestrator-Guard. Werte können auseinanderlaufen, wenn z.B.
+ * der Volltext-Threshold auf 4 erhöht würde, der Fuzzy aber bei 3 bleiben soll.
+ */
+export const MIN_FUZZY_NEEDLE_LENGTH = 3
 
 /**
  * Orchestrator: führt Suche aus allen 6 Adaptern aus und gruppiert.
