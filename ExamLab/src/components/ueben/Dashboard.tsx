@@ -248,9 +248,9 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   return (
     <div>
       <main className="max-w-5xl mx-auto p-6">
-        <h2 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-3`}>
+        <h1 className={`${TYPO.h1} text-slate-800 dark:text-slate-100 mb-3`}>
           Hallo {user?.vorname || 'dort'}!
-        </h2>
+        </h1>
         {dashboardTab === 'ergebnisse' ? (
           <UebungsEinsicht />
         ) : dashboardTab === 'fortschritt' ? (

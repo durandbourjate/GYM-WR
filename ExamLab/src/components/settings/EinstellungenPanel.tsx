@@ -18,6 +18,7 @@ import AdminTab from './einstellungen/AdminTab'
 import TestdatenTab from './einstellungen/TestdatenTab'
 import { TagsTab } from '../lp/einstellungen/tags/TagsTab'
 import { PageTitle } from '../shared/PageTitle'
+import { tabsFuerSurface } from '../../utils/tabRegistry'
 
 import type { EinstellungenTab } from '../../store/lpUIStore'
 
@@ -63,21 +64,15 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
   }, [user?.email])
   const offeneCount = meldungen ? meldungen.filter(m => !m.erledigt).length : 0
 
-  const tabs: { key: EinstellungenTab; label: string; sichtbar: boolean }[] = [
-    { key: 'profil', label: 'Mein Profil', sichtbar: true },
-    { key: 'lernziele', label: 'Lernziele', sichtbar: true },
-    { key: 'klassenlisten', label: 'Klassenlisten', sichtbar: true },
-    { key: 'favoriten', label: 'Favoriten', sichtbar: true },
-    { key: 'problemmeldungen', label: `Problemmeldungen${offeneCount > 0 ? ` (${offeneCount})` : ''}`, sichtbar: true },
-    { key: 'uebungen', label: 'Übungen', sichtbar: true },
-    { key: 'fragensammlung', label: 'Fragensammlung', sichtbar: true },
-    { key: 'testdaten', label: 'Testdaten', sichtbar: true },
-    { key: 'tags', label: 'Tags', sichtbar: true },
-    { key: 'admin', label: 'Admin', sichtbar: admin },
-    { key: 'kiKalibrierung', label: 'KI-Kalibrierung', sichtbar: true },
-  ]
-
-  const sichtbareTabs = tabs.filter(t => t.sichtbar)
+  // Tab-Liste aus tabRegistry generieren (Source of Truth seit Cluster H Phase 2 C1).
+  // problemmeldungen-Label bekommt dynamischen offeneCount-Suffix.
+  const sichtbareTabs: { key: EinstellungenTab; label: string }[] =
+    tabsFuerSurface('einstellungen', { istAdmin: admin }).map(t => ({
+      key: t.id as EinstellungenTab,
+      label: t.id === 'problemmeldungen' && offeneCount > 0
+        ? `${t.titel} (${offeneCount})`
+        : t.titel,
+    }))
 
   // Header-Höhe messen, damit Overlay unterhalb des App-Headers beginnt
   const [headerH, setHeaderH] = useState(0)
@@ -131,7 +126,7 @@ export default function EinstellungenPanel({ onSchliessen, initialTab }: Props) 
         {tab === 'admin' && admin && user?.email && (
           <AdminTab email={user.email} stammdaten={stammdaten} />
         )}
-        {tab === 'kiKalibrierung' && user?.email && (
+        {tab === 'ki-kalibrierung' && user?.email && (
           <KIKalibrierungTab email={user.email} />
         )}
         {tab === 'problemmeldungen' && user?.email && (

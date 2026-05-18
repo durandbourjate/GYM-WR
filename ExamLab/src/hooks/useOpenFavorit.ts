@@ -27,17 +27,6 @@ export interface UseOpenFavoritResult {
   setInitialHilfeKategorie: (k: string | undefined) => void
 }
 
-/**
- * Mapping kebab-case Tab-Registry-ID → camelCase EinstellungenTab-Type.
- * Drift seit Pre-Cluster-E: EinstellungenTab im lpUIStore nutzt 'kiKalibrierung'
- * (camelCase), aber TabRegistry.id = 'ki-kalibrierung' (kebab-case).
- * Memory: "EinstellungenPanel-Migration auf Tab-Registry (blockiert durch ki-kalibrierung-ID-Konflikt)".
- */
-export function einstellungenTabKey(tabId: string): EinstellungenTab {
-  if (tabId === 'ki-kalibrierung') return 'kiKalibrierung'
-  return tabId as EinstellungenTab
-}
-
 export function useOpenFavorit(): UseOpenFavoritResult {
   const [initialHilfeKategorie, setInitialHilfeKategorie] = useState<string | undefined>(undefined)
   const zeigHilfe = useLPNavigationStore(s => s.zeigHilfe)
@@ -49,7 +38,7 @@ export function useOpenFavorit(): UseOpenFavoritResult {
       case 'einstellungen-tab':
         return {
           kind: 'action',
-          onClick: () => setZeigEinstellungen(true, einstellungenTabKey(fav.ziel)),
+          onClick: () => setZeigEinstellungen(true, fav.ziel as EinstellungenTab),
         }
       case 'hilfe-tab':
         return {

@@ -158,14 +158,14 @@ describe('Favoriten-Sektion — typ-Varianten Klick-Verhalten (Cluster E.5)', { 
     expect(setZeigEinstellungenMock).toHaveBeenCalledWith(true, 'tags')
   })
 
-  it("typ='einstellungen-tab' mit ziel='ki-kalibrierung' mappt auf 'kiKalibrierung' (kebab→camel-Drift)", async () => {
+  it("typ='einstellungen-tab' mit ziel='ki-kalibrierung' wird 1:1 durchgereicht (Drift entfallen)", async () => {
     mockFavoriten = [{ typ: 'einstellungen-tab', ziel: 'ki-kalibrierung', label: 'KI-Kalibrierung', sortierung: 0 }]
     const Favoriten = await ladeKomponente()
     render(<MemoryRouter><Favoriten /></MemoryRouter>)
     await waitFor(() => {
       fireEvent.click(screen.getByRole('button', { name: /KI-Kalibrierung/i }))
     })
-    expect(setZeigEinstellungenMock).toHaveBeenCalledWith(true, 'kiKalibrierung')
+    expect(setZeigEinstellungenMock).toHaveBeenCalledWith(true, 'ki-kalibrierung')
   })
 
   it("typ='hilfe-tab' rendert <button> und ruft toggleHilfe", async () => {

@@ -1,22 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useOpenFavorit, einstellungenTabKey } from './useOpenFavorit'
+import { useOpenFavorit } from './useOpenFavorit'
 import { useLPNavigationStore } from '../store/lpUIStore'
 
 /**
  * Unit-Tests für useOpenFavorit (Cluster E.5 Spawn-Task, 17.05.2026).
  * Browser-Integrationspfade laufen über Favoriten.test.tsx — hier nur API-Contract.
  */
-describe('einstellungenTabKey', () => {
-  it("mappt 'ki-kalibrierung' → 'kiKalibrierung' (kebab→camel-Drift)", () => {
-    expect(einstellungenTabKey('ki-kalibrierung')).toBe('kiKalibrierung')
-  })
-  it('lässt andere Tab-IDs unverändert', () => {
-    expect(einstellungenTabKey('tags')).toBe('tags')
-    expect(einstellungenTabKey('profil')).toBe('profil')
-  })
-})
-
 describe('useOpenFavorit — resolveFavorit', () => {
   beforeEach(() => {
     // Reset relevante lpUIStore-Felder vor jedem Test
@@ -57,11 +47,11 @@ describe('useOpenFavorit — resolveFavorit', () => {
     expect(state.einstellungenTab).toBe('tags')
   })
 
-  it("typ='einstellungen-tab' mit 'ki-kalibrierung' → mappt auf 'kiKalibrierung'", () => {
+  it("typ='einstellungen-tab' mit 'ki-kalibrierung' → setzt 'ki-kalibrierung' direkt (kein Drift-Mapping mehr)", () => {
     const { result } = renderHook(() => useOpenFavorit())
     const r = result.current.resolveFavorit({ typ: 'einstellungen-tab', ziel: 'ki-kalibrierung', label: 'X', sortierung: 0 })
     if (r.kind === 'action') act(() => r.onClick())
-    expect(useLPNavigationStore.getState().einstellungenTab).toBe('kiKalibrierung')
+    expect(useLPNavigationStore.getState().einstellungenTab).toBe('ki-kalibrierung')
   })
 
   it("typ='hilfe-tab' → action setzt initialHilfeKategorie + toggelt Hilfe (von false → true)", () => {
