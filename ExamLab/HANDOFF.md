@@ -8,7 +8,68 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `a9b4d80` — Cluster E-Restposten + Storybook Minimal-Setup LIVE (18.05.2026, E2E ✓ + FF-Merge zu main).
+**HEAD main + preview:** `f97cb55` — Polish-Run #1 (lint:storybook-coverage + audit-typo-tokens Drift-Detection) LIVE (18.05.2026 SPÄTER).
+
+### Stand 18.05.2026 SPÄTER — Polish-Run #1 LIVE
+
+**1 Commit seit `804d757`:**
+
+| Commit | Was |
+|---|---|
+| `f97cb55` | `scripts/audit-storybook-coverage.mjs` (Item 1) + `audit-typo-tokens.mjs` Drift-Detection (Item 3) |
+
+**Was abgearbeitet wurde:**
+
+- **Item 1 — Storybook-Coverage-Lint-Gate:** Neues CI-Gate `lint:storybook-coverage` prüft dass `Icons.stories.tsx` beide Source-of-Truth-Maps (`LUCIDE_KEY_MAP` aus `NavIcon.tsx`, `FRAGETYP_ICON_MAP` aus `FragetypIcon.tsx`) importiert UND via `Object.entries/keys/values` iteriert. Drift-Prevention: neue Icons in den Maps werden in der Galerie automatisch sichtbar.
+- **Item 2 — Filter-Dropdown FragenBrowserHeader:** **bereits done seit Commit `0f179e7`** (TODO-Sweep #3 vom 17.05.). 4 Filter (Fach/Typ/Bloom/Status) sind auf Custom-`Dropdown` mit Lucide-Prefix migriert. Die 3 verbleibenden nativen `<select>` (Thema/Unterthema/Gruppieren) sind bewusst native — reine String-Listen ohne Icon-Bedarf.
+- **Item 3 — audit-typo-tokens Drift-Detection:** Pro-File-Drift-Tracking analog `audit-no-emoji.mjs`. Files mit `count < baseline` werden als IMPROVEMENT mit Preview (erste 5) gelistet. 0-count-Files mit Baseline-Eintrag zählen ebenfalls als Drift (Cleanup-Kandidaten für `--baseline`-Refresh).
+- **Item 4 — Apps-Script `updateFrageMitPatch_` Performance:** Code-Review ✅ — fertig seit Commit `280b4d2` (16.05.2026 SPÄT). **Wartet auf DU: Apps-Script-Deploy + LIVE-E2E.**
+
+**Gates:** vitest **1994 + 4 todo**, **9 lint-Gates** clean (NEU: `lint:storybook-coverage`), tsc -b + vite build + storybook build clean.
+
+### 🎯 Offen für dich (Item 4 — Apps-Script-Deploy)
+
+Der Backend-Code für die `apiBulkUpdateFragen`-Performance-Optimierung liegt seit Commit `280b4d2` im Repo, aber Apps-Script ist nicht deployed. Code-Review heute bestätigt: alle Hardening-Pattern (500-ID-Cap, LockService 30s, ALLOWED_PATCH_KEYS-Allowlist, Mutually-Exclusive-Tag-Modi, setValues-Batch) sind drin.
+
+**Deploy-Schritte:**
+
+1. Apps-Script-Editor öffnen ([script.google.com](https://script.google.com), Projekt „ExamLab Backend")
+2. `apps-script-code.js` Content aus dem Repo kopieren (`ExamLab/apps-script-code.js` HEAD `f97cb55`) und im Editor einfügen
+3. `Ctrl+S` (Save)
+4. **Bereitstellen** → **Bereitstellungen verwalten** → aktive Web-App-Bereitstellung auswählen → **Stift-Icon** (bearbeiten) → **Version: Neu** → **Bereitstellen**
+5. URL bleibt unverändert (Web-App-URL ist deployment-Version-agnostisch)
+6. Berechtigungen sollten gleich bleiben — keine neuen Scopes seit letztem Deploy
+
+**E2E-Test-Plan (auf staging, vor und nach Deploy):**
+
+1. Test-LP `wr.test@gymhofwil.ch` einloggen
+2. FragenBrowser → Fach „BWL" (oder grösstes Fach mit ≥100 Fragen)
+3. „Alle auswählen" → Selektion-Bar zeigt z.B. „127 ausgewählt"
+4. Bulk-Edit-Action wählen: z.B. „Bloom auf K3 setzen" oder „Tag hinzufügen: test-deploy"
+5. **Stoppuhr beim Bestätigen-Klick** → Dauer bis Toast „X Fragen aktualisiert" notieren
+6. **Vor Deploy** (Erwartung): bei 500 Fragen ~30-60s (linearer Scan pro ID)
+7. **Nach Deploy** (Erwartung): bei 500 Fragen ~5-15s (Faktor 5-10× durch Index-Map + setValues-Batch)
+8. Sanity-Checks:
+   - Toast zeigt erwartete Anzahl ohne Fehler
+   - Frage-Count vor/nach unverändert
+   - Patch sichtbar angewendet (Bloom-Badge / Tag-Chip in den Karten)
+   - Console: 0 Errors, 0 Warnings
+9. Bei Erfolg: Memory `letzterSeedAm`-Tab erlaubt Reset von Test-Tag (Apps-Script-Func `runAdminSeedTestdaten`)
+
+**Falls ein Problem auftaucht:** Apps-Script-Editor → **Bereitstellungen verwalten** → ältere Version aktivieren als Rollback. Code im Repo bleibt unverändert.
+
+**Was als nächstes (nach Item-4-Deploy):**
+
+Nichts mehr dringendes offen. Mögliche Nice-to-Haves:
+1. **Storybook Phase 2** — Component-Galerien (BaseDialog, Buttons, FragetypIcon-Variants).
+2. **Apps-Script-Latenz-Reduzierung** — Backend-Migration auf Edge-Runtime (Cloud Run / Cloudflare Workers). Long-term, ~1-2 Wochen.
+3. **Mobile/iPad-UX-Audit** — letzter größerer Audit war vor Cluster G. Touch-Targets nach Icon-Migration neu prüfen.
+
+---
+
+### Vorheriger Stand (18.05.2026 SPÄT) — Cluster E-Restposten + Storybook LIVE
+
+**HEAD vor Polish-Run #1:** `804d757`.
 
 ### Stand 18.05.2026 SPÄT — Cluster E-Restposten + Storybook LIVE
 
