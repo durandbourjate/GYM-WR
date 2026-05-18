@@ -8,8 +8,57 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `e5466d9` — Cluster C.2-C.5 Phasen 1-3 LIVE (17.05.2026 NACHT, E2E ✓ + FF-Merge zu main).
-**Aktiver Feature-Branch:** `feature/cluster-c-4-volltext-2026-05-18` HEAD `528b860` — **Cluster C.4 ci-check-grün, wartet auf Browser-E2E + Push** (18.05.2026).
+**HEAD main + preview:** `a9b4d80` — Cluster E-Restposten + Storybook Minimal-Setup LIVE (18.05.2026, E2E ✓ + FF-Merge zu main).
+
+### Stand 18.05.2026 SPÄT — Cluster E-Restposten + Storybook LIVE
+
+**2 Commits seit `5255d26`:**
+
+| Commit | Block | Beschreibung |
+|---|---|---|
+| `8a6f5b4` | Cluster E-Restposten | C4+C5 Tag-Semantik (Dashboard h1, AdminLayout swap) + B3 ki-kalibrierung kebab-case-Migration + EinstellungenPanel auf tabRegistry |
+| `a9b4d80` | Cluster G Spec §13 | Storybook 10 Minimal-Setup + Icon-Galerie für 35 Icons (15 Nav + 20 Fragetyp) |
+
+**Was abgearbeitet wurde:**
+
+- **C4 Dashboard.tsx Z.251:** `<h2 className={TYPO.h1}>Hallo Vorname!</h2>` → `<h1 className={TYPO.h1}>` (Tag-Semantik korrigiert, Style unverändert). Browser-E2E auf staging verifiziert ✅
+- **C5 AdminLayout.tsx Z.10+15:** `<h1>`/`<h2>`-Inversion gelöst — Header bekommt `<h2>` (Brand), Main bekommt `<h1>` (echter Page-Title). Styles bleiben identisch, visuell unverändert.
+- **C6 MODAL_TITLE-Konstante:** **verworfen** als YAGNI (TYPO.h2 ist bereits zentralisiert).
+- **B2 appNavigation Lucide-Component-Keys:** **bereits done** seit Commit `6c30abf` (TODO-Sweep #4) — Memory-Eintrag war veraltet.
+- **B3 ki-kalibrierung kebab-case-Vereinheitlichung:**
+  - `lpUIStore.EinstellungenTab`: `'kiKalibrierung'` → `'ki-kalibrierung'` (matched tabRegistry.id 1:1)
+  - `EinstellungenPanel`: hardcoded tabs-Array ersetzt durch `tabsFuerSurface('einstellungen', { istAdmin })`-Generierung. `problemmeldungen`-Label-Override für dynamic offeneCount.
+  - `useOpenFavorit`: `einstellungenTabKey`-Drift-Mapping entfernt. `fav.ziel` wird 1:1 als `EinstellungenTab` durchgereicht.
+  - Memory-Blocker („kiKalibrierung↔ki-kalibrierung-ID-Konflikt") gelöst.
+  - Browser-E2E: KI-Kalibrierung-Tab direkt + via Favorit-Click verifiziert ✅
+- **B1 Storybook Minimal-Setup:**
+  - 3 neue devDeps: `storybook@10`, `@storybook/react-vite@10`, `@storybook/addon-docs@10`
+  - **Bewusst minimal:** kein `addon-vitest` (vermeidet Playwright + vitest.config-Umbau), kein `addon-a11y`, kein `chromatic`
+  - `.storybook/main.ts`: `viteFinal` filtert `vite-plugin-pwa` raus (PWA-Plugin sucht SW-Targets die im Storybook-Build nicht existieren)
+  - `Icons.stories.tsx`: Galerie für alle 15 `LUCIDE_KEY_MAP` (Nav) + 20 `FRAGETYP_ICON_MAP` (Fragetypen) — Source-of-Truth bleiben die TS-Maps
+  - Smoke-Build erfolgreich; `npm run storybook` startet Dev-Server auf :6006
+
+**Auto-Init-Lesson:** `storybook init` zieht standardmäßig sehr viel rein (Playwright-Browser, addon-vitest mit vitest.config-Umbau auf projects-Struktur, demo-Stories, chromatic, a11y). Für Drift-Prevention nur Core + Docs-Addon nötig — manuelle Installation ist sauberer.
+
+**Gates:** vitest **1994 + 4 todo** (Cluster E-Restposten -2 obsolete `einstellungenTabKey`-Tests), 8 lint-Gates clean, tsc -b + vite build + storybook build clean.
+
+**Was als nächstes:**
+
+Nichts dringend offen. Mögliche Nice-to-Haves:
+1. **Lint-Gate für Storybook-Stories** (`*.stories.tsx`) — Coverage-Drift-Detection wenn neue Icons hinzukommen aber nicht in Story. Wird mit Storybook-Wachstum nützlich.
+2. **Apps-Script Performance** `updateFrageMitPatch_` (I-3/M-1) — bei >500-ID-Batches. Braucht Deploy + LIVE-Verifikation. Ca. 0.5 Tag.
+3. **Storybook Phase 2** — wenn Bedarf für Component-Galerien über Icons hinaus (BaseDialog, Buttons, FragetypIcon-Variants).
+4. **Apps-Script-Latenz-Reduzierung** (Pre-Loading + Client-Verifikation Architektur) — long-term, langfristig.
+
+### Vorheriger Stand (18.05.2026, vor Cluster E-Restposten) — Cluster C.4 + Spawn-Tasks LIVE
+
+**HEAD vor dieser Session:** `5255d26` — Cluster C.4 Volltext-Suche LIVE + Phase-4-Spawn-Tasks alle erledigt.
+
+---
+
+## Vorheriger Stand — Cluster C.4 Volltext-Suche (18.05.2026)
+
+**HEAD:** `5255d26`. Aktiver Feature-Branch: war `feature/cluster-c-4-volltext-2026-05-18` HEAD `528b860`.
 
 ### Cluster C.4 Phase 4 KOMPLETT (lokal, 12 Commits seit `e5466d9`)
 
