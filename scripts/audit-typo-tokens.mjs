@@ -11,6 +11,12 @@
  *   node scripts/audit-typo-tokens.mjs --strict   # exit 1 bei Regression (CI-Gate)
  *   node scripts/audit-typo-tokens.mjs --baseline # regeneriert Baseline-File
  *
+ * Drift-Detection: Wenn ein File unter seinem Baseline-Wert liegt (z.B. nach
+ * Migration), wird das als „IMPROVEMENT" mit den ersten 5 Drift-Files
+ * angezeigt — Vorschlag, mit `--baseline` neu zu schreiben. Files mit
+ * Baseline-Eintrag aber count === 0 zählen ebenfalls als Drift (Cleanup
+ * obsoleter Einträge). Pattern aus audit-no-emoji.mjs übernommen.
+ *
  * Spec: ExamLab/docs/superpowers/specs/2026-05-17-cluster-e-2-typografie-design.md §4.2
  */
 
@@ -110,9 +116,23 @@ const baseline = JSON.parse(readFileSync(baselinePath, 'utf-8'))
 const PER_FILE = baseline.byFile || {}
 
 const regressions = []
+const drifts = []
+
+// Files mit Treffern: gegen Baseline matchen
 for (const [relPath, count] of Object.entries(currentCounts)) {
   const max = PER_FILE[relPath] ?? 0
-  if (count > max) regressions.push({ path: relPath, found: count, baseline: max, diff: count - max })
+  if (count > max) {
+    regressions.push({ path: relPath, found: count, baseline: max, diff: count - max })
+  } else if (count < max) {
+    drifts.push({ path: relPath, found: count, baseline: max, diff: max - count })
+  }
+}
+
+// Drift-only-Files: Baseline-Eintrag existiert, aktuell 0 Treffer (Cleanup-Kandidaten).
+for (const [relPath, max] of Object.entries(PER_FILE)) {
+  if (max > 0 && currentCounts[relPath] === undefined) {
+    drifts.push({ path: relPath, found: 0, baseline: max, diff: max })
+  }
 }
 
 console.log('')
@@ -122,6 +142,7 @@ console.log(`  Current total:       ${totalCurrent}`)
 console.log(`  Files in baseline:   ${Object.keys(PER_FILE).length}`)
 console.log(`  Files with current:  ${Object.keys(currentCounts).length}`)
 console.log(`  Regressions:         ${regressions.length}`)
+console.log(`  Drifts (unter Baseline): ${drifts.length}`)
 
 if (regressions.length > 0) {
   console.log('')
@@ -132,10 +153,17 @@ if (regressions.length > 0) {
   if (STRICT) process.exit(1)
 }
 
-if (totalCurrent < baseline.totalCount) {
+if (drifts.length > 0) {
   console.log('')
-  console.log(`IMPROVEMENT: total dropped from ${baseline.totalCount} to ${totalCurrent}.`)
-  console.log(`Run with --baseline to lock in the improvement.`)
+  console.log(`IMPROVEMENT: ${drifts.length} File(s) unter ihrer Baseline — Baseline kann gesenkt werden.`)
+  const preview = drifts.slice(0, 5)
+  for (const d of preview) {
+    console.log(`  ${d.path} — current ${d.found}, baseline ${d.baseline} (diff -${d.diff})`)
+  }
+  if (drifts.length > preview.length) {
+    console.log(`  … +${drifts.length - preview.length} weitere`)
+  }
+  console.log('  Run mit --baseline um Baseline neu zu schreiben (entfernt 0-counts, senkt drifts).')
 }
 
 process.exit(0)
