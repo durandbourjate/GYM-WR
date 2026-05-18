@@ -59,11 +59,15 @@ Falls LP schon im FragenBrowser war (fragensammlungStore = `'fertig'`): kein Spi
 5. **`volltextBereit` muss `'fertig'`-Status decken:** Bei LP mit genuinely leerer Fragensammlung (`fragenVoll.length === 0` aber `status === 'fertig'`) sonst Effect-Spam (no-op-Schleife). Fix: `volltextBereit = fragenVoll.length > 0 || sammlungStatus === 'fertig'`.
 6. **Vi.mock + Komponente-Re-Import:** Bei Modul-Mock muss JEDES vom Komponenten-Import erfasste Symbol im Mock-Object stehen. Task 4.7 hat 2 neue Konstanten in `sucheEngine.ts` exportiert, LPGlobalSuche-Test-Mock musste mit-erweitert werden (sonst Render-Error: "No export defined on the mock").
 
-### Phase-4 Spawn-Tasks (aus Final-Review, noch nicht erledigt)
+### Phase-4 Spawn-Tasks — alle erledigt (18.05.2026)
 
-1. **`AufgabengruppeFrage.kontext` in Volltext-Suche einbeziehen:** `fragetextVonFrage()` in `ExamLab/src/utils/sucheAdapter.ts:179` fällt für AufgabengruppeFrage auf `''` zurück. Eltern-Frage-Volltext-Suche ist out-of-scope von C.4, kann aber gewünscht sein wenn LP-Feedback in Produktion das einfordert.
-2. **`scoreFromMatch` Fuzzy-min-length-Konstante extrahieren:** `ExamLab/src/utils/sucheEngine.ts:79` hat `n.length >= 3` hardcoded (Fuzzy-Fallback). Separat von `MIN_VOLLTEXT_QUERY_LENGTH`, aktuell same value. Drift-Risiko wenn nur eine geändert wird → als `MIN_FUZZY_NEEDLE_LENGTH` extrahieren mit Kommentar über bewusste Unabhängigkeit.
-3. **`generiereSnippet` Umlaut-Offset-Comment:** In `ExamLab/src/utils/sucheVolltextHelpers.ts` warnen, dass `idx` auf normalisiertem Text berechnet wird, `text.slice` aber auf Original → Drift von 1-3 Zeichen pro Umlaut vor der Match-Stelle. Bei `kontext ≥ 20` inert; Comment verhindert künftige Caller mit kleinem `kontext`.
+Branch `feature/cluster-c-4-spawn-tasks-2026-05-18` → main HEAD `21ba1f5` (FF-Merge nach ci-check).
+
+1. ✅ **`AufgabengruppeFrage.kontext` indiziert** (`21ba1f5`): `fragetextVonFrage()` in `sucheAdapter.ts` liefert jetzt auch `kontext` (4. Fallback). +1 Test (Query > Pos 77 erzwingt Volltext-Branch). Eltern-Fall-Beschreibungen einer Aufgabengruppe sind ab jetzt Volltext-suchbar.
+2. ✅ **`MIN_FUZZY_NEEDLE_LENGTH` extrahiert** (`5a60e94`): In `sucheEngine.ts` neue exportierte Konstante (=3). `scoreFromMatch` nutzt sie statt hardcoded `3`. Doc-Comment erklärt bewusste Unabhängigkeit von `MIN_VOLLTEXT_QUERY_LENGTH`.
+3. ✅ **Umlaut-Offset-Doku** (`f17a18a`): JSDoc auf `generiereSnippet` erklärt die Drift (`idx` auf normalisiertem Text vs. `text.slice` auf Original). Bei `kontext ≥ 20` inert; Caller in `indexFragenVolltext` nutzen `kontext=50`.
+
+**Gates nach Spawn-Tasks:** vitest **1996 + 4 todo** (+1 neuer kontext-Test), 8 lint-Gates clean, tsc + build clean.
 
 ### C.4 Backend-Entscheidung (Plan-Phase 4.0)
 
