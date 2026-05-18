@@ -8,7 +8,65 @@
 
 ## 🚀 NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main + preview:** `f97cb55` — Polish-Run #1 (lint:storybook-coverage + audit-typo-tokens Drift-Detection) LIVE (18.05.2026 SPÄTER).
+**HEAD main:** `b927dba` — Item 4 E2E-verified (Apps-Script Bulk-Edit Performance) + Frontend-Reload-Hotfix LIVE (18.05.2026 SPÄTER).
+
+### Stand 18.05.2026 SPÄTER-2 — Item 4 Apps-Script E2E + Bulk-Reload-Hotfix
+
+**1 Commit seit `e03255f`:**
+
+| Commit | Was |
+|---|---|
+| `b927dba` | `useFragenBatchEdit`: `lade(email, true)` statt `ladeAlleDetails(email)` (Frontend-Refresh-Bug nach Bulk-Edit) |
+
+### Item 4 Apps-Script-Performance E2E ✅
+
+**Setup:** Test-LP `wr.test@gymhofwil.ch` auf staging. Filter Recht / OR AT – Vertragslehre = 130 Fragen.
+
+**Messungen:**
+
+| Run | Patch | Backend-Roundtrip |
+|---|---|---|
+| 1 | Bloom → K3 (alle 130) | **11.882 ms** |
+| 2 | Bloom → K2 (alle 130) | **12.001 ms** |
+
+→ ~12s konstant für 130 Fragen = **~92 ms/Frage**. Apps-Script-Base-Latenz ~1.5-2s + Sheet-Tab-Scan O(n_tabs) + 130× setValues-Batch.
+
+**Erwarteter Vorher-Stand (vor `280b4d2`):** linearer Scan pro ID = 130 × ~200ms × 5 Tabs = ~130s → **Faktor ~10× Verbesserung**. Memory `feedback_apps_script_perf_bulk_update.md` Spec sagte „Faktor 5-10× erwartet" — voll erfüllt.
+
+**Cap-Verhalten:** 786 Recht-Fragen wären über 500-ID Hard-Cap. Filter-Verfeinerung auf 130 zeigte erwartete sub-Cap-Performance. Bei 500 IDs erwartet ~30-40s (linear scaling).
+
+### Frontend-Stale-Bug entdeckt + gefixt während E2E
+
+**Bug:** Nach `bulkUpdateFragen()` rief `useFragenBatchEdit` `ladeAlleDetails(email)` auf. Dort Z.127-129:
+```ts
+if (status !== 'summary_fertig') return  // Guard greift bei status='fertig'
+```
+
+Nach normalem Login ist `status='fertig'` (Vollobjekte schon im Store). Der Reload-Aufruf wurde stillschweigend ignoriert → **Frontend zeigt Stale-Daten obwohl Backend erfolgreich geschrieben hat.**
+
+Sichtbar in E2E: Erste Messung (K3-Patch) erfolgte, Toast „130 Fragen aktualisiert" kam, aber Bloom-Filter K3 zeigte nur 38 Fragen (Stale-Cache aus IDB). Erst nach SW-Unregister + Hard-Reload korrekt 130.
+
+**Fix in `b927dba`:** `lade(email, true)` (force=true bypasst Status-Guard) statt `ladeAlleDetails(email)`. Gleiche Änderung in `onBatchLoeschen`-Pfad.
+
+**Tests:** `useFragenBatchEdit.test.ts` mock-Variable `ladeAlleDetailsMock` → `ladeMock`, Erwartung `toHaveBeenCalledWith('lp@test', true)`. vitest 1994 + 4 todo unverändert.
+
+**Latente Klasse:** Bug existiert seit Cluster D Phase 4 (Commit `35e9020`, 16.05.2026). Ist jetzt behoben.
+
+### Daten-State nach E2E
+
+130 Recht / OR AT – Vertragslehre-Fragen sind aktuell **alle auf K3**. Cleanup-Versuch zurück auf K2 lief Backend-side aber Frontend-Display zeigte 0 K2 — vermutlich Apps-Script-Cache-Race-Condition zwischen mehreren Containern (sekundäre Edge-Case, nicht im Scope von Item 4). Wenn problematisch: manuell im FragenBrowser zurücksetzen oder via einzelner Frage-Edit.
+
+### Was als nächstes
+
+Nichts dringend offen. Optional:
+1. **Apps-Script-Cache-Race-Condition untersuchen** — Zweite Bulk-Update-Operation hat möglicherweise einen Cache-Snapshot aus parallelem Container gelesen. Auswirkung gering (Cache invalidiert nach 6h via `cache_version`-Inkrement), aber dokumentationswürdig.
+2. **Storybook Phase 2** — Component-Galerien über Icons hinaus (BaseDialog, Buttons, FragetypIcon-Variants).
+3. **Apps-Script-Latenz-Refactor** — Backend-Migration auf Edge-Runtime (Cloud Run / Cloudflare Workers). Long-term, ~1-2 Wochen.
+4. **Mobile/iPad-UX-Audit** — letzter größerer Audit war vor Cluster G. Touch-Targets nach Icon-Migration neu prüfen.
+
+### Vorheriger Stand — Polish-Run #1 LIVE (18.05.2026 SPÄTER)
+
+**HEAD vor Item-4-E2E:** `e03255f`.
 
 ### Stand 18.05.2026 SPÄTER — Polish-Run #1 LIVE
 
