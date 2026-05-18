@@ -389,4 +389,34 @@ describe('indexFragenVolltext (C.4)', () => {
     })
     expect(indexFragenVolltext('xyz987ohneTreffer', [frage])).toEqual([])
   })
+
+  // Spawn-Task 1 (18.05.2026): AufgabengruppeFrage.kontext als 4. Fallback in fragetextVonFrage.
+  it('AufgabengruppeFrage: kontext-Feld wird als Volltext indiziert', () => {
+    const aufgabengruppe = {
+      id: 'agf-001',
+      typ: 'aufgabengruppe',
+      fachbereich: 'WR',
+      fach: 'BWL',
+      thema: 'Fall',
+      bloom: 'K3',
+      punkte: 5,
+      semester: [],
+      gefaesse: [],
+      bewertungsraster: [],
+      verwendungen: [],
+      tagIds: [],
+      // Query "Liquiditätssituation" muss > Position 77 stehen, damit titel-Truncation
+      // (slice 0,77) das Wort NICHT enthält und der Volltext-Branch greift.
+      kontext:
+        'Lange Fallbeschreibung mit relevanten Sachverhalten einer Aktiengesellschaft, die zentralen Punkten der Liquiditätssituation und der angemessenen Kapitalstruktur betrachten lässt.',
+      teilaufgaben: [],
+      erstelltAm: '2026-05-18',
+      geaendertAm: '2026-05-18',
+      status: 'aktiv',
+    } as unknown as Frage /* Defensive: AufgabengruppeFrage hat optionale Core-Felder, die im Test-Stub fehlen */
+    const treffer = indexFragenVolltext('Liquiditätssituation', [aufgabengruppe])
+    expect(treffer).toHaveLength(1)
+    expect(treffer[0].subTitel).toBeDefined()
+    expect(treffer[0].subTitel!.toLowerCase()).toContain('liquidität')
+  })
 })

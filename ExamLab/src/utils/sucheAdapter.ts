@@ -175,13 +175,14 @@ export function indexFragen(query: string, fragen: FrageSummary[]): SucheTreffer
  * Liefert den primären Fragetext eines beliebigen Frage-Subtyps.
  * FiBu-Typen (buchungssatz, tkonto, kontenbestimmung, bilanzstruktur) haben
  * kein `fragetext`-Feld — sie nutzen `aufgabentext` oder `geschaeftsfall`.
- * AufgabengruppeFrage trägt nur `kontext` — bewusst NICHT indiziert für C.4,
- * weil Eltern-Frage-Volltext-Suche eigene Scope-Entscheidung wäre.
+ * AufgabengruppeFrage trägt `kontext` als Eltern-Fall-Beschreibung — ab
+ * Spawn-Task 1 (18.05.2026) in den Volltext-Index aufgenommen.
  */
 function fragetextVonFrage(f: Frage): string {
   if ('fragetext' in f && typeof f.fragetext === 'string') return f.fragetext
   if ('aufgabentext' in f && typeof f.aufgabentext === 'string') return f.aufgabentext
   if ('geschaeftsfall' in f && typeof f.geschaeftsfall === 'string') return f.geschaeftsfall
+  if ('kontext' in f && typeof f.kontext === 'string') return f.kontext
   return ''
 }
 
