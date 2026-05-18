@@ -118,7 +118,10 @@ export function useFragenBatchEdit({
       leereSelektion()
       setBatchConfirmOffen(false)
       setPendingPatch(null)
-      await useFragensammlungStore.getState().ladeAlleDetails(email)
+      // force=true erzwingt Reload trotz status='fertig' — ladeAlleDetails-Guard
+      // würde sonst skippen und Frontend zeigt Stale-Daten (Bug: 18.05.2026 E2E
+      // Cluster E.4.0.5 Item-4-Verifikation).
+      await useFragensammlungStore.getState().lade(email, true)
     } catch (e) {
       if (!mountedRef.current) return
       console.error('[useFragenBatchEdit] bulkUpdateFragen failed', e)
@@ -139,7 +142,9 @@ export function useFragenBatchEdit({
       toastAdd(r.fehlgeschlagen.length > 0 ? 'warning' : 'success', `${r.erfolgreich} Fragen in den Papierkorb verschoben${fehlText}.`)
       leereSelektion()
       setLoeschConfirmOffen(false)
-      await useFragensammlungStore.getState().ladeAlleDetails(email)
+      // force=true: analog onBatchUpdateBestaetigen, sonst zeigt Frontend
+      // gelöschte Fragen weiter (ladeAlleDetails-Guard skipt bei status='fertig').
+      await useFragensammlungStore.getState().lade(email, true)
     } catch (e) {
       if (!mountedRef.current) return
       console.error('[useFragenBatchEdit] bulkLoescheFragen failed', e)

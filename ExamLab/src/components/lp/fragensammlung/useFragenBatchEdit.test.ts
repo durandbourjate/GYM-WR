@@ -9,7 +9,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 // ─── Module-Level mutable State (geschlossen in vi.mock-Factories) ───
 const bulkUpdateMock = vi.fn()
 const bulkLoescheMock = vi.fn()
-const ladeAlleDetailsMock = vi.fn()
+const ladeMock = vi.fn()
 const leereSelektionMock = vi.fn()
 const toastAddMock = vi.fn()
 
@@ -30,7 +30,7 @@ vi.mock('../../../store/fragensammlungStore.ts', () => ({
   useFragensammlungStore: Object.assign(
     (_selector: (s: unknown) => unknown) => undefined,
     {
-      getState: () => ({ ladeAlleDetails: ladeAlleDetailsMock }),
+      getState: () => ({ lade: ladeMock }),
     },
   ),
 }))
@@ -45,7 +45,7 @@ import { useFragenBatchEdit } from './useFragenBatchEdit'
 beforeEach(() => {
   bulkUpdateMock.mockReset().mockResolvedValue({ erfolgreich: 0, affectedIds: [], fehlgeschlagen: [] })
   bulkLoescheMock.mockReset().mockResolvedValue({ erfolgreich: 0, affectedIds: [], fehlgeschlagen: [] })
-  ladeAlleDetailsMock.mockReset().mockResolvedValue(undefined)
+  ladeMock.mockReset().mockResolvedValue(undefined)
   leereSelektionMock.mockReset()
   toastAddMock.mockReset()
   selektierteIdsRef.current = []
@@ -106,7 +106,7 @@ describe('useFragenBatchEdit — Editor → Confirm Flow', () => {
 })
 
 describe('useFragenBatchEdit — bulkUpdateFragen Flow', () => {
-  it('onBatchUpdateBestaetigen ruft bulkUpdateFragen, leereSelektion, toast.success, ladeAlleDetails', async () => {
+  it('onBatchUpdateBestaetigen ruft bulkUpdateFragen, leereSelektion, toast.success, lade(force=true)', async () => {
     selektierteIdsRef.current = ['f1', 'f2']
     bulkUpdateMock.mockResolvedValue({ erfolgreich: 2, affectedIds: ['f1', 'f2'], fehlgeschlagen: [] })
     const { result } = renderHook(() => useFragenBatchEdit({ email: 'lp@test', gefilterteIds: [] }))
@@ -116,7 +116,7 @@ describe('useFragenBatchEdit — bulkUpdateFragen Flow', () => {
     expect(bulkUpdateMock).toHaveBeenCalledWith(['f1', 'f2'], { bloom: 'K2' }, 'lp@test')
     expect(toastAddMock).toHaveBeenCalledWith('success', expect.stringContaining('2 Fragen aktualisiert'))
     expect(leereSelektionMock).toHaveBeenCalledTimes(1)
-    expect(ladeAlleDetailsMock).toHaveBeenCalledWith('lp@test')
+    expect(ladeMock).toHaveBeenCalledWith('lp@test', true)
     await waitFor(() => expect(result.current.batchConfirmOffen).toBe(false))
     expect(result.current.pendingPatch).toBeNull()
   })
@@ -177,7 +177,7 @@ describe('useFragenBatchEdit — bulkUpdateFragen Flow', () => {
 })
 
 describe('useFragenBatchEdit — bulkLoescheFragen Flow', () => {
-  it('onBatchLoeschen ruft bulkLoescheFragen, leereSelektion, toast, ladeAlleDetails', async () => {
+  it('onBatchLoeschen ruft bulkLoescheFragen, leereSelektion, toast, lade(force=true)', async () => {
     selektierteIdsRef.current = ['f1', 'f2']
     bulkLoescheMock.mockResolvedValue({ erfolgreich: 2, affectedIds: ['f1', 'f2'], fehlgeschlagen: [] })
     const { result } = renderHook(() => useFragenBatchEdit({ email: 'lp@test', gefilterteIds: [] }))
@@ -217,9 +217,9 @@ describe('useFragenBatchEdit — SP-4 mountedRef', () => {
       await p
     })
 
-    // Nach unmount: KEIN toastAdd, KEIN leereSelektion, KEIN ladeAlleDetails
+    // Nach unmount: KEIN toastAdd, KEIN leereSelektion, KEIN lade
     expect(toastAddMock).not.toHaveBeenCalled()
     expect(leereSelektionMock).not.toHaveBeenCalled()
-    expect(ladeAlleDetailsMock).not.toHaveBeenCalled()
+    expect(ladeMock).not.toHaveBeenCalled()
   })
 })
