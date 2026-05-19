@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../../store/plannerStore';
 import { usePlannerData } from '../../hooks/usePlannerData';
 import { TYPE_BADGES, getSequenceInfoFromStore } from '../../utils/colors';
@@ -206,6 +207,7 @@ function NewUEButton() {
 }
 
 export function DetailsTab() {
+  const toast = useToast();
   const {
     selection,
     lessonDetails, updateLessonDetail,
@@ -417,7 +419,7 @@ export function DetailsTab() {
               if (detail.fachbereich && detail.fachbereich !== parentBlock.fachbereich) fieldsToApply.push(`Fachbereich: ${detail.fachbereich}`);
               if (detail.thema && detail.thema !== parentBlock.thema) fieldsToApply.push(`Oberthema: ${detail.thema}`);
               if (detail.duration) fieldsToApply.push(`Dauer: ${detail.duration}`);
-              if (fieldsToApply.length === 0) { alert('Keine UE-Felder gesetzt, die sich vom Block unterscheiden.'); return; }
+              if (fieldsToApply.length === 0) { toast.info('Keine UE-Felder gesetzt, die sich vom Block unterscheiden.'); return; }
               if (!confirm(`Folgende Felder auf den Sequenz-Block übertragen?\n\n${fieldsToApply.join('\n')}`)) return;
               const blockIdx = parentSeq.blocks.findIndex(b => b.weeks.includes(selection!.week));
               if (blockIdx < 0) return;
