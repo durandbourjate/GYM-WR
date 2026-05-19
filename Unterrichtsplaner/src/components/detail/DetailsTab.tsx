@@ -552,7 +552,7 @@ export function DetailsTab() {
                 type: 'unit',
                 title,
                 fachbereich: effectiveDetail.fachbereich,
-                courseType: c.typ as any,
+                courseType: c.typ,
                 cls: c.cls,
                 units: [{
                   block: { weeks: [], label: '', thema: effectiveDetail.thema, unterthema: effectiveDetail.unterthema, fachbereich: effectiveDetail.fachbereich, curriculumGoal: effectiveDetail.curriculumGoal, description: effectiveDetail.description, materialLinks: effectiveDetail.materialLinks },
