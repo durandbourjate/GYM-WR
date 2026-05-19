@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import type { Course, CourseType, DayOfWeek, Semester } from '../../types';
 import { usePlannerStore } from '../../store/plannerStore';
 import { saveSettings, applySettingsToWeekData, type SpecialWeekConfig } from '../../store/settingsStore';
@@ -10,6 +11,7 @@ import { formatGymLevel } from './SpecialWeeksEditor';
 
 // === Google Calendar Section (v3.60) ===
 export function GCalSection() {
+  const toast = useToast();
   const { clientId, setClientId, calendars, setCalendars,
     writeCalendarId, setWriteCalendarId, readCalendarIds, toggleReadCalendar } = useGCalStore();
   const isAuth = useGCalStore(s => s.isAuthenticated());
@@ -169,7 +171,7 @@ export function GCalSection() {
 
     setImportCandidates(null);
     setSelectedImports(new Set());
-    alert(`${newWeeks.length} Sonderwoche(n) importiert.`);
+    toast.success(`${newWeeks.length} Sonderwoche(n) importiert.`);
   }, [importCandidates, selectedImports]);
 
   const handleCheckCollisions = useCallback(async () => {
