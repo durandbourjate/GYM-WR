@@ -121,12 +121,12 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
       const entries = Object.entries(wk.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
       const scopedCols = validEventCols?.get(wk.w);
       const eventEntries = entries.filter(([col, e]) => {
-        if ((e as any).type !== 5) return false;
+        if (e.type !== 5) return false;
         if (scopedCols && !scopedCols.has(parseInt(col))) return false;
         return true;
       });
       if (eventEntries.length > 0) {
-        const label = (eventEntries[0][1] as any)?.title || 'Sonderwoche';
+        const label = eventEntries[0][1]?.title || 'Sonderwoche';
         const affectedCols = new Set(eventEntries.map(([col]) => parseInt(col)));
         events.set(wk.w, { label, affectedCols });
       }
@@ -210,13 +210,13 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
 
         // U1: Ferien/Events — jede Woche einzeln als colspan-Balken
         const visEntries = Object.entries(week.lessons || {}).filter(([col]) => visibleCols.has(parseInt(col)));
-        const isAllHoliday = visEntries.length > 0 && visEntries.every(([, e]) => (e as any).type === 6);
+        const isAllHoliday = visEntries.length > 0 && visEntries.every(([, e]) => e.type === 6);
         const isAllEvent = visEntries.length > 0
-          && visEntries.every(([, e]) => (e as any).type === 5)
-          && new Set(visEntries.map(([, e]) => (e as any).title)).size === 1;
+          && visEntries.every(([, e]) => e.type === 5)
+          && new Set(visEntries.map(([, e]) => e.title)).size === 1;
 
         if (isAllHoliday || isAllEvent) {
-          const label = (visEntries[0]?.[1] as any)?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
+          const label = visEntries[0]?.[1]?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
           return (
             <tr key={week.w} ref={isCurrent ? currentRef : undefined} data-week={week.w} className="group"
               style={{ opacity: dimPastWeeks && past && !isCurrent ? 0.5 : 1 }}>
@@ -511,7 +511,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                     if (!hkGroup && !cellBadges?.length) return null;
                     return (
                       <div className="absolute right-0.5 top-0 flex gap-px z-10 items-center" style={{ fontSize: z(7) }}>
-                        {cellBadges?.map((b: any, bi: number) => (
+                        {cellBadges?.map((b, bi: number) => (
                           <div key={bi}
                             className="font-bold px-1 py-px rounded-sm select-none pointer-events-none"
                             style={{ background: b.color, color: '#fff' }}>
@@ -674,7 +674,7 @@ export function WeekRows({ weeks, courses, allWeeks: allWeeksProp, currentRef }:
                             const wk = weekData.find(w => w.w === kw);
                             if (wk) {
                               const entry = wk.lessons[c.col];
-                              const t = (entry as any)?.type;
+                              const t = entry?.type;
                               if (t !== 5 && t !== 6) return kw;
                             }
                             i += dir;
