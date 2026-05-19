@@ -347,7 +347,7 @@ export function HelpBar() {
     }
     return categories.filter(cat => {
       const ct = subjectCourseTypes.get(cat.key);
-      return !ct || activeCourseTypes.has(ct as any);
+      return !ct || activeCourseTypes.has(ct);
     });
   }, [categories, plannerCourses, settings]);
 
