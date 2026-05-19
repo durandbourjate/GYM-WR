@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 
 // Legacy type labels for Excel import preview (indices match lessonType values)
 const TYPE_LABELS = ['Andere', 'BWL', 'Recht/VWL', 'IN', 'Prüfung', 'Event', 'Ferien'];
-import type { LessonType, LessonEntry } from '../types';
+import type { LessonType, LessonEntry, BlockType } from '../types';
 
 const WEEK_ORDER = WEEKS.map(w => w.w);
 
@@ -169,9 +169,9 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
       if (existing?.title) updated++; else added++;
       week.lessons[item.col] = { title: item.title, type: item.type } as LessonEntry;
       // Auto-set blockType based on detected lesson type
-      const blockTypeMap: Record<number, string> = { 4: 'EXAM', 5: 'EVENT', 6: 'HOLIDAY' };
-      const autoBlockType = blockTypeMap[item.type] || 'LESSON';
-      updateLessonDetail(item.weekW, item.col, { blockType: autoBlockType as any });
+      const blockTypeMap: Record<number, BlockType> = { 4: 'EXAM', 5: 'EVENT', 6: 'HOLIDAY' };
+      const autoBlockType: BlockType = blockTypeMap[item.type] || 'LESSON';
+      updateLessonDetail(item.weekW, item.col, { blockType: autoBlockType });
     }
 
     setWeekData(newWeekData);
