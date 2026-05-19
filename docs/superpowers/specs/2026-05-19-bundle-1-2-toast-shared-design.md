@@ -257,7 +257,6 @@ Top-Konzentrationen (aus Audit):
 
 Explizit nicht in diesem Bundle:
 - Toast-Tests umfassend ausbauen — nur 3 Smoke-Tests in shared.
-- `confirm()` durch React-Modal ersetzen — separates Bundle wenn überhaupt nötig.
 - Weitere ExamLab-Lint-Gates für Planer (`lint:typo-tokens`, `lint:no-emoji`, `lint:musterloesung`, `lint:wire-contract`, `lint:no-inline-svg`, `lint:storybook-coverage`, `lint:no-tests-dir`) — UP-7-Folge-Bundle.
 - vitest-Setup im Planer (UP-7).
 - `generateColorVariants` aus Planer nach Shared (UP-6 zweiter Teil — UI-Tokens werden in eigenem Bundle harmonisiert).
