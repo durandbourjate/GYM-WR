@@ -4,7 +4,7 @@ import type { PruefungsKorrektur, SchuelerAbgabe, FragenBewertung } from '../../
 import type { Frage } from '../../../types/fragen-storage'
 import { exportiereAlsCSV, exportiereErgebnisseAlsCSV, downloadCSV } from '../../../utils/exportUtils.ts'
 import { exportiereBackupXlsx } from '../../../utils/backupExport.ts'
-import { useToast } from '../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 
 interface KorrekturActionsOptions {
   pruefungId: string

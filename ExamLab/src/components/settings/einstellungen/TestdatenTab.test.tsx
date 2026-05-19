@@ -38,12 +38,16 @@ vi.mock('../../../store/stammdatenStore', () => ({
 
 interface MockToastState { add: typeof toastAdd }
 
-vi.mock('../../../store/toastStore', () => ({
-  useToastStore: Object.assign(
-    (sel: (s: MockToastState) => unknown) => sel({ add: toastAdd }),
-    { getState: () => ({ add: toastAdd }) },
-  ),
-}))
+vi.mock('@gymhofwil/shared', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@gymhofwil/shared')>()
+  return {
+    ...original,
+    useToastStore: Object.assign(
+      (sel: (s: MockToastState) => unknown) => sel({ add: toastAdd }),
+      { getState: () => ({ add: toastAdd }) },
+    ),
+  }
+})
 
 const echteSD: Stammdaten = {
   fachschaften: [], klassen: ['29c'],

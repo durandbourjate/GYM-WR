@@ -14,7 +14,7 @@
 import { useMemo, useState } from 'react'
 import { mergeTags } from '../../../../services/tagsApi'
 import { useTagsStore } from '../../../../store/tagsStore'
-import { useToastStore } from '../../../../store/toastStore'
+import { useToastStore } from '@gymhofwil/shared'
 import BaseDialog from '../../../ui/BaseDialog'
 import Button from '../../../ui/Button'
 import { TagFarbeChip } from './TagFarbeChip'

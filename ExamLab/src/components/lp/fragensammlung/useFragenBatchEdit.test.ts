@@ -35,10 +35,14 @@ vi.mock('../../../store/fragensammlungStore.ts', () => ({
   ),
 }))
 
-vi.mock('../../../store/toastStore.ts', () => ({
-  useToastStore: (selector: (s: unknown) => unknown) =>
-    selector({ add: toastAddMock }),
-}))
+vi.mock('@gymhofwil/shared', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@gymhofwil/shared')>()
+  return {
+    ...original,
+    useToastStore: (selector: (s: unknown) => unknown) =>
+      selector({ add: toastAddMock }),
+  }
+})
 
 import { useFragenBatchEdit } from './useFragenBatchEdit'
 

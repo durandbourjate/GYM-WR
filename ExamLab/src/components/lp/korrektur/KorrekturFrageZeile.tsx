@@ -8,7 +8,7 @@ import { apiService } from '../../../services/apiService.ts'
 import AudioRecorder from '../../AudioRecorder.tsx'
 import KorrekturFrageVollansicht from './KorrekturFrageVollansicht'
 import { Star } from 'lucide-react'
-import { useToast } from '../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 import { FragetypIcon } from '../../ui/icons/FragetypIcon'
 
 /** KI-korrigierbare Fragetypen (nicht-deterministische, brauchen Claude API) */

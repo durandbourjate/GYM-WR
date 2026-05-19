@@ -13,8 +13,13 @@ export default defineConfig({
       '@testing-library/react': path.resolve(__dirname, 'node_modules/@testing-library/react'),
       // lucide-react in packages/shared via ExamLab/node_modules auflösen (Cluster G Phase 3c).
       'lucide-react': path.resolve(__dirname, 'node_modules/lucide-react'),
+      // React + Zustand auf ExamLab/node_modules pinnen — verhindert Doppel-Instanz wenn
+      // packages/shared-Tests via root-node_modules auflösen würden (zwei React = Invalid hook).
+      'react': path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+      'zustand': path.resolve(__dirname, 'node_modules/zustand'),
     },
-    dedupe: ['react', 'react-dom'],
+    dedupe: ['react', 'react-dom', 'zustand'],
   },
   define: {
     __BUILD_TIMESTAMP__: JSON.stringify('test'),

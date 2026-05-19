@@ -1,6 +1,6 @@
 import { AlertTriangle, Check, Info, X, type LucideProps } from 'lucide-react'
 import type { ComponentType } from 'react'
-import { useToastStore, type ToastVariant } from '../../store/toastStore'
+import { useToastStore, type ToastVariant } from '@gymhofwil/shared'
 
 const VARIANT_STYLES: Record<ToastVariant, string> = {
   error:   'bg-red-100 dark:bg-red-900 border-red-300 dark:border-red-700 text-red-800 dark:text-red-200',

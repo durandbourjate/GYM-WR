@@ -21,7 +21,7 @@ import DurchfuehrenDashboard from './components/lp/durchfuehrung/DurchfuehrenDas
 
 import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
-import { ToastContainer } from './components/shared/ToastContainer.tsx'
+import { ToastContainer } from '@gymhofwil/shared'
 import SuSStartseite from './components/sus/SuSStartseite.tsx'
 import KorrekturEinsicht from './components/sus/KorrekturEinsicht.tsx'
 

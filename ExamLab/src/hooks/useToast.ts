@@ -1,4 +1,4 @@
-import { useToastStore, type ToastAddOptions } from '../store/toastStore'
+import { useToastStore, type ToastAddOptions } from '@gymhofwil/shared'
 
 interface UseToastResult {
   error: (message: string, opts?: ToastAddOptions) => string
