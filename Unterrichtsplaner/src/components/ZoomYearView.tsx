@@ -247,7 +247,7 @@ export function ZoomYearView() {
                   <div className="flex gap-0.5 justify-center mt-0.5">
                     <span className="px-1 rounded font-bold cursor-pointer hover:opacity-80"
                       style={{ fontSize: z(9), background: badge?.bg, color: badge?.fg }}
-                      onClick={() => setFilter(g.typ as any)}>{g.typ}</span>
+                      onClick={() => setFilter(g.typ)}>{g.typ}</span>
                   </div>
                   {g.isMultiDay && (
                     <div className="flex justify-center gap-0 mt-0.5">
@@ -273,14 +273,14 @@ export function ZoomYearView() {
             // U1: Ferien/Events — jede Woche einzeln als colspan-Balken (kein rowSpan)
             const weekEntry = effectiveWeeks.find(w => w.w === weekW);
             const allEntries = weekEntry ? Object.values(weekEntry.lessons) : [];
-            const isAllHoliday = allEntries.length > 0 && allEntries.every(e => (e as any).type === 6);
+            const isAllHoliday = allEntries.length > 0 && allEntries.every(e => e.type === 6);
             // Nur mergen wenn alle denselben Titel haben (stufenspezifische Sonderwochen → verschiedene Titel → kein colspan)
             const isAllEvent = allEntries.length > 0
-              && allEntries.every(e => (e as any).type === 5)
-              && new Set(allEntries.map(e => (e as any).title)).size === 1;
+              && allEntries.every(e => e.type === 5)
+              && new Set(allEntries.map(e => e.title)).size === 1;
 
             if (isAllHoliday || isAllEvent) {
-              const label = (allEntries[0] as any)?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
+              const label = allEntries[0]?.title || (isAllHoliday ? 'Ferien' : 'Sonderwoche');
               return (
                 <tr key={weekW} data-week={weekW}
                   style={{
@@ -373,7 +373,7 @@ export function ZoomYearView() {
                         if (!daySpan) {
                           // Check if this cell is an event/holiday
                           const cellEntry = weekEntry?.lessons[course.col];
-                          const cellType = (cellEntry as any)?.type;
+                          const cellType = cellEntry?.type;
                           if (cellType === 5 || cellType === 6) {
                             return (
                               <td key={course.id} className="border-b border-slate-800/20 p-0"
@@ -430,9 +430,9 @@ export function ZoomYearView() {
                       if (!span) {
                         // Check if this cell is an event/holiday
                         const cellEntry = weekEntry?.lessons[course.col];
-                        const cellType = (cellEntry as any)?.type;
+                        const cellType = cellEntry?.type;
                         if (cellType === 5 || cellType === 6) {
-                          const cellLabel = (cellEntry as any)?.title || (cellType === 6 ? 'Ferien' : 'Sonderwoche');
+                          const cellLabel = cellEntry?.title || (cellType === 6 ? 'Ferien' : 'Sonderwoche');
                           return (
                             <td key={group.key} className="border-b border-slate-800/20 p-0"
                               style={{ width: GROUP_W, minWidth: GROUP_W, maxWidth: GROUP_W }}>
