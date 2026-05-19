@@ -2,6 +2,7 @@
  * PlannerTabs — Tab bar for switching between planner instances
  */
 import { useState, useEffect } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { createPortal } from 'react-dom';
 import { useInstanceStore, instanceStorageKey, generateWeekIds } from '../store/instanceStore';
 import { saveToInstance } from '../store/plannerStore';
@@ -13,6 +14,7 @@ import type { AssessmentRule } from '../store/settingsStore';
 import type { LessonType } from '../types';
 
 export function PlannerTabs() {
+  const toast = useToast();
   const { instances, activeId, setActive, createInstance, deleteInstance, renameInstance, exportInstance } = useInstanceStore();
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
@@ -43,10 +45,10 @@ export function PlannerTabs() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result as string);
-        if (!parsed || typeof parsed !== 'object') { alert('Ungültige Datei.'); return; }
+        if (!parsed || typeof parsed !== 'object') { toast.error('Ungültige Datei.'); return; }
         setImportedConfig(parsed as PlannerSettings);
         setImportedFileName(file.name);
-      } catch { alert('Fehler beim Lesen der Datei.'); }
+      } catch { toast.error('Fehler beim Lesen der Datei.'); }
     };
     reader.readAsText(file);
     e.target.value = '';
@@ -78,10 +80,10 @@ export function PlannerTabs() {
               }).filter(Boolean);
             } else { data = []; }
           }
-          if (!data || data.length === 0) { alert(`Keine gültigen ${label} gefunden.`); return; }
+          if (!data || data.length === 0) { toast.warning(`Keine gültigen ${label} gefunden.`); return; }
           setPartialImports(prev => ({ ...prev, [key]: data }));
           setPartialFileNames(prev => ({ ...prev, [key]: file.name }));
-        } catch { alert('Datei konnte nicht gelesen werden.'); }
+        } catch { toast.error('Datei konnte nicht gelesen werden.'); }
       };
       reader.readAsText(file);
       e.target.value = '';
@@ -395,6 +397,7 @@ type PartialImports = {
 
 /** Welcome screen shown when no planner exists */
 export function WelcomeScreen() {
+  const toast = useToast();
   const { createInstance } = useInstanceStore();
   const [name, setName] = useState('');
   const [importedConfig, setImportedConfig] = useState<PlannerSettings | null>(null);
@@ -417,14 +420,14 @@ export function WelcomeScreen() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result as string);
-        if (!parsed || typeof parsed !== 'object') { alert('Ungültige Datei.'); return; }
+        if (!parsed || typeof parsed !== 'object') { toast.error('Ungültige Datei.'); return; }
         if (!Array.isArray(parsed.courses) && !Array.isArray(parsed.subjects) && !Array.isArray(parsed.holidays)) {
-          alert('Keine gültige Konfiguration gefunden.');
+          toast.warning('Keine gültige Konfiguration gefunden.');
           return;
         }
         setImportedConfig(parsed as PlannerSettings);
         setImportedFileName(file.name);
-      } catch { alert('Fehler beim Lesen der Datei.'); }
+      } catch { toast.error('Fehler beim Lesen der Datei.'); }
     };
     reader.readAsText(file);
     e.target.value = '';
@@ -460,10 +463,10 @@ export function WelcomeScreen() {
               data = [];
             }
           }
-          if (!data || data.length === 0) { alert(`Keine gültigen ${label} gefunden.`); return; }
+          if (!data || data.length === 0) { toast.warning(`Keine gültigen ${label} gefunden.`); return; }
           setPartialImports(prev => ({ ...prev, [key]: data }));
           setPartialFileNames(prev => ({ ...prev, [key]: file.name }));
-        } catch { alert('Datei konnte nicht gelesen werden.'); }
+        } catch { toast.error('Datei konnte nicht gelesen werden.'); }
       };
       reader.readAsText(file);
       e.target.value = '';
