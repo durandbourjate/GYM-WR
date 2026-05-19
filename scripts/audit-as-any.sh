@@ -15,14 +15,32 @@
 #   - Inline-Kommentar-Treffer (`// ... as any ...`) werden ignoriert.
 #   - String-Literal-Treffer (`'as any'`, `"as any"`) werden ignoriert.
 #
-# Aufruf: ./scripts/audit-as-any.sh [--strict]
-#   --strict: exit 1 wenn UNDOKUMENTIERT > 0 (CI-Gate).
+# Aufruf: ./scripts/audit-as-any.sh [--strict] [--target=<dir>]
+#   --strict:        exit 1 wenn UNDOKUMENTIERT > 0 (CI-Gate).
+#   --target=<dir>:  Audit nur dieses Verzeichnis statt ExamLab/src + packages/shared/src.
 set -e
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-SOURCES=(ExamLab/src packages/shared/src)
+STRICT=0
+TARGET_OVERRIDE=""
+for arg in "$@"; do
+  case "$arg" in
+    --strict)
+      STRICT=1
+      ;;
+    --target=*)
+      TARGET_OVERRIDE="${arg#--target=}"
+      ;;
+  esac
+done
+
+if [[ -n "$TARGET_OVERRIDE" ]]; then
+  SOURCES=("$TARGET_OVERRIDE")
+else
+  SOURCES=(ExamLab/src packages/shared/src)
+fi
 
 # Alle Treffer (`as any` oder `: any` als Token), ohne Kommentar-Zeilen
 # und ohne String-Literal-Wrapping.
@@ -42,7 +60,7 @@ echo "  Total:                 $TOTAL"
 echo "  Defensive (OK):        $DEFENSIVE"
 echo "  Undokumentiert (FAIL): $UNDOKUMENTIERT"
 
-if [[ "${1:-}" == "--strict" && "$UNDOKUMENTIERT" -gt 0 ]]; then
+if [[ "$STRICT" -eq 1 && "$UNDOKUMENTIERT" -gt 0 ]]; then
   echo ""
   echo "FAIL: $UNDOKUMENTIERT undokumentierte any-Verwendungen."
   echo "Verbose:"
