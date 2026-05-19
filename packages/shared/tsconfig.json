@@ -17,7 +17,8 @@
       "@dnd-kit/core": ["../../ExamLab/node_modules/@dnd-kit/core"],
       "@dnd-kit/sortable": ["../../ExamLab/node_modules/@dnd-kit/sortable"],
       "@dnd-kit/utilities": ["../../ExamLab/node_modules/@dnd-kit/utilities"],
-      "lucide-react": ["../../ExamLab/node_modules/lucide-react"]
+      "lucide-react": ["../../ExamLab/node_modules/lucide-react"],
+      "zustand": ["../../ExamLab/node_modules/zustand"]
     }
   },
   "include": ["src"]
