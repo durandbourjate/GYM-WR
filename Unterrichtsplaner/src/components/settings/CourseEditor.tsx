@@ -3,7 +3,7 @@ import type { CourseType, DayOfWeek, Semester } from '../../types';
 import { usePlannerStore } from '../../store/plannerStore';
 import {
   generateId, STUFE_OPTIONS,
-  type CourseConfig, type SubjectConfig, type SchoolLevel,
+  type CourseConfig, type SubjectConfig, type SchoolLevel, type SolCourseConfig,
 } from '../../store/settingsStore';
 import { SmallInput, SmallSelect } from './shared';
 
@@ -110,7 +110,7 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
 
   const addCourse = () => {
     const newCourse: CourseConfig = {
-      id: generateId(), cls: '', typ: 'SF' as any, day: 'Mo' as any,
+      id: generateId(), cls: '', typ: 'SF', day: 'Mo',
       from: '08:05', to: '08:50', les: 1, hk: false, semesters: [1, 2],
     };
     onChange([...courses, newCourse]);
@@ -255,30 +255,30 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
                     <label className="flex items-center gap-1 text-[11px] cursor-pointer" style={{ color: 'var(--text-muted)' }} title="Selbstorganisiertes Lernen">
                       <input type="checkbox" checked={!!c.sol && (typeof c.sol === 'boolean' ? c.sol : c.sol.enabled)} onChange={(e) => {
                         if (e.target.checked) {
-                          updateCourse(c.id, { sol: { enabled: true } as any });
+                          updateCourse(c.id, { sol: { enabled: true } });
                         } else {
-                          updateCourse(c.id, { sol: undefined as any });
+                          updateCourse(c.id, { sol: undefined });
                         }
                       }} className="cursor-pointer" />
                       SOL
                     </label>
                   </div>
                   {/* v3.100 #3b: SOL-Konfiguration pro Kurs */}
-                  {c.sol && (typeof c.sol === 'boolean' ? c.sol : (c.sol as any).enabled) && (() => {
-                    const solConfig = typeof c.sol === 'object' ? c.sol as { enabled: boolean; duration?: string; description?: string; topic?: string } : { enabled: true };
+                  {c.sol && (typeof c.sol === 'boolean' ? c.sol : c.sol.enabled) && (() => {
+                    const solConfig: SolCourseConfig = typeof c.sol === 'object' ? c.sol : { enabled: true };
                     return (
                       <div className="pl-2 border-l-2 rounded-sm space-y-1.5 mt-1" style={{ borderColor: '#8b5cf6' }}>
                         <div>
                           <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-dim)' }}>SOL-Thema</label>
-                          <SmallInput value={solConfig.topic || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, topic: v || undefined } as any })} placeholder="SOL-Thema…" className="w-full" />
+                          <SmallInput value={solConfig.topic || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, topic: v || undefined } })} placeholder="SOL-Thema…" className="w-full" />
                         </div>
                         <div>
                           <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-dim)' }}>SOL-Dauer</label>
-                          <SmallInput value={solConfig.duration || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, duration: v || undefined } as any })} placeholder="z.B. 45 min" className="w-24" />
+                          <SmallInput value={solConfig.duration || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, duration: v || undefined } })} placeholder="z.B. 45 min" className="w-24" />
                         </div>
                         <div>
                           <label className="text-[9px] mb-0.5 block" style={{ color: 'var(--text-dim)' }}>SOL-Beschreibung</label>
-                          <SmallInput value={solConfig.description || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, description: v || undefined } as any })} placeholder="Auftrag, Hinweise…" className="w-full" />
+                          <SmallInput value={solConfig.description || ''} onChange={(v) => updateCourse(c.id, { sol: { ...solConfig, enabled: true, description: v || undefined } })} placeholder="Auftrag, Hinweise…" className="w-full" />
                         </div>
                       </div>
                     );
