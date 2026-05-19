@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../../store/plannerStore';
 import { useInstanceStore } from '../../store/instanceStore';
 
@@ -176,6 +177,7 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
 export function RubricCollectionButtons({ rubricType, getData, onLoad }: {
   rubricType: RubricType; getData: () => any; onLoad: (data: any) => void;
 }) {
+  const toast = useToast();
   const [showSave, setShowSave] = useState(false);
   const [showLoad, setShowLoad] = useState(false);
 
@@ -184,10 +186,10 @@ export function RubricCollectionButtons({ rubricType, getData, onLoad }: {
       const parsed = JSON.parse(snapshot);
       // For full 'settings' items, extract just the rubric we need
       const rubricData = extractRubricData(rubricType, parsed);
-      if (rubricData === undefined) { alert('Keine passenden Daten in dieser Konfiguration gefunden.'); return; }
+      if (rubricData === undefined) { toast.warning('Keine passenden Daten in dieser Konfiguration gefunden.'); return; }
       onLoad(rubricData);
       setShowLoad(false);
-    } catch { alert('Fehler beim Lesen der Konfiguration.'); }
+    } catch { toast.error('Fehler beim Lesen der Konfiguration.'); }
   };
 
   return (
