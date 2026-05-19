@@ -6,7 +6,7 @@
 
 ## Motivation
 
-Der Unterrichtsplaner hat 54 `alert()`-Aufrufe (UX-blockierend, unprofessionell) und 51 `as any`-Stellen (`as any` + `: any` + `= any`) ohne CI-Gate. ExamLab hat beide Probleme bereits gelöst (Bundle L: as-any 214→0, Bundle R: alert→Toast). Der Planer hat dafür heute keine `@gymhofwil/shared`-Dependency und das Root-Repo nutzt keine npm-Workspaces — drei Sub-Pakete werden manuell mit `npm ci` initialisiert.
+Der Unterrichtsplaner hat 54 `alert()`-Aufrufe (UX-blockierend, unprofessionell) und 80 `any`-Token (51 `as any` + 29 `: any` + 0 `= any`) ohne CI-Gate. Das ExamLab-Skript `audit-as-any.sh` erfasst alle drei Token zusammen — die im Plan zu migrierende Stellenzahl ist 80, nicht 51. ExamLab hat beide Probleme bereits gelöst (Bundle L: as-any 214→0, Bundle R: alert→Toast). Der Planer hat dafür heute keine `@gymhofwil/shared`-Dependency und das Root-Repo nutzt keine npm-Workspaces — drei Sub-Pakete werden manuell mit `npm ci` initialisiert.
 
 Ohne Harmonisierung in diesem Bundle entstehen bei der Backend-Migration (peaknetworks-Supabase ab Aug 2026 für ExamLab) doppelte Implementierungen für API-Client, Auth-Handler und Error-Handling. Toast ist die UX-Grundlage für API-Fehler-Surfacing und wird Cross-Tool gebraucht.
 
@@ -17,7 +17,7 @@ Ohne Harmonisierung in diesem Bundle entstehen bei der Backend-Migration (peakne
 - **`packages/shared`** wird kanonische Quelle für Toast-System. Erster echter UI-Component-Eintrag dort (heute nur Editor/Frage-Domäne).
 - **Root `package.json`** definiert npm-Workspaces über `packages/shared`, `ExamLab`, `Unterrichtsplaner`. Ein einziges `npm install` im Root initialisiert alles + symlinkt `@gymhofwil/shared` in beide Apps.
 - **Beide Apps** importieren `useToast`, `useToastStore`, `ToastContainer` aus `@gymhofwil/shared` (flacher Public-API-Pfad, kein Subdir-Detail).
-- **Planer** hat 0× `alert()`, 0× undokumentierte `as any` und CI-Gates `lint:no-alert` + `lint:as-any` strict aktiviert (analog ExamLab).
+- **Planer** hat 0× `alert()`, 0× undokumentierte `any`-Token (alle 80 Stellen entweder echt typisiert oder mit `/* Defensive: ... */`-Marker dokumentiert) und CI-Gates `lint:no-alert` + `lint:as-any` strict aktiviert (analog ExamLab).
 - **ExamLab** funktional identisch wie heute, nur Imports zeigen auf `@gymhofwil/shared`. Tests + bestehende Lint-Gates unverändert grün.
 
 ### Modul-Grenzen
@@ -63,9 +63,9 @@ Ein Feature-Branch `feature/bundle-1-2-toast-shared-harmonisierung`. Jede Phase 
 
 2. `Unterrichtsplaner/package.json` Dependency hinzufügen: `"@gymhofwil/shared": "*"`.
 
-3. `ExamLab/package.json` verifizieren — falls Shared-Dep heute via Relativ-Pfad oder fehlt: gleicher Eintrag.
+3. `ExamLab/package.json` Dependency hinzufügen: `"@gymhofwil/shared": "*"`. (Verifiziert: ExamLab hat heute **keinen** Shared-Dep-Eintrag — der Import-Pfad `@gymhofwil/shared` funktioniert vermutlich heute nicht oder über Build-Time-Resolution. Bundle muss explizit den Dep-Eintrag setzen, sonst bricht Phase 2.)
 
-4. `.github/workflows/deploy.yml` — drei separate `npm ci`-Steps durch einen Root-`npm ci` ersetzen. CI-Order bleibt durch Hoisting korrekt.
+4. `.github/workflows/deploy.yml` — drei separate `npm ci`-Steps durch einen Root-`npm ci` ersetzen. CI-Order bleibt durch Hoisting korrekt. Zusätzlich: `cache-dependency-path:` muss von den drei Sub-Lockfiles auf das neue Root-`package-lock.json` umgestellt werden.
 
 5. Sub-Lockfiles (`packages/shared/package-lock.json`, `Unterrichtsplaner/package-lock.json`, `ExamLab/package-lock.json`) löschen — Workspaces erzeugen ein Root-Lockfile.
 
@@ -166,6 +166,8 @@ Pro-Datei-Audit. Severity-Mapping-Heuristik:
 
 **Wichtig:** `alert()` ist blockierend, `toast()` non-blocking. Bei Code-Pattern `alert('Bitte zuerst speichern'); return;` bleibt das Verhalten korrekt — der `return` läuft sofort, Toast erscheint asynchron. `confirm()`-Aufrufe werden **nicht angefasst** — User-Frage muss blockierend bleiben (separate Bundle-Idee wenn React-Modal gewünscht).
 
+Vor Phase-3-Start wird zusätzlich `grep -rn "confirm(" Unterrichtsplaner/src/` gezählt — die Zahl der verbleibenden `confirm()`-Aufrufe bleibt als bewusster Code-Smell-Indikator im Out-of-Scope-Abschnitt dokumentiert, damit später entschieden werden kann, ob ein React-Modal-Bundle nötig wird.
+
 Verteilung der 54 Aufrufe (aus Audit):
 - `SettingsPanel.tsx` 29× (Kurs/Fach-Verwaltung)
 - `PlannerTabs.tsx` 9×
@@ -174,7 +176,9 @@ Verteilung der 54 Aufrufe (aus Audit):
 - `shared.tsx` 2×, `ZoomMultiYearView.tsx` 2×, `SequencePanel.tsx` 2×
 - `SubjectsEditor.tsx` 1×, `GCalSection.tsx` 1×, `DetailsTab.tsx` 1×
 
-**3.3 `as any`-Migration (51 Stellen):**
+**3.3 `any`-Token-Migration (80 Stellen total: 51 `as any` + 29 `: any`):**
+
+Das ExamLab-Skript `audit-as-any.sh` zählt alle drei Token-Formen (`as any` + `: any` + `= any`). Im Planer sind das heute 80 Stellen — alle müssen entweder echt typisiert oder mit `/* Defensive: ... */`-Marker dokumentiert sein.
 
 Drei Strategien pro Stelle:
 1. **Echter Type-Guard-Fix** (bevorzugt): Type-Predicate-Function einführen, z.B. `function isLessonCell(c: WeekData): c is LessonCell { return c.type === 1 }`. Dann `(c as any).note` → `c.note` nach Guard.
@@ -194,15 +198,15 @@ Top-Konzentrationen (aus Audit):
 
 **3.4 Lint-Gates aktivieren:**
 
-1. ExamLab-Skripte `scripts/audit-as-any.sh` + `scripts/audit-no-alert.sh` ggf. erweitern um `--target=<dir>`-Parameter (heute vermutlich `ExamLab/src` hardcoded — in Phase 3 verifizieren).
+**3.4.0 Skript-Refactor (Pflicht, vor 3.4.1):** Verifiziert — `scripts/audit-as-any.sh` hat `SOURCES=(ExamLab/src packages/shared/src)` hardcoded (Z.25); `scripts/audit-no-alert.sh` hat `ExamLab/src` hardcoded (Z.16). Beide Skripte werden erweitert um einen `--target=<dir>`-Parameter, der die hardcodierten `SOURCES` überschreibt. Default-Verhalten bleibt unverändert (Backwards-Compat für ExamLab-Aufrufe), neuer Aufruf von Planer-Seite nutzt `--target=Unterrichtsplaner/src`. Tests: `bash scripts/audit-as-any.sh --target=Unterrichtsplaner/src` muss vor und nach Migration funktionieren.
 
-2. `Unterrichtsplaner/package.json` scripts ergänzen:
+**3.4.1** `Unterrichtsplaner/package.json` scripts ergänzen:
    ```json
    "lint:as-any": "../scripts/audit-as-any.sh --strict --target=Unterrichtsplaner/src",
    "lint:no-alert": "../scripts/audit-no-alert.sh --strict --target=Unterrichtsplaner/src"
    ```
 
-3. `.github/workflows/deploy.yml` zwei neue Steps (sowohl im production- als auch im staging-Block, Memory-Regel "CI-Gates auf BEIDEN Workflow-Hälften"):
+**3.4.2** `.github/workflows/deploy.yml` zwei neue Steps (sowohl im production- als auch im staging-Block, Memory-Regel "CI-Gates auf BEIDEN Workflow-Hälften"):
    ```yaml
    - name: Audit `any` Use (Planer)
      working-directory: Unterrichtsplaner
@@ -211,6 +215,7 @@ Top-Konzentrationen (aus Audit):
      working-directory: Unterrichtsplaner
      run: npm run lint:no-alert --if-present
    ```
+   `--if-present` für `lint:no-alert` ist temporäre Übergangshilfe (analog ExamLab Bundle R). Nach erfolgreichem Merge auf main wird `--if-present` in einem Folge-Commit entfernt — siehe Out-of-Scope.
 
 **3.5 Version + HANDOFF:**
 
@@ -258,9 +263,15 @@ Explizit nicht in diesem Bundle:
 - `generateColorVariants` aus Planer nach Shared (UP-6 zweiter Teil — UI-Tokens werden in eigenem Bundle harmonisiert).
 - Apps-Script-URL aus Config (UP-8).
 - ExamLab `package-lock.json`-Migration auf Workspaces falls hier nicht trivial — separates Wartungs-Bundle.
+- `--if-present` aus `lint:no-alert`-Step in `deploy.yml` rausnehmen (nach erfolgreichem Bundle-Merge in einem Folge-Commit).
+- `confirm()`-Aufrufe im Planer durch React-Modal ersetzen (Audit-Zähler-Output aus 3.2 entscheidet ob nötig).
 
-## Annahmen, die in Phase 1 verifiziert werden
+## Verifizierte Faktenlage + verbleibende Annahmen
 
-- `ExamLab/package.json` hat heute schon `@gymhofwil/shared` als Dependency (oder gleiches Pattern). Falls nicht: Phase 1 ergänzt das.
-- `scripts/audit-as-any.sh` + `scripts/audit-no-alert.sh` sind generisch aufgebaut oder mit kleinem `--target=`-Parameter erweiterbar. Falls hardcoded auf ExamLab: kleine Refactor-Task in Phase 3.4.
-- Subagent-Bericht „114 useToast-Konsumenten" enthält Definitionen + Kommentar-Treffer. Echte Import-Zahl wird in Phase 2 vor sed-Run präzisiert.
+Während Spec-Review bestätigt:
+- `ExamLab/package.json` hat **keinen** `@gymhofwil/shared`-Dep heute. Phase 1.3 ergänzt den Eintrag (Pflicht, nicht „falls fehlt").
+- `scripts/audit-as-any.sh` hat `SOURCES=(ExamLab/src packages/shared/src)` hardcoded (Z.25); `scripts/audit-no-alert.sh` hat `ExamLab/src` hardcoded (Z.16). Phase 3.4.0 ist Pflicht-Refactor auf `--target=<dir>`-Parameter.
+- Token-Zählung im Planer: 51 `as any` + 29 `: any` + 0 `= any` = 80 Token total (das Audit-Skript sieht alle drei zusammen).
+
+In Phase 2 vor sed-Run zu präzisieren:
+- Subagent-Bericht „114 useToast-Konsumenten" enthält Definitionen + Kommentar-Treffer. Echte Import-Zahl wird in Phase 2 mit `grep -E "^import.*useToast|^import.*toastStore"` präzisiert.
