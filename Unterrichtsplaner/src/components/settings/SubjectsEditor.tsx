@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { SmallInput } from './shared';
 import { generateId, type SubjectConfig } from '../../store/settingsStore';
 import { generateColorVariants } from '../../data/categories';
@@ -6,6 +7,7 @@ import { SUBJECT_PRESETS, SUBJECT_GROUPS } from '../../data/subjectPresets';
 
 // === Subjects / Categories Editor ===
 export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig[]; onChange: (s: SubjectConfig[]) => void }) {
+  const toast = useToast();
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const addSubject = () => {
@@ -90,7 +92,7 @@ export function SubjectsEditor({ subjects, onChange }: { subjects: SubjectConfig
             const labels = new Set(subjects.map(s => s.label.toLowerCase()));
             const unique = preset.subjects.filter(s => !ids.has(s.id) && !labels.has(s.label.toLowerCase()));
             const dupes = preset.subjects.length - unique.length;
-            if (unique.length === 0) { alert(`«${preset.label}» ist bereits vorhanden.`); return; }
+            if (unique.length === 0) { toast.info(`«${preset.label}» ist bereits vorhanden.`); return; }
             if (subjects.length === 0) {
               // Leer → direkt laden
               onChange([...unique]);
