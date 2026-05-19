@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../store/plannerStore';
 import { WEEKS } from '../data/weeks';
 import type { TaFPhase } from '../types';
@@ -16,6 +17,7 @@ const HOFWIL_PRESET: Omit<TaFPhase, 'id'>[] = [
 
 /** Einbettbare TaF-Phasen-Verwaltung (für SettingsPanel) */
 export function TaFSection() {
+  const toast = useToast();
   const { tafPhases, addTaFPhase, updateTaFPhase, deleteTaFPhase } = usePlannerStore();
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
@@ -45,11 +47,11 @@ export function TaFSection() {
       try {
         const data = JSON.parse(reader.result as string);
         const arr = Array.isArray(data) ? data : data.phases || [];
-        if (arr.length === 0) { alert('Keine gültigen Phasen gefunden.'); return; }
+        if (arr.length === 0) { toast.warning('Keine gültigen Phasen gefunden.'); return; }
         const existingKeys = new Set(tafPhases.map(p => `${p.name}|${p.startWeek}`));
         const unique = arr.filter((p: any) => !existingKeys.has(`${p.name}|${p.startKW || p.startWeek}`));
         const dupes = arr.length - unique.length;
-        if (unique.length === 0) { alert(`Alle ${arr.length} Phasen sind bereits vorhanden.`); return; }
+        if (unique.length === 0) { toast.info(`Alle ${arr.length} Phasen sind bereits vorhanden.`); return; }
         const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} übersprungen.` : `${unique.length} Phasen importieren?`;
         if (confirm(msg)) {
           for (const p of unique) {
@@ -63,7 +65,7 @@ export function TaFSection() {
             });
           }
         }
-      } catch { alert('JSON konnte nicht gelesen werden.'); }
+      } catch { toast.error('JSON konnte nicht gelesen werden.'); }
     };
     reader.readAsText(file); e.target.value = '';
   };
@@ -73,7 +75,7 @@ export function TaFSection() {
     const existingKeys = new Set(tafPhases.map(p => `${p.name}|${p.startWeek}`));
     const unique = preset.filter(p => !existingKeys.has(`${p.name}|${p.startWeek}`));
     const dupes = preset.length - unique.length;
-    if (unique.length === 0) { alert('Alle Phasen bereits vorhanden.'); return; }
+    if (unique.length === 0) { toast.info('Alle Phasen bereits vorhanden.'); return; }
     const msg = dupes > 0 ? `${unique.length} Phasen laden, ${dupes} übersprungen.` : `${unique.length} Phasen laden?`;
     if (confirm(msg)) {
       for (const p of unique) addTaFPhase(p);
