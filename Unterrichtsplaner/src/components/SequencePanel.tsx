@@ -21,7 +21,7 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
         const entry = course && weekData?.lessons[course.col];
 
         // Skip holiday weeks (type 6) — they shouldn't be editable in sequence context
-        if (entry && (entry as any).type === 6) {
+        if (entry && entry.type === 6) {
           return (
             <div key={wi} className="flex items-center gap-1 text-[11px] px-1 text-slate-600 italic">
               <span className="text-[9px]">🏖</span>
@@ -315,8 +315,8 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   for (const weekW of block.weeks) {
                     const weekData = store.weekData.find(w => w.w === weekW);
                     const entry = weekData?.lessons[course.col];
-                    if (!entry || (entry as any).type === 6) continue; // skip holidays
-                    const patch: Record<string, any> = {};
+                    if (!entry || entry.type === 6) continue; // skip holidays
+                    const patch: Record<string, unknown> = {};
                     if (sa) patch.fachbereich = sa;
                     if (block.thema) patch.thema = block.thema;
                     store.updateLessonDetail(weekW, course.col, patch);
@@ -376,7 +376,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input type="checkbox" checked={!!parentSeq.sol?.enabled}
                       onChange={(e) => updateSequence(fb.seqId, {
-                        sol: { ...parentSeq.sol, enabled: e.target.checked } as any
+                        sol: { ...parentSeq.sol, enabled: e.target.checked }
                       })}
                       className="accent-emerald-500 w-3 h-3" />
                     <span className="text-[11px] text-slate-300 font-medium">📚 SOL (Reihe)</span>
