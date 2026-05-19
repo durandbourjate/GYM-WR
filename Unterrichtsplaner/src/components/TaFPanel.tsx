@@ -49,7 +49,7 @@ export function TaFSection() {
         const arr = Array.isArray(data) ? data : data.phases || [];
         if (arr.length === 0) { toast.warning('Keine gültigen Phasen gefunden.'); return; }
         const existingKeys = new Set(tafPhases.map(p => `${p.name}|${p.startWeek}`));
-        const unique = arr.filter((p: any) => !existingKeys.has(`${p.name}|${p.startKW || p.startWeek}`));
+        const unique = arr.filter((p: Record<string, unknown>) => !existingKeys.has(`${p.name}|${p.startKW || p.startWeek}`));
         const dupes = arr.length - unique.length;
         if (unique.length === 0) { toast.info(`Alle ${arr.length} Phasen sind bereits vorhanden.`); return; }
         const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} übersprungen.` : `${unique.length} Phasen importieren?`;
