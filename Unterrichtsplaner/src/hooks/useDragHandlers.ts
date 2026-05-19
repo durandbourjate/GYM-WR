@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import type { Course, Week } from '../types';
+import type { Course, Week, ManagedSequence } from '../types';
 import { getSequenceInfoFromStore } from '../utils/colors';
 import { usePlannerStore } from '../store/plannerStore';
 import { getLinkedKursIds } from '../data/courses';
@@ -37,7 +37,7 @@ export function useDragHandlers(
   courses: Course[],
   allWeeksProp: string[] | undefined,
   lessonDetails: Record<string, any>,
-  sequences: any[],
+  sequences: ManagedSequence[],
 ): DragState & DragHandlers {
   const {
     swapLessons, moveLessonToEmpty, pushUndo,
