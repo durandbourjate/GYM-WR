@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { ladeKurse, getCacheAge, type ZentralerKurs } from '../../services/synergyService';
 import { istKonfiguriert } from '../../services/pruefungBridge';
 import type { CourseConfig } from '../../store/settingsStore';
@@ -25,6 +26,7 @@ function mapKurse(zk: ZentralerKurs[]): CourseConfig[] {
 }
 
 export function KursImportButton({ existingCourses, onChange }: Props) {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState<ZentralerKurs[] | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -34,7 +36,7 @@ export function KursImportButton({ existingCourses, onChange }: Props) {
     try {
       const kurse = await ladeKurse();
       if (kurse.length === 0) {
-        alert('Keine Kurse im zentralen Sheet gefunden.');
+        toast.warning('Keine Kurse im zentralen Sheet gefunden.');
         setLoading(false);
         return;
       }
@@ -42,14 +44,14 @@ export function KursImportButton({ existingCourses, onChange }: Props) {
       const existingIds = new Set(existingCourses.map((c) => c.id));
       const neueKurse = kurse.filter((k) => !existingIds.has(k.kursId));
       if (neueKurse.length === 0) {
-        alert(`Alle ${kurse.length} Kurse sind bereits vorhanden.`);
+        toast.info(`Alle ${kurse.length} Kurse sind bereits vorhanden.`);
         setLoading(false);
         return;
       }
       setDialog(neueKurse);
       setSelected(new Set(neueKurse.map((k) => k.kursId)));
     } catch {
-      alert('Fehler beim Laden der Kurse aus dem Sheet.');
+      toast.error('Fehler beim Laden der Kurse aus dem Sheet.');
     }
     setLoading(false);
   }, [existingCourses]);
