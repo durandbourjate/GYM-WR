@@ -62,7 +62,7 @@ export function PlannerTabs() {
       reader.onload = () => {
         try {
           const text = reader.result as string;
-          let data: any[];
+          let data: unknown[];
           if (file.name.endsWith('.json')) {
             const parsed = JSON.parse(text);
             data = Array.isArray(parsed) ? parsed : parsed[key] || parsed.kurse || parsed.rules || [];
@@ -134,8 +134,8 @@ export function PlannerTabs() {
         if (Array.isArray(importedConfig.holidays)) initialSettings.holidays = importedConfig.holidays;
         if (Array.isArray(importedConfig.specialWeeks)) initialSettings.specialWeeks = importedConfig.specialWeeks;
         if (Array.isArray(importedConfig.subjects)) initialSettings.subjects = importedConfig.subjects;
-        if (Array.isArray((importedConfig as any).curriculumGoals)) initialSettings.curriculumGoals = (importedConfig as any).curriculumGoals;
-        if (Array.isArray((importedConfig as any).assessmentRules)) initialSettings.assessmentRules = (importedConfig as any).assessmentRules;
+        if (Array.isArray(importedConfig.curriculumGoals)) initialSettings.curriculumGoals = importedConfig.curriculumGoals;
+        if (Array.isArray(importedConfig.assessmentRules)) initialSettings.assessmentRules = importedConfig.assessmentRules;
         if (importedConfig.school) initialSettings.school = importedConfig.school;
       }
       // G7: Einzel-Imports überschreiben Gesamtkonfiguration
@@ -442,7 +442,7 @@ export function WelcomeScreen() {
       reader.onload = () => {
         try {
           const text = reader.result as string;
-          let data: any[];
+          let data: unknown[];
           if (file.name.endsWith('.json')) {
             const parsed = JSON.parse(text);
             data = Array.isArray(parsed) ? parsed : parsed[key] || parsed.kurse || parsed.rules || [];
@@ -493,10 +493,10 @@ export function WelcomeScreen() {
         if (Array.isArray(importedConfig.holidays)) initialSettings.holidays = importedConfig.holidays;
         if (Array.isArray(importedConfig.specialWeeks)) initialSettings.specialWeeks = importedConfig.specialWeeks;
         if (Array.isArray(importedConfig.subjects)) initialSettings.subjects = importedConfig.subjects;
-        if (Array.isArray((importedConfig as any).curriculumGoals)) initialSettings.curriculumGoals = (importedConfig as any).curriculumGoals;
-        if (Array.isArray((importedConfig as any).assessmentRules)) initialSettings.assessmentRules = (importedConfig as any).assessmentRules;
+        if (Array.isArray(importedConfig.curriculumGoals)) initialSettings.curriculumGoals = importedConfig.curriculumGoals;
+        if (Array.isArray(importedConfig.assessmentRules)) initialSettings.assessmentRules = importedConfig.assessmentRules;
         if (importedConfig.school) initialSettings.school = importedConfig.school;
-        if ((importedConfig as any).schoolLevel) initialSettings.schoolLevel = (importedConfig as any).schoolLevel;
+        if (importedConfig.schoolLevel) initialSettings.schoolLevel = importedConfig.schoolLevel;
       }
       // v3.83 F4: Einzel-Imports überschreiben Gesamtkonfiguration
       if (partialImports.courses) initialSettings.courses = partialImports.courses;
