@@ -1,8 +1,8 @@
-# Unterrichtsplaner – Handoff v3.104
+# Unterrichtsplaner – Handoff v3.105
 
-## Status: v3.104 — Tool-Synergien UI-Integration
+## Status: v3.105 — Design-Cleanup (slate-Harmonisierung)
 
-**Aktuelle Version:** v3.104 (23.03.2026)
+**Aktuelle Version:** v3.105 (25.03.2026, seither keine Code-Änderungen am Planer)
 
 ---
 
@@ -17,11 +17,28 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 | # | Beschreibung | Priorität |
 |---|-------------|-----------|
-| UP-4 | **Design vereinfachen.** ~~gray→slate~~ ✅ + ~~Farbduplikate~~ ✅ (v3.105). Noch offen: CSS-Variable-Overrides aufräumen. | mittel |
+| UP-4 | **CSS-Variable-Overrides aufräumen** (Rest aus Design-Cleanup). ~~gray→slate~~ + ~~Farbduplikate~~ erledigt in v3.105. | niedrig |
+| UP-5 | **Harmonisierung mit ExamLab — Bundle 1+2** (geplant 19.05.2026): Toast-System aus ExamLab nach `packages/shared` ziehen + alle 54 `alert()`-Stellen im Planer ersetzen. Lint-Gates `lint:as-any` (51 Stellen) + `lint:no-alert` adoptieren. Vorbereitung Backend-Migration ab Aug 2026. | hoch |
+| UP-6 | **`packages/shared` als Planer-Dependency aktivieren** (Voraussetzung für UP-5). `generateColorVariants` als ersten Shared-Move. | mittel |
+| UP-7 | **vitest-Setup + Unit-Tests** für Utils (`generateColorVariants`, `gradeRequirements`, `hkRotation`). Heute 0 Tests vs. ExamLab 1994+. | mittel |
+| UP-8 | **Apps-Script-URL + LP-E-Mail aus Config laden** statt hardcoded in `synergyService.ts` + `pruefungBridge.ts`. Voraussetzung für Backend-Migration. | mittel |
 
 ---
 
 ## Letzte Sessions
+
+### 19.05.2026 — HANDOFF-Nachzug + Analyse Harmonisierung
+
+- HANDOFF auf v3.105 nachgezogen (Header, Status, Aktuelle Version).
+- Cross-Repo-Analyse: 5 strukturelle Defizite ggü. ExamLab dokumentiert in UP-5 bis UP-8 (54× `alert()`, 51× `as any`, 0 Tests, `packages/shared` ungenutzt, hardcoded Apps-Script-Config).
+- Bundle 1+2 (Toast nach Shared + Lint-Gates) als nächstes priorisiert.
+
+### v3.105 — Design-Cleanup slate + Farbduplikate (25.03.2026)
+
+Commit `fd85cd9` — 22 Files, 324 Stellen migriert.
+- `text-gray-*` / `bg-gray-*` / `border-gray-*` → `slate-*` (Projekt nutzt slate-basierte CSS Variables, gray war inkonsistent).
+- Fachbereich-Farb-Duplikate aufgelöst: Geschichte #b45309 → #92400e (amber-800, war Konflikt mit Italienisch). Geografie #0891b2 → #0e7490 (cyan-700, Konflikt mit Französisch). Mathematik #1d4ed8 → #2563eb (blue-600, Konflikt mit Deutsch).
+- UP-4 weitgehend abgeräumt — Rest: CSS-Variable-Overrides aufräumen.
 
 ### 24.03.2026 — Bugfixes + Versionsticker
 
@@ -68,6 +85,7 @@ Tabs in Kopfzeile, Kursfilter als Dropdown, TaF nach Settings, Legend→HelpBar.
 
 | Version | Datum | Beschreibung |
 |---------|-------|-------------|
+| v3.105 | 25.03.2026 | Design-Cleanup: gray→slate (322 Stellen) + Farbduplikate behoben |
 | v3.104+ | 24.03.2026 | Bugfixes (Kontextmenü, Versionsticker), HANDOFF-Trim |
 | v3.104 | 23.03.2026 | Tool-Synergien UI (Badges, Import, Notenstand) |
 | v3.103 | 24.03.2026 | Synergy-Backend, Variablen-Harmonisierung |
