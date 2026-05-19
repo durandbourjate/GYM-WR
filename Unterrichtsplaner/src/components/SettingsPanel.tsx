@@ -486,8 +486,9 @@ export function SettingsPanel() {
             <RubricCollectionButtons rubricType="settings" getData={() => settings}
               onLoad={(data) => {
                 if (!data || typeof data !== 'object') { toast.error('Ungültige Konfiguration.'); return; }
-                if (!Array.isArray(data.courses) || !Array.isArray(data.holidays) || !Array.isArray(data.specialWeeks)) { toast.error('Ungültige Konfiguration.'); return; }
-                if (!confirm(`Einstellungen überschreiben? (${data.courses.length} Kurse, ${data.holidays.length} Ferien, ${data.specialWeeks.length} Sonderwochen)`)) return;
+                const d = data as Record<string, unknown>;
+                if (!Array.isArray(d.courses) || !Array.isArray(d.holidays) || !Array.isArray(d.specialWeeks)) { toast.error('Ungültige Konfiguration.'); return; }
+                if (!confirm(`Einstellungen überschreiben? (${d.courses.length} Kurse, ${d.holidays.length} Ferien, ${d.specialWeeks.length} Sonderwochen)`)) return;
                 setSettings(data as PlannerSettings);
                 doSave(data as PlannerSettings);
               }} />
