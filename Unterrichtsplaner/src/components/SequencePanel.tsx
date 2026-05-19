@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { FACHBEREICH_COLORS } from '../utils/colors';
@@ -118,6 +119,7 @@ type FlatBlockInfo = {
 };
 
 function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
+  const toast = useToast();
   const {
     editingSequenceId, setEditingSequenceId,
     updateBlockInSequence, removeBlockFromSequence,
@@ -307,7 +309,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   const fieldsToApply: string[] = [];
                   if (sa) fieldsToApply.push(`Fachbereich: ${sa}`);
                   if (block.thema) fieldsToApply.push(`Oberthema: ${block.thema}`);
-                  if (fieldsToApply.length === 0) { alert('Keine Sequenz-Felder gesetzt, die übertragen werden können.'); return; }
+                  if (fieldsToApply.length === 0) { toast.info('Keine Sequenz-Felder gesetzt, die übertragen werden können.'); return; }
                   if (!confirm(`Folgende Felder auf alle ${block.weeks.length} Lektionen übertragen?\n\n${fieldsToApply.join('\n')}\n\nBestehende Werte werden überschrieben.`)) return;
                   const store = usePlannerStore.getState();
                   for (const weekW of block.weeks) {
@@ -482,6 +484,7 @@ function getCourseTypesForClass(cls: string, courses: Course[]): { typ: string; 
 }
 
 export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
+  const toast = useToast();
   const {
     sequences, sequencePanelOpen, setSequencePanelOpen,
     addSequence, addBlockToSequence, editingSequenceId, setEditingSequenceId,
@@ -552,7 +555,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     // Find available weeks from start KW
     const available = store.getAvailableWeeks(importKursId, importStartWeek, allWeekOrder);
     const targetWeeks = available.slice(0, totalNeeded);
-    if (targetWeeks.length === 0) { alert('Keine verfügbaren Wochen ab dieser KW gefunden.'); return; }
+    if (targetWeeks.length === 0) { toast.warning('Keine verfügbaren Wochen ab dieser KW gefunden.'); return; }
     store.pushUndo();
     const seqId = store.importFromCollection(pendingImportItem.id, importKursId, {
       includeNotes: true, includeMaterialLinks: true, targetWeeks,
