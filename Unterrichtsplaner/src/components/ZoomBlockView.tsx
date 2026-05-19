@@ -3,7 +3,7 @@ import { usePlannerStore, ZOOM_LEVELS, zs } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { TYPE_BADGES, DAY_COLORS, isPastWeek } from '../utils/colors';
 import { inferFachbereichFromLessonType, getBlockColors } from '../data/categories';
-import type { Course, ManagedSequence, LessonType, Fachbereich } from '../types';
+import type { Course, ManagedSequence, LessonType, Fachbereich, Week } from '../types';
 
 const DAY_ORDER: Record<string, number> = { Mo: 0, Di: 1, Mi: 2, Do: 3, Fr: 4 };
 
@@ -29,8 +29,8 @@ interface BlockSpan {
 // inferFachbereich + getBlockColors now imported from data/categories.ts
 
 /** Detect holiday/event from weekData for a specific course column */
-function getWeekType(weekW: string, weekData: any[], col: number): 'holiday' | 'event' | 'normal' {
-  const week = weekData.find((w: any) => w.w === weekW);
+function getWeekType(weekW: string, weekData: Week[], col: number): 'holiday' | 'event' | 'normal' {
+  const week = weekData.find((w) => w.w === weekW);
   if (!week) return 'normal';
   const entry = week.lessons[col];
   if (!entry) return 'normal';
@@ -213,7 +213,7 @@ export function ZoomBlockView({ semester }: Props) {
                   <div className="flex gap-0.5 justify-center mt-0.5">
                     <span className="px-1 rounded font-bold cursor-pointer hover:opacity-80"
                       style={{ fontSize: z(7), background: badge?.bg, color: badge?.fg }}
-                      onClick={() => setFilter(c.typ as any)}>{c.typ}</span>
+                      onClick={() => setFilter(c.typ)}>{c.typ}</span>
                     <span className="px-0.5 rounded bg-slate-800 text-slate-400" style={{ fontSize: z(7) }}>{c.les}L</span>
                   </div>
                 </th>
@@ -229,10 +229,10 @@ export function ZoomBlockView({ semester }: Props) {
             // Full-week holiday check
             const weekEntry = effectiveWeeks.find(w => w.w === weekW);
             const allEntries = weekEntry ? Object.values(weekEntry.lessons) : [];
-            const isHolidayWeek = allEntries.length > 0 && allEntries.every(e => (e as any).type === 6);
-            const holidayLabel = isHolidayWeek ? (allEntries[0] as any)?.title : null;
-            const isEventWeek = !isHolidayWeek && allEntries.length > 0 && allEntries.every(e => (e as any).type === 5);
-            const eventLabel = isEventWeek ? (allEntries[0] as any)?.title : null;
+            const isHolidayWeek = allEntries.length > 0 && allEntries.every(e => e.type === 6);
+            const holidayLabel = isHolidayWeek ? allEntries[0]?.title : null;
+            const isEventWeek = !isHolidayWeek && allEntries.length > 0 && allEntries.every(e => e.type === 5);
+            const eventLabel = isEventWeek ? allEntries[0]?.title : null;
 
             return (
               <tr key={weekW} data-week={weekW}
