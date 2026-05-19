@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useFavoritenStore, selectFavoritenSortiert } from './favoritenStore'
 import { useStammdatenStore } from './stammdatenStore'
-import { useToastStore } from './toastStore'
+import { useToastStore } from '@gymhofwil/shared'
 
 describe('favoritenStore', () => {
   beforeEach(() => {

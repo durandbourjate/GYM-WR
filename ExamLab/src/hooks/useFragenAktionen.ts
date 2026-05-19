@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { apiService } from '../services/apiService.ts'
 import { useFragensammlungStore } from '../store/fragensammlungStore.ts'
-import { useToast } from './useToast'
+import { useToast } from '@gymhofwil/shared'
 import { optimisticDelete } from '../utils/optimisticDelete'
 import type { Frage, FrageSummary } from '../types/fragen-storage'
 
