@@ -35,26 +35,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            packages/shared/package-lock.json
-            Unterrichtsplaner/package-lock.json
-            ExamLab/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install Shared dependencies
-        working-directory: packages/shared
-        run: npm ci
-
-      - name: Install Unterrichtsplaner dependencies
-        working-directory: Unterrichtsplaner
+      - name: Install workspaces dependencies
         run: npm ci
 
       - name: Build Unterrichtsplaner
         working-directory: Unterrichtsplaner
         run: npx tsc -b && npx vite build
-
-      - name: Install ExamLab dependencies
-        working-directory: ExamLab
-        run: npm ci
 
       - name: Audit `any` Use (Bundle L Gate)
         working-directory: ExamLab
@@ -115,6 +103,10 @@ jobs:
         continue-on-error: true
         id: checkout-preview
 
+      # Staging installs against preview-branch which may still use old per-package
+      # lockfiles. Once preview-branch is also on workspaces (post-merge of this bundle
+      # via FF-push main:preview), these two steps can also be consolidated to a single
+      # root `npm ci` in preview-src/.
       - name: Install Staging Shared dependencies
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/packages/shared
