@@ -94,8 +94,8 @@ export function SettingsPanel() {
   }, [doSave]);
 
   // === Header-level add handlers (v3.80 C1) ===
-  const addSubjectHeader = () => updateSettings({ subjects: [...settings.subjects, { id: generateId(), label: '', shortLabel: '', color: '#64748b', courseType: 'SF' as any }] });
-  const addCourseHeader = () => updateSettings({ courses: [...settings.courses, { id: generateId(), cls: '', typ: 'SF' as any, day: 'Mo' as any, from: '08:05', to: '08:50', les: 1, hk: false, semesters: [1, 2] }] });
+  const addSubjectHeader = () => updateSettings({ subjects: [...settings.subjects, { id: generateId(), label: '', shortLabel: '', color: '#64748b', courseType: 'SF' }] });
+  const addCourseHeader = () => updateSettings({ courses: [...settings.courses, { id: generateId(), cls: '', typ: 'SF', day: 'Mo', from: '08:05', to: '08:50', les: 1, hk: false, semesters: [1, 2] }] });
   const addSpecialWeekHeader = () => updateSettings({ specialWeeks: [...settings.specialWeeks, { id: generateId(), label: '', week: '', type: 'event' }] });
   const addHolidayHeader = () => updateSettings({ holidays: [...settings.holidays, { id: generateId(), label: '', startWeek: '', endWeek: '' }] });
   const addAssessmentHeader = () => updateSettings({ assessmentRules: [...(settings.assessmentRules || []), { label: '', deadline: '', minGrades: 1, semester: 'year' }] });
@@ -149,7 +149,7 @@ export function SettingsPanel() {
         const lines = text.split('\n').filter(l => l.trim());
         for (const line of lines) {
           const parts = line.split(/[,;\t]/).map(p => p.trim());
-          if (parts.length >= 2) imported.push({ id: generateId(), label: parts[0], week: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), type: (parts[2] === 'holiday' ? 'holiday' : 'event') as any, gymLevel: parts[3] || undefined });
+          if (parts.length >= 2) imported.push({ id: generateId(), label: parts[0], week: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), type: parts[2] === 'holiday' ? 'holiday' : 'event', gymLevel: parts[3] || undefined });
         }
       }
       if (imported.length === 0) { toast.warning('Keine gültigen Einträge.'); return; }
@@ -168,7 +168,7 @@ export function SettingsPanel() {
       if (fileName.endsWith('.json')) {
         const data = JSON.parse(text);
         const arr = Array.isArray(data) ? data : data.holidays || [];
-        imported = arr.map((h: any) => ({ id: generateId(), label: h.label || h.name || '', startWeek: String(h.startWeek || h.start || '').replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: String(h.endWeek || h.end || '').replace(/^KW\s*/i, '').padStart(2, '0'), ...(h.days ? { days: h.days } : {}) }));
+        imported = arr.map((h: Record<string, unknown>) => ({ id: generateId(), label: String(h.label || h.name || ''), startWeek: String(h.startWeek || h.start || '').replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: String(h.endWeek || h.end || '').replace(/^KW\s*/i, '').padStart(2, '0'), ...(h.days ? { days: h.days as number[] } : {}) }));
       } else {
         const lines = text.split('\n').filter(l => l.trim());
         for (const line of lines) { const parts = line.split(/[,;\t]/).map(p => p.trim()); if (parts.length >= 3) imported.push({ id: generateId(), label: parts[0], startWeek: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: parts[2].replace(/^KW\s*/i, '').padStart(2, '0') }); }
@@ -310,7 +310,7 @@ export function SettingsPanel() {
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Lehrplanziele laden? Bestehende werden ersetzt.`)) updateSettings({ curriculumGoals: data }); }}
           onImport={importLehrplanzieleHeader}
           itemCount={settings.curriculumGoals?.length || 0}
-          onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined as any }); }} />
+          onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined }); }} />
       }>
         <div className="space-y-2">
           <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
@@ -323,7 +323,7 @@ export function SettingsPanel() {
             {settings.curriculumGoals && settings.curriculumGoals.length > 0 && (
               <button onClick={() => {
                 if (confirm('Eigene Lehrplanziele entfernen? (Standard wird verwendet falls Sek2)')) {
-                  updateSettings({ curriculumGoals: undefined as any });
+                  updateSettings({ curriculumGoals: undefined });
                 }
               }} className="px-2 py-1 rounded border border-red-500/30 text-red-400 text-[11px] cursor-pointer hover:bg-red-500/10">
                 ✕ Eigene entfernen
@@ -344,11 +344,11 @@ export function SettingsPanel() {
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Beurteilungsregeln laden? Bestehende werden ersetzt.`)) updateSettings({ assessmentRules: data }); }}
           onAdd={addAssessmentHeader} onImport={importAssessmentHeader}
           itemCount={settings.assessmentRules?.length || 0}
-          onClearAll={() => { if (confirm(`Alle ${settings.assessmentRules?.length || 0} Beurteilungsregeln entfernen?`)) updateSettings({ assessmentRules: undefined as any }); }} />
+          onClearAll={() => { if (confirm(`Alle ${settings.assessmentRules?.length || 0} Beurteilungsregeln entfernen?`)) updateSettings({ assessmentRules: undefined }); }} />
       }>
         <AssessmentRulesEditor
           rules={settings.assessmentRules || []}
-          onChange={(r) => updateSettings({ assessmentRules: r.length > 0 ? r : undefined as any })}
+          onChange={(r) => updateSettings({ assessmentRules: r.length > 0 ? r : undefined })}
           schoolLevel={settings.schoolLevel}
         />
       </Section>
