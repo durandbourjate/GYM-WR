@@ -125,9 +125,19 @@ Komponenten-Test-Infrastruktur unit-testbar.
   `useSynergyKonfiguriert()`.
 - React-Hooks-Regel (`code-quality.md` S130): der Hook-Aufruf steht vor jedem
   Early-Return. Exakte Platzierung im Plan.
-- `PruefungBadge.tsx` + `useSynergyData.ts` rufen nur Service-Funktionen auf —
-  unverändert lauffähig, da die Services die Config intern auflösen. Der Plan
-  auditiert alle Aufrufer der wegfallenden `istKonfiguriert()`-Exports.
+- `PruefungBadge.tsx` ruft nur Service-Funktionen auf — unverändert lauffähig,
+  da die Services die Config intern auflösen.
+- `useSynergyData.ts` ruft `istKonfiguriert()` in einem `useCallback` selbst
+  auf. Nach dem Refactor liest dieser Guard `useSynergyConfigStore.getState()`.
+  Der Hook lädt dadurch **nicht reaktiv** neu, wenn die Config erstmalig gesetzt
+  wird — der Auto-Load greift erst beim nächsten Mount/Reload. Der Plan
+  entscheidet, ob `useSynergyData` den Store abonniert (reaktiver Reload) oder
+  dieses Verhalten bewusst dokumentiert; das §6-Kriterium „ohne Reload" gilt nur
+  für `KursImportButton` + `NotenStandSection`.
+- Der Plan auditiert alle Aufrufer der wegfallenden
+  `istKonfiguriert()`-Exports. Hinweis: `KursImportButton` importiert
+  `istKonfiguriert` aus `pruefungBridge`, obwohl `ladeKurse` aus
+  `synergyService` kommt — beide Service-Importe müssen angefasst werden.
 
 ### 4.6 Datenfluss
 
