@@ -1,5 +1,5 @@
 // Prüfung-Bridge: Lädt Prüfungs-Metadaten via Apps Script ladeTrackerDaten + cached in localStorage
-import { useSynergyConfigStore, istSynergyKonfiguriert } from '../store/synergyConfigStore'
+import { useSynergyConfigStore } from '../store/synergyConfigStore'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 const CACHE_KEY_PRUEFUNGEN = 'synergy-pruefungen'
@@ -165,9 +165,3 @@ export function getPruefungsCacheAlter(): string | null {
   } catch { return null }
 }
 
-/**
- * Prüft ob der Bridge-Service konfiguriert ist.
- */
-export function istKonfiguriert(): boolean {
-  return istSynergyKonfiguriert(useSynergyConfigStore.getState())
-}

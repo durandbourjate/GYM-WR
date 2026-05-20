@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Section } from './shared';
 import { useSynergyData } from '../../hooks/useSynergyData';
-import { istKonfiguriert } from '../../services/pruefungBridge';
+import { useSynergyKonfiguriert } from '../../store/synergyConfigStore';
 import type { NotenStandInfo } from '../../services/pruefungBridge';
 
 // Gefäss-Labels für Anzeige
@@ -41,6 +41,7 @@ function NotenZeile({ info }: { info: NotenStandInfo }) {
 
 export function NotenStandSection() {
   const { notenStand, loading, error, cacheAge, refresh } = useSynergyData();
+  const konfiguriert = useSynergyKonfiguriert();
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = useCallback(async () => {
@@ -50,11 +51,11 @@ export function NotenStandSection() {
     setTimeout(() => setRefreshing(false), 1000);
   }, [refresh]);
 
-  if (!istKonfiguriert()) {
+  if (!konfiguriert) {
     return (
       <Section title="📊 Noten-Stand">
         <p className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
-          Nicht konfiguriert. Apps Script URL und LP-E-Mail müssen in den Services hinterlegt sein.
+          Nicht konfiguriert. Apps-Script-URL und LP-E-Mail in der Sektion „Synergy-Verbindung" eintragen.
         </p>
       </Section>
     );

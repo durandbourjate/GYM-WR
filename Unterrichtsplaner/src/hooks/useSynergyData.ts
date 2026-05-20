@@ -2,10 +2,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   ladePruefungsDaten,
   getPruefungsCacheAlter,
-  istKonfiguriert,
   type PruefungBadge,
   type NotenStandInfo,
 } from '../services/pruefungBridge';
+import { useSynergyKonfiguriert } from '../store/synergyConfigStore';
 
 interface SynergyData {
   badges: PruefungBadge[];
@@ -23,9 +23,10 @@ export function useSynergyData(): SynergyData {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cacheAge, setCacheAge] = useState<string | null>(null);
+  const konfiguriert = useSynergyKonfiguriert();
 
   const laden = useCallback(async () => {
-    if (!istKonfiguriert()) return;
+    if (!konfiguriert) return;
     setLoading(true);
     setError(null);
     try {
@@ -40,7 +41,7 @@ export function useSynergyData(): SynergyData {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [konfiguriert]);
 
   useEffect(() => { laden(); }, [laden]);
 

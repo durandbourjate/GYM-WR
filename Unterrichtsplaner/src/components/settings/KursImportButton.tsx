@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useToast } from '@gymhofwil/shared';
 import { ladeKurse, getCacheAge, type ZentralerKurs } from '../../services/synergyService';
-import { istKonfiguriert } from '../../services/pruefungBridge';
+import { useSynergyKonfiguriert } from '../../store/synergyConfigStore';
 import type { CourseConfig } from '../../store/settingsStore';
 import { ACT_BTN, ACT_BTN_STYLE } from './shared';
 
@@ -27,6 +27,7 @@ function mapKurse(zk: ZentralerKurs[]): CourseConfig[] {
 
 export function KursImportButton({ existingCourses, onChange }: Props) {
   const toast = useToast();
+  const konfiguriert = useSynergyKonfiguriert();
   const [loading, setLoading] = useState(false);
   const [dialog, setDialog] = useState<ZentralerKurs[] | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -64,7 +65,7 @@ export function KursImportButton({ existingCourses, onChange }: Props) {
     setDialog(null);
   }, [dialog, selected, existingCourses, onChange]);
 
-  if (!istKonfiguriert()) return null;
+  if (!konfiguriert) return null;
 
   return (
     <>

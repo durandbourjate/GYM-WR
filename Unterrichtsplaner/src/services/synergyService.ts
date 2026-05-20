@@ -1,5 +1,5 @@
 // Synergy-Service: Lädt zentrale Daten via Apps Script + cached in localStorage
-import { useSynergyConfigStore, istSynergyKonfiguriert } from '../store/synergyConfigStore'
+import { useSynergyConfigStore } from '../store/synergyConfigStore'
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 
@@ -100,6 +100,3 @@ export function getCacheAge(key: string): string | null {
   } catch { return null }
 }
 
-export function istKonfiguriert(): boolean {
-  return istSynergyKonfiguriert(useSynergyConfigStore.getState())
-}
