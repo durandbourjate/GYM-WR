@@ -19,6 +19,7 @@ import { AssessmentRulesEditor } from './settings/AssessmentRulesEditor';
 import { GCalSection } from './settings/GCalSection';
 import { NotenStandSection } from './settings/NotenStandSection';
 import { KursImportButton } from './settings/KursImportButton';
+import { SynergyConfigSection } from './settings/SynergyConfigSection';
 
 
 // === Main Settings Panel ===
@@ -352,6 +353,8 @@ export function SettingsPanel() {
           schoolLevel={settings.schoolLevel}
         />
       </Section>
+
+      <SynergyConfigSection />
 
       <NotenStandSection />
 
