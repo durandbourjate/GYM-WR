@@ -61,10 +61,11 @@ export function generateColorVariants(hex: string): { bg: string; fg: string; bo
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
-  // Light background: mix with white (90% white)
-  const bgR = Math.round(r * 0.1 + 230);
-  const bgG = Math.round(g * 0.1 + 230);
-  const bgB = Math.round(b * 0.1 + 230);
+  // Light background: mix with white (90% white), auf 255 geclampt
+  // (analog zum border-Clamp unten — verhindert ungueltigen Hex bei 255-Kanaelen)
+  const bgR = Math.min(255, Math.round(r * 0.1 + 230));
+  const bgG = Math.min(255, Math.round(g * 0.1 + 230));
+  const bgB = Math.min(255, Math.round(b * 0.1 + 230));
   // Dark foreground: darken by 40%
   const fgR = Math.round(r * 0.6);
   const fgG = Math.round(g * 0.6);
