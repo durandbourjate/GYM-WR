@@ -8,7 +8,7 @@
 
 ## Workflow
 
-**Immer `npx tsc --noEmit && npm run build` vor und nach jeder Änderung.**
+**Immer `npx tsc -b && npm run build` vor und nach jeder Änderung.**
 Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschreibung" && git push`
 
 ---

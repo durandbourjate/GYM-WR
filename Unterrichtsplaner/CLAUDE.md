@@ -11,7 +11,7 @@ cd Unterrichtsplaner
 npm install
 npm run dev          # Dev-Server localhost:5173
 npm run build        # Produktionsbuild → dist/
-npx tsc --noEmit     # Typcheck (muss fehlerfrei sein vor Commit)
+npx tsc -b           # Typcheck (muss fehlerfrei sein vor Commit)
 ```
 
 ## Stack
@@ -56,7 +56,7 @@ Schulspezifische Konfiguration in `public/presets/Hofwil/` (JSON): Ferien, Sonde
 
 1. **HANDOFF.md lesen** — Aktueller Status, offene Tasks, Architekturentscheidungen
 2. Änderungen implementieren
-3. `npx tsc --noEmit` — TypeScript-Fehler = 0
+3. `npx tsc -b` — TypeScript-Fehler = 0
 4. `npm run build` — Build muss durchlaufen
 5. `git add -A && git commit -m "v3.XX: Beschreibung" && git push`
 6. **HANDOFF.md aktualisieren** — Changelog + offene Punkte anpassen
