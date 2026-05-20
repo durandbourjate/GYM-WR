@@ -21,13 +21,24 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 | ~~UP-5~~ | **Bundle 1+2 ✅ erledigt in v3.106** (Toast aus shared, 54 alert→Toast, 80 any-Token migriert, lint:no-alert + lint:as-any aktiv). | erledigt |
 | ~~UP-6~~ | **`packages/shared` als Planer-Dependency aktiv ✅** (npm workspaces im Root). `generateColorVariants`-Migration: separate Bundle. | erledigt |
 | ~~UP-7~~ | **vitest-Setup + Unit-Tests + CI-Gate ✅ erledigt (2026-05-20)** (`generateColorVariants`-Clamp-Bugfix + 27 Tests in 3 Dateien + `deploy.yml`/`pre-push`-Gate, Branch `feature/up7-vitest-tests`). | erledigt |
-| UP-8 | **Apps-Script-URL + LP-E-Mail aus Config laden** statt hardcoded in `synergyService.ts` + `pruefungBridge.ts`. Voraussetzung für Backend-Migration. | mittel |
+| ~~UP-8~~ | **Synergy-Config aus globalem Store ✅ erledigt (2026-05-20)** (`synergyConfigStore` + `SynergyConfigSection` UI + Service-Refactor + reaktives Gating, hardcodierte `APPS_SCRIPT_URL`/`LP_EMAIL` entfernt, Branch `feature/up8-synergy-config`). | erledigt |
 | UP-9 | **`generateColorVariants` aus Planer nach `packages/shared`** ziehen (UP-6 zweiter Teil — Cross-Tool-Farb-Konsistenz). | niedrig |
 | UP-10 | **Spawn-Tasks aus Bundle 1+2**: (a) pre-existing shared-Tests fixen (`BatchTagPicker`, `stabilId` scheitern unter standalone `packages/shared`-vitest — React-Plugin fehlt); ~~(b) legacy node_modules löschen~~ ✅ im CI-Nachgang erledigt; (c) `--if-present` aus den Planer-`lint`-CI-Steps rausnehmen (jetzt wo Bundle 1+2 auf main + preview ist). | niedrig |
 
 ---
 
 ## Letzte Sessions
+
+### 20.05.2026 — UP-8: Synergy-Config aus globalem Store (erledigt)
+
+**5 Tasks auf Branch `feature/up8-synergy-config`.**
+
+- **Task 1 — `synergyConfigStore`:** Globaler, persistierter Zustand-Store (`appsScriptUrl`, `lpEmail`) + `istSynergyKonfiguriert`-Predicate + `useSynergyKonfiguriert`-Hook.
+- **Task 2 — `validateSynergyConfig`:** Pure Validierungsfunktion (URL-Format + E-Mail-Domäne) in `src/utils/synergyConfigValidation.ts`.
+- **Task 3 — `SynergyConfigSection`:** Config-Eingabe-UI (URL + E-Mail, Inline-Validierung), in `SettingsPanel` eingehängt.
+- **Task 4 — Service-Refactor:** `synergyService.ts` + `pruefungBridge.ts` lesen Config reaktiv aus dem Store; hardcodierte `APPS_SCRIPT_URL` + `LP_EMAIL` entfernt.
+- **Task 5 — Reaktives Gating:** `KursImportButton`, `NotenStandSection`, `useSynergyData` gaten reaktiv via `useSynergyKonfiguriert()`; veraltete `istKonfiguriert()`-Exports entfernt.
+- **Gesamt:** 5 Testdateien, 43 Tests, alle grün. `tsc -b` + Build sauber.
 
 ### 20.05.2026 — UP-7: vitest-Setup + Unit-Tests + CI-Gate (erledigt)
 
