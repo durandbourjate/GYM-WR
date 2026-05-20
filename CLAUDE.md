@@ -8,22 +8,24 @@ Lehrer: DUY. Fächer: Wirtschaft & Recht (SF, EWR, EF), Informatik. Klassenlehre
 ```
 Unterrichtsplaner/   → React/TS/Vite PWA (Semesterplaner)
 ExamLab/            → React/TS/Vite PWA (ExamLab: Prüfen + Üben + Fragensammlung)
-packages/shared/     → Shared React/TS-Library (Types, Editor, Mediaquellen) für ExamLab
+packages/shared/     → Shared React/TS-Library (Types, Editor, Mediaquellen, Toast) für ExamLab + Unterrichtsplaner
 Uebungen/            → Übungspools (pool.html + config/*.js) + Informatik-Material
 Projektdateien/      → Claude-Projektanweisungen (nicht deployed)
 ```
 
 ## Erstinstallation
 
-Multi-Package-Repo: drei Sub-Packages haben eigene `node_modules`. Im Repo-Root einmalig:
+npm-Workspaces-Monorepo (`packages/shared`, `Unterrichtsplaner`, `ExamLab`). Im Repo-Root einmalig:
 
 ```bash
-npm run setup
+npm install
 ```
 
-Das ruft `npm ci` in `packages/shared`, `Unterrichtsplaner` und `ExamLab` auf. Einzelne Sub-Packages: `npm run setup:shared` / `setup:examlab` / `setup:planer`.
+Ein einziges Root-`package-lock.json`. Alle Dependencies werden nach `node_modules/` im Root gehoistet — Sub-Packages haben KEINE eigenen `node_modules` mehr. `@gymhofwil/shared` wird automatisch als Symlink in beide Apps verlinkt. `npm run setup` ist ein Alias für `npm install`.
 
-`packages/shared` MUSS vor `ExamLab` installiert sein, sonst scheitern vitest und tsc auf `katex`-Resolution. CI macht das via separater Steps in `deploy.yml`.
+> **CI-Hinweis (npm-Bug 4828):** Der Deploy-Workflow nutzt `rm -f package-lock.json && npm install` statt `npm ci` — `npm ci` materialisiert nach einem auf macOS generierten Lockfile die plattformfremden optionalDependencies (rollup native binaries) auf dem Linux-Runner nicht zuverlässig.
+>
+> **Lokal nach `node_modules`-Layout-Änderungen:** lokale `ci-check`/Build-Verifikation ist erst nach `rm -rf node_modules && npm install` CI-aussagekräftig.
 
 ## Konventionen
 
