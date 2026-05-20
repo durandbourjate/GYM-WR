@@ -23,7 +23,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 | UP-7 | **vitest-Setup + Unit-Tests** für Utils (`generateColorVariants`, `gradeRequirements`, `hkRotation`). Heute 0 Tests im Planer. | mittel |
 | UP-8 | **Apps-Script-URL + LP-E-Mail aus Config laden** statt hardcoded in `synergyService.ts` + `pruefungBridge.ts`. Voraussetzung für Backend-Migration. | mittel |
 | UP-9 | **`generateColorVariants` aus Planer nach `packages/shared`** ziehen (UP-6 zweiter Teil — Cross-Tool-Farb-Konsistenz). | niedrig |
-| UP-10 | **Spawn-Tasks aus Bundle 1+2**: (a) pre-existing shared-Tests fixen (`BatchTagPicker`, `stabilId`), (b) legacy `ExamLab/node_modules` + `Unterrichtsplaner/node_modules` löschen + Re-Install (Doppel-React-Version), (c) `--if-present` aus `lint:no-alert`-CI-Steps rausnehmen (nach erfolgreichem Merge). | niedrig |
+| UP-10 | **Spawn-Tasks aus Bundle 1+2**: (a) pre-existing shared-Tests fixen (`BatchTagPicker`, `stabilId` scheitern unter standalone `packages/shared`-vitest — React-Plugin fehlt); ~~(b) legacy node_modules löschen~~ ✅ im CI-Nachgang erledigt; (c) `--if-present` aus den Planer-`lint`-CI-Steps rausnehmen (jetzt wo Bundle 1+2 auf main + preview ist). | niedrig |
 
 ---
 
@@ -61,9 +61,17 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 **Erkenntnisse (Spawn-Tasks UP-10):**
 - ExamLab Toast hatte bereits 3 umfangreiche Test-Files (19 Tests) — wurden mit-migriert (P2.T1-Inventur war unvollständig)
-- Legacy `ExamLab/node_modules` + `Unterrichtsplaner/node_modules` aus Vor-Workspace-Ära enthalten alte React 19.2.4, Root hat 19.2.6 — Band-Aid via vitest-Aliases, cleaner Cleanup-Task notiert
-- pre-existing shared-Tests scheitern unter minimalem shared/vitest.config.ts (React-Plugin fehlt) — Test-Setup-Task notiert
+- pre-existing shared-Tests scheitern unter minimalem shared/vitest.config.ts (React-Plugin fehlt) — Test-Setup-Task notiert (UP-10a)
 - `tsc -b` Exit-Code lügt bei Phase-2-Test fast übersehen (Memory `feedback_tsc_b_exit_misleading.md` greift)
+
+**CI-Nachgang (20.05.2026 — 3 Fix-Commits nach erstem Merge):**
+
+Der erste Bundle-Merge auf `main` (`05eb485`) lief im GitHub-Actions-CI rot — die lokale macOS-Verifikation deckte das Linux-CI-Verhalten der npm-Workspace-Migration nicht ab. Drei Folge-Fixes:
+- `6477330` + `c1c9cdd`: **npm-Bug 4828** — `npm ci` materialisiert plattformfremde rollup-native-Binaries (`@rollup/rollup-linux-x64-gnu`) nicht. Fix: CI-Workflow macht `rm -f package-lock.json && npm install` (frische plattformkorrekte Resolution auf Linux). Staging-Block auf einen Root-Install konsolidiert.
+- `908d165`: **hardcodierte `ExamLab/node_modules`-Aliases** in `vite.config.ts`, `vitest.config.ts`, `tsconfig.app.json`, `packages/shared/tsconfig.json` — Vor-Workspace-Band-Aid (Cluster G Phase 3c). Nach dem Workspace-Hoisting existiert `ExamLab/node_modules/` im CI nicht mehr. Alle Aliases entfernt (Hoisting dedupliziert auf Root-Kopie, `dedupe` bleibt). Legacy-`node_modules` lokal gelöscht + sauberer Root-Install — damit Spawn-Task UP-10b (legacy node_modules) **erledigt**.
+- Endstand: CI grün (`908d165`, build 6m44s + deploy), `main` + `preview` synchron, deployed.
+
+**Prozess-Lehre:** Bei Migrationen die das `node_modules`-Layout ändern (Workspace-Einführung) ist `macOS-lokal ≠ Linux-CI` ein strukturelles Risiko. Lokale `ci-check` ist nur aussagekräftig nach `rm -rf node_modules && npm install` (CI-identische Umgebung). Pushes hätten zuerst auf `preview` gehen müssen — wobei diese CI-Architektur (Production-Block baut immer `main`) eine echte preview-only-Validierung erschwert.
 
 ### Vorher (19.05.2026): HANDOFF-Nachzug + Analyse Harmonisierung
 
