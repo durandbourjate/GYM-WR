@@ -20,7 +20,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 | UP-4 | **CSS-Variable-Overrides aufräumen** (Rest aus Design-Cleanup). ~~gray→slate~~ + ~~Farbduplikate~~ erledigt in v3.105. | niedrig |
 | ~~UP-5~~ | **Bundle 1+2 ✅ erledigt in v3.106** (Toast aus shared, 54 alert→Toast, 80 any-Token migriert, lint:no-alert + lint:as-any aktiv). | erledigt |
 | ~~UP-6~~ | **`packages/shared` als Planer-Dependency aktiv ✅** (npm workspaces im Root). `generateColorVariants`-Migration: separate Bundle. | erledigt |
-| UP-7 | **Spec + Plan fertig (2026-05-20) — bereit zur Umsetzung.** vitest-Setup + Unit-Tests für `generateColorVariants`/`gradeRequirements`/`hkRotation`. Plan: `docs/superpowers/plans/2026-05-20-up7-vitest.md` · Branch `feature/up7-vitest-tests` · Umsetzung via subagent-driven-development. | mittel |
+| ~~UP-7~~ | **vitest-Setup + Unit-Tests + CI-Gate ✅ erledigt (2026-05-20)** (`generateColorVariants`-Clamp-Bugfix + 27 Tests in 3 Dateien + `deploy.yml`/`pre-push`-Gate, Branch `feature/up7-vitest-tests`). | erledigt |
 | UP-8 | **Apps-Script-URL + LP-E-Mail aus Config laden** statt hardcoded in `synergyService.ts` + `pruefungBridge.ts`. Voraussetzung für Backend-Migration. | mittel |
 | UP-9 | **`generateColorVariants` aus Planer nach `packages/shared`** ziehen (UP-6 zweiter Teil — Cross-Tool-Farb-Konsistenz). | niedrig |
 | UP-10 | **Spawn-Tasks aus Bundle 1+2**: (a) pre-existing shared-Tests fixen (`BatchTagPicker`, `stabilId` scheitern unter standalone `packages/shared`-vitest — React-Plugin fehlt); ~~(b) legacy node_modules löschen~~ ✅ im CI-Nachgang erledigt; (c) `--if-present` aus den Planer-`lint`-CI-Steps rausnehmen (jetzt wo Bundle 1+2 auf main + preview ist). | niedrig |
@@ -28,6 +28,17 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 ---
 
 ## Letzte Sessions
+
+### 20.05.2026 — UP-7: vitest-Setup + Unit-Tests + CI-Gate (erledigt)
+
+**6 Tasks auf Branch `feature/up7-vitest-tests`.**
+
+- **Task 1 — vitest-Infrastruktur:** `vitest.config.ts` + `src/test-setup.ts` (jsdom + testing-library, ExamLab-Parität). `test`/`test:watch`-Scripts in `package.json`.
+- **Task 2 — `generateColorVariants`-Tests + Clamp-Bugfix:** 4 Unit-Tests (TDD). Bugfix: `bg`-Kanäle wurden nicht auf 255 geclampt → ungültiger 9-Zeichen-Hex bei satten Farben.
+- **Task 3 — `gradeRequirements.ts`-Tests:** 17 Charakterisierungs-Tests für 5 Funktionen (`berechneNote`, `noten_GYM1–GYM4`, `noten_EWR`).
+- **Task 4 — `hkRotation.ts`-Tests:** 6 Charakterisierungs-Tests für `getHKGroup` + `getHKSchedule`.
+- **Task 5 — CI-Gate:** `npm test`-Step in `deploy.yml` (Production + Staging) + `.githooks/pre-push`-Hook.
+- **Gesamt:** 3 Testdateien, 27 Tests, alle grün. `tsc -b` + Build sauber.
 
 ### 20.05.2026 — UP-7: Brainstorming → Spec → Plan (bereit zur Umsetzung)
 
