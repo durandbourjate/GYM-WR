@@ -24,7 +24,16 @@ if ! npm ci --dry-run --silent > /dev/null 2>&1; then
   exit 1
 fi
 
-# Step 2: Volle ci-check-Pipeline (lints + tsc -b + vitest + build).
+# Step 2: Unterrichtsplaner vitest-Tests.
+cd "$REPO_ROOT/Unterrichtsplaner"
+echo "🔍 pre-push: Unterrichtsplaner vitest..."
+if ! npm test; then
+  echo "❌ Unterrichtsplaner: vitest-Tests fehlgeschlagen. Push blockiert."
+  echo "   Override (mit Vorsicht): git push --no-verify"
+  exit 1
+fi
+
+# Step 3: Volle ci-check-Pipeline (lints + tsc -b + vitest + build).
 cd "$REPO_ROOT/ExamLab"
 if ! npm run ci-check; then
   echo ""

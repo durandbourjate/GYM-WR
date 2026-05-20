@@ -58,6 +58,10 @@ jobs:
         working-directory: Unterrichtsplaner
         run: npm run lint:no-alert
 
+      - name: Run vitest (Planer)
+        working-directory: Unterrichtsplaner
+        run: npm test
+
       - name: Audit `any` Use (Bundle L Gate)
         working-directory: ExamLab
         run: npm run lint:as-any
@@ -134,6 +138,11 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/Unterrichtsplaner
         run: npm run lint:no-alert
+
+      - name: Run vitest (Planer, staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/Unterrichtsplaner
+        run: npm test
 
       - name: Audit `any` Use (Bundle L Gate, staging)
         if: steps.checkout-preview.outcome == 'success'
