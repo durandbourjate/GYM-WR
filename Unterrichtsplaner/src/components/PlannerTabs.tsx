@@ -2,6 +2,7 @@
  * PlannerTabs — Tab bar for switching between planner instances
  */
 import { useState, useEffect } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { createPortal } from 'react-dom';
 import { useInstanceStore, instanceStorageKey, generateWeekIds } from '../store/instanceStore';
 import { saveToInstance } from '../store/plannerStore';
@@ -13,6 +14,7 @@ import type { AssessmentRule } from '../store/settingsStore';
 import type { LessonType } from '../types';
 
 export function PlannerTabs() {
+  const toast = useToast();
   const { instances, activeId, setActive, createInstance, deleteInstance, renameInstance, exportInstance } = useInstanceStore();
   const [showNew, setShowNew] = useState(false);
   const [newName, setNewName] = useState('');
@@ -43,10 +45,10 @@ export function PlannerTabs() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result as string);
-        if (!parsed || typeof parsed !== 'object') { alert('Ungültige Datei.'); return; }
+        if (!parsed || typeof parsed !== 'object') { toast.error('Ungültige Datei.'); return; }
         setImportedConfig(parsed as PlannerSettings);
         setImportedFileName(file.name);
-      } catch { alert('Fehler beim Lesen der Datei.'); }
+      } catch { toast.error('Fehler beim Lesen der Datei.'); }
     };
     reader.readAsText(file);
     e.target.value = '';
@@ -60,7 +62,7 @@ export function PlannerTabs() {
       reader.onload = () => {
         try {
           const text = reader.result as string;
-          let data: any[];
+          let data: unknown[];
           if (file.name.endsWith('.json')) {
             const parsed = JSON.parse(text);
             data = Array.isArray(parsed) ? parsed : parsed[key] || parsed.kurse || parsed.rules || [];
@@ -78,10 +80,10 @@ export function PlannerTabs() {
               }).filter(Boolean);
             } else { data = []; }
           }
-          if (!data || data.length === 0) { alert(`Keine gültigen ${label} gefunden.`); return; }
+          if (!data || data.length === 0) { toast.warning(`Keine gültigen ${label} gefunden.`); return; }
           setPartialImports(prev => ({ ...prev, [key]: data }));
           setPartialFileNames(prev => ({ ...prev, [key]: file.name }));
-        } catch { alert('Datei konnte nicht gelesen werden.'); }
+        } catch { toast.error('Datei konnte nicht gelesen werden.'); }
       };
       reader.readAsText(file);
       e.target.value = '';
@@ -132,8 +134,8 @@ export function PlannerTabs() {
         if (Array.isArray(importedConfig.holidays)) initialSettings.holidays = importedConfig.holidays;
         if (Array.isArray(importedConfig.specialWeeks)) initialSettings.specialWeeks = importedConfig.specialWeeks;
         if (Array.isArray(importedConfig.subjects)) initialSettings.subjects = importedConfig.subjects;
-        if (Array.isArray((importedConfig as any).curriculumGoals)) initialSettings.curriculumGoals = (importedConfig as any).curriculumGoals;
-        if (Array.isArray((importedConfig as any).assessmentRules)) initialSettings.assessmentRules = (importedConfig as any).assessmentRules;
+        if (Array.isArray(importedConfig.curriculumGoals)) initialSettings.curriculumGoals = importedConfig.curriculumGoals;
+        if (Array.isArray(importedConfig.assessmentRules)) initialSettings.assessmentRules = importedConfig.assessmentRules;
         if (importedConfig.school) initialSettings.school = importedConfig.school;
       }
       // G7: Einzel-Imports überschreiben Gesamtkonfiguration
@@ -395,6 +397,7 @@ type PartialImports = {
 
 /** Welcome screen shown when no planner exists */
 export function WelcomeScreen() {
+  const toast = useToast();
   const { createInstance } = useInstanceStore();
   const [name, setName] = useState('');
   const [importedConfig, setImportedConfig] = useState<PlannerSettings | null>(null);
@@ -417,14 +420,14 @@ export function WelcomeScreen() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(reader.result as string);
-        if (!parsed || typeof parsed !== 'object') { alert('Ungültige Datei.'); return; }
+        if (!parsed || typeof parsed !== 'object') { toast.error('Ungültige Datei.'); return; }
         if (!Array.isArray(parsed.courses) && !Array.isArray(parsed.subjects) && !Array.isArray(parsed.holidays)) {
-          alert('Keine gültige Konfiguration gefunden.');
+          toast.warning('Keine gültige Konfiguration gefunden.');
           return;
         }
         setImportedConfig(parsed as PlannerSettings);
         setImportedFileName(file.name);
-      } catch { alert('Fehler beim Lesen der Datei.'); }
+      } catch { toast.error('Fehler beim Lesen der Datei.'); }
     };
     reader.readAsText(file);
     e.target.value = '';
@@ -439,7 +442,7 @@ export function WelcomeScreen() {
       reader.onload = () => {
         try {
           const text = reader.result as string;
-          let data: any[];
+          let data: unknown[];
           if (file.name.endsWith('.json')) {
             const parsed = JSON.parse(text);
             data = Array.isArray(parsed) ? parsed : parsed[key] || parsed.kurse || parsed.rules || [];
@@ -460,10 +463,10 @@ export function WelcomeScreen() {
               data = [];
             }
           }
-          if (!data || data.length === 0) { alert(`Keine gültigen ${label} gefunden.`); return; }
+          if (!data || data.length === 0) { toast.warning(`Keine gültigen ${label} gefunden.`); return; }
           setPartialImports(prev => ({ ...prev, [key]: data }));
           setPartialFileNames(prev => ({ ...prev, [key]: file.name }));
-        } catch { alert('Datei konnte nicht gelesen werden.'); }
+        } catch { toast.error('Datei konnte nicht gelesen werden.'); }
       };
       reader.readAsText(file);
       e.target.value = '';
@@ -490,10 +493,10 @@ export function WelcomeScreen() {
         if (Array.isArray(importedConfig.holidays)) initialSettings.holidays = importedConfig.holidays;
         if (Array.isArray(importedConfig.specialWeeks)) initialSettings.specialWeeks = importedConfig.specialWeeks;
         if (Array.isArray(importedConfig.subjects)) initialSettings.subjects = importedConfig.subjects;
-        if (Array.isArray((importedConfig as any).curriculumGoals)) initialSettings.curriculumGoals = (importedConfig as any).curriculumGoals;
-        if (Array.isArray((importedConfig as any).assessmentRules)) initialSettings.assessmentRules = (importedConfig as any).assessmentRules;
+        if (Array.isArray(importedConfig.curriculumGoals)) initialSettings.curriculumGoals = importedConfig.curriculumGoals;
+        if (Array.isArray(importedConfig.assessmentRules)) initialSettings.assessmentRules = importedConfig.assessmentRules;
         if (importedConfig.school) initialSettings.school = importedConfig.school;
-        if ((importedConfig as any).schoolLevel) initialSettings.schoolLevel = (importedConfig as any).schoolLevel;
+        if (importedConfig.schoolLevel) initialSettings.schoolLevel = importedConfig.schoolLevel;
       }
       // v3.83 F4: Einzel-Imports überschreiben Gesamtkonfiguration
       if (partialImports.courses) initialSettings.courses = partialImports.courses;

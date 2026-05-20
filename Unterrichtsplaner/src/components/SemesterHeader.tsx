@@ -117,7 +117,7 @@ export function SemesterHeader({ courses, semester, weeks }: Props) {
                   <span
                     className="px-1 rounded font-bold cursor-pointer hover:opacity-80 transition-opacity"
                     style={{ fontSize: z(7), background: badge?.bg, color: badge?.fg }}
-                    onClick={() => setFilter(c.typ as any)}
+                    onClick={() => setFilter(c.typ)}
                     title={`Filter: Nur ${c.typ}`}
                   >
                     {c.typ}

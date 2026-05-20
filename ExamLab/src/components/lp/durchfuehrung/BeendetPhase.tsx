@@ -5,7 +5,7 @@ import type { SchuelerStatus } from '../../../types/monitoring'
 import type { Frage } from '../../../types/fragen-storage'
 import type { SchuelerAbgabe, PruefungsKorrektur } from '../../../types/korrektur'
 import { exportiereBackupXlsx } from '../../../utils/backupExport'
-import { useToast } from '../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 
 interface Props {
   config: PruefungsConfig

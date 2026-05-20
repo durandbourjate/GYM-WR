@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Loader2, Check, X } from 'lucide-react'
 import { useStammdatenStore } from '../../../store/stammdatenStore'
-import { useToastStore } from '../../../store/toastStore'
+import { useToastStore } from '@gymhofwil/shared'
 import { useTestdatenStatus } from '../../../hooks/useTestdatenStatus'
 import { apiAdminSeedTestdaten, type SeedResponse } from '../../../services/testdatenApi'
 import ResetConfirmModal from './testdaten/ResetConfirmModal'

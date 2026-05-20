@@ -4,16 +4,34 @@
 #
 # Aufruf:
 #   ./scripts/audit-no-alert.sh
-#   ./scripts/audit-no-alert.sh --strict   # exit 1 bei Treffern (CI-Gate)
+#   ./scripts/audit-no-alert.sh --strict              # exit 1 bei Treffern (CI-Gate)
+#   ./scripts/audit-no-alert.sh --target=<dir>        # Audit anderes Verzeichnis statt ExamLab/src
+#   ./scripts/audit-no-alert.sh --strict --target=<dir>
 
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 STRICT=0
-[[ "${1:-}" == "--strict" ]] && STRICT=1
+TARGET_OVERRIDE=""
+for arg in "$@"; do
+  case "$arg" in
+    --strict)
+      STRICT=1
+      ;;
+    --target=*)
+      TARGET_OVERRIDE="${arg#--target=}"
+      ;;
+  esac
+done
 
-HITS=$(grep -rEn '\balert\(|window\.alert\(' ExamLab/src \
+if [[ -n "$TARGET_OVERRIDE" ]]; then
+  SOURCE="$TARGET_OVERRIDE"
+else
+  SOURCE="ExamLab/src"
+fi
+
+HITS=$(grep -rEn '\balert\(|window\.alert\(' "$SOURCE" \
   --include='*.ts' --include='*.tsx' \
   | grep -v '\.test\.' | grep -v '__tests__' | grep -v '/tests/' || true)
 

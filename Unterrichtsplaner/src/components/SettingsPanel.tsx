@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../store/plannerStore';
 import {
   loadSettings, saveSettings, getDefaultSettings, generateId,
@@ -22,6 +23,7 @@ import { KursImportButton } from './settings/KursImportButton';
 
 // === Main Settings Panel ===
 export function SettingsPanel() {
+  const toast = useToast();
   const storeSettings = usePlannerStore(s => s.plannerSettings);
   const setPlannerSettings = usePlannerStore(s => s.setPlannerSettings);
   const settingsEditKursId = usePlannerStore(s => s.settingsEditKursId);
@@ -92,8 +94,8 @@ export function SettingsPanel() {
   }, [doSave]);
 
   // === Header-level add handlers (v3.80 C1) ===
-  const addSubjectHeader = () => updateSettings({ subjects: [...settings.subjects, { id: generateId(), label: '', shortLabel: '', color: '#64748b', courseType: 'SF' as any }] });
-  const addCourseHeader = () => updateSettings({ courses: [...settings.courses, { id: generateId(), cls: '', typ: 'SF' as any, day: 'Mo' as any, from: '08:05', to: '08:50', les: 1, hk: false, semesters: [1, 2] }] });
+  const addSubjectHeader = () => updateSettings({ subjects: [...settings.subjects, { id: generateId(), label: '', shortLabel: '', color: '#64748b', courseType: 'SF' }] });
+  const addCourseHeader = () => updateSettings({ courses: [...settings.courses, { id: generateId(), cls: '', typ: 'SF', day: 'Mo', from: '08:05', to: '08:50', les: 1, hk: false, semesters: [1, 2] }] });
   const addSpecialWeekHeader = () => updateSettings({ specialWeeks: [...settings.specialWeeks, { id: generateId(), label: '', week: '', type: 'event' }] });
   const addHolidayHeader = () => updateSettings({ holidays: [...settings.holidays, { id: generateId(), label: '', startWeek: '', endWeek: '' }] });
   const addAssessmentHeader = () => updateSettings({ assessmentRules: [...(settings.assessmentRules || []), { label: '', deadline: '', minGrades: 1, semester: 'year' }] });
@@ -110,31 +112,31 @@ export function SettingsPanel() {
     try {
       const data = JSON.parse(text);
       const arr: SubjectConfig[] = Array.isArray(data) ? data : data.subjects || [];
-      if (arr.length === 0) { alert('Keine gültigen Fachbereiche gefunden.'); return; }
+      if (arr.length === 0) { toast.warning('Keine gültigen Fachbereiche gefunden.'); return; }
       const ids = new Set(settings.subjects.map(s => s.id));
       const labels = new Set(settings.subjects.map(s => s.label.toLowerCase()));
       const unique = arr.filter(s => !ids.has(s.id) && !labels.has((s.label || '').toLowerCase()));
       const dupes = arr.length - unique.length;
-      if (unique.length === 0) { alert(`Alle ${arr.length} bereits vorhanden.`); return; }
+      if (unique.length === 0) { toast.info(`Alle ${arr.length} bereits vorhanden.`); return; }
       const withIds = unique.map(s => ({ ...s, id: s.id || generateId() }));
       const msg = dupes > 0 ? `${withIds.length} importieren, ${dupes} übersprungen.` : `${withIds.length} Fachbereiche importieren?`;
       if (confirm(msg)) updateSettings({ subjects: [...settings.subjects, ...withIds] });
-    } catch { alert('JSON konnte nicht gelesen werden.'); }
+    } catch { toast.error('JSON konnte nicht gelesen werden.'); }
   });
 
   const importCoursesHeader = fileImport((text) => {
     try {
       const data = JSON.parse(text);
       const arr: CourseConfig[] = Array.isArray(data) ? data : data.kurse || data.courses || [];
-      if (arr.length === 0) { alert('Keine gültigen Kurse gefunden.'); return; }
+      if (arr.length === 0) { toast.warning('Keine gültigen Kurse gefunden.'); return; }
       const keys = new Set(settings.courses.map(c => `${c.cls}|${c.day}|${c.from}`));
       const unique = arr.filter(c => !keys.has(`${c.cls}|${c.day}|${c.from}`));
       const dupes = arr.length - unique.length;
-      if (unique.length === 0) { alert(`Alle ${arr.length} bereits vorhanden.`); return; }
+      if (unique.length === 0) { toast.info(`Alle ${arr.length} bereits vorhanden.`); return; }
       const withIds = unique.map(c => ({ ...c, id: c.id || generateId() }));
       const msg = dupes > 0 ? `${withIds.length} importieren, ${dupes} übersprungen.` : `${withIds.length} Kurse importieren?`;
       if (confirm(msg)) updateSettings({ courses: [...settings.courses, ...withIds] });
-    } catch { alert('JSON konnte nicht gelesen werden.'); }
+    } catch { toast.error('JSON konnte nicht gelesen werden.'); }
   });
 
   const importSpecialWeeksHeader = fileImport((text, fileName) => {
@@ -142,22 +144,22 @@ export function SettingsPanel() {
       let imported: SpecialWeekConfig[] = [];
       if (fileName.endsWith('.json')) {
         imported = JSON.parse(text) as SpecialWeekConfig[];
-        if (!Array.isArray(imported)) { alert('Ungültiges Format.'); return; }
+        if (!Array.isArray(imported)) { toast.error('Ungültiges Format.'); return; }
       } else {
         const lines = text.split('\n').filter(l => l.trim());
         for (const line of lines) {
           const parts = line.split(/[,;\t]/).map(p => p.trim());
-          if (parts.length >= 2) imported.push({ id: generateId(), label: parts[0], week: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), type: (parts[2] === 'holiday' ? 'holiday' : 'event') as any, gymLevel: parts[3] || undefined });
+          if (parts.length >= 2) imported.push({ id: generateId(), label: parts[0], week: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), type: parts[2] === 'holiday' ? 'holiday' : 'event', gymLevel: parts[3] || undefined });
         }
       }
-      if (imported.length === 0) { alert('Keine gültigen Einträge.'); return; }
+      if (imported.length === 0) { toast.warning('Keine gültigen Einträge.'); return; }
       const keys = new Set(settings.specialWeeks.map(w => `${w.label}|${w.week}`));
       const unique = imported.filter(w => !keys.has(`${w.label}|${w.week}`));
       const dupes = imported.length - unique.length;
-      if (unique.length === 0) { alert(`Alle ${imported.length} bereits vorhanden.`); return; }
+      if (unique.length === 0) { toast.info(`Alle ${imported.length} bereits vorhanden.`); return; }
       const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} übersprungen.` : `${unique.length} Sonderwochen importieren?`;
       if (confirm(msg)) updateSettings({ specialWeeks: [...settings.specialWeeks, ...unique] });
-    } catch { alert('Datei konnte nicht gelesen werden.'); }
+    } catch { toast.error('Datei konnte nicht gelesen werden.'); }
   });
 
   const importHolidaysHeader = fileImport((text, fileName) => {
@@ -166,43 +168,43 @@ export function SettingsPanel() {
       if (fileName.endsWith('.json')) {
         const data = JSON.parse(text);
         const arr = Array.isArray(data) ? data : data.holidays || [];
-        imported = arr.map((h: any) => ({ id: generateId(), label: h.label || h.name || '', startWeek: String(h.startWeek || h.start || '').replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: String(h.endWeek || h.end || '').replace(/^KW\s*/i, '').padStart(2, '0'), ...(h.days ? { days: h.days } : {}) }));
+        imported = arr.map((h: Record<string, unknown>) => ({ id: generateId(), label: String(h.label || h.name || ''), startWeek: String(h.startWeek || h.start || '').replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: String(h.endWeek || h.end || '').replace(/^KW\s*/i, '').padStart(2, '0'), ...(h.days ? { days: h.days as number[] } : {}) }));
       } else {
         const lines = text.split('\n').filter(l => l.trim());
         for (const line of lines) { const parts = line.split(/[,;\t]/).map(p => p.trim()); if (parts.length >= 3) imported.push({ id: generateId(), label: parts[0], startWeek: parts[1].replace(/^KW\s*/i, '').padStart(2, '0'), endWeek: parts[2].replace(/^KW\s*/i, '').padStart(2, '0') }); }
       }
-      if (imported.length === 0) { alert('Keine gültigen Einträge.'); return; }
+      if (imported.length === 0) { toast.warning('Keine gültigen Einträge.'); return; }
       // v3.86 I1-P4: Legacy-Holidays migrieren (days-Feld ergänzen)
       imported = migrateHolidays(imported);
       const keys = new Set(settings.holidays.map(h => `${h.label}|${h.startWeek}`));
       const unique = imported.filter(h => !keys.has(`${h.label}|${h.startWeek}`));
       const dupes = imported.length - unique.length;
-      if (unique.length === 0) { alert(`Alle ${imported.length} bereits vorhanden.`); return; }
+      if (unique.length === 0) { toast.info(`Alle ${imported.length} bereits vorhanden.`); return; }
       const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} übersprungen.` : `${unique.length} Ferienperioden importieren?`;
       if (confirm(msg)) updateSettings({ holidays: [...settings.holidays, ...unique] });
-    } catch { alert('Datei konnte nicht gelesen werden.'); }
+    } catch { toast.error('Datei konnte nicht gelesen werden.'); }
   });
 
   const importLehrplanzieleHeader = fileImport((text) => {
     try {
       const data = JSON.parse(text) as CurriculumGoal[];
-      if (!Array.isArray(data) || data.length === 0) { alert('Ungültiges Format.'); return; }
+      if (!Array.isArray(data) || data.length === 0) { toast.error('Ungültiges Format.'); return; }
       if (confirm(`${data.length} Lehrplanziele importieren? Bestehende werden ersetzt.`)) updateSettings({ curriculumGoals: data });
-    } catch { alert('JSON konnte nicht gelesen werden.'); }
+    } catch { toast.error('JSON konnte nicht gelesen werden.'); }
   });
 
   const importAssessmentHeader = fileImport((text) => {
     try {
       const data = JSON.parse(text);
       const imported: AssessmentRule[] = Array.isArray(data) ? data : data.assessmentRules || data.rules || [];
-      if (imported.length === 0) { alert('Keine gültigen Regeln.'); return; }
+      if (imported.length === 0) { toast.warning('Keine gültigen Regeln.'); return; }
       const keys = new Set((settings.assessmentRules || []).map(r => `${r.label}|${r.semester}|${r.stufe || ''}`));
       const unique = imported.filter(r => !keys.has(`${r.label}|${r.semester}|${r.stufe || ''}`));
       const dupes = imported.length - unique.length;
-      if (unique.length === 0) { alert(`Alle ${imported.length} bereits vorhanden.`); return; }
+      if (unique.length === 0) { toast.info(`Alle ${imported.length} bereits vorhanden.`); return; }
       const msg = dupes > 0 ? `${unique.length} importieren, ${dupes} übersprungen.` : `${unique.length} Regeln importieren?`;
       if (confirm(msg)) updateSettings({ assessmentRules: [...(settings.assessmentRules || []), ...unique] });
-    } catch { alert('JSON konnte nicht gelesen werden.'); }
+    } catch { toast.error('JSON konnte nicht gelesen werden.'); }
   });
 
   const hasCustomSettings = storeSettings !== null || loadSettings() !== null;
@@ -308,7 +310,7 @@ export function SettingsPanel() {
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Lehrplanziele laden? Bestehende werden ersetzt.`)) updateSettings({ curriculumGoals: data }); }}
           onImport={importLehrplanzieleHeader}
           itemCount={settings.curriculumGoals?.length || 0}
-          onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined as any }); }} />
+          onClearAll={() => { if (confirm(`Alle ${settings.curriculumGoals?.length || 0} Lehrplanziele entfernen?`)) updateSettings({ curriculumGoals: undefined }); }} />
       }>
         <div className="space-y-2">
           <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
@@ -321,7 +323,7 @@ export function SettingsPanel() {
             {settings.curriculumGoals && settings.curriculumGoals.length > 0 && (
               <button onClick={() => {
                 if (confirm('Eigene Lehrplanziele entfernen? (Standard wird verwendet falls Sek2)')) {
-                  updateSettings({ curriculumGoals: undefined as any });
+                  updateSettings({ curriculumGoals: undefined });
                 }
               }} className="px-2 py-1 rounded border border-red-500/30 text-red-400 text-[11px] cursor-pointer hover:bg-red-500/10">
                 ✕ Eigene entfernen
@@ -342,11 +344,11 @@ export function SettingsPanel() {
           onLoad={(data) => { if (Array.isArray(data) && confirm(`${data.length} Beurteilungsregeln laden? Bestehende werden ersetzt.`)) updateSettings({ assessmentRules: data }); }}
           onAdd={addAssessmentHeader} onImport={importAssessmentHeader}
           itemCount={settings.assessmentRules?.length || 0}
-          onClearAll={() => { if (confirm(`Alle ${settings.assessmentRules?.length || 0} Beurteilungsregeln entfernen?`)) updateSettings({ assessmentRules: undefined as any }); }} />
+          onClearAll={() => { if (confirm(`Alle ${settings.assessmentRules?.length || 0} Beurteilungsregeln entfernen?`)) updateSettings({ assessmentRules: undefined }); }} />
       }>
         <AssessmentRulesEditor
           rules={settings.assessmentRules || []}
-          onChange={(r) => updateSettings({ assessmentRules: r.length > 0 ? r : undefined as any })}
+          onChange={(r) => updateSettings({ assessmentRules: r.length > 0 ? r : undefined })}
           schoolLevel={settings.schoolLevel}
         />
       </Section>
@@ -383,10 +385,10 @@ export function SettingsPanel() {
                   reader.onload = () => {
                     try {
                       const imported = JSON.parse(reader.result as string);
-                      if (!imported || typeof imported !== 'object') { alert('Ungültige Datei.'); return; }
+                      if (!imported || typeof imported !== 'object') { toast.error('Ungültige Datei.'); return; }
                       // v3.86 I1-P2: Typ-Guard — Planerdaten erkennen
                       if ('weekData' in imported && !('courses' in imported)) {
-                        alert('Diese Datei enthält Planerdaten (Lektionen/Sequenzen), keine Einstellungen. Bitte unter «Planerdaten» importieren.');
+                        toast.warning('Diese Datei enthält Planerdaten (Lektionen/Sequenzen), keine Einstellungen. Bitte unter «Planerdaten» importieren.');
                         return;
                       }
                       // Flexibler Parser: mindestens eines der Kern-Felder muss vorhanden sein
@@ -395,7 +397,7 @@ export function SettingsPanel() {
                       const hasSpecialWeeks = Array.isArray(imported.specialWeeks);
                       const hasSubjects = Array.isArray(imported.subjects);
                       if (!hasCourses && !hasHolidays && !hasSpecialWeeks && !hasSubjects) {
-                        alert('Keine gültige Konfiguration gefunden. Erwartet: courses, holidays, specialWeeks oder subjects.');
+                        toast.warning('Keine gültige Konfiguration gefunden. Erwartet: courses, holidays, specialWeeks oder subjects.');
                         return;
                       }
                       // Zusammenfassung für Bestätigung
@@ -420,7 +422,7 @@ export function SettingsPanel() {
                       if (imported.semesterBreak !== undefined) merged.semesterBreak = imported.semesterBreak;
                       setSettings(merged);
                       doSave(merged);
-                    } catch { alert('Fehler beim Lesen der Datei.'); }
+                    } catch { toast.error('Fehler beim Lesen der Datei.'); }
                   };
                   reader.readAsText(file);
                   e.target.value = '';
@@ -459,17 +461,17 @@ export function SettingsPanel() {
                       const isPlannerData = typeof parsed === 'object' && parsed !== null && 'weekData' in parsed;
                       const isSettingsExport = typeof parsed === 'object' && parsed !== null && 'courses' in parsed && !('weekData' in parsed);
                       if (isSettingsExport) {
-                        alert('Diese Datei enthält Einstellungen (Konfiguration), keine Planerdaten. Bitte unter «Einstellungen» importieren.');
+                        toast.warning('Diese Datei enthält Einstellungen (Konfiguration), keine Planerdaten. Bitte unter «Einstellungen» importieren.');
                         return;
                       }
                       if (!isPlannerData) {
-                        alert('Unbekanntes Import-Format — bitte aktuellen Export verwenden.');
+                        toast.warning('Unbekanntes Import-Format — bitte aktuellen Export verwenden.');
                         return;
                       }
                       const success = usePlannerStore.getState().importData(text);
-                      if (success) alert('Planerdaten erfolgreich importiert.');
-                      else alert('Keine gültigen Planerdaten gefunden.');
-                    } catch { alert('Fehler beim Lesen der Datei.'); }
+                      if (success) toast.success('Planerdaten erfolgreich importiert.');
+                      else toast.warning('Keine gültigen Planerdaten gefunden.');
+                    } catch { toast.error('Fehler beim Lesen der Datei.'); }
                   };
                   reader.readAsText(file);
                 }} />
@@ -483,9 +485,10 @@ export function SettingsPanel() {
             <p className="text-[9px] mb-1.5" style={{ color: 'var(--text-muted)' }}>Konfiguration in der Sammlung sichern oder laden. Einzelne Rubriken können oben separat gespeichert werden.</p>
             <RubricCollectionButtons rubricType="settings" getData={() => settings}
               onLoad={(data) => {
-                if (!data || typeof data !== 'object') { alert('Ungültige Konfiguration.'); return; }
-                if (!Array.isArray(data.courses) || !Array.isArray(data.holidays) || !Array.isArray(data.specialWeeks)) { alert('Ungültige Konfiguration.'); return; }
-                if (!confirm(`Einstellungen überschreiben? (${data.courses.length} Kurse, ${data.holidays.length} Ferien, ${data.specialWeeks.length} Sonderwochen)`)) return;
+                if (!data || typeof data !== 'object') { toast.error('Ungültige Konfiguration.'); return; }
+                const d = data as Record<string, unknown>;
+                if (!Array.isArray(d.courses) || !Array.isArray(d.holidays) || !Array.isArray(d.specialWeeks)) { toast.error('Ungültige Konfiguration.'); return; }
+                if (!confirm(`Einstellungen überschreiben? (${d.courses.length} Kurse, ${d.holidays.length} Ferien, ${d.specialWeeks.length} Sonderwochen)`)) return;
                 setSettings(data as PlannerSettings);
                 doSave(data as PlannerSettings);
               }} />

@@ -35,26 +35,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            packages/shared/package-lock.json
-            Unterrichtsplaner/package-lock.json
-            ExamLab/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install Shared dependencies
-        working-directory: packages/shared
-        run: npm ci
-
-      - name: Install Unterrichtsplaner dependencies
-        working-directory: Unterrichtsplaner
+      - name: Install workspaces dependencies
         run: npm ci
 
       - name: Build Unterrichtsplaner
         working-directory: Unterrichtsplaner
         run: npx tsc -b && npx vite build
 
-      - name: Install ExamLab dependencies
-        working-directory: ExamLab
-        run: npm ci
+      - name: Audit `any` Use (Planer)
+        working-directory: Unterrichtsplaner
+        run: npm run lint:as-any
+
+      - name: Audit alert() Use (Planer)
+        working-directory: Unterrichtsplaner
+        # --if-present: skipt sauber, falls Bundle 1+2 noch nicht auf main gemergt ist.
+        # Sobald Bundle 1+2 auf main ist, aktiviert sich der Gate automatisch.
+        run: npm run lint:no-alert --if-present
 
       - name: Audit `any` Use (Bundle L Gate)
         working-directory: ExamLab
@@ -115,6 +113,10 @@ jobs:
         continue-on-error: true
         id: checkout-preview
 
+      # Staging installs against preview-branch which may still use old per-package
+      # lockfiles. Once preview-branch is also on workspaces (post-merge of this bundle
+      # via FF-push main:preview), these two steps can also be consolidated to a single
+      # root `npm ci` in preview-src/.
       - name: Install Staging Shared dependencies
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/packages/shared
@@ -124,6 +126,17 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm ci
+
+      - name: Audit `any` Use (Planer, staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/Unterrichtsplaner
+        # --if-present: preview-Branch hat das Script erst nach FF-Push aus main.
+        run: npm run lint:as-any --if-present
+
+      - name: Audit alert() Use (Planer, staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/Unterrichtsplaner
+        run: npm run lint:no-alert --if-present
 
       - name: Audit `any` Use (Bundle L Gate, staging)
         if: steps.checkout-preview.outcome == 'success'

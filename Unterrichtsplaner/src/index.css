@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../packages/shared/src";
 
 /* v3.89 L7: Light-/Darkmode CSS-Variablen */
 :root {

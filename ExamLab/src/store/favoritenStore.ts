@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Favorit } from '../types/favorit'
 import { useStammdatenStore } from './stammdatenStore'
-import { useToastStore } from './toastStore'
+import { useToastStore } from '@gymhofwil/shared'
 
 // Re-Export für Backwards-Compat (9+ Konsumenten importieren von hier)
 export type { Favorit } from '../types/favorit'

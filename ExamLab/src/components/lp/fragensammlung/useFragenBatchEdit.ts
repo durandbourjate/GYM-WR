@@ -22,7 +22,7 @@ import type { FragenBulkPatch, TagsModus } from '@shared/types/fragen-core'
 import { bulkUpdateFragen, bulkLoescheFragen } from '../../../services/fragenBulkApi.ts'
 import { useFragenSelectionStore, useSelektierteIds } from '../../../store/fragenSelectionStore.ts'
 import { useFragensammlungStore } from '../../../store/fragensammlungStore.ts'
-import { useToastStore } from '../../../store/toastStore.ts'
+import { useToastStore } from '@gymhofwil/shared'
 
 export interface UseFragenBatchEditArgs {
   /** LP-User-Email (Pflicht für Backend-Calls; undefined → Guard-Return). */

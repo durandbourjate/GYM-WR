@@ -147,7 +147,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     return get().addCollectionItem({
       type: 'schoolyear',
       title: `${courseType} ${cls} – SJ ${schoolYear}`,
-      courseType: courseType as any,
+      courseType: courseType,
       cls,
       schoolYear,
       units,
@@ -184,7 +184,7 @@ export const createCollectionSlice: StateCreator<PlannerState, [], [], Collectio
     return get().addCollectionItem({
       type: 'curriculum',
       title: `${courseType} ${cls} – ${gymYears}`,
-      courseType: courseType as any,
+      courseType: courseType,
       cls,
       schoolYear,
       gymYears,

@@ -10,6 +10,43 @@ import { generateId, type SpecialWeekConfig } from '../store/settingsStore';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar';
 
+// === Google Identity Services + Calendar-API Types (minimal) ===
+// Defensive: GIS/Calendar-API-Types werden nicht vom Browser typisiert; nur
+// die hier verwendeten Felder werden modelliert.
+interface GISTokenResponse {
+  access_token: string;
+  expires_in: string;
+  error?: string;
+  error_description?: string;
+}
+interface GISErrorResponse { type?: string }
+interface GISTokenClient { requestAccessToken: () => void }
+interface GISOAuth2 {
+  initTokenClient: (cfg: {
+    client_id: string;
+    scope: string;
+    callback: (resp: GISTokenResponse) => void;
+    error_callback?: (err: GISErrorResponse) => void;
+  }) => GISTokenClient;
+  revoke?: (token: string, cb?: () => void) => void;
+}
+interface GoogleNS { accounts?: { oauth2?: GISOAuth2 } }
+function getGoogleNS(): GoogleNS | undefined {
+  return (window as unknown as { google?: GoogleNS }).google;
+}
+
+/** Google Calendar API event shape (only the fields we read/write) */
+export interface GCalEventInput {
+  summary?: string;
+  description?: string;
+  start?: { dateTime?: string; date?: string };
+  end?: { dateTime?: string; date?: string };
+  extendedProperties?: { private?: Record<string, string> };
+}
+export interface GCalEvent extends GCalEventInput {
+  id: string;
+}
+
 let gisLoaded = false;
 
 /** Load Google Identity Services script */
@@ -34,15 +71,16 @@ export async function loginWithGoogle(clientId: string): Promise<string> {
   }
 
   await loadGIS();
-  const google = (window as any).google;
+  const google = getGoogleNS();
   if (!google?.accounts?.oauth2) throw new Error('Google Identity Services konnte nicht geladen werden. Prüfe deine Internetverbindung.');
+  const oauth2 = google.accounts.oauth2;
 
   return new Promise((resolve, reject) => {
     try {
-      const client = google.accounts.oauth2.initTokenClient({
+      const client = oauth2.initTokenClient({
         client_id: clientId,
         scope: SCOPES,
-        callback: (resp: any) => {
+        callback: (resp: GISTokenResponse) => {
           if (resp.error) {
             const msg = resp.error === 'access_denied'
               ? 'Zugriff verweigert. Bitte Berechtigung erteilen.'
@@ -56,7 +94,7 @@ export async function loginWithGoogle(clientId: string): Promise<string> {
           store.setToken(resp.access_token, parseInt(resp.expires_in));
           resolve(resp.access_token);
         },
-        error_callback: (err: any) => {
+        error_callback: (err: GISErrorResponse) => {
           const msg = err?.type === 'popup_closed'
             ? 'Anmeldefenster wurde geschlossen.'
             : err?.type === 'popup_failed_to_open'
@@ -66,8 +104,9 @@ export async function loginWithGoogle(clientId: string): Promise<string> {
         },
       });
       client.requestAccessToken();
-    } catch (e: any) {
-      reject(new Error(`OAuth-Initialisierung fehlgeschlagen: ${e.message || 'Unbekannter Fehler'}`));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
+      reject(new Error(`OAuth-Initialisierung fehlgeschlagen: ${msg}`));
     }
   });
 }
@@ -76,7 +115,7 @@ export async function loginWithGoogle(clientId: string): Promise<string> {
 export function logout() {
   const store = useGCalStore.getState();
   if (store.accessToken) {
-    try { (window as any).google?.accounts?.oauth2?.revoke?.(store.accessToken); } catch { /* ignore */ }
+    try { getGoogleNS()?.accounts?.oauth2?.revoke?.(store.accessToken); } catch { /* ignore */ }
   }
   store.clearToken();
 }
@@ -96,8 +135,9 @@ async function gcalFetch(path: string, options?: RequestInit) {
         ...options?.headers,
       },
     });
-  } catch (e: any) {
-    throw new Error(`Netzwerkfehler: ${e.message || 'Keine Verbindung zu Google'}. Prüfe deine Internetverbindung.`);
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'Keine Verbindung zu Google';
+    throw new Error(`Netzwerkfehler: ${msg}. Prüfe deine Internetverbindung.`);
   }
 
   if (res.status === 401) {
@@ -126,19 +166,28 @@ async function gcalFetch(path: string, options?: RequestInit) {
   return res.json();
 }
 
+/** Calendar-List-Eintrag aus Google Calendar API */
+interface CalendarListItem {
+  id: string;
+  summary?: string;
+  summaryOverride?: string;
+  primary?: boolean;
+  accessRole?: string;
+}
+
 /** Fetch list of user's calendars */
 export async function fetchCalendarList() {
   const data = await gcalFetch('/users/me/calendarList');
-  return (data.items || []).map((cal: any) => ({
-    id: cal.id as string,
-    summary: (cal.summaryOverride || cal.summary || cal.id) as string,
+  return ((data.items || []) as CalendarListItem[]).map((cal) => ({
+    id: cal.id,
+    summary: cal.summaryOverride || cal.summary || cal.id,
     primary: !!cal.primary,
-    accessRole: cal.accessRole as string,
+    accessRole: cal.accessRole || '',
   }));
 }
 
 /** Fetch events from a calendar within a time range */
-export async function fetchEvents(calendarId: string, timeMin: string, timeMax: string) {
+export async function fetchEvents(calendarId: string, timeMin: string, timeMax: string): Promise<GCalEvent[]> {
   const params = new URLSearchParams({
     timeMin, timeMax,
     singleEvents: 'true',
@@ -146,11 +195,11 @@ export async function fetchEvents(calendarId: string, timeMin: string, timeMax: 
     maxResults: '2500',
   });
   const data = await gcalFetch(`/calendars/${encodeURIComponent(calendarId)}/events?${params}`);
-  return data.items || [];
+  return (data.items || []) as GCalEvent[];
 }
 
 /** Create an event on a calendar */
-export async function createEvent(calendarId: string, event: any) {
+export async function createEvent(calendarId: string, event: GCalEventInput): Promise<GCalEvent> {
   return gcalFetch(`/calendars/${encodeURIComponent(calendarId)}/events`, {
     method: 'POST',
     body: JSON.stringify(event),
@@ -158,7 +207,7 @@ export async function createEvent(calendarId: string, event: any) {
 }
 
 /** Update an event */
-export async function updateEvent(calendarId: string, eventId: string, event: any) {
+export async function updateEvent(calendarId: string, eventId: string, event: GCalEventInput): Promise<GCalEvent> {
   return gcalFetch(`/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`, {
     method: 'PUT',
     body: JSON.stringify(event),
@@ -269,8 +318,9 @@ export async function syncPlannerToCalendar(
       gcalStore.removeEventMapping(key);
       delete eventMap[key];
       progress.deleted++;
-    } catch (e: any) {
-      progress.errors.push(`Löschen ${key}: ${e.message}`);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      progress.errors.push(`Löschen ${key}: ${msg}`);
     }
     progress.done++;
     onProgress?.(progress);
@@ -312,8 +362,9 @@ export async function syncPlannerToCalendar(
           eventMap[key] = created.id;
           progress.created++;
         }
-      } catch (e: any) {
-        progress.errors.push(`${existingId ? 'Update' : 'Create'} ${key}: ${e.message}`);
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        progress.errors.push(`${existingId ? 'Update' : 'Create'} ${key}: ${msg}`);
       }
       progress.done++;
       onProgress?.(progress);
@@ -370,7 +421,7 @@ export async function scanCalendarsForSpecialWeeks(
   const candidates: ImportCandidate[] = [];
 
   for (const calId of calendarIds) {
-    let events: any[];
+    let events: GCalEvent[];
     try {
       events = await fetchEvents(calId, timeMin, timeMax);
     } catch {
@@ -460,7 +511,7 @@ export async function checkCollisions(
   // Fetch all external events from read calendars
   const externalEvents: Array<{ summary: string; startMs: number; endMs: number }> = [];
   for (const calId of readCalendarIds) {
-    let events: any[];
+    let events: GCalEvent[];
     try {
       events = await fetchEvents(calId, timeMin, timeMax);
     } catch {

@@ -7,7 +7,7 @@
  */
 import { useCallback, useEffect, useState } from 'react'
 import { useAuthStore } from '../../../store/authStore'
-import { useToast } from '../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 import Button from '../../ui/Button'
 import {
   listePapierkorb,

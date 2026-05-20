@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import type { Course, CourseType, DayOfWeek, Semester } from '../../types';
 import { usePlannerStore } from '../../store/plannerStore';
 import { saveSettings, applySettingsToWeekData, type SpecialWeekConfig } from '../../store/settingsStore';
 import { useInstanceStore, weekToDate } from '../../store/instanceStore';
-import { useGCalStore } from '../../store/gcalStore';
+import { useGCalStore, type GCalCalendar } from '../../store/gcalStore';
 import { loginWithGoogle, logout as gcalLogout, fetchCalendarList, syncPlannerToCalendar, buildWeekYearMap, scanCalendarsForSpecialWeeks, checkCollisions, type SyncProgress, type ImportCandidate } from '../../services/gcal';
 import { Section } from './shared';
 import { formatGymLevel } from './SpecialWeeksEditor';
 
 // === Google Calendar Section (v3.60) ===
 export function GCalSection() {
+  const toast = useToast();
   const { clientId, setClientId, calendars, setCalendars,
     writeCalendarId, setWriteCalendarId, readCalendarIds, toggleReadCalendar } = useGCalStore();
   const isAuth = useGCalStore(s => s.isAuthenticated());
@@ -34,10 +36,10 @@ export function GCalSection() {
       const cals = await fetchCalendarList();
       setCalendars(cals);
       // Auto-select primary calendar as write calendar
-      const primary = cals.find((c: any) => c.primary);
+      const primary = cals.find((c: GCalCalendar) => c.primary);
       if (primary && !writeCalendarId) setWriteCalendarId(primary.id);
-    } catch (e: any) {
-      setError(e.message || 'Login fehlgeschlagen');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Login fehlgeschlagen');
     }
     setLoading(false);
   }, [editClientId, setClientId, setCalendars, writeCalendarId, setWriteCalendarId]);
@@ -52,8 +54,8 @@ export function GCalSection() {
     try {
       const cals = await fetchCalendarList();
       setCalendars(cals);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : String(e));
     }
     setLoading(false);
   }, [setCalendars]);
@@ -97,8 +99,8 @@ export function GCalSection() {
       if (result.errors.length > 0) {
         setError(`${result.errors.length} Fehler beim Sync`);
       }
-    } catch (e: any) {
-      setError(e.message || 'Sync fehlgeschlagen');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Sync fehlgeschlagen');
     }
     setSyncing(false);
   }, [writeCalendarId]);
@@ -125,8 +127,8 @@ export function GCalSection() {
       setImportCandidates(candidates);
       // Pre-select all
       setSelectedImports(new Set(candidates.map(c => c.event.id)));
-    } catch (e: any) {
-      setError(e.message || 'Scan fehlgeschlagen');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Scan fehlgeschlagen');
     }
     setImporting(false);
   }, [readCalendarIds]);
@@ -169,7 +171,7 @@ export function GCalSection() {
 
     setImportCandidates(null);
     setSelectedImports(new Set());
-    alert(`${newWeeks.length} Sonderwoche(n) importiert.`);
+    toast.success(`${newWeeks.length} Sonderwoche(n) importiert.`);
   }, [importCandidates, selectedImports]);
 
   const handleCheckCollisions = useCallback(async () => {
@@ -201,8 +203,8 @@ export function GCalSection() {
     try {
       const collisions = await checkCollisions(readCalendarIds, weekData, courses, weekYearMap);
       useGCalStore.getState().setCollisions(collisions);
-    } catch (e: any) {
-      setError(e.message || 'Kollisionsprüfung fehlgeschlagen');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Kollisionsprüfung fehlgeschlagen');
     }
     setCheckingCollisions(false);
   }, [readCalendarIds]);

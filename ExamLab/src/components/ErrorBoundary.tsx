@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
-import { useToastStore } from '../store/toastStore'
+import { useToastStore } from '@gymhofwil/shared'
 
 interface Props {
   children: ReactNode

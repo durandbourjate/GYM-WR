@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { FACHBEREICH_COLORS } from '../utils/colors';
@@ -20,7 +21,7 @@ function LessonsList({ block, fb, courses }: { block: SequenceBlock; fb: FlatBlo
         const entry = course && weekData?.lessons[course.col];
 
         // Skip holiday weeks (type 6) — they shouldn't be editable in sequence context
-        if (entry && (entry as any).type === 6) {
+        if (entry && entry.type === 6) {
           return (
             <div key={wi} className="flex items-center gap-1 text-[11px] px-1 text-slate-600 italic">
               <span className="text-[9px]">🏖</span>
@@ -118,6 +119,7 @@ type FlatBlockInfo = {
 };
 
 function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
+  const toast = useToast();
   const {
     editingSequenceId, setEditingSequenceId,
     updateBlockInSequence, removeBlockFromSequence,
@@ -307,14 +309,14 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   const fieldsToApply: string[] = [];
                   if (sa) fieldsToApply.push(`Fachbereich: ${sa}`);
                   if (block.thema) fieldsToApply.push(`Oberthema: ${block.thema}`);
-                  if (fieldsToApply.length === 0) { alert('Keine Sequenz-Felder gesetzt, die übertragen werden können.'); return; }
+                  if (fieldsToApply.length === 0) { toast.info('Keine Sequenz-Felder gesetzt, die übertragen werden können.'); return; }
                   if (!confirm(`Folgende Felder auf alle ${block.weeks.length} Lektionen übertragen?\n\n${fieldsToApply.join('\n')}\n\nBestehende Werte werden überschrieben.`)) return;
                   const store = usePlannerStore.getState();
                   for (const weekW of block.weeks) {
                     const weekData = store.weekData.find(w => w.w === weekW);
                     const entry = weekData?.lessons[course.col];
-                    if (!entry || (entry as any).type === 6) continue; // skip holidays
-                    const patch: Record<string, any> = {};
+                    if (!entry || entry.type === 6) continue; // skip holidays
+                    const patch: Record<string, unknown> = {};
                     if (sa) patch.fachbereich = sa;
                     if (block.thema) patch.thema = block.thema;
                     store.updateLessonDetail(weekW, course.col, patch);
@@ -374,7 +376,7 @@ function FlatBlockCard({ fb }: { fb: FlatBlockInfo }) {
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input type="checkbox" checked={!!parentSeq.sol?.enabled}
                       onChange={(e) => updateSequence(fb.seqId, {
-                        sol: { ...parentSeq.sol, enabled: e.target.checked } as any
+                        sol: { ...parentSeq.sol, enabled: e.target.checked }
                       })}
                       className="accent-emerald-500 w-3 h-3" />
                     <span className="text-[11px] text-slate-300 font-medium">📚 SOL (Reihe)</span>
@@ -482,6 +484,7 @@ function getCourseTypesForClass(cls: string, courses: Course[]): { typ: string; 
 }
 
 export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
+  const toast = useToast();
   const {
     sequences, sequencePanelOpen, setSequencePanelOpen,
     addSequence, addBlockToSequence, editingSequenceId, setEditingSequenceId,
@@ -552,7 +555,7 @@ export function SequencePanel({ embedded = false }: { embedded?: boolean }) {
     // Find available weeks from start KW
     const available = store.getAvailableWeeks(importKursId, importStartWeek, allWeekOrder);
     const targetWeeks = available.slice(0, totalNeeded);
-    if (targetWeeks.length === 0) { alert('Keine verfügbaren Wochen ab dieser KW gefunden.'); return; }
+    if (targetWeeks.length === 0) { toast.warning('Keine verfügbaren Wochen ab dieser KW gefunden.'); return; }
     store.pushUndo();
     const seqId = store.importFromCollection(pendingImportItem.id, importKursId, {
       includeNotes: true, includeMaterialLinks: true, targetWeeks,

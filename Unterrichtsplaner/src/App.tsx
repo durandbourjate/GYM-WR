@@ -1,4 +1,5 @@
 import { useRef, useEffect, useMemo } from 'react';
+import { ToastContainer } from '@gymhofwil/shared';
 import { usePlannerStore, switchInstance, saveToInstance } from './store/plannerStore';
 import { useInstanceStore, generateWeekIds } from './store/instanceStore';
 import { usePlannerData } from './hooks/usePlannerData';
@@ -42,6 +43,7 @@ function App() {
     return (
       <div className="text-slate-200 min-h-screen font-sans" style={{ background: 'var(--bg-primary)' }}>
         <WelcomeScreen />
+        <ToastContainer />
       </div>
     );
   }
@@ -55,6 +57,7 @@ function App() {
   return (
     <div className="text-slate-200 min-h-screen font-sans" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }} data-app-root>
       <PlannerContent />
+      <ToastContainer />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import ProblemmeldungenFilter from './ProblemmeldungenFilter'
 import ProblemmeldungZeile from './ProblemmeldungZeile'
 import { useDeepLink } from './useDeepLink'
 import { optimisticDelete } from '../../../utils/optimisticDelete'
-import { useToast } from '../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 import { TYPO } from '../../../styles/typografie'
 import { TabStarToggle } from '../../lp/TabStarToggle'
 

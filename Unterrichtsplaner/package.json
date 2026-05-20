@@ -7,9 +7,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:as-any": "../scripts/audit-as-any.sh --strict --target=Unterrichtsplaner/src",
+    "lint:no-alert": "../scripts/audit-no-alert.sh --strict --target=Unterrichtsplaner/src",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gymhofwil/shared": "*",
     "@tailwindcss/vite": "^4.2.1",
     "browserslist": "^4.28.1",
     "caniuse-lite": "^1.0.30001774",

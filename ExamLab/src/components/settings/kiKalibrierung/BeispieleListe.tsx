@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Star, Trash2 } from 'lucide-react'
 import { kalibrierungApi, type KIFeedbackEintragLP } from '../../../services/kalibrierungApi'
-import { useToast } from '../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 import DiffModal from './DiffModal'
 
 type Filter = {

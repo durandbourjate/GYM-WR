@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../store/plannerStore';
 import { usePlannerData } from '../hooks/usePlannerData';
 import { type CurriculumGoal } from '../data/curriculumGoals';
@@ -410,6 +411,7 @@ function entriesToRows(entries: StoffverteilungEntry[]): StoffRow[] {
 }
 
 export function ZoomMultiYearView() {
+  const toast = useToast();
   const { sequences } = usePlannerStore();
   const { settings, effectiveGoals } = usePlannerData();
   const [mode, setMode] = useState<ViewMode>('curriculum');
@@ -474,12 +476,12 @@ export function ZoomMultiYearView() {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result as string) as StoffverteilungEntry[];
-        if (!Array.isArray(data) || data.length === 0) { alert('Ungültiges Format.'); return; }
+        if (!Array.isArray(data) || data.length === 0) { toast.error('Ungültiges Format.'); return; }
         if (confirm(`${data.length} Semester-Einträge importieren?`)) {
           const store = usePlannerStore.getState();
           store.setPlannerSettings({ ...store.plannerSettings, stoffverteilung: data } as Parameters<typeof store.setPlannerSettings>[0]);
         }
-      } catch { alert('JSON konnte nicht gelesen werden.'); }
+      } catch { toast.error('JSON konnte nicht gelesen werden.'); }
     };
     reader.readAsText(file);
     e.target.value = '';

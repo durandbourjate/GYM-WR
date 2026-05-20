@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useToast } from '@gymhofwil/shared';
 import { usePlannerStore } from '../../store/plannerStore';
 import { useInstanceStore } from '../../store/instanceStore';
 
@@ -64,7 +65,7 @@ export const RUBRIC_LABELS: Record<RubricType, string> = {
 };
 
 /** Save-to-collection dialog: replace existing or create new (v3.77 #10) */
-function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: RubricType; data: any; onClose: () => void }) {
+function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: RubricType; data: unknown; onClose: () => void }) {
   const { collection, addCollectionItem } = usePlannerStore();
   const label = RUBRIC_LABELS[rubricType];
   const existing = collection.filter(item => item.type === rubricType && item.settingsSnapshot);
@@ -86,7 +87,7 @@ function SaveToCollectionDialog({ rubricType, data, onClose }: { rubricType: Rub
         usePlannerStore.setState({ collection: updated });
       }
     } else {
-      addCollectionItem({ type: rubricType as any, title: newName.trim() || `${label} ${datum}`, units: [], settingsSnapshot: snapshot });
+      addCollectionItem({ type: rubricType, title: newName.trim() || `${label} ${datum}`, units: [], settingsSnapshot: snapshot });
     }
     onClose();
   };
@@ -174,8 +175,9 @@ function RubricCollectionPicker({ rubricType, onLoad, onClose }: { rubricType: R
 
 /** Inline buttons for rubric-level collection save/load (v3.77 #9) */
 export function RubricCollectionButtons({ rubricType, getData, onLoad }: {
-  rubricType: RubricType; getData: () => any; onLoad: (data: any) => void;
+  rubricType: RubricType; getData: () => unknown; onLoad: (data: unknown) => void;
 }) {
+  const toast = useToast();
   const [showSave, setShowSave] = useState(false);
   const [showLoad, setShowLoad] = useState(false);
 
@@ -184,10 +186,10 @@ export function RubricCollectionButtons({ rubricType, getData, onLoad }: {
       const parsed = JSON.parse(snapshot);
       // For full 'settings' items, extract just the rubric we need
       const rubricData = extractRubricData(rubricType, parsed);
-      if (rubricData === undefined) { alert('Keine passenden Daten in dieser Konfiguration gefunden.'); return; }
+      if (rubricData === undefined) { toast.warning('Keine passenden Daten in dieser Konfiguration gefunden.'); return; }
       onLoad(rubricData);
       setShowLoad(false);
-    } catch { alert('Fehler beim Lesen der Konfiguration.'); }
+    } catch { toast.error('Fehler beim Lesen der Konfiguration.'); }
   };
 
   return (
@@ -218,7 +220,7 @@ export const ACT_BTN_STYLE: React.CSSProperties = { background: 'var(--bg-hover)
 
 /** Combined header actions for a settings rubric: [+ Hinzufügen] [💾 Speichern] [📂 Laden] [📥 Import] */
 export function SectionActions({ rubricType, getData, onLoad, onAdd, importAccept, onImport, onClearAll, itemCount }: {
-  rubricType: RubricType; getData: () => any; onLoad: (data: any) => void;
+  rubricType: RubricType; getData: () => unknown; onLoad: (data: unknown) => void;
   onAdd?: () => void; importAccept?: string; onImport?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClearAll?: () => void; itemCount?: number;
 }) {
@@ -245,14 +247,15 @@ export function SectionActions({ rubricType, getData, onLoad, onAdd, importAccep
 }
 
 /** Extract rubric-specific data from a parsed settings snapshot */
-export function extractRubricData(rubricType: RubricType, parsed: any): any {
+export function extractRubricData(rubricType: RubricType, parsed: unknown): unknown {
+  const p = (parsed && typeof parsed === 'object') ? parsed as Record<string, unknown> : {};
   switch (rubricType) {
-    case 'fachbereiche': return parsed.subjects ?? parsed;
-    case 'kurse': return parsed.courses ?? parsed;
-    case 'sonderwochen': return parsed.specialWeeks ?? parsed;
-    case 'ferien': return parsed.holidays ?? parsed;
-    case 'lehrplanziele': return parsed.curriculumGoals ?? parsed;
-    case 'beurteilungsregeln': return parsed.assessmentRules ?? parsed;
+    case 'fachbereiche': return p.subjects ?? parsed;
+    case 'kurse': return p.courses ?? parsed;
+    case 'sonderwochen': return p.specialWeeks ?? parsed;
+    case 'ferien': return p.holidays ?? parsed;
+    case 'lehrplanziele': return p.curriculumGoals ?? parsed;
+    case 'beurteilungsregeln': return p.assessmentRules ?? parsed;
     case 'settings': return parsed;
     default: return undefined;
   }

@@ -3,7 +3,7 @@ import { Sun, Moon } from 'lucide-react'
 import { initializeLernenGoogleAuth, renderLernenGoogleButton } from '../../services/ueben/authService'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenTheme } from '../../hooks/ueben/useTheme'
-import { useToast } from '../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 import Tooltip from '../ui/Tooltip.tsx'
 import LoginLayout from '../shared/LoginLayout.tsx'
 

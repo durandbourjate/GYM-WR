@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { useUebenGruppenStore } from '../../../../store/ueben/gruppenStore'
 import { uebenGruppenAdapter } from '../../../../adapters/ueben/appsScriptAdapter'
-import { useToast } from '../../../../hooks/useToast'
+import { useToast } from '@gymhofwil/shared'
 
 export default function MitgliederTab() {
   const toast = useToast()
