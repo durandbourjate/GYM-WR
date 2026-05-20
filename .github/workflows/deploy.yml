@@ -38,7 +38,12 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install workspaces dependencies
-        run: npm ci
+        # npm install statt npm ci: npm-Bug 4828 — npm ci materialisiert mit
+        # Workspace-Hoisting plattformfremde optionalDependencies (rollup native
+        # binaries) nicht zuverlässig. npm install re-resolved sie korrekt für
+        # den Linux-Runner. Lockfile ist vollständig (alle 25 rollup-Plattformen),
+        # daher kein meaningful Drift.
+        run: npm install --no-audit --no-fund
 
       - name: Build Unterrichtsplaner
         working-directory: Unterrichtsplaner
@@ -113,19 +118,13 @@ jobs:
         continue-on-error: true
         id: checkout-preview
 
-      # Staging installs against preview-branch which may still use old per-package
-      # lockfiles. Once preview-branch is also on workspaces (post-merge of this bundle
-      # via FF-push main:preview), these two steps can also be consolidated to a single
-      # root `npm ci` in preview-src/.
-      - name: Install Staging Shared dependencies
-        if: steps.checkout-preview.outcome == 'success'
-        working-directory: preview-src/packages/shared
-        run: npm ci
-
+      # preview-Branch ist seit Bundle 1+2 auf npm workspaces — ein Root-Install
+      # in preview-src/ initialisiert alle Sub-Packages. npm install (nicht ci)
+      # wegen npm-Bug 4828 (s.o. Production-Block).
       - name: Install Staging dependencies
         if: steps.checkout-preview.outcome == 'success'
-        working-directory: preview-src/ExamLab
-        run: npm ci
+        working-directory: preview-src
+        run: npm install --no-audit --no-fund
 
       - name: Audit `any` Use (Planer, staging)
         if: steps.checkout-preview.outcome == 'success'
