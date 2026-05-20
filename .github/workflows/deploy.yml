@@ -38,12 +38,13 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: Install workspaces dependencies
-        # npm install statt npm ci: npm-Bug 4828 — npm ci materialisiert mit
-        # Workspace-Hoisting plattformfremde optionalDependencies (rollup native
-        # binaries) nicht zuverlässig. npm install re-resolved sie korrekt für
-        # den Linux-Runner. Lockfile ist vollständig (alle 25 rollup-Plattformen),
-        # daher kein meaningful Drift.
-        run: npm install --no-audit --no-fund
+        # npm-Bug 4828: npm ci/install materialisiert plattformfremde rollup
+        # native binaries (@rollup/rollup-linux-x64-gnu) NICHT, wenn das Lockfile
+        # auf macOS generiert wurde — npm vertraut dem stale Tree. Lockfile vor
+        # dem Install entfernen erzwingt frische, plattformkorrekte Resolution
+        # auf dem Linux-Runner. Das committete Lockfile bleibt für lokale
+        # Dev-Reproduzierbarkeit erhalten; CI resolved bewusst frisch.
+        run: rm -f package-lock.json && npm install --no-audit --no-fund
 
       - name: Build Unterrichtsplaner
         working-directory: Unterrichtsplaner
@@ -119,12 +120,12 @@ jobs:
         id: checkout-preview
 
       # preview-Branch ist seit Bundle 1+2 auf npm workspaces — ein Root-Install
-      # in preview-src/ initialisiert alle Sub-Packages. npm install (nicht ci)
-      # wegen npm-Bug 4828 (s.o. Production-Block).
+      # in preview-src/ initialisiert alle Sub-Packages. Lockfile entfernen wegen
+      # npm-Bug 4828 (s.o. Production-Block).
       - name: Install Staging dependencies
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src
-        run: npm install --no-audit --no-fund
+        run: rm -f package-lock.json && npm install --no-audit --no-fund
 
       - name: Audit `any` Use (Planer, staging)
         if: steps.checkout-preview.outcome == 'success'
