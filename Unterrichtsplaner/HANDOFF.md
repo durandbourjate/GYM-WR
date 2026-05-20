@@ -17,17 +17,22 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 | # | Beschreibung | Priorität |
 |---|-------------|-----------|
-| UP-4 | **CSS-Variable-Overrides aufräumen** (Rest aus Design-Cleanup). ~~gray→slate~~ + ~~Farbduplikate~~ erledigt in v3.105. | niedrig |
+| ~~UP-4~~ | **CSS-Variable-Overrides ✅ erledigt (2026-05-20)** (doppelte `:root`/`:root.light-mode`-Blöcke in `index.css` zusammengeführt — Basis- + Status-Farben waren getrennt definiert). | erledigt |
 | ~~UP-5~~ | **Bundle 1+2 ✅ erledigt in v3.106** (Toast aus shared, 54 alert→Toast, 80 any-Token migriert, lint:no-alert + lint:as-any aktiv). | erledigt |
 | ~~UP-6~~ | **`packages/shared` als Planer-Dependency aktiv ✅** (npm workspaces im Root). `generateColorVariants`-Migration: separate Bundle. | erledigt |
 | ~~UP-7~~ | **vitest-Setup + Unit-Tests + CI-Gate ✅ erledigt (2026-05-20)** (`generateColorVariants`-Clamp-Bugfix + 27 Tests in 3 Dateien + `deploy.yml`/`pre-push`-Gate, Branch `feature/up7-vitest-tests`). | erledigt |
 | ~~UP-8~~ | **Synergy-Config aus globalem Store ✅ erledigt (2026-05-20)** (`synergyConfigStore` + `SynergyConfigSection` UI + Service-Refactor + reaktives Gating, hardcodierte `APPS_SCRIPT_URL`/`LP_EMAIL` entfernt, Branch `feature/up8-synergy-config`). | erledigt |
 | UP-9 | **`generateColorVariants` aus Planer nach `packages/shared`** ziehen (UP-6 zweiter Teil — Cross-Tool-Farb-Konsistenz). | niedrig |
-| UP-10 | **Spawn-Tasks aus Bundle 1+2**: (a) pre-existing shared-Tests fixen (`BatchTagPicker`, `stabilId` scheitern unter standalone `packages/shared`-vitest — React-Plugin fehlt); ~~(b) legacy node_modules löschen~~ ✅ im CI-Nachgang erledigt; (c) `--if-present` aus den Planer-`lint`-CI-Steps rausnehmen (jetzt wo Bundle 1+2 auf main + preview ist). | niedrig |
+| ~~UP-10~~ | **Spawn-Tasks aus Bundle 1+2 ✅ erledigt** — (a) `packages/shared`-Tests laufen grün (263 Tests / 21 Dateien), (b) ~~legacy node_modules~~ ✅, (c) Planer-`lint`-CI-Steps haben kein `--if-present` mehr. (a)+(c) waren bei der Backlog-Audit 20.05.2026 bereits erfüllt (HANDOFF war stale). | erledigt |
 
 ---
 
 ## Letzte Sessions
+
+### 20.05.2026 — UP-4 + Backlog-Audit (erledigt)
+
+- **UP-4:** Doppelte `:root`/`:root.light-mode`-Blöcke in `index.css` zusammengeführt (Basis-Variablen + Status-Farben waren getrennt definiert). Rein additive CSS-Konsolidierung, kein Rendering-Unterschied — verifiziert via `getComputedStyle` aller Variablen + Browser-Test Light/Dark.
+- **Backlog-Audit:** UP-10a (`packages/shared`-Tests) und UP-10c (`--if-present` in Planer-CI-Steps) waren bereits erfüllt — HANDOFF war stale, jetzt korrigiert. UP-9 (`generateColorVariants` → `packages/shared`) bewusst offengelassen: kein ExamLab-Konsument, daher YAGNI.
 
 ### 20.05.2026 — UP-8: Synergy-Config aus globalem Store (erledigt)
 
