@@ -56,9 +56,7 @@ jobs:
 
       - name: Audit alert() Use (Planer)
         working-directory: Unterrichtsplaner
-        # --if-present: skipt sauber, falls Bundle 1+2 noch nicht auf main gemergt ist.
-        # Sobald Bundle 1+2 auf main ist, aktiviert sich der Gate automatisch.
-        run: npm run lint:no-alert --if-present
+        run: npm run lint:no-alert
 
       - name: Audit `any` Use (Bundle L Gate)
         working-directory: ExamLab
@@ -130,13 +128,12 @@ jobs:
       - name: Audit `any` Use (Planer, staging)
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/Unterrichtsplaner
-        # --if-present: preview-Branch hat das Script erst nach FF-Push aus main.
-        run: npm run lint:as-any --if-present
+        run: npm run lint:as-any
 
       - name: Audit alert() Use (Planer, staging)
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/Unterrichtsplaner
-        run: npm run lint:no-alert --if-present
+        run: npm run lint:no-alert
 
       - name: Audit `any` Use (Bundle L Gate, staging)
         if: steps.checkout-preview.outcome == 'success'

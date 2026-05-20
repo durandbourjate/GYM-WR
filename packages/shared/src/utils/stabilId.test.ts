@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { execSync } from 'node:child_process'
 import { writeFileSync, unlinkSync } from 'node:fs'
+import { pathToFileURL } from 'node:url'
+import path from 'node:path'
 import { stabilId } from './stabilId'
 
 describe('stabilId', () => {
@@ -42,9 +44,16 @@ describe('stabilId', () => {
     ] as const
     const tsResults = cases.map(([f, t, i]) => stabilId(f, t, i))
 
+    // stabilId.mjs liegt im selben Verzeichnis wie dieser Test. __dirname wird
+    // von vitest als echter FS-Pfad injiziert (CWD-unabhängig: funktioniert egal
+    // ob via ExamLab-vitest oder standalone packages/shared-vitest). NICHT
+    // import.meta.url verwenden — das ist unter vitest eine http://-Dev-Server-
+    // URL, kein file://. pathToFileURL macht daraus eine space-sichere file://-URL.
+    const mjsUrl = pathToFileURL(path.join(__dirname, 'stabilId.mjs')).href
+
     const tmpScript = '/tmp/stabilId-mjs-check.mjs'
     writeFileSync(tmpScript, `
-      import { stabilId } from '${process.cwd()}/../packages/shared/src/utils/stabilId.mjs'
+      import { stabilId } from ${JSON.stringify(mjsUrl)}
       const cases = ${JSON.stringify(cases)}
       for (const [f, t, i] of cases) console.log(stabilId(f, t, i))
     `)
