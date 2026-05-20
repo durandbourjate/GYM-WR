@@ -29,15 +29,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../packages/shared/src'),
-      // Pinne @dnd-kit/* auf ExamLab/node_modules damit shared-Editoren (z.B. SortierungEditor)
-      // dieselbe Instanz verwenden — sonst Doppel-React-Hooks bei Build oder Test.
-      '@dnd-kit/core': path.resolve(__dirname, 'node_modules/@dnd-kit/core'),
-      '@dnd-kit/sortable': path.resolve(__dirname, 'node_modules/@dnd-kit/sortable'),
-      '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities'),
-      // lucide-react in packages/shared via ExamLab/node_modules auflösen
-      // (peerDependency in packages/shared/package.json, Cluster G Phase 3c).
-      'lucide-react': path.resolve(__dirname, 'node_modules/lucide-react')
     },
+    // npm workspaces hoistet @dnd-kit/*, lucide-react etc. auf eine einzige
+    // Root-node_modules-Kopie — keine hardcodierten ExamLab/node_modules-Aliases
+    // mehr nötig (die brachen im CI nach dem Workspace-Install). dedupe hält
+    // react/react-dom single-instance.
     dedupe: ['react', 'react-dom']
   },
   plugins: [

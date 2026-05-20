@@ -7,18 +7,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../packages/shared/src'),
-      '@dnd-kit/core': path.resolve(__dirname, 'node_modules/@dnd-kit/core'),
-      '@dnd-kit/sortable': path.resolve(__dirname, 'node_modules/@dnd-kit/sortable'),
-      '@dnd-kit/utilities': path.resolve(__dirname, 'node_modules/@dnd-kit/utilities'),
-      '@testing-library/react': path.resolve(__dirname, 'node_modules/@testing-library/react'),
-      // lucide-react in packages/shared via ExamLab/node_modules auflösen (Cluster G Phase 3c).
-      'lucide-react': path.resolve(__dirname, 'node_modules/lucide-react'),
-      // React + Zustand auf ExamLab/node_modules pinnen — verhindert Doppel-Instanz wenn
-      // packages/shared-Tests via root-node_modules auflösen würden (zwei React = Invalid hook).
-      'react': path.resolve(__dirname, 'node_modules/react'),
-      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
-      'zustand': path.resolve(__dirname, 'node_modules/zustand'),
     },
+    // npm workspaces hoistet alle Deps auf eine einzige Root-node_modules-Kopie.
+    // dedupe stellt sicher, dass react/react-dom/zustand single-instance bleiben
+    // (auch wenn packages/shared-Tests mitlaufen). KEINE hardcodierten
+    // node_modules-Pfad-Aliases mehr — die brachen im CI, weil dort nach dem
+    // Workspace-Install kein ExamLab/node_modules/ existiert (alles in Root).
     dedupe: ['react', 'react-dom', 'zustand'],
   },
   define: {
