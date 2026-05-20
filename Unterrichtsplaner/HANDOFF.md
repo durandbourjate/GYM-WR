@@ -35,7 +35,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 - **Task 1 — vitest-Infrastruktur:** `vitest.config.ts` + `src/test-setup.ts` (jsdom + testing-library, ExamLab-Parität). `test`/`test:watch`-Scripts in `package.json`.
 - **Task 2 — `generateColorVariants`-Tests + Clamp-Bugfix:** 4 Unit-Tests (TDD). Bugfix: `bg`-Kanäle wurden nicht auf 255 geclampt → ungültiger 9-Zeichen-Hex bei satten Farben.
-- **Task 3 — `gradeRequirements.ts`-Tests:** 17 Charakterisierungs-Tests für 5 Funktionen (`berechneNote`, `noten_GYM1–GYM4`, `noten_EWR`).
+- **Task 3 — `gradeRequirements.ts`-Tests:** 17 Charakterisierungs-Tests für 5 Funktionen (`getGymStufe`, `getGradeRequirements`, `getCourseGroups`, `countAssessments`, `checkGradeRequirements`).
 - **Task 4 — `hkRotation.ts`-Tests:** 6 Charakterisierungs-Tests für `getHKGroup` + `getHKSchedule`.
 - **Task 5 — CI-Gate:** `npm test`-Step in `deploy.yml` (Production + Staging) + `.githooks/pre-push`-Hook.
 - **Gesamt:** 3 Testdateien, 27 Tests, alle grün. `tsc -b` + Build sauber.
