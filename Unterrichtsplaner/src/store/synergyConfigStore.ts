@@ -14,7 +14,7 @@ export const useSynergyConfigStore = create<SynergyConfigState>()(
       lpEmail: '',
       setConfig: (patch) => set(patch),
     }),
-    { name: 'synergy-config', version: 1 },
+    { name: 'synergy-config', version: 1, partialize: (s) => ({ appsScriptUrl: s.appsScriptUrl, lpEmail: s.lpEmail }) },
   ),
 )
 
