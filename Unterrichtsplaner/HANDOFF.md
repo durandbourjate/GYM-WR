@@ -34,7 +34,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 **5 Tasks auf Branch `feature/up8-synergy-config`.**
 
 - **Task 1 — `synergyConfigStore`:** Globaler, persistierter Zustand-Store (`appsScriptUrl`, `lpEmail`) + `istSynergyKonfiguriert`-Predicate + `useSynergyKonfiguriert`-Hook.
-- **Task 2 — `validateSynergyConfig`:** Pure Validierungsfunktion (URL-Format + E-Mail-Domäne) in `src/utils/synergyConfigValidation.ts`.
+- **Task 2 — `validateSynergyConfig`:** Pure Validierungsfunktion (URL-Format + E-Mail-Syntaxcheck) in `src/utils/synergyConfigValidation.ts`.
 - **Task 3 — `SynergyConfigSection`:** Config-Eingabe-UI (URL + E-Mail, Inline-Validierung), in `SettingsPanel` eingehängt.
 - **Task 4 — Service-Refactor:** `synergyService.ts` + `pruefungBridge.ts` lesen Config reaktiv aus dem Store; hardcodierte `APPS_SCRIPT_URL` + `LP_EMAIL` entfernt.
 - **Task 5 — Reaktives Gating:** `KursImportButton`, `NotenStandSection`, `useSynergyData` gaten reaktiv via `useSynergyKonfiguriert()`; veraltete `istKonfiguriert()`-Exports entfernt.
