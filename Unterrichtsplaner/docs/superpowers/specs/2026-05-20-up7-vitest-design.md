@@ -53,9 +53,17 @@ UP-7 legt das Test-Fundament und deckt die drei im HANDOFF benannten Logik-Modul
 
 **Neue Datei `Unterrichtsplaner/vitest.config.ts`** — gespiegelt von ExamLab,
 reduziert auf das, was der Planer braucht:
+- Import: `import { defineConfig } from 'vitest/config'` — **nicht** aus `vite`.
+  Nur `vitest/config` liefert den getypten `test`-Schlüssel; mit `vite`s
+  `defineConfig` würde `tsc -b` an der Config fehlschlagen. Plus
+  `import react from '@vitejs/plugin-react'`.
 - Plugin `@vitejs/plugin-react`.
 - `test: { environment: 'jsdom', globals: true, setupFiles: ['./src/test-setup.ts'],
   include: ['src/**/*.test.{ts,tsx}'] }`.
+- `resolve: { dedupe: ['react', 'react-dom', 'zustand'] }` — Parität zu ExamLab.
+  Notwendig, weil npm-Workspaces alle Deps auf eine einzige Root-`node_modules`
+  hoisten; `dedupe` sichert Single-Instance von React/zustand, sobald (künftig)
+  Komponenten-Tests dazukommen.
 - **Kein** `define`-Block — die Planer-`vite.config.ts` definiert keine Build-Globals.
 - **Kein** `@shared`-Alias / kein `packages/shared`-Include — der Planer nutzt
   `@shared` nicht.
@@ -65,7 +73,10 @@ reduziert auf das, was der Planer braucht:
 - **Ohne** `fake-indexeddb` — der Planer nutzt localStorage, kein IndexedDB.
 
 **`tsconfig.node.json`:** `vitest.config.ts` in `include` aufnehmen (analog
-`vite.config.ts`), damit `tsc -b` die Config-Datei mit typprüft und sauber bleibt.
+`vite.config.ts`). Die Typen für den `test`-Schlüssel kommen über den
+`vitest/config`-Import selbst — kein zusätzlicher `types`-Eintrag nötig. Bei der
+Umsetzung `tsc -b` explizit gegen die neue Config verifizieren, bevor „clean"
+angenommen wird.
 
 **Konvention:** Testdateien importieren `describe/it/expect` explizit aus `vitest`
 (ExamLab-Konvention). Dadurch ist trotz `globals: true` **keine** Änderung an
@@ -117,15 +128,19 @@ Bei einem Farbkanal = 255 ergibt das 256; `(256).toString(16)` = `"100"`, was
 satten Farben mit einem 255-Kanal (reines Rot/Grün/Blau/Gelb/Cyan/Magenta/Weiss).
 Der Browser verwirft die ungültige Farbe → der Hintergrund fehlt.
 
-**Fix:** `bgR`/`bgG`/`bgB` mit `Math.min(255, …)` clampen — exakt wie es `border`
-bereits tut. `fg` braucht keinen Clamp (Maximalwert ≈ 153).
+**Fix:** Den bestehenden `Math.round(kanal * 0.1 + 230)`-Ausdruck für
+`bgR`/`bgG`/`bgB` in `Math.min(255, …)` wrappen. `border` nutzt denselben
+Clamp-Mechanismus (`Math.min(255, …)`), aber mit anderen Koeffizienten — übernommen
+wird nur das Clamp-Pattern, nicht die Formel. `fg` braucht keinen Clamp
+(Maximalwert ≈ 153).
 
 ### 4.4 CI-Anbindung (D3)
 
 **`.github/workflows/deploy.yml`:**
 - Production-Block: neuer Step `Run vitest (Planer)` nach den bestehenden
   Planer-Lint-Steps, `working-directory: Unterrichtsplaner`, `run: npm test`.
-- Staging-Block: neuer Step `Run vitest (Planer, staging)`,
+- Staging-Block: neuer Step `Run vitest (Planer, staging)` nach den
+  Staging-Audit-Steps (analog zur Platzierung im Production-Block),
   `working-directory: preview-src/Unterrichtsplaner`,
   `if: steps.checkout-preview.outcome == 'success'`.
 
