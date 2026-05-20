@@ -67,6 +67,13 @@ describe('getCourseGroups', () => {
     expect(sf.kursIds).toEqual(['a', 'b'])
     expect(sf.gymStufe).toBe('GYM1')
   })
+  it('zaehlt einen doppelt uebergebenen kursId nicht doppelt', () => {
+    const kurs = makeCourse('a', '29c', 'SF', 2, 11)
+    const groups = getCourseGroups([kurs, kurs])
+    expect(groups).toHaveLength(1)
+    expect(groups[0].weeklyLessons).toBe(2)
+    expect(groups[0].kursIds).toEqual(['a'])
+  })
 })
 
 describe('countAssessments', () => {
@@ -95,6 +102,13 @@ describe('countAssessments', () => {
     expect(countAssessments(weeks, {}, ['a'], courses, 1, 1)).toBe(1)
     expect(countAssessments(weeks, {}, ['a'], courses, 2, 1)).toBe(1)
     expect(countAssessments(weeks, {}, ['a'], courses, 'year', 1)).toBe(2)
+  })
+  it('wendet bei semesterFilter custom keinen Semester-Filter an', () => {
+    const weeks: Week[] = [
+      { w: '33', lessons: { 11: { title: 'P1', type: 4 } } },
+      { w: '34', lessons: { 11: { title: 'P2', type: 4 } } },
+    ]
+    expect(countAssessments(weeks, {}, ['a'], courses, 'custom', 1)).toBe(2)
   })
 })
 

@@ -20,6 +20,14 @@ describe('getHKGroup', () => {
     expect(getHKGroup('33', 11, 'B')).toBe('B')
     expect(getHKGroup('34', 11, 'B')).toBe('A')
   })
+  it('zaehlt Ferien- (type 6) und Event-Wochen (type 5) nicht als Unterrichtswochen', () => {
+    // gekoppelt an weeks.ts Spalte 11: w37 = 5. type-1-Woche, w38 = type 5
+    // (Studienreise), w39-w41 = type 6 (Herbstferien), w42 = naechste type-1-Woche
+    expect(getHKGroup('37', 11, 'A')).toBe('A')
+    expect(getHKGroup('38', 11, 'A')).toBe('A')
+    expect(getHKGroup('41', 11, 'A')).toBe('A')
+    expect(getHKGroup('42', 11, 'A')).toBe('B')
+  })
 })
 
 describe('getHKSchedule', () => {
