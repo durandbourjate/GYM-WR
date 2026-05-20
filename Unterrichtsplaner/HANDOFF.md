@@ -20,7 +20,7 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 | UP-4 | **CSS-Variable-Overrides aufräumen** (Rest aus Design-Cleanup). ~~gray→slate~~ + ~~Farbduplikate~~ erledigt in v3.105. | niedrig |
 | ~~UP-5~~ | **Bundle 1+2 ✅ erledigt in v3.106** (Toast aus shared, 54 alert→Toast, 80 any-Token migriert, lint:no-alert + lint:as-any aktiv). | erledigt |
 | ~~UP-6~~ | **`packages/shared` als Planer-Dependency aktiv ✅** (npm workspaces im Root). `generateColorVariants`-Migration: separate Bundle. | erledigt |
-| UP-7 | **vitest-Setup + Unit-Tests** für Utils (`generateColorVariants`, `gradeRequirements`, `hkRotation`). Heute 0 Tests im Planer. | mittel |
+| UP-7 | **Spec + Plan fertig (2026-05-20) — bereit zur Umsetzung.** vitest-Setup + Unit-Tests für `generateColorVariants`/`gradeRequirements`/`hkRotation`. Plan: `docs/superpowers/plans/2026-05-20-up7-vitest.md` · Branch `feature/up7-vitest-tests` · Umsetzung via subagent-driven-development. | mittel |
 | UP-8 | **Apps-Script-URL + LP-E-Mail aus Config laden** statt hardcoded in `synergyService.ts` + `pruefungBridge.ts`. Voraussetzung für Backend-Migration. | mittel |
 | UP-9 | **`generateColorVariants` aus Planer nach `packages/shared`** ziehen (UP-6 zweiter Teil — Cross-Tool-Farb-Konsistenz). | niedrig |
 | UP-10 | **Spawn-Tasks aus Bundle 1+2**: (a) pre-existing shared-Tests fixen (`BatchTagPicker`, `stabilId` scheitern unter standalone `packages/shared`-vitest — React-Plugin fehlt); ~~(b) legacy node_modules löschen~~ ✅ im CI-Nachgang erledigt; (c) `--if-present` aus den Planer-`lint`-CI-Steps rausnehmen (jetzt wo Bundle 1+2 auf main + preview ist). | niedrig |
@@ -28,6 +28,18 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 ---
 
 ## Letzte Sessions
+
+### 20.05.2026 — UP-7: Brainstorming → Spec → Plan (bereit zur Umsetzung)
+
+Brainstorming-, Spec- und Plan-Phase für UP-7 abgeschlossen auf Branch
+`feature/up7-vitest-tests`. Beide Dokumente Reviewer-approved und committet:
+- Spec: `docs/superpowers/specs/2026-05-20-up7-vitest-design.md`
+- Plan: `docs/superpowers/plans/2026-05-20-up7-vitest.md` — 6 Tasks
+
+Entscheidungen: volle vitest-Parität zu ExamLab (jsdom + testing-library),
+CI-Gate in `deploy.yml` + `pre-push`, Mini-Fix für einen Clamp-Bug in
+`generateColorVariants` (ungültiger Hex bei satten Farben mit 255-Kanal).
+**Nächster Schritt: Plan umsetzen via subagent-driven-development.**
 
 ### 19.–20.05.2026 — Bundle 1+2: Toast + Lint-Gates Harmonisierung (v3.106)
 
