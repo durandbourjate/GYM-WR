@@ -13,7 +13,7 @@
 set -e
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-echo "🔍 pre-push: checking packages/shared lock-sync + ExamLab ci-check..."
+echo "🔍 pre-push: checking packages/shared lock-sync + Planer vitest + ExamLab ci-check..."
 
 # Step 1: packages/shared package-lock.json synchron mit package.json?
 # `npm ci --dry-run` failt mit "Missing: X from lock file" bei Drift.
@@ -42,4 +42,4 @@ if ! npm run ci-check; then
   exit 1
 fi
 
-echo "✅ pre-push: ci-check + lock-sync clean."
+echo "✅ pre-push: lock-sync + Planer vitest + ExamLab ci-check clean."
