@@ -1,10 +1,7 @@
 // Synergy-Service: Lädt zentrale Daten via Apps Script + cached in localStorage
+import { useSynergyConfigStore, istSynergyKonfiguriert } from '../store/synergyConfigStore'
 
-// PLACEHOLDER: User muss die Apps Script Web-App-URL einsetzen (gleiche wie Prüfungstool)
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcRXYgyVpfLSicZMxWzVIAs4gtqKPQzz0djQSnPiFUYz_h2dDZ6IMBXcYr5ubbGPSUPA/exec'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
-// LP-E-Mail muss konfiguriert werden bevor der Service funktioniert
-const LP_EMAIL = 'yannick.durand@gymhofwil.ch'
 
 // Typen — Spalten gemäss tatsächlichen Google Sheets
 
@@ -52,11 +49,12 @@ function setCache<T>(key: string, data: T): void {
 }
 
 async function fetchFromBackend<T>(action: string, params: Record<string, string> = {}): Promise<T | null> {
-  if (!APPS_SCRIPT_URL || !LP_EMAIL) return null
+  const { appsScriptUrl, lpEmail } = useSynergyConfigStore.getState()
+  if (!appsScriptUrl || !lpEmail) return null
   try {
-    const url = new URL(APPS_SCRIPT_URL)
+    const url = new URL(appsScriptUrl)
     url.searchParams.set('action', action)
-    url.searchParams.set('email', LP_EMAIL)
+    url.searchParams.set('email', lpEmail)
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
     const res = await fetch(url.toString())
     if (!res.ok) return null
@@ -103,5 +101,5 @@ export function getCacheAge(key: string): string | null {
 }
 
 export function istKonfiguriert(): boolean {
-  return APPS_SCRIPT_URL.length > 0 && LP_EMAIL.length > 0
+  return istSynergyKonfiguriert(useSynergyConfigStore.getState())
 }

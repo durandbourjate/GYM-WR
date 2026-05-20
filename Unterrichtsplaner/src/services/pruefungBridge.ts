@@ -1,8 +1,6 @@
 // Prüfung-Bridge: Lädt Prüfungs-Metadaten via Apps Script ladeTrackerDaten + cached in localStorage
-// Teilt APPS_SCRIPT_URL und LP_EMAIL mit synergyService.ts (gleiche Konstanten-Konvention)
+import { useSynergyConfigStore, istSynergyKonfiguriert } from '../store/synergyConfigStore'
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcRXYgyVpfLSicZMxWzVIAs4gtqKPQzz0djQSnPiFUYz_h2dDZ6IMBXcYr5ubbGPSUPA/exec'
-const LP_EMAIL = 'yannick.durand@gymhofwil.ch'
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24h
 const CACHE_KEY_PRUEFUNGEN = 'synergy-pruefungen'
 const CACHE_KEY_NOTENSTAND = 'synergy-notenstand'
@@ -97,12 +95,13 @@ function datumZuKW(datumStr: string): number {
  * Cached Prüfungen und Noten-Stand separat in localStorage.
  */
 export async function ladePruefungsDaten(): Promise<{ badges: PruefungBadge[]; notenStand: NotenStandInfo[] } | null> {
-  if (!APPS_SCRIPT_URL || !LP_EMAIL) return null
+  const { appsScriptUrl, lpEmail } = useSynergyConfigStore.getState()
+  if (!appsScriptUrl || !lpEmail) return null
 
   try {
-    const url = new URL(APPS_SCRIPT_URL)
+    const url = new URL(appsScriptUrl)
     url.searchParams.set('action', 'ladeTrackerDaten')
-    url.searchParams.set('email', LP_EMAIL)
+    url.searchParams.set('email', lpEmail)
 
     const res = await fetch(url.toString())
     if (!res.ok) return null
@@ -170,5 +169,5 @@ export function getPruefungsCacheAlter(): string | null {
  * Prüft ob der Bridge-Service konfiguriert ist.
  */
 export function istKonfiguriert(): boolean {
-  return APPS_SCRIPT_URL.length > 0 && LP_EMAIL.length > 0
+  return istSynergyKonfiguriert(useSynergyConfigStore.getState())
 }
