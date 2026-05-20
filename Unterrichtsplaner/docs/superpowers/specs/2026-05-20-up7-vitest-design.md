@@ -81,6 +81,10 @@ angenommen wird.
 **Konvention:** Testdateien importieren `describe/it/expect` explizit aus `vitest`
 (ExamLab-Konvention). Dadurch ist trotz `globals: true` **keine** Änderung an
 `tsconfig.app.json` (`types`) nötig — `tsc -b` bleibt ohne Zusatz-Typen grün.
+Die colocated `*.test.ts`-Dateien liegen unter `src/` und fallen damit unter den
+`include: ["src"]`-Glob von `tsconfig.app.json` — sie werden von `tsc -b`
+mitgeprüft (gewollt) und müssen typkorrekt sein. `vitest.config.ts` dagegen wird
+über `tsconfig.node.json` abgedeckt.
 
 ### 4.2 Testdateien (colocated, ExamLab-Konvention)
 
