@@ -60,17 +60,7 @@ export interface PoolIndexEintrag {
   title: string
 }
 
-/** Lernziel für Lernziele-Sheet */
-export interface Lernziel {
-  id: string
-  fach: string
-  poolId?: string
-  thema: string
-  unterthema?: string
-  text: string
-  bloom: string
-  aktiv?: boolean
-}
+export type { Lernziel } from '@shared/types/fragen-core'
 
 /** Sync-Ergebnis pro Pool */
 export interface PoolSyncErgebnis {

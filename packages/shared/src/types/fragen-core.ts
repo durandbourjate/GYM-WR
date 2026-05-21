@@ -703,14 +703,17 @@ export type Frage = MCFrage | FreitextFrage | ZuordnungFrage | LueckentextFrage 
 
 // === LERNZIELE ===
 
+/** Lernziel — geteilter Typ für Editor, SuS-Anzeige und Pool-Import. */
 export interface Lernziel {
   id: string
   fach: string
-  poolId?: string
   thema: string
+  unterthema?: string
   text: string
   bloom: string
+  poolId?: string
   aktiv?: boolean
+  /** Berechnet (nicht gespeichert): von uebenLadeLernzieleV2 befüllt. */
   fragenIds?: string[]
 }
 
