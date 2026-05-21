@@ -184,6 +184,12 @@ Antwort der Länge `L_korrekt`:
 - `ist_rang` wird nach der Generierung aus den realen Vorschlags-Längen berechnet.
   Verfehlt die Ausgabe den `ziel_rang`, wird die Zeile automatisch geflaggt.
 
+**Längen-Messung:** Phase 0 (`korrekt_len`), Phase 1 (`neu_len_*`, `ist_rang`) und
+das Diagnose-Skript müssen **dieselbe** Längen-Funktion verwenden (`textLaenge_`
+aus `diagnose-mc-laengste-antwort.js`: `String(text).trim().length`). Sonst können
+Phase-0-Projektion und Schluss-Re-Run unterschiedliche Grössen messen. Der Helfer
+wird in `sanierung-mc-distraktoren.js` identisch übernommen.
+
 ---
 
 ## Review & Verifikation
@@ -241,7 +247,11 @@ Nachweis, dass das Aggregat-Muster verschwunden ist.
 **Bekannte Schleife:** Zeilen, die der LP auf `abgelehnt` setzt, behalten
 Original-Distraktoren und bleiben auffällig. Ergibt der Diagnose-Re-Run wegen zu
 vieler `abgelehnt`-Zeilen keinen UNAUFFÄLLIG-Befund, läuft eine zweite
-Generierungs-Runde nur auf der `abgelehnt`-Menge.
+Generierungs-Runde nur auf der `abgelehnt`-Menge. Damit Phase 1/2 diese Zeilen
+erneut verarbeiten, muss die zweite Runde ihren Zeilen-Zustand zurücksetzen
+(`distraktor_neu_*`, `neu_len_*`, `ist_rang`, `checker_*`, `review_status` leeren)
+und die Phasen-Cursor für diese Teilmenge neu initialisieren — sonst überspringt
+die Resumability-Logik sie.
 
 ---
 
