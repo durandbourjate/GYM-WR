@@ -314,7 +314,9 @@ function LPStartseiteInner() {
       }
       toast.success(loeschConfig.typ === 'formativ' ? 'Übung gelöscht' : 'Prüfung gelöscht')
       setLoeschConfig(null)
-      reload()
+      void reload()
+    } catch {
+      toast.error('Löschen fehlgeschlagen')
     } finally {
       setLoescht(false)
     }
