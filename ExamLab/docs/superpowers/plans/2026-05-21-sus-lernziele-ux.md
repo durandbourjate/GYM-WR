@@ -259,6 +259,8 @@ git commit -m "feat(lernziele): Mini-Modal — Master-Detail-Karte"
 ### Task 6: Üben-Flow in `AppShell` + `Dashboard` verdrahten
 
 > **Übernommen aus Task-2-Code-Review:** `starteLernzielSession` (`uebungsStore.ts`) ruft `uebenFragenAdapter.ladeFragen` ungeschützt auf — bei einem Adapter-Fehler wird `ladeStatus` nicht auf `'fehler'` gesetzt (inkonsistent mit `starteSession`, das seinen `ladeFragen`-Call in try/catch kapselt). In diesem Task `starteLernzielSession` so anpassen, dass ein Fehler beim Laden `set({ ladeStatus: 'fehler' })` setzt — kein Silent-Fail (`.claude/rules/code-quality.md`). Passenden Test ergänzen.
+>
+> **Übernommen aus Task-4-Code-Review:** `LernzieleAkkordeon` und `LernzieleMiniModal` rendern die Karte mit `onUeben={onLernzielUeben ?? (() => {})}`. Wenn dieser Task `onLernzielUeben` auf Pflicht zieht, den `?? (() => {})`-No-op-Fallback an beiden Stellen entfernen — sonst bleibt toter Defensiv-Code.
 
 **Files:**
 - Modify: `src/components/ueben/layout/AppShell.tsx` (Akkordeon-Aufruf Z. 68-82)
