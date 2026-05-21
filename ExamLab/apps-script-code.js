@@ -7357,6 +7357,11 @@ function kiAssistentEndpoint(body) {
         userPrompt = 'Generiere 4 Multiple-Choice-Optionen für die folgende Frage. ' +
           'Genau eine Option soll korrekt sein, die anderen 3 sollen plausible Distraktoren sein.\n\n' +
           'Fragetext:\n' + wrapUserData('fragetext', daten.fragetext) + '\n\n' +
+          'Wichtig zur Länge: Alle 4 Optionen müssen etwa gleich lang sein (ähnliche ' +
+          'Zeichenzahl und Detailtiefe). Formuliere die Distraktoren mit derselben ' +
+          'Vollständigkeit und Präzision wie die korrekte Antwort. Die korrekte Antwort ' +
+          'darf sich nicht durch ihre Länge von den Distraktoren abheben — sie darf weder ' +
+          'zuverlässig die längste noch die kürzeste Option sein.\n\n' +
           'Antworte als JSON: { "optionen": [{ "text": "...", "korrekt": true/false }, ...] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
         return jsonResponse({ success: true, ergebnis: result });
@@ -7366,6 +7371,11 @@ function kiAssistentEndpoint(body) {
         userPrompt = 'Generiere 3 plausible, aber falsche Antwortmöglichkeiten (Distraktoren) für diese MC-Frage.\n\n' +
           'Fragetext:\n' + wrapUserData('fragetext', daten.fragetext) + '\n\n' +
           'Korrekte Antwort: ' + wrapUserData('korrekteAntwort', daten.korrekteAntwort) + '\n\n' +
+          'Wichtig zur Länge: Die 3 Distraktoren müssen etwa gleich lang sein wie die ' +
+          'korrekte Antwort (ähnliche Zeichenzahl und Detailtiefe). Manche Distraktoren ' +
+          'dürfen ruhig länger sein als die korrekte Antwort, manche kürzer — die korrekte ' +
+          'Antwort darf sich nicht durch ihre Länge abheben. Vermeide kurze, knappe ' +
+          'Distraktoren neben einer langen korrekten Antwort.\n\n' +
           'Antworte als JSON: { "distraktoren": ["...", "...", "..."] }';
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
         return jsonResponse({ success: true, ergebnis: result });
