@@ -12510,6 +12510,37 @@ function uebenLadeGruppenFortschritt(body) {
   }
 }
 
+/** Scannt die Fragen-Tabs einer Fragensammlung → Map Lernziel-ID → [Fragen-IDs]. */
+function baueFragenProLernziel_(ss) {
+  var map = {};
+  // getFragensammlungTabs_() liefert die Tab-Namen der Haupt-Fragensammlung.
+  // Für familie-Gruppen mit eigener fragensammlungSheetId kann die Liste
+  // unvollständig sein — bewusst akzeptiert (Editor verwaltet nur die Haupt-Sammlung).
+  var tabs = getFragensammlungTabs_();
+  for (var t = 0; t < tabs.length; t++) {
+    var sheet = ss.getSheetByName(tabs[t]);
+    if (!sheet) continue;
+    var daten = sheet.getDataRange().getValues();
+    if (daten.length < 2) continue;
+    var headers = daten[0].map(function (h) { return String(h).trim(); });
+    var idIdx = headers.indexOf('id');
+    var lzIdx = headers.indexOf('lernzielIds');
+    if (idIdx < 0 || lzIdx < 0) continue;
+    for (var i = 1; i < daten.length; i++) {
+      var frageId = String(daten[i][idIdx] || '');
+      if (!frageId) continue;
+      var raw = String(daten[i][lzIdx] || '');
+      if (!raw) continue;
+      var ids = raw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      for (var j = 0; j < ids.length; j++) {
+        if (!map[ids[j]]) map[ids[j]] = [];
+        map[ids[j]].push(frageId);
+      }
+    }
+  }
+  return map;
+}
+
 /**
  * Lädt Lernziele aus dediziertem Lernziele-Tab.
  * Gym: aus FRAGENSAMMLUNG_ID, Familie: aus Gruppen-Sheet.
@@ -12519,39 +12550,45 @@ function uebenLadeLernzieleV2(body) {
   if (!uebenValidiereToken_(body.token || body.sessionToken, email)) {
     return jsonResponse({ success: false, error: 'Nicht authentifiziert' });
   }
-
   var gruppeId = body.gruppeId;
   var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
+  var gruppe = gruppen.find(function (g) { return g.id === gruppeId; });
   if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
 
   try {
     var sheetId = gruppe.typ === 'familie' ? gruppe.fragensammlungSheetId : FRAGENSAMMLUNG_ID;
     var ss = SpreadsheetApp.openById(sheetId);
     var lzSheet = ss.getSheetByName('Lernziele');
-
     if (!lzSheet) return jsonResponse({ success: true, data: [] });
 
     var daten = lzSheet.getDataRange().getValues();
     if (daten.length < 2) return jsonResponse({ success: true, data: [] });
 
-    var headers = daten[0].map(function(h) { return String(h).toLowerCase().trim(); });
-    var lernziele = [];
+    var headers = daten[0].map(function (h) { return String(h).toLowerCase().trim(); });
+    var idIdx = headers.indexOf('id');
+    var aktivIdx = headers.indexOf('aktiv');
+    var utIdx = headers.indexOf('unterthema');
+    var textIdx = headers.indexOf('text');
+    var fachIdx = headers.indexOf('fach');
+    var themaIdx = headers.indexOf('thema');
+    var bloomIdx = headers.indexOf('bloom');
 
+    var fragenProLernziel = baueFragenProLernziel_(ss);
+
+    var lernziele = [];
     for (var i = 1; i < daten.length; i++) {
-      var fragenIdsRaw = String(daten[i][headers.indexOf('fragenids')] || '');
-      var utIdx = headers.indexOf('unterthema');
+      if (aktivIdx >= 0 && String(daten[i][aktivIdx]) === 'false') continue; // Soft-Delete
+      var lzId = String(daten[i][idIdx]);
       lernziele.push({
-        id: String(daten[i][headers.indexOf('id')]),
-        text: String(daten[i][headers.indexOf('text')]),
-        fach: String(daten[i][headers.indexOf('fach')]),
-        thema: String(daten[i][headers.indexOf('thema')] || ''),
+        id: lzId,
+        text: String(daten[i][textIdx]),
+        fach: String(daten[i][fachIdx]),
+        thema: themaIdx >= 0 ? String(daten[i][themaIdx] || '') : '',
         unterthema: utIdx >= 0 ? String(daten[i][utIdx] || '') : '',
-        bloom: String(daten[i][headers.indexOf('bloom')] || 'K2'),
-        fragenIds: fragenIdsRaw ? fragenIdsRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean) : [],
+        bloom: bloomIdx >= 0 ? String(daten[i][bloomIdx] || 'K2') : 'K2',
+        fragenIds: fragenProLernziel[lzId] || [],
       });
     }
-
     return jsonResponse({ success: true, data: lernziele });
   } catch (e) {
     return jsonResponse({ success: false, error: 'Lernziele V2 laden: ' + e.message });
