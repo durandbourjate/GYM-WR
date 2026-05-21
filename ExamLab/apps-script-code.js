@@ -12558,7 +12558,7 @@ function uebenLadeLernzieleV2(body) {
   try {
     var sheetId = gruppe.typ === 'familie' ? gruppe.fragensammlungSheetId : FRAGENSAMMLUNG_ID;
     var ss = SpreadsheetApp.openById(sheetId);
-    var lzSheet = ss.getSheetByName('Lernziele');
+    var lzSheet = ss.getSheetByName(LERNZIELE_TAB);
     if (!lzSheet) return jsonResponse({ success: true, data: [] });
 
     var daten = lzSheet.getDataRange().getValues();
@@ -12572,6 +12572,8 @@ function uebenLadeLernzieleV2(body) {
     var fachIdx = headers.indexOf('fach');
     var themaIdx = headers.indexOf('thema');
     var bloomIdx = headers.indexOf('bloom');
+
+    if (idIdx < 0) return jsonResponse({ success: true, data: [] });
 
     var fragenProLernziel = baueFragenProLernziel_(ss);
 
