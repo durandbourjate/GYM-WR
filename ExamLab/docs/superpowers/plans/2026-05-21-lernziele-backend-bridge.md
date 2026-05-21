@@ -100,13 +100,13 @@ Lernziel in @shared/types/fragen-core wird der kanonische Typ
 Vier Editor-Endpoints werden vom `Lehrplanziele`-Sheet auf den `Lernziele`-Tab in `FRAGENSAMMLUNG_ID` umgehängt, alle header-basiert. Dazu kommen drei geteilte Helfer.
 
 **Files:**
-- Modify: `ExamLab/apps-script-code.js` — Helfer + `ladeLernzieleEndpoint` (~Z. 6995), `speichereLernzielEndpoint` (~Z. 7064), `aktualisiereLernzielEndpoint` (~Z. 7097), `loescheLernzielEndpoint` (~Z. 7134)
+- Modify: `ExamLab/apps-script-code.js` — Helfer + `ladeLernziele` (~Z. 6995), `speichereLernzielEndpoint` (~Z. 7064), `aktualisiereLernzielEndpoint` (~Z. 7097), `loescheLernzielEndpoint` (~Z. 7134)
 
 > Hinweis: Die genauen Funktionsnamen über den Dispatcher (`apps-script-code.js` doGet/doPost-Switch) für die Aktionen `ladeLernziele` / `speichereLernziel` / `aktualisiereLernziel` / `loescheLernziel` verifizieren. Der bestehende Helfer `getSheetData(sheet)` liefert Zeilen-Objekte, gekeyt nach exaktem Header-Namen. `LERNZIELE_TAB` (= `'Lernziele'`) und `FRAGENSAMMLUNG_ID` sind bestehende Konstanten.
 
 - [ ] **Step 1: Geteilte Helfer einfügen**
 
-Füge direkt vor `ladeLernzieleEndpoint` (oder im Lernziele-Abschnitt) ein:
+Füge direkt vor `ladeLernziele` (oder im Lernziele-Abschnitt) ein:
 
 ```js
 // Kanonisches Schema des Lernziele-Tabs (FRAGENSAMMLUNG_ID).
@@ -135,12 +135,12 @@ function holeLernzieleSheet_(ss) {
 }
 ```
 
-- [ ] **Step 2: `ladeLernzieleEndpoint` ersetzen**
+- [ ] **Step 2: `ladeLernziele` ersetzen**
 
 Ersetze den kompletten Funktionsrumpf durch (nur `Lernziele`-Tab, header-basiert, Lehrplanziele-Zweig fällt weg):
 
 ```js
-function ladeLernzieleEndpoint(body) {
+function ladeLernziele(body) {
   try {
     var email = body.email;
     var fachFilter = body.fach || '';
@@ -392,6 +392,9 @@ Direkt vor `uebenLadeLernzieleV2`:
 /** Scannt die Fragen-Tabs einer Fragensammlung → Map Lernziel-ID → [Fragen-IDs]. */
 function baueFragenProLernziel_(ss) {
   var map = {};
+  // getFragensammlungTabs_() liefert die Tab-Namen der Haupt-Fragensammlung.
+  // Für familie-Gruppen mit eigener fragensammlungSheetId kann die Liste
+  // unvollständig sein — bewusst akzeptiert (Editor verwaltet nur die Haupt-Sammlung).
   var tabs = getFragensammlungTabs_();
   for (var t = 0; t < tabs.length; t++) {
     var sheet = ss.getSheetByName(tabs[t]);
@@ -626,6 +629,8 @@ Der Editor bekommt das `unterthema`-Feld, dreistufige Gruppierung und den Soft-D
 
 - [ ] **Step 1: Typ + State umstellen**
 
+> Vor dem Umstellen: `LernzielTab.tsx` nach jedem Feld der alten lokalen `interface Lernziel` durchsuchen (insb. ein evtl. verbliebenes `ebene`). Jeder Lesezugriff auf ein Feld, das der geteilte Typ nicht hat, wird ein `tsc -b`-Fehler (Step 5 fängt ihn) — diese Stellen mitentfernen.
+
 - Entferne die lokale `interface Lernziel { ... }`. Importiere stattdessen: `import type { Lernziel } from '@shared/types/fragen-core'`.
 - `neuDaten`-Initialwert um `unterthema: ''` ergänzen: `useState<Partial<Lernziel>>({ fach: '', thema: '', unterthema: '', text: '', bloom: 'K2' })`.
 - In `startEdit`: `setEditDaten({ fach: lz.fach, thema: lz.thema, unterthema: lz.unterthema, text: lz.text, bloom: lz.bloom })`.
@@ -733,7 +738,7 @@ function migriereLernzieleBridge() {
   var gruppen = {};
   for (var c = 0; c < kombiniert.length; c++) {
     var lz = kombiniert[c];
-    var key = (lz.fach || '') + ' ' + (lz.text || '');
+    var key = (lz.fach || '') + '\u0000' + (lz.text || '');
     if (!gruppen[key]) gruppen[key] = [];
     gruppen[key].push(lz);
   }
