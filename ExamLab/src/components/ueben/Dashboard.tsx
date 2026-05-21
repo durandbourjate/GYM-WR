@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Shuffle, RotateCw, Star, Lock } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
@@ -105,23 +105,6 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const [schwierigkeitFilter, setSchwierigkeitFilter] = useState<Set<number>>(new Set())
   const [typFilter, setTypFilter] = useState<Set<string>>(new Set())
 
-  // Deep-Link: Nach dem Laden direkt zum Thema navigieren
-  useEffect(() => {
-    if (deepLinkVerarbeitet.current || !deepLinkZiel || laden || alleFragen.length === 0) return
-    deepLinkVerarbeitet.current = true
-
-    // Fach + Thema setzen → Dashboard navigiert zur Thema-Detailansicht
-    setAktiverFach(deepLinkZiel.fach)
-    setAktivesThema(deepLinkZiel.thema)
-
-    // Unterthema-Filter vorselektieren wenn angegeben
-    if (deepLinkZiel.unterthema) {
-      setUnterthemaFilter(new Set([deepLinkZiel.unterthema]))
-    }
-
-    console.log(`[DeepLink] Dashboard navigiert zu: ${deepLinkZiel.fach} / ${deepLinkZiel.thema}${deepLinkZiel.unterthema ? ` / ${deepLinkZiel.unterthema}` : ''}`)
-  }, [deepLinkZiel, laden, alleFragen.length])
-
   const {
     themenMap,
     verfuegbareFaecher,
@@ -150,17 +133,46 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     getAktiveUnterthemen,
   })
 
+  // Öffnet ein Thema-Detail und befüllt die Filter-Sets mit allen vorhandenen
+  // Werten. Ein leeres Filter-Set bedeutet "nichts ausgewählt" (siehe
+  // useThemenKomputationen) — die Vorbefüllung stellt sicher, dass beim Öffnen
+  // alles aktiv ist und das Abwählen des letzten Chips das Thema deaktiviert.
+  const oeffneThema = useCallback((fach: string, thema: string, unterthemaVorauswahl?: string[]) => {
+    setAktiverFach(fach)
+    setAktivesThema(thema)
+    const info = Object.values(themenMap).flat().find(t => t.fach === fach && t.thema === thema)
+    const fragen = info?.fragen ?? []
+    setUnterthemaFilter(
+      unterthemaVorauswahl
+        ? new Set(unterthemaVorauswahl)
+        : new Set(fragen.map(f => (f as { unterthema?: string }).unterthema || '')),
+    )
+    setSchwierigkeitFilter(new Set(fragen.map(f => f.schwierigkeit ?? 2)))
+    setTypFilter(new Set(fragen.map(f => f.typ)))
+  }, [themenMap])
+
+  // Deep-Link: Nach dem Laden direkt zum Thema navigieren
+  useEffect(() => {
+    if (deepLinkVerarbeitet.current || !deepLinkZiel || laden || alleFragen.length === 0) return
+    deepLinkVerarbeitet.current = true
+    oeffneThema(
+      deepLinkZiel.fach,
+      deepLinkZiel.thema,
+      deepLinkZiel.unterthema ? [deepLinkZiel.unterthema] : undefined,
+    )
+    console.log(`[DeepLink] Dashboard navigiert zu: ${deepLinkZiel.fach} / ${deepLinkZiel.thema}${deepLinkZiel.unterthema ? ` / ${deepLinkZiel.unterthema}` : ''}`)
+  }, [deepLinkZiel, laden, alleFragen.length, oeffneThema])
+
   // Lernziele-Deep-Link: Wenn aus LernzieleAkkordeon ein Thema gewählt wurde
   const deepLinkThema = useUebenNavigationStore((s) => s.deepLinkThema)
   useEffect(() => {
     if (!deepLinkThema || laden || alleFragen.length === 0) return
     const gefunden = Object.values(themenMap).flat().find(t => t.thema === deepLinkThema)
     if (gefunden) {
-      setAktiverFach(gefunden.fach)
-      setAktivesThema(gefunden.thema)
+      oeffneThema(gefunden.fach, gefunden.thema)
     }
     useUebenNavigationStore.getState().setDeepLinkThema(null)
-  }, [deepLinkThema, laden, alleFragen.length, themenMap])
+  }, [deepLinkThema, laden, alleFragen.length, themenMap, oeffneThema])
 
   const handleStarte = (fach: string, thema: string, fragenOverride?: Frage[]) => {
     if (!aktiveGruppe || !user) return
@@ -238,7 +250,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
       fortschritt={info.fortschritt}
       themenStatus={status}
       fachFarben={fachFarben}
-      onClick={() => { setAktivesThema(info.thema); setAktiverFach(info.fach) }}
+      onClick={() => oeffneThema(info.fach, info.thema)}
       anzahlLernziele={lernziele.filter(lz => lz.aktiv !== false && lz.fach === info.fach && (lz.thema === info.thema || lz.thema?.includes(info.thema) || info.thema?.includes(lz.thema))).length}
       onLernzieleKlick={() => setLzMiniModal({ fach: info.fach, thema: info.thema })}
       onPreWarm={() => preWarmThema(info.fach, info.thema)}
@@ -330,7 +342,10 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
             onToggleUnterthema={(v) => toggleChip(unterthemaFilter, setUnterthemaFilter, v)}
             onToggleSchwierigkeit={(v) => toggleChip(schwierigkeitFilter, setSchwierigkeitFilter, v)}
             onToggleTyp={(v) => toggleChip(typFilter, setTypFilter, v)}
-            onToggleAlleUnterthemen={() => toggleAll(unterthemaFilter, setUnterthemaFilter, themaDetail.unterthemen)}
+            onToggleAlleUnterthemen={() => {
+              const alle = [...new Set(themaDetail.fragen.map(f => (f as { unterthema?: string }).unterthema || ''))]
+              toggleAll(unterthemaFilter, setUnterthemaFilter, alle)
+            }}
             onToggleAlleSchwierigkeiten={() => {
               const alle = [...new Set(themaDetail.fragen.map(f => f.schwierigkeit ?? 2))]
               toggleAll(schwierigkeitFilter, setSchwierigkeitFilter, alle)
@@ -476,8 +491,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                 onSchliessen={() => setLzMiniModal(null)}
                 onUeben={() => {
                   setLzMiniModal(null)
-                  setAktivesThema(lzMiniModal.thema)
-                  setAktiverFach(lzMiniModal.fach)
+                  oeffneThema(lzMiniModal.fach, lzMiniModal.thema)
                 }}
               />
             )}

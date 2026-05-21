@@ -49,7 +49,9 @@ export function ThemaDetailView({
   // Immer alle 3 Schwierigkeitsstufen anzeigen (Pool-Fragen haben diff 1-3)
   const verfuegbareSchwierigkeiten = [1, 2, 3]
   const verfuegbareTypen = [...new Set(themaDetail.fragen.map(f => f.typ))].sort()
-  const filterAktiv = unterthemaFilter.size > 0 || schwierigkeitFilter.size > 0 || typFilter.size > 0
+  // Die Filter-Sets sind immer befüllt (siehe Dashboard.oeffneThema); "aktiv"
+  // heisst hier "schränkt das Thema tatsächlich ein", nicht "Set nicht leer".
+  const filterAktiv = gefilterteFragen.length < themaDetail.fragen.length
 
   return (
     <div className="space-y-4">

@@ -45,7 +45,7 @@ const fragenFortschritt = (override: Partial<FragenFortschritt> = {}): FragenFor
   ...override,
 })
 
-const mockFrage = (override: Partial<Frage> = {}): Frage => ({
+const mockFrage = (override: Partial<Frage> & { unterthema?: string } = {}): Frage => ({
   id: 'f1',
   fach: 'Mathe',
   thema: 'Algebra',
@@ -337,11 +337,102 @@ describe('useThemenKomputationen — gefilterteFragen', () => {
     const { result } = renderHook(() => useThemenKomputationen(baseInputs({
       alleFragen: fragen,
       aktivesThema: 'A',
+      unterthemaFilter: new Set(['']),
       schwierigkeitFilter: new Set([1]),
       typFilter: new Set(['mc']),
     })))
     expect(result.current.gefilterteFragen).toHaveLength(1)
     expect(result.current.gefilterteFragen[0].id).toBe('f1')
+  })
+
+  // Bug #5: Ein leeres Filter-Set bedeutet "nichts ausgewählt", nicht "alles".
+  // Vorher: leeres Set übersprang den Filter → das ganze Thema wurde reaktiviert.
+  it('Bug #5: leeres unterthemaFilter-Set → keine Fragen (Thema deaktiviert)', () => {
+    const fragen: Frage[] = [
+      mockFrage({ id: 'f1', fach: 'M', thema: 'A', unterthema: 'U1' }),
+      mockFrage({ id: 'f2', fach: 'M', thema: 'A', unterthema: 'U2' }),
+    ]
+    const { result } = renderHook(() => useThemenKomputationen(baseInputs({
+      alleFragen: fragen,
+      aktivesThema: 'A',
+      unterthemaFilter: new Set(),
+      schwierigkeitFilter: new Set([2]),
+      typFilter: new Set(['mc']),
+    })))
+    expect(result.current.gefilterteFragen).toEqual([])
+  })
+
+  it('Bug #5: leeres schwierigkeitFilter-Set → keine Fragen', () => {
+    const fragen: Frage[] = [
+      mockFrage({ id: 'f1', fach: 'M', thema: 'A', unterthema: 'U1' }),
+    ]
+    const { result } = renderHook(() => useThemenKomputationen(baseInputs({
+      alleFragen: fragen,
+      aktivesThema: 'A',
+      unterthemaFilter: new Set(['U1']),
+      schwierigkeitFilter: new Set(),
+      typFilter: new Set(['mc']),
+    })))
+    expect(result.current.gefilterteFragen).toEqual([])
+  })
+
+  it('Bug #5: leeres typFilter-Set → keine Fragen', () => {
+    const fragen: Frage[] = [
+      mockFrage({ id: 'f1', fach: 'M', thema: 'A', unterthema: 'U1' }),
+    ]
+    const { result } = renderHook(() => useThemenKomputationen(baseInputs({
+      alleFragen: fragen,
+      aktivesThema: 'A',
+      unterthemaFilter: new Set(['U1']),
+      schwierigkeitFilter: new Set([2]),
+      typFilter: new Set(),
+    })))
+    expect(result.current.gefilterteFragen).toEqual([])
+  })
+
+  it('voll befüllter Filter-Satz → alle Fragen des Themas', () => {
+    const fragen: Frage[] = [
+      mockFrage({ id: 'f1', fach: 'M', thema: 'A', unterthema: 'U1' }),
+      mockFrage({ id: 'f2', fach: 'M', thema: 'A', unterthema: 'U2' }),
+    ]
+    const { result } = renderHook(() => useThemenKomputationen(baseInputs({
+      alleFragen: fragen,
+      aktivesThema: 'A',
+      unterthemaFilter: new Set(['U1', 'U2']),
+      schwierigkeitFilter: new Set([2]),
+      typFilter: new Set(['mc']),
+    })))
+    expect(result.current.gefilterteFragen).toHaveLength(2)
+  })
+
+  it('Teilmenge der Unterthemen → nur passende Fragen', () => {
+    const fragen: Frage[] = [
+      mockFrage({ id: 'f1', fach: 'M', thema: 'A', unterthema: 'U1' }),
+      mockFrage({ id: 'f2', fach: 'M', thema: 'A', unterthema: 'U2' }),
+    ]
+    const { result } = renderHook(() => useThemenKomputationen(baseInputs({
+      alleFragen: fragen,
+      aktivesThema: 'A',
+      unterthemaFilter: new Set(['U1']),
+      schwierigkeitFilter: new Set([2]),
+      typFilter: new Set(['mc']),
+    })))
+    expect(result.current.gefilterteFragen).toHaveLength(1)
+    expect(result.current.gefilterteFragen[0].id).toBe('f1')
+  })
+
+  it('Fragen ohne Unterthema werden über \'\' im Filter durchgereicht', () => {
+    const fragen: Frage[] = [
+      mockFrage({ id: 'f1', fach: 'M', thema: 'A' }),
+    ]
+    const { result } = renderHook(() => useThemenKomputationen(baseInputs({
+      alleFragen: fragen,
+      aktivesThema: 'A',
+      unterthemaFilter: new Set(['']),
+      schwierigkeitFilter: new Set([2]),
+      typFilter: new Set(['mc']),
+    })))
+    expect(result.current.gefilterteFragen).toHaveLength(1)
   })
 })
 

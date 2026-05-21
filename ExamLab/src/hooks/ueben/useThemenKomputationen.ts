@@ -242,13 +242,16 @@ export function useThemenKomputationen(inputs: ThemenKomputationenInputs): Theme
     return sichtbareThemenListe.find(t => t.thema === aktivesThema) || null
   }, [sichtbareThemenListe, aktivesThema])
 
-  // Gefilterte Fragen im aktiven Thema
+  // Gefilterte Fragen im aktiven Thema.
+  // Die Filter-Sets sind explizite Auswahlmengen: ein leeres Set bedeutet
+  // "nichts ausgewählt" (0 Fragen), nicht "alles". Beim Öffnen eines Themas
+  // werden sie in Dashboard.oeffneThema() mit allen vorhandenen Werten vorbefüllt.
   const gefilterteFragen = useMemo(() => {
     if (!themaDetail) return []
     return themaDetail.fragen.filter(f => {
-      if (unterthemaFilter.size > 0 && !unterthemaFilter.has((f as { unterthema?: string }).unterthema || '')) return false
-      if (schwierigkeitFilter.size > 0 && !schwierigkeitFilter.has(f.schwierigkeit ?? 2)) return false
-      if (typFilter.size > 0 && !typFilter.has(f.typ)) return false
+      if (!unterthemaFilter.has((f as { unterthema?: string }).unterthema || '')) return false
+      if (!schwierigkeitFilter.has(f.schwierigkeit ?? 2)) return false
+      if (!typFilter.has(f.typ)) return false
       return true
     })
   }, [themaDetail, unterthemaFilter, schwierigkeitFilter, typFilter])
