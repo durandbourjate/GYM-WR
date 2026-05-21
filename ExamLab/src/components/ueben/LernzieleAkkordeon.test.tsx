@@ -142,7 +142,7 @@ describe('LernzieleAkkordeon — Master-Detail', () => {
     expect(screen.getByRole('button', { name: /zurück/i })).toBeInTheDocument()
   })
 
-  it('LernzieleMiniModal wird nicht verändert (keine LernzielKarte statt Mini-Modal)', () => {
+  it('rendert ohne onLernzielUeben-Prop (optionaler Prop)', () => {
     // Smoke-Test: LernzieleAkkordeon ohne onLernzielUeben prop rendert fehlerfrei
     render(
       <LernzieleAkkordeon
@@ -155,5 +155,96 @@ describe('LernzieleAkkordeon — Master-Detail', () => {
     )
     // Modal-Titel muss vorhanden sein
     expect(screen.getByText(/alle lernziele/i)).toBeInTheDocument()
+  })
+})
+
+// ─── LernzieleMiniModal — Master-Detail ───────────────────────────────────────
+
+import { LernzieleMiniModal } from './LernzieleAkkordeon'
+
+describe('LernzieleMiniModal — Master-Detail', () => {
+  const lernzielBWL = mockLernziel({
+    id: 'lz-mm-1',
+    fach: 'BWL',
+    thema: 'Marketing',
+    text: 'Der Schüler kann die Marketingmix-Instrumente erklären.',
+    bloom: 'K2',
+  })
+
+  const defaultMiniProps = {
+    thema: 'Marketing',
+    fach: 'BWL',
+    lernziele: [lernzielBWL],
+    fortschritte: leererFortschritt,
+    onSchliessen: vi.fn(),
+  }
+
+  it('zeigt Lernziel-Liste initial an', () => {
+    render(<LernzieleMiniModal {...defaultMiniProps} />)
+    expect(screen.getByText('Der Schüler kann die Marketingmix-Instrumente erklären.')).toBeInTheDocument()
+  })
+
+  it('Klick auf Lernziel-Zeile zeigt LernzielKarte (Master-Detail-Swap)', async () => {
+    const user = userEvent.setup()
+    render(<LernzieleMiniModal {...defaultMiniProps} />)
+
+    // Lernziel-Zeile klicken
+    const lernzielZeile = screen.getByRole('button', { name: /Marketingmix/i })
+    await user.click(lernzielZeile)
+
+    // Detail-Ansicht: Lernziel-Text sichtbar + Üben-Button erscheint
+    expect(screen.getByText('Der Schüler kann die Marketingmix-Instrumente erklären.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /üben/i })).toBeInTheDocument()
+
+    // Lernziel-Liste muss verschwunden sein (Thema-Header-Text bleibt, aber kein Liste-Eintrag mehr)
+    // Prüfen: kein Lernziel-Zeile mehr als role="button" mit dem Lernziel-Text sichtbar
+    expect(screen.queryByRole('button', { name: /Marketingmix/i })).not.toBeInTheDocument()
+  })
+
+  it('Zurück-Button kehrt zur Lernziel-Liste zurück', async () => {
+    const user = userEvent.setup()
+    render(<LernzieleMiniModal {...defaultMiniProps} />)
+
+    // Auf Lernziel klicken → Detail-Ansicht
+    await user.click(screen.getByRole('button', { name: /Marketingmix/i }))
+
+    // Zurück-Button sichtbar
+    expect(screen.getByRole('button', { name: /zurück/i })).toBeInTheDocument()
+
+    // Zurück klicken
+    await user.click(screen.getByRole('button', { name: /zurück/i }))
+
+    // Liste wieder sichtbar
+    expect(screen.getByRole('button', { name: /Marketingmix/i })).toBeInTheDocument()
+    // Üben-Button aus LernzielKarte weg (nur noch Thema-Üben-Button falls vorhanden, aber kein "Üben" aus LernzielKarte)
+    expect(screen.queryByRole('button', { name: /^üben$/i })).not.toBeInTheDocument()
+  })
+
+  it('Üben-Button auf LernzielKarte ruft onLernzielUeben mit dem Lernziel auf', async () => {
+    const onLernzielUeben = vi.fn()
+    const user = userEvent.setup()
+
+    render(
+      <LernzieleMiniModal
+        {...defaultMiniProps}
+        lernziele={[mockLernziel({ id: 'lz-mm-1', fach: 'BWL', thema: 'Marketing', fragenIds: ['f1'] })]}
+        onLernzielUeben={onLernzielUeben}
+      />,
+    )
+
+    // Auf Lernziel klicken
+    await user.click(screen.getByRole('button', { name: /Marketingmix/i }))
+
+    // Üben klicken
+    await user.click(screen.getByRole('button', { name: /^üben$/i }))
+
+    expect(onLernzielUeben).toHaveBeenCalledTimes(1)
+    expect(onLernzielUeben).toHaveBeenCalledWith(expect.objectContaining({ id: 'lz-mm-1' }))
+  })
+
+  it('rendert ohne onLernzielUeben-Prop (optionaler Prop)', () => {
+    // Kein Fehler wenn onLernzielUeben fehlt
+    render(<LernzieleMiniModal {...defaultMiniProps} />)
+    expect(screen.getByText('Der Schüler kann die Marketingmix-Instrumente erklären.')).toBeInTheDocument()
   })
 })

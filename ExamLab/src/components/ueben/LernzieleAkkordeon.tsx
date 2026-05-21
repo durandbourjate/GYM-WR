@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { CheckCircle2, Circle, Flag, X, Play, ChevronUp, ChevronDown } from 'lucide-react'
 import type { Lernziel } from '../../types/pool'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
@@ -223,15 +223,30 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
 /**
  * Mini-Modal für Lernziele eines einzelnen Themas.
  * Wird von ThemaKarte über Flag-Button geöffnet.
+ * Task 5: Klick auf eine Lernziel-Zeile öffnet LernzielKarte (Master-Detail-Swap).
  */
-export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSchliessen, onUeben }: {
+export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSchliessen, onUeben, onLernzielUeben, fokusUnterthema }: {
   thema: string
   fach: string
   lernziele: Lernziel[]
   fortschritte: Record<string, FragenFortschritt>
   onSchliessen: () => void
   onUeben?: () => void
+  onLernzielUeben?: (lz: Lernziel) => void
+  fokusUnterthema?: string
 }) {
+  // Alle Hooks MÜSSEN vor dem Early-Return stehen (Rules of Hooks + code-quality.md)
+  const [gewaehltesLernziel, setGewaehltesLernziel] = useState<Lernziel | null>(null)
+
+  // Refs für fokusUnterthema-Scroll — ein Ref pro Unterthema-Gruppe
+  const utRefs = useRef<Record<string, HTMLDivElement | null>>({})
+
+  useEffect(() => {
+    if (!fokusUnterthema) return
+    const el = utRefs.current[fokusUnterthema]
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [fokusUnterthema])
+
   const farbe = getFachFarbe(fach, {})
   const relevante = lernziele.filter(lz => lz.aktiv !== false && lz.fach === fach && (lz.thema === thema || lz.thema?.includes(thema) || thema?.includes(lz.thema)))
 
@@ -262,30 +277,47 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
           <button onClick={onSchliessen} aria-label="Schliessen" className="text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100"><X className="w-4 h-4" /></button>
         </div>
 
-        <div className="overflow-y-auto flex-1 space-y-3 mb-4">
-          {meta.length > 0 && (
-            <div className="space-y-1.5">
-              {meta.map(lz => renderLZ(lz, fortschritte))}
+        {/* Master-Detail-Swap: LernzielKarte statt Lernziel-Liste */}
+        {gewaehltesLernziel ? (
+          <div className="overflow-y-auto flex-1">
+            <LernzielKarte
+              lernziel={gewaehltesLernziel}
+              fortschritte={fortschritte}
+              onUeben={onLernzielUeben ?? (() => {})}
+              onZurueck={() => setGewaehltesLernziel(null)}
+            />
+          </div>
+        ) : (
+          <>
+            <div className="overflow-y-auto flex-1 space-y-3 mb-4">
+              {meta.length > 0 && (
+                <div className="space-y-1.5">
+                  {meta.map(lz => renderLZ(lz, fortschritte, setGewaehltesLernziel))}
+                </div>
+              )}
+              {utKeys.map(ut => (
+                <div
+                  key={ut}
+                  ref={el => { utRefs.current[ut] = el }}
+                >
+                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{ut}</p>
+                  <div className="space-y-1.5">
+                    {utGruppen[ut].map(lz => renderLZ(lz, fortschritte, setGewaehltesLernziel))}
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
-          {utKeys.map(ut => (
-            <div key={ut}>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{ut}</p>
-              <div className="space-y-1.5">
-                {utGruppen[ut].map(lz => renderLZ(lz, fortschritte))}
-              </div>
-            </div>
-          ))}
-        </div>
 
-        {onUeben && (
-          <button
-            onClick={onUeben}
-            className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-colors shrink-0 inline-flex items-center justify-center gap-1.5"
-            style={{ backgroundColor: farbe }}
-          >
-            <Play className="w-4 h-4" /> Fragen zu «{thema}» üben
-          </button>
+            {onUeben && (
+              <button
+                onClick={onUeben}
+                className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-colors shrink-0 inline-flex items-center justify-center gap-1.5"
+                style={{ backgroundColor: farbe }}
+              >
+                <Play className="w-4 h-4" /> Fragen zu «{thema}» üben
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -300,9 +332,41 @@ function LernzielStatusIcon({ status }: { status: ReturnType<typeof lernzielStat
   return <Flag className="w-4 h-4 text-slate-400" aria-label="offen" />
 }
 
-/** Einzelnes Lernziel rendern (für Mini-Modal) */
-function renderLZ(lz: Lernziel, fortschritte: Record<string, FragenFortschritt>) {
+/** Einzelnes Lernziel rendern (für Mini-Modal).
+ *  Wird onLernzielKlick übergeben, wird die Zeile als interaktive Schaltfläche gerendert. */
+function renderLZ(
+  lz: Lernziel,
+  fortschritte: Record<string, FragenFortschritt>,
+  onLernzielKlick?: (lz: Lernziel) => void,
+) {
   const status = lernzielStatus(lz, fortschritte)
+  if (onLernzielKlick) {
+    return (
+      <div
+        key={lz.id}
+        role="button"
+        tabIndex={0}
+        onClick={() => onLernzielKlick(lz)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onLernzielKlick(lz)
+          }
+        }}
+        className="flex items-start gap-2 text-sm rounded-lg px-2 py-1 -mx-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
+      >
+        <span className="mt-0.5 shrink-0">
+          <LernzielStatusIcon status={status} />
+        </span>
+        <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
+          {lz.text}
+        </span>
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">
+          {lz.bloom}
+        </span>
+      </div>
+    )
+  }
   return (
     <div key={lz.id} className="flex items-start gap-2 text-sm">
       <span className="mt-0.5 shrink-0">
