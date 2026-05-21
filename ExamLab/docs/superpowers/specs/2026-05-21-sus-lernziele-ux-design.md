@@ -105,7 +105,7 @@ Inhalt (von oben nach unten):
 - Zurück-Affordanz (führt zur Lernziel-Liste).
 - Breadcrumb `fach › thema`.
 - Lernziel-Text (`lernziel.text`).
-- Bloom-Badge (`lernziel.bloom`, z. B. „K3 Anwenden") + Status-Wort (`lernzielStatus(...)`).
+- Bloom-Badge (`lernziel.bloom`, z. B. „K3 Anwenden") + Status-Wort (`lernzielStatus(...)`). Bei Status `gemeistert` zusätzlich ein kleiner Pokal (Lucide `Trophy`) als Meilenstein-Marker — ein bewusster Motivations-Akzent.
 - Fortschrittsbalken + „X / Y gemeistert".
 - 4-Stufen-Aufschlüsselung mit farbigen Markern: gemeistert / gefestigt / in Arbeit / offen.
 - Empfehlungs-Banner: „N Fragen noch nicht sicher — dranbleiben."
@@ -239,6 +239,7 @@ Phasen sequentiell, je 1 Commit, jeweils `tsc -b` + `vitest` grün, `ci-check` c
 - Eigener Session-Modus `'lernziel'` mit dediziertem Session-Kopf — MVP nutzt `'standard'`; Lernziel-Name im Session-Kopf ist eine spätere optionale Ergänzung.
 - Schwierigkeits-Icon auf der LP-Seite, falls die LP-Fragensammlung Schwierigkeit nur als Text zeigt — keine echte Abweichung; das `SchwierigkeitIcon` steht bereit, falls die LP-Seite es später adoptiert.
 - Gamification-Sterne (`sterneText`) — eigener Kontext, bleibt `Star`.
+- Umfassendes Achievement-/Badge-System (Pokale über Level, Streak, Themen hinweg) — eigenes Gamification-Teilprojekt mit eigenem Datenmodell, separates Brainstorming. Bewusst ausgenommen ist nur der einzelne Pokal auf der Lernziel-Karte (§5.4, Status `gemeistert`): ein Icon auf einer ohnehin gebauten Komponente, kein neues System.
 - Recency-verblasste Mastery auf der Karte (`berechneMasteryMitRecency`).
 - `.superpowers/` in `.gitignore` aufnehmen — separates Housekeeping, eigener Commit (nicht in diesem Feature-Branch).
 
