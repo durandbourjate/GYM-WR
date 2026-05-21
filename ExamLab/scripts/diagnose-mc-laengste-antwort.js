@@ -1,23 +1,23 @@
 /**
  * DIAGNOSE: MC-Fragen mit dem Muster "längste Antwort = korrekt"
  *
- * Kopiere die Funktionen in den Apps Script Editor (Projekt der Fragenbank
+ * Kopiere die Funktionen in den Apps Script Editor (Projekt der Fragensammlung
  * oder ein Standalone-Skript) und führe `diagnoseMcLaengsteAntwort` aus.
  *
- * Sie prüft alle Multiple-Choice-Fragen der Fragenbank darauf, ob die
+ * Sie prüft alle Multiple-Choice-Fragen der Fragensammlung darauf, ob die
  * korrekte Antwort auffällig oft die längste Option ist — ein Muster, das
  * Schüler erkennen und zum Raten ausnutzen können.
  *
  * Ausgabe: Logger → Ansicht > Protokolle (Cmd/Ctrl + Enter).
  *
- * FRAGENBANK_ID ggf. auf die eigene Fragensammlung-Tabelle anpassen.
+ * FRAGENSAMMLUNG_ID ggf. auf die eigene Fragensammlung-Tabelle anpassen.
  */
 
 function diagnoseMcLaengsteAntwort() {
-  var FRAGENBANK_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
+  var FRAGENSAMMLUNG_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
   var TABS = ['BWL', 'VWL', 'Recht', 'Informatik'];
 
-  var fragenbank = SpreadsheetApp.openById(FRAGENBANK_ID);
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
 
   var gesamtMc = 0;            // alle MC-Fragen mit >= 2 Optionen
   var summeOptionen = 0;       // für den Durchschnitt der Optionsanzahl
@@ -30,7 +30,7 @@ function diagnoseMcLaengsteAntwort() {
   var auffaellige = [];
 
   for (var t = 0; t < TABS.length; t++) {
-    var sheet = fragenbank.getSheetByName(TABS[t]);
+    var sheet = fragensammlung.getSheetByName(TABS[t]);
     if (!sheet) continue;
 
     var daten = sheet.getDataRange().getValues();
