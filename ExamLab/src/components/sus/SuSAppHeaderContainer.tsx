@@ -20,6 +20,8 @@ import { APP_VERSION } from '../../version'
 
 interface Props {
   onHilfe: () => void
+  /** Öffnet das Lernziele-Akkordeon — nur für SuS-Üben-Bereich */
+  onLernziele?: () => void
   // Detail-Modus pass-through
   onZurueck?: () => void
   breadcrumbs?: { label: string; aktion?: () => void }[]
@@ -30,6 +32,7 @@ interface Props {
 
 export function SuSAppHeaderContainer({
   onHilfe,
+  onLernziele,
   onZurueck,
   breadcrumbs,
   aktionsButtons,
@@ -87,6 +90,7 @@ export function SuSAppHeaderContainer({
       theme={theme}
       onThemeToggle={toggleMode}
       onHilfe={onHilfe}
+      onLernziele={onLernziele}
       feedbackContext={feedbackContext}
       onAbmelden={abmelden}
       kaskadeConfig={kaskadeConfig}

@@ -1,6 +1,7 @@
 import type React from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Flag } from 'lucide-react'
 import { TabKaskade } from './TabKaskade'
 import { GlobalSuche } from './GlobalSuche'
 import { OptionenMenu } from './OptionenMenu'
@@ -34,6 +35,8 @@ interface Props {
   aktionsButtons?: React.ReactNode
   statusText?: string
   untertitel?: string
+  /** Nur SuS-Pfad: öffnet das Lernziele-Akkordeon. Ohne diesen Prop kein Button. */
+  onLernziele?: () => void
 }
 
 export function AppHeader(props: Props) {
@@ -98,6 +101,17 @@ export function AppHeader(props: Props) {
                 ergebnis={props.sucheErgebnis}
               />
             ) : null
+          )}
+          {props.onLernziele && (
+            <button
+              type="button"
+              onClick={props.onLernziele}
+              aria-label="Lernziele"
+              title="Lernziele"
+              className="px-2 py-1 text-sm text-slate-600 dark:text-slate-300 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer inline-flex items-center"
+            >
+              <Flag className="w-4 h-4" />
+            </button>
           )}
           <OptionenMenu
             rolle={props.rolle}
