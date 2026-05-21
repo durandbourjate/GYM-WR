@@ -1,5 +1,6 @@
 // ExamLab/src/components/ueben/dashboard/themaDetailHelpers.tsx
 import type React from 'react'
+import { Flag } from 'lucide-react'
 import type { ThemenFortschritt } from '../../../types/ueben/fortschritt'
 
 export function FilterSection({ titel, icon, children, onToggleAlle }: {
@@ -26,30 +27,100 @@ export function FilterSection({ titel, icon, children, onToggleAlle }: {
   )
 }
 
-export function Chip({ label, count, aktiv, farbe, onClick }: {
-  label: string; count?: number; aktiv: boolean; farbe: string; onClick: () => void
+export function Chip({ label, title, count, aktiv, farbe, onClick, onLernzieleKlick, lernzieleAnzahl }: {
+  label: React.ReactNode
+  title?: string
+  count?: number
+  aktiv: boolean
+  farbe: string
+  onClick: () => void
+  onLernzieleKlick?: () => void
+  lernzieleAnzahl?: number
 }) {
+  const zeigeLernzieleIcon = onLernzieleKlick !== undefined && (lernzieleAnzahl ?? 0) > 0
+
+  const toggleKlassen = `inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer select-none ${
+    !aktiv
+      ? 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+      : ''
+  }`
+
+  if (!zeigeLernzieleIcon) {
+    // Einfacher Fall: einziger Button, runde Umrandung wie bisher
+    return (
+      <button
+        onClick={onClick}
+        title={title}
+        className={`${toggleKlassen} rounded-full border-2 ${
+          !aktiv
+            ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
+            : ''
+        }`}
+        style={aktiv ? { backgroundColor: farbe, color: '#fff', borderColor: farbe } : undefined}
+      >
+        {label}
+        {count !== undefined && (
+          <span className={`text-[10px] font-mono ${aktiv ? 'opacity-80' : 'text-slate-400'}`}>
+            {count}
+          </span>
+        )}
+      </button>
+    )
+  }
+
+  // Erweiterter Fall: Wrapper-span mit zwei sibling-buttons (kein nested <button>)
+  const borderKlasse = !aktiv
+    ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
+    : ''
+
   return (
-    <button
-      onClick={onClick}
-      title={label}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-colors cursor-pointer select-none ${
-        !aktiv
-          ? 'text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-          : ''
-      }`}
-      style={aktiv
-        ? { backgroundColor: farbe, color: '#fff', borderColor: farbe }
-        : undefined
-      }
+    <span
+      className={`inline-flex items-center rounded-full border-2 overflow-hidden ${borderKlasse}`}
+      style={aktiv ? { borderColor: farbe } : undefined}
     >
-      {label}
-      {count !== undefined && (
-        <span className={`text-[10px] font-mono ${aktiv ? 'opacity-80' : 'text-slate-400'}`}>
-          {count}
-        </span>
-      )}
-    </button>
+      {/* Filter-Toggle-Button */}
+      <button
+        onClick={onClick}
+        title={title}
+        className={`${toggleKlassen} rounded-none`}
+        style={aktiv ? { backgroundColor: farbe, color: '#fff' } : undefined}
+      >
+        {label}
+        {count !== undefined && (
+          <span className={`text-[10px] font-mono ${aktiv ? 'opacity-80' : 'text-slate-400'}`}>
+            {count}
+          </span>
+        )}
+      </button>
+
+      {/* Trennlinie */}
+      <span
+        aria-hidden="true"
+        className={`w-px self-stretch ${
+          aktiv
+            ? 'bg-white/40'
+            : 'bg-slate-200 dark:bg-slate-600'
+        }`}
+      />
+
+      {/* Lernziele-Flag-Button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          onLernzieleKlick()
+        }}
+        aria-label="Lernziele"
+        title="Lernziele"
+        className={`px-2 py-1.5 flex items-center cursor-pointer transition-colors ${
+          aktiv
+            ? 'hover:bg-white/20'
+            : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+        }`}
+        style={aktiv ? { color: 'rgba(255,255,255,0.85)' } : undefined}
+      >
+        <Flag className="w-3 h-3" aria-hidden="true" />
+      </button>
+    </span>
   )
 }
 
