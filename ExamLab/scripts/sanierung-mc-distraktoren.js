@@ -460,3 +460,112 @@ function generiereDistraktoren_(fragetext, korrektText, altDistraktoren, zielLae
   }
   return antwort.distraktoren.map(function (d) { return String(d || ''); });
 }
+
+/**
+ * PHASE 2 — Prüft pro Frage die neuen Distraktoren mit einem unabhängigen
+ * Claude-Call. Setzt checker_status/-begruendung, markiert die Stichprobe,
+ * flaggt zusätzlich rein technische Probleme (Rang verfehlt, Verdoppelung).
+ * Batchweise, Cursor-resumable.
+ */
+function phase2_checker() {
+  var startMs = Date.now();
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var review = ss.getSheetByName(REVIEW_TAB);
+  if (!review) { Logger.log('ABBRUCH: Review-Sheet fehlt.'); return; }
+
+  var daten = review.getDataRange().getValues();
+  var start = cursorLesen_(CURSOR_P2);
+  var verarbeitet = 0, fehler = 0;
+
+  for (var i = Math.max(1, start); i < daten.length; i++) {
+    if (Date.now() - startMs > ZEIT_BUDGET_MS) {
+      cursorSchreiben_(CURSOR_P2, i);
+      Logger.log('PHASE 2 — Zeitbudget erreicht bei Zeile ' + i + '. Erneut starten.');
+      return;
+    }
+    var row = daten[i];
+    if (String(row[rcol_('checker_status')] || '').trim()) continue;  // schon geprüft
+    if (!String(row[rcol_('distraktor_neu_1')] || '').trim()) continue; // nicht generiert
+
+    var anzahl = Number(row[rcol_('anzahl_distraktoren')]) || 0;
+    var korrektText = String(row[rcol_('korrekt_text')]);
+    var korrektLen = Number(row[rcol_('korrekt_len')]) || 0;
+    var zielRang = Number(row[rcol_('ziel_rang')]) || 1;
+    var istRang = Number(row[rcol_('ist_rang')]) || 0;
+    var frageId = String(row[rcol_('id')]);
+
+    var neu = [];
+    for (var k = 1; k <= anzahl; k++) {
+      neu.push(String(row[rcol_('distraktor_neu_' + k)] || ''));
+    }
+
+    // technische Vor-Flags (ohne Claude)
+    var techFlags = [];
+    if (istRang !== zielRang) {
+      techFlags.push('Ziel-Rang ' + zielRang + ' verfehlt (ist ' + istRang + ')');
+    }
+    for (var n = 0; n < neu.length; n++) {
+      if (neu[n].trim() && neu[n].trim() === korrektText.trim()) {
+        techFlags.push('Distraktor ' + (n + 1) + ' identisch mit korrekter Antwort');
+      }
+    }
+
+    var status = 'OK', begruendung = '';
+    try {
+      var pruef = pruefeDistraktoren_(String(row[rcol_('fragetext')]), korrektText, neu);
+      status = pruef.status;
+      begruendung = pruef.begruendung;
+      verarbeitet++;
+    } catch (e) {
+      status = 'FLAG';
+      begruendung = 'Checker-Call fehlgeschlagen: ' + e.message;
+      fehler++;
+    }
+    if (techFlags.length > 0) {
+      status = 'FLAG';
+      begruendung = (begruendung ? begruendung + ' | ' : '') + 'TECHNISCH: ' + techFlags.join('; ');
+    }
+
+    var rNr = i + 1;
+    review.getRange(rNr, rcol_('checker_status') + 1).setValue(status);
+    review.getRange(rNr, rcol_('checker_begruendung') + 1).setValue(begruendung);
+    // Stichprobe: deterministisch ~12 % der OK-Zeilen
+    var stichprobe = (status === 'OK' && pseudoZufall_('stichprobe#' + frageId) < STICHPROBE_ANTEIL);
+    review.getRange(rNr, rcol_('stichprobe') + 1).setValue(stichprobe ? 'JA' : '');
+  }
+
+  cursorLoeschen_(CURSOR_P2);
+  Logger.log('PHASE 2 — FERTIG. Verarbeitet: ' + verarbeitet + ', Checker-Fehler: ' + fehler);
+}
+
+/** Ein unabhängiger Claude-Call: prüft die neuen Distraktoren auf Fehler. */
+function pruefeDistraktoren_(fragetext, korrektText, neuDistraktoren) {
+  var liste = '';
+  for (var i = 0; i < neuDistraktoren.length; i++) {
+    liste += (i + 1) + '. ' + wrapUserData_('distraktor', neuDistraktoren[i]) + '\n';
+  }
+  var prompt =
+    'Du prüfst die überarbeiteten Distraktoren einer Multiple-Choice-Prüfungsfrage ' +
+    'auf Fehler. Sei KONSERVATIV — im Zweifel FLAG.\n\n' +
+    'Fragetext:\n' + wrapUserData_('fragetext', fragetext) + '\n\n' +
+    'Korrekte Antwort:\n' + wrapUserData_('korrekt', korrektText) + '\n\n' +
+    'Überarbeitete Distraktoren (sollen alle FALSCH sein):\n' + liste + '\n' +
+    'Prüfe jeden Distraktor auf:\n' +
+    '1. Korrektheit: Ist der Distraktor eindeutig FALSCH? Lässt er sich unter ' +
+    'vernünftiger Lesart als wahr argumentieren → FLAG.\n' +
+    '2. Plausibilität: Echter fachlicher Ablenker, oder aufgeblähtes ' +
+    'Füllwort-Geschwafel / offensichtlich unsinnig → FLAG.\n' +
+    '3. Keine Verdoppelung: Wiederholt der Distraktor die korrekte Antwort oder ' +
+    'einen anderen Distraktor → FLAG.\n\n' +
+    'Antworte ausschliesslich als JSON: { "status": "OK" oder "FLAG", ' +
+    '"begruendung": "..." }\n' +
+    'status = "FLAG", wenn MINDESTENS EIN Distraktor ein Problem hat. begruendung ' +
+    'nennt den/die betroffenen Distraktor(en) und das Problem; bei OK kurz ' +
+    '"Alle Distraktoren eindeutig falsch und plausibel."';
+
+  var antwort = rufeClaudeAuf_(prompt, 1024);
+  var status = (antwort && antwort.status === 'FLAG') ? 'FLAG' : 'OK';
+  var begruendung = (antwort && typeof antwort.begruendung === 'string')
+    ? antwort.begruendung : '';
+  return { status: status, begruendung: begruendung };
+}
