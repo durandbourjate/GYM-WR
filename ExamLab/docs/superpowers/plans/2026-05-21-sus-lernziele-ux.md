@@ -31,7 +31,8 @@
 - `src/components/ueben/dashboard/themaDetailHelpers.tsx` — `Chip` optionale Lernziele-Icon-Props; `label` auf `ReactNode`.
 - `src/components/ueben/dashboard/ThemaDetailView.tsx` — Unterthema-Chips mit Flag-Icon; Schwierigkeit `⭐` → `SchwierigkeitIcon`.
 - `src/components/lp/fragensammlung/fragenbrowser/DetailKarte.tsx` + `KompaktZeile.tsx` — `Target` → `Flag`.
-- SuS-Fortschritt-Analyse (`SuSAnalyse.tsx`, Pfad in Task 11 verifizieren) — Mastery-`Star` → `CircleCheck`.
+- SuS-Fortschritt-Analyse (`SuSAnalyse.tsx`, Pfad in Task 10 verifizieren) — Mastery-`Star` → `CircleCheck`.
+- `src/components/ueben/SuSHilfePanel.tsx` — Hilfe-Legende: Mastery-Icon (Task 10) + Schwierigkeits-Icon (Task 11) an die neuen Icons angleichen.
 
 **Type-Hinweis:** `LernzieleAkkordeon` importiert `Lernziel` aus `../../types/pool`, `mastery.ts` aus `@shared/types/fragen-core`. Beim Coden den Type verwenden, den `lernzielStatus()` erwartet (`@shared/types/fragen-core` — trägt `fragenIds`). Falls `types/pool` nur re-exportiert, ist beides identisch — kurz verifizieren, nicht annehmen.
 
@@ -58,7 +59,7 @@ Expected: FAIL — kein „Lernziele"-Button.
 
 - [ ] **Step 3: Implementieren**
 
-`AppHeader.tsx`: optionalen Prop `onLernziele?: () => void` ergänzen. Wenn gesetzt, einen Icon-Button mit Lucide `Flag` + `aria-label="Lernziele"` + `title="Lernziele"` rendern — direkt neben dem bestehenden Hilfe-Button, gleiches Styling. Das bestehende `onHilfe`-Button-Muster als Vorlage. LP-Nutzung bleibt unberührt (Prop optional, ohne `onLernziele` kein Button).
+`AppHeader.tsx`: optionalen Prop `onLernziele?: () => void` ergänzen. Wenn gesetzt, einen **neuen, eigenständigen Icon-Button** in die rechte Aktions-Gruppe der Kopfzeile einfügen (~Z. 91-101, beim Suchfeld / `⋮`-`OptionenMenu`) — Lucide `Flag` + `aria-label="Lernziele"` + `title="Lernziele"`. **Wichtig:** `onHilfe`, Theme-Toggle und Abmelden liegen im `⋮`-`OptionenMenu`-Dropdown, NICHT als eigene Header-Buttons — es gibt also keinen „Hilfe-Button" zum Danebenstellen. Der Lernziele-Button ist bewusst eigenständig und sichtbar (Spec §5.1; der Test in Step 1 verlangt einen sichtbaren Button). Styling am nächstliegenden echten Header-Button orientieren: dem `← Zurück`-Button (`AppHeader.tsx:63-71`). Vor dem Coden `AppHeader.tsx` lesen, um die rechte Aktions-Gruppe und das Zurück-Button-Styling zu sehen. LP-Nutzung bleibt unberührt (Prop optional, ohne `onLernziele` kein Button).
 
 `SuSAppHeaderContainer.tsx`: `onLernziele?: () => void` in `Props` (Z. 21-29) ergänzen, in der Destrukturierung (Z. 31-38) aufnehmen, an `<AppHeader>` (Z. 84-101) durchreichen.
 
@@ -388,7 +389,8 @@ git commit -m "refactor(lernziele): LP-Lernziele-Icon auf Flag vereinheitlicht"
 ### Task 10: SuS-Mastery-Icon `Star` → `CircleCheck`
 
 **Files:**
-- Modify: SuS-Fortschritt-Analyse — Pfad zuerst verifizieren.
+- Modify: SuS-Fortschritt-Analyse (`SuSAnalyse.tsx` — Pfad in Step 1 verifizieren).
+- Modify: `src/components/ueben/SuSHilfePanel.tsx` — Mastery-Legende.
 
 - [ ] **Step 1: Stelle lokalisieren**
 
@@ -397,7 +399,7 @@ Die Stelle finden, an der `Star` für „Gemeistert"/Mastery steht (laut Audit `
 
 - [ ] **Step 2: Ändern**
 
-An der Mastery-„Gemeistert"-Stelle `Star` → `CircleCheck` (Import + Nutzung, gleiche Klassen).
+An der Mastery-„Gemeistert"-Stelle `Star` → `CircleCheck` (Import + Nutzung, gleiche Klassen). Ausserdem in `src/components/ueben/SuSHilfePanel.tsx` die Mastery-Legende auf `CircleCheck` umstellen (dort wird Mastery heute mit `Star` dokumentiert) — `grep -n "Star" src/components/ueben/SuSHilfePanel.tsx`, die Mastery-Legenden-Stelle anpassen, damit die Hilfe zur UI passt. Die Schwierigkeits-`Star`-Stelle im Hilfe-Panel hier NICHT anfassen (das macht Task 11).
 
 - [ ] **Step 3: Prüfen**
 
@@ -406,7 +408,7 @@ Run: `cd ExamLab && npx tsc -b` → clean. Betroffene Komponententests grün.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add -- <geänderte Datei>
+git add -- <SuSAnalyse-Datei> ExamLab/src/components/ueben/SuSHilfePanel.tsx
 git commit -m "refactor(lernziele): SuS-Mastery-Icon auf CircleCheck (Star = nur Favorit)"
 ```
 
@@ -415,6 +417,7 @@ git commit -m "refactor(lernziele): SuS-Mastery-Icon auf CircleCheck (Star = nur
 **Files:**
 - Create: `src/components/ueben/dashboard/SchwierigkeitIcon.tsx`
 - Modify: `src/components/ueben/dashboard/ThemaDetailView.tsx` (`SCHWIERIGKEIT_STERNE` Z. 10, Schwierigkeits-`Chip`-Label Z. 110-124)
+- Modify: `src/components/ueben/SuSHilfePanel.tsx` — Schwierigkeits-Legende.
 - Test: `src/components/ueben/dashboard/SchwierigkeitIcon.test.tsx`
 
 - [ ] **Step 1: Failing test schreiben**
@@ -443,16 +446,17 @@ export function SchwierigkeitIcon({ stufe, className }: { stufe: number; classNa
 }
 ```
 
-`ThemaDetailView`: `SCHWIERIGKEIT_STERNE` (Z. 10, `⭐`-Emoji) entfernen. Im Schwierigkeits-`Chip` (Z. 110-124) das `label` von `${SCHWIERIGKEIT_STERNE[s]} ${SCHWIERIGKEIT_LABELS[s]}` auf einen `ReactNode` umstellen: `<span className="inline-flex items-center gap-1"><SchwierigkeitIcon stufe={s} className="w-3.5 h-3.5" /> {SCHWIERIGKEIT_LABELS[s]}</span>`. (`Chip.label` akzeptiert seit Task 7 `ReactNode`.)
+`ThemaDetailView`: `SCHWIERIGKEIT_STERNE` (Z. 10, `⭐`-Emoji) entfernen. Im Schwierigkeits-`Chip` (Z. 110-124) das `label` von `${SCHWIERIGKEIT_STERNE[s]} ${SCHWIERIGKEIT_LABELS[s]}` auf einen `ReactNode` umstellen: `<span className="inline-flex items-center gap-1"><SchwierigkeitIcon stufe={s} className="w-3.5 h-3.5" /> {SCHWIERIGKEIT_LABELS[s]}</span>`. (`Chip.label` akzeptiert seit Task 7 `ReactNode`.) Ausserdem in `src/components/ueben/SuSHilfePanel.tsx` die Schwierigkeits-Legende (heute mit `Star` dokumentiert) auf `SchwierigkeitIcon` umstellen — `grep -n "Star" src/components/ueben/SuSHilfePanel.tsx`, die Schwierigkeits-Stelle anpassen.
 
 - [ ] **Step 4: Test laufen lassen — muss bestehen**
 
-Run: `cd ExamLab && npx vitest run src/components/ueben/dashboard/SchwierigkeitIcon.test.tsx` → PASS. `cd ExamLab && npx tsc -b`. Prüfen, dass kein `lint:no-emoji`-Gate mehr am entfernten `⭐` hängt: `cd ExamLab && npx vitest run` + `npm run lint:no-emoji --prefix ExamLab` falls vorhanden.
+Run: `cd ExamLab && npx vitest run src/components/ueben/dashboard/SchwierigkeitIcon.test.tsx` → PASS. Dann `cd ExamLab && npx tsc -b` + `npx vitest run` (volle Suite) → grün. **`lint:no-emoji`-Gate:** das Entfernen des `⭐`-Emojis senkt den Emoji-Count — das Audit-Skript `audit-no-emoji.mjs` meldet dann eine IMPROVEMENT und verlangt eine Baseline-Regeneration. Das ist KEIN Fehler: die Baseline mit dem `--baseline`-Flag des Audit-Skripts neu generieren, die regenerierte Baseline-Datei mit committen, dann das Gate erneut laufen lassen (muss clean sein).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add ExamLab/src/components/ueben/dashboard/SchwierigkeitIcon.tsx ExamLab/src/components/ueben/dashboard/SchwierigkeitIcon.test.tsx ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx
+git add ExamLab/src/components/ueben/dashboard/SchwierigkeitIcon.tsx ExamLab/src/components/ueben/dashboard/SchwierigkeitIcon.test.tsx ExamLab/src/components/ueben/dashboard/ThemaDetailView.tsx ExamLab/src/components/ueben/SuSHilfePanel.tsx
+# falls die no-emoji-Baseline regeneriert wurde, die Baseline-Datei mit hinzufügen
 git commit -m "feat(lernziele): Schwierigkeit als Signal-Balken statt Stern-Emoji"
 ```
 
