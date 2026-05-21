@@ -1,10 +1,8 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import { TabBar } from '../../ui/TabBar'
 import { useAuthStore } from '../../../store/authStore.ts'
 import { useSchulConfig } from '../../../store/schulConfigStore.ts'
 import { istGueltigesGefaess } from '../../../utils/gefaessUtils.ts'
 import { useFragensammlungStore } from '../../../store/fragensammlungStore.ts'
-import { useLPNavigationStore } from '../../../store/lpUIStore.ts'
 import { apiService } from '../../../services/apiService.ts'
 import { preWarmFragen } from '../../../services/preWarmApi'
 import { demoFragen } from '../../../data/demoFragen.ts'
@@ -15,6 +13,7 @@ import type { PruefungsConfig, PruefungsAbschnitt } from '../../../types/pruefun
 
 import { LPAppHeaderContainer } from '../LPAppHeaderContainer'
 import FragenBrowser from '../fragensammlung/FragenBrowser.tsx'
+import PruefungsComposerLeiste from './composer/PruefungsComposerLeiste'
 import HilfeSeite from '../HilfeSeite.tsx'
 import SuSVorschau from './SuSVorschau.tsx'
 import ConfigTab from './composer/ConfigTab.tsx'
@@ -290,48 +289,26 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
         onHilfe={() => { setZeigFragenBrowser(false); setZeigHilfe(!zeigHilfe) }}
         onEinstellungen={() => {}}
         onZurueck={onZurueck}
-        breadcrumbs={useLPNavigationStore.getState().breadcrumbs}
+      />
+
+      <PruefungsComposerLeiste
+        titel={pruefung.titel}
+        typ={pruefung.typ}
+        aktiverTab={tab}
+        onTabChange={(id) => setTab(id as ComposerTab)}
+        gesamtFragen={gesamtFragen}
         statusText={
           speicherStatus === 'erfolg' ? 'Gespeichert'
           : speicherStatus === 'fehler' ? 'Fehler beim Speichern'
           : autoSaveStatus === 'gespeichert' && speicherStatus === 'idle' ? 'Automatisch gespeichert'
           : undefined
         }
-        aktionsButtons={
-          <div className="flex items-center gap-1">
-            {config && onDuplizieren && (
-              <button
-                onClick={() => onDuplizieren(pruefung)}
-                className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-              >
-                Duplizieren
-              </button>
-            )}
-            <button
-              onClick={handleSpeichern}
-              disabled={speicherStatus === 'speichern' || !pruefung.titel.trim()}
-              className="px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              {speicherStatus === 'speichern' ? 'Speichern...' : 'Speichern'}
-            </button>
-          </div>
-        }
+        speichertGerade={speicherStatus === 'speichern'}
+        speichernDeaktiviert={speicherStatus === 'speichern' || !pruefung.titel.trim()}
+        onSpeichern={handleSpeichern}
+        onDuplizieren={config && onDuplizieren ? () => onDuplizieren(pruefung) : undefined}
+        onLoeschen={config ? () => setZeigLoeschPruefung(true) : undefined}
       />
-
-      {/* Tabs */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-2">
-        <TabBar
-          tabs={[
-            { id: 'config', label: 'Einstellungen' },
-            { id: 'abschnitte', label: `Abschnitte & Fragen (${gesamtFragen})` },
-            { id: 'vorschau', label: 'Vorschau' },
-            { id: 'analyse', label: 'Analyse', disabled: gesamtFragen === 0 },
-          ]}
-          activeTab={tab}
-          onTabChange={(id) => setTab(id as ComposerTab)}
-          size="md"
-        />
-      </div>
 
       {/* Content */}
       <main className="p-6">
@@ -364,18 +341,6 @@ export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: 
         {tab === 'vorschau' && <VorschauTab pruefung={pruefung} fragenMap={fragenMap} fragenGeladen={fragenGeladen} onSuSVorschau={() => setZeigSuSVorschau(true)} />}
         {tab === 'analyse' && (
           <AnalyseTab pruefung={pruefung} fragenMap={fragenMap} fragenGeladen={fragenGeladen} />
-        )}
-
-        {/* Prüfung löschen — nur bei bestehender Prüfung */}
-        {config && (
-          <div className="mt-12 pt-6 border-t border-slate-200 dark:border-slate-700">
-            <button
-              onClick={() => setZeigLoeschPruefung(true)}
-              className="text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 cursor-pointer transition-colors"
-            >
-              {pruefung.typ === 'formativ' ? 'Übung löschen...' : 'Prüfung löschen...'}
-            </button>
-          </div>
         )}
       </main>
 
