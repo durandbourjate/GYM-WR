@@ -392,11 +392,11 @@ function phase1_generierung() {
 }
 
 /**
- * Ziel-Längen für die Distraktoren: (anzahl+1−zielRang) länger als die korrekte
+ * Ziel-Längen für die Distraktoren: (zielRang−1) länger als die korrekte
  * Antwort, der Rest kürzer. Deterministischer Jitter pro Distraktor.
  */
 function berechneZielLaengen_(korrektLen, zielRang, anzahl, frageId) {
-  var anzLaenger = (anzahl + 1) - zielRang;
+  var anzLaenger = zielRang - 1;
   var ziele = [];
   for (var i = 0; i < anzahl; i++) {
     var j = pseudoZufall_(frageId + '#' + i);  // 0..1
