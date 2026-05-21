@@ -8,7 +8,11 @@ export interface ThemaGruppe {
 /** Fach → Thema → ThemaGruppe. */
 export type LernzielGruppierung = Record<string, Record<string, ThemaGruppe>>
 
-/** Gruppiert Lernziele nach Fach → Thema → Unterthema. */
+/**
+ * Gruppiert Lernziele nach Fach → Thema → Unterthema.
+ * Hinweis: Inaktive Lernziele (aktiv === false) werden NICHT herausgefiltert —
+ * der Aufrufer ist für die Vorfilterung verantwortlich.
+ */
 export function gruppiereLernziele(lernziele: Lernziel[]): LernzielGruppierung {
   const result: LernzielGruppierung = {}
   for (const lz of lernziele) {
