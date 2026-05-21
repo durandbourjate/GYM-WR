@@ -37,7 +37,7 @@ interface DashboardProps {
 export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
-  const { starteSession } = useUebenUebungsStore()
+  const { starteSession, starteLernzielSession } = useUebenUebungsStore()
   const { getThemenFortschritt, fortschritte, lernziele } = useUebenFortschrittStore()
   const { auftraege } = useUebenAuftragStore()
   const { openUebung } = useSuSNavigation()
@@ -492,6 +492,11 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                 onUeben={() => {
                   setLzMiniModal(null)
                   oeffneThema(lzMiniModal.fach, lzMiniModal.thema)
+                }}
+                onLernzielUeben={async (lz) => {
+                  setLzMiniModal(null)
+                  await starteLernzielSession(lz)
+                  openUebung(lz.thema)
                 }}
               />
             )}

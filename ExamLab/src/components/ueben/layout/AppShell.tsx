@@ -22,7 +22,7 @@ interface Props {
 export default function AppShell({ children, onExamLabHome: _onExamLabHome, onModusWechsel: _onModusWechsel }: Props) {
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
-  const { openDashboard, back } = useSuSNavigation()
+  const { openDashboard, back, openUebung } = useSuSNavigation()
 
   // Screen aus URL ableiten
   const location = useLocation()
@@ -78,6 +78,11 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
               m.useUebenNavigationStore.getState().setDeepLinkThema(thema)
             })
             openDashboard()
+          }}
+          onLernzielUeben={async (lz) => {
+            setLernzieleOffen(false)
+            await useUebenUebungsStore.getState().starteLernzielSession(lz)
+            openUebung(lz.thema)
           }}
         />
       )}

@@ -157,18 +157,24 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     const user = useUebenAuthStore.getState().user
     if (!gruppe || !user) return
 
-    const alleFragen = await uebenFragenAdapter.ladeFragen(gruppe.id)
-    const ids = new Set(lernziel.fragenIds ?? [])
-    const gefilterte = alleFragen.filter(f => ids.has(f.id))
+    set({ ladeStatus: 'laden' })
 
-    const { getStatus, freischaltungen } = useThemenSichtbarkeitStore.getState()
-    const freiwillig = freischaltungen.length > 0
-      && getStatus(lernziel.fach, lernziel.thema) === 'nicht_freigeschaltet'
+    try {
+      const alleFragen = await uebenFragenAdapter.ladeFragen(gruppe.id)
+      const ids = new Set(lernziel.fragenIds ?? [])
+      const gefilterte = alleFragen.filter(f => ids.has(f.id))
 
-    await get().starteSession(
-      gruppe.id, user.email, lernziel.fach, lernziel.thema,
-      gefilterte, 'standard', undefined, freiwillig,
-    )
+      const { getStatus, freischaltungen } = useThemenSichtbarkeitStore.getState()
+      const freiwillig = freischaltungen.length > 0
+        && getStatus(lernziel.fach, lernziel.thema) === 'nicht_freigeschaltet'
+
+      await get().starteSession(
+        gruppe.id, user.email, lernziel.fach, lernziel.thema,
+        gefilterte, 'standard', undefined, freiwillig,
+      )
+    } catch {
+      set({ ladeStatus: 'fehler' })
+    }
   },
 
   beantworte: (antwort) => {

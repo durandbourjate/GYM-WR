@@ -135,6 +135,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
             <LernzielKarte
               lernziel={gewaehltesLernziel}
               fortschritte={fortschritte}
+              // optional — AdminThemensteuerung nutzt das Akkordeon ohne Lernziel-Üben
               onUeben={onLernzielUeben ?? (() => {})}
               onZurueck={() => setGewaehltesLernziel(null)}
             />
@@ -311,6 +312,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
             <LernzielKarte
               lernziel={gewaehltesLernziel}
               fortschritte={fortschritte}
+              // optional — AdminThemensteuerung nutzt das Mini-Modal ohne Lernziel-Üben
               onUeben={onLernzielUeben ?? (() => {})}
               onZurueck={() => setGewaehltesLernziel(null)}
             />

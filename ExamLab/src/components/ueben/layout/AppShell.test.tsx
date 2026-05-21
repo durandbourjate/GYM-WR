@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 // --- Mocks (müssen VOR dem Komponenten-Import stehen) -----------------------
@@ -14,9 +14,13 @@ vi.mock('../../../store/ueben/gruppenStore', () => ({
   useUebenGruppenStore: () => ({ aktiveGruppe: { id: 'g1', name: 'Testgruppe' } }),
 }))
 
-// ueben/uebungsStore: keine laufende Session
+// ueben/uebungsStore: keine laufende Session, mit starteLernzielSession-Mock
+const starteLernzielSessionMock = vi.fn().mockResolvedValue(undefined)
 vi.mock('../../../store/ueben/uebungsStore', () => ({
-  useUebenUebungsStore: { setState: vi.fn() },
+  useUebenUebungsStore: {
+    setState: vi.fn(),
+    getState: () => ({ starteLernzielSession: starteLernzielSessionMock }),
+  },
 }))
 
 // fortschrittStore: 1 Lernziel → LernzieleAkkordeon zeigt "Alle Lernziele"
@@ -39,10 +43,12 @@ vi.mock('../../../store/ueben/fortschrittStore', () => ({
 }))
 
 // useSuSNavigation: stub-Callbacks
+const openUebungMock = vi.fn()
 vi.mock('../../../hooks/ueben/useSuSNavigation', () => ({
   useSuSNavigation: () => ({
     openDashboard: vi.fn(),
     back: vi.fn(),
+    openUebung: openUebungMock,
   }),
 }))
 
@@ -67,12 +73,39 @@ vi.mock('../../sus/SuSAppHeaderContainer', () => ({
   ),
 }))
 
-// LernzieleAkkordeon: leichte Stub-Implementierung — rendert die testbare Überschrift
+// LernzieleAkkordeon: Stub — rendert die testbare Überschrift + einen Üben-Button
+// der onLernzielUeben mit einem Test-Lernziel aufruft
+const TEST_LERNZIEL = {
+  id: 'lz1',
+  fach: 'BWL',
+  thema: 'Grundlagen',
+  text: 'Test-Lernziel',
+  bloom: 'K2',
+  aktiv: true,
+}
 vi.mock('../LernzieleAkkordeon', () => ({
-  default: ({ onSchliessen }: { lernziele: unknown[]; fortschritte: unknown; onSchliessen: () => void; onThemaUeben: (t: string) => void }) => (
+  default: ({
+    onSchliessen,
+    onLernzielUeben,
+  }: {
+    lernziele: unknown[]
+    fortschritte: unknown
+    onSchliessen: () => void
+    onThemaUeben: (t: string) => void
+    onLernzielUeben?: (lz: typeof TEST_LERNZIEL) => void
+  }) => (
     <div>
       <h2>Alle Lernziele</h2>
       <button type="button" aria-label="Schliessen" onClick={onSchliessen}>X</button>
+      {onLernzielUeben && (
+        <button
+          type="button"
+          aria-label="Lernziel üben"
+          onClick={() => onLernzielUeben(TEST_LERNZIEL)}
+        >
+          Üben
+        </button>
+      )}
     </div>
   ),
 }))
@@ -107,6 +140,8 @@ describe('AppShell — Lernziele-Button', () => {
   beforeEach(() => {
     mockMatchMedia()
     ladeLernzieleMock.mockReset()
+    starteLernzielSessionMock.mockReset().mockResolvedValue(undefined)
+    openUebungMock.mockReset()
   })
 
   it('zeigt einen Lernziele-Button im Header wenn SuS eingeloggt ist', () => {
@@ -159,5 +194,34 @@ describe('AppShell — Lernziele-Button', () => {
 
     expect(screen.getByText('Alle Lernziele')).toBeInTheDocument()
     expect(screen.queryByTestId('hilfe-panel')).not.toBeInTheDocument()
+  })
+
+  it('onLernzielUeben: ruft starteLernzielSession auf und schliesst das Akkordeon', async () => {
+    render(
+      <MemoryRouter initialEntries={['/sus/ueben']}>
+        <AppShell>
+          <div>Kinder</div>
+        </AppShell>
+      </MemoryRouter>,
+    )
+
+    // Akkordeon öffnen
+    fireEvent.click(screen.getByRole('button', { name: 'Lernziele' }))
+    expect(screen.getByText('Alle Lernziele')).toBeInTheDocument()
+
+    // Üben-Button im Stub klicken → ruft onLernzielUeben(TEST_LERNZIEL) auf
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Lernziel üben' }))
+    })
+
+    // (a) starteLernzielSession wurde mit dem Test-Lernziel aufgerufen
+    expect(starteLernzielSessionMock).toHaveBeenCalledTimes(1)
+    expect(starteLernzielSessionMock).toHaveBeenCalledWith(TEST_LERNZIEL)
+
+    // (b) openUebung wurde mit dem thema des Lernziels aufgerufen
+    expect(openUebungMock).toHaveBeenCalledWith(TEST_LERNZIEL.thema)
+
+    // (c) Akkordeon wurde geschlossen (lernzieleOffen → false)
+    expect(screen.queryByText('Alle Lernziele')).not.toBeInTheDocument()
   })
 })

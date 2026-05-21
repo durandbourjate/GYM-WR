@@ -38,6 +38,13 @@ import { useThemenSichtbarkeitStore } from './themenSichtbarkeitStore'
 
 // --- Test-Hilfsdaten ---
 
+// Originale starteSession-Implementierung sichern, damit vi.restoreAllMocks()
+// nach Zustand-set()-Calls (die den State-Snapshot ersetzen) die Spy-Isolation
+// nicht verliert. Details: Zustand's set() kopiert Methoden via Object.assign
+// in den neuen State — dabei wird eine Spy-Referenz übernommen, die
+// vi.restoreAllMocks() nicht mehr trackt (der Original-Objekt-Slot wurde ersetzt).
+const ORIGINAL_STARTE_SESSION = useUebenUebungsStore.getState().starteSession
+
 /** Erzeugt eine minimale Frage mit gegebener ID. */
 function baueFrage(id: string): Frage {
   return {
@@ -76,6 +83,10 @@ describe('uebungsStore.starteLernzielSession', () => {
       loesungenPreloaded: {},
       historie: [],
     })
+    // starteSession explizit auf Original zurücksetzen, damit vi.restoreAllMocks()
+    // nicht durch Zustand-set()-Kopien ausgehebelt wird (Spy-Isolation — siehe
+    // Kommentar bei ORIGINAL_STARTE_SESSION).
+    useUebenUebungsStore.getState().starteSession = ORIGINAL_STARTE_SESSION
 
     // Standard-Store-Mocks: Gruppe + User vorhanden
     vi.mocked(useUebenGruppenStore.getState).mockReturnValue({
@@ -207,5 +218,13 @@ describe('uebungsStore.starteLernzielSession', () => {
     expect(starteSessionSpy).toHaveBeenCalledTimes(1)
     const fragenOverride = starteSessionSpy.mock.calls[0][4] as Frage[]
     expect(fragenOverride).toEqual([])
+  })
+
+  it('setzt ladeStatus auf "fehler" wenn ladeFragen wirft (kein Silent-Fail)', async () => {
+    vi.mocked(uebenFragenAdapter.ladeFragen).mockRejectedValue(new Error('Netzwerkfehler'))
+
+    await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
+
+    expect(useUebenUebungsStore.getState().ladeStatus).toBe('fehler')
   })
 })
