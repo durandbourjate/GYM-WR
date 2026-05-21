@@ -47,12 +47,17 @@ vi.mock('../../../hooks/ueben/useSuSNavigation', () => ({
 }))
 
 // SuSAppHeaderContainer: stub — der eigentliche Container hängt an vielen Stores.
-// Wir ersetzen ihn durch eine Minimal-Implementierung, die den onLernziele-Prop
-// als Lernziele-Button nach aussen trägt, damit AppShell verdrahtet werden kann.
+// Wir ersetzen ihn durch eine Minimal-Implementierung, die onHilfe und onLernziele
+// als testbare Buttons nach aussen trägt, damit AppShell korrekt verdrahtet werden kann.
 vi.mock('../../sus/SuSAppHeaderContainer', () => ({
-  SuSAppHeaderContainer: ({ onLernziele }: { onLernziele?: () => void }) => (
+  SuSAppHeaderContainer: ({ onHilfe, onLernziele }: { onHilfe?: () => void; onLernziele?: () => void }) => (
     <header>
       <span>ExamLab</span>
+      {onHilfe && (
+        <button type="button" aria-label="Hilfe" onClick={onHilfe}>
+          Hilfe
+        </button>
+      )}
       {onLernziele && (
         <button type="button" aria-label="Lernziele" onClick={onLernziele}>
           Lernziele
@@ -136,7 +141,7 @@ describe('AppShell — Lernziele-Button', () => {
     expect(screen.getByText('Alle Lernziele')).toBeInTheDocument()
   })
 
-  it('schliesst das Hilfe-Panel wenn Lernziele-Button geklickt wird', () => {
+  it('schliesst das Hilfe-Panel wenn Lernziele-Button geklickt wird (gegenseitiger Ausschluss)', () => {
     render(
       <MemoryRouter initialEntries={['/sus/ueben']}>
         <AppShell>
@@ -145,8 +150,11 @@ describe('AppShell — Lernziele-Button', () => {
       </MemoryRouter>,
     )
 
-    // Hilfe-Panel öffnen (via direkter State-Simulation nicht möglich — kein onHilfe-Prop hier,
-    // prüfen wir stattdessen: Akkordeon erscheint, Hilfe-Panel ist NICHT sichtbar)
+    // Erst Hilfe-Panel öffnen, damit der gegenseitige Ausschluss prüfbar wird
+    fireEvent.click(screen.getByRole('button', { name: 'Hilfe' }))
+    expect(screen.getByTestId('hilfe-panel')).toBeInTheDocument()
+
+    // Jetzt Lernziele öffnen — AppShell setzt hilfeOffen=false, lernzieleOffen=true
     fireEvent.click(screen.getByRole('button', { name: 'Lernziele' }))
 
     expect(screen.getByText('Alle Lernziele')).toBeInTheDocument()
