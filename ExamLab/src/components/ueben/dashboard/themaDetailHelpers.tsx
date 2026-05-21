@@ -39,39 +39,19 @@ export function Chip({ label, title, count, aktiv, farbe, onClick, onLernzieleKl
 }) {
   const zeigeLernzieleIcon = onLernzieleKlick !== undefined && (lernzieleAnzahl ?? 0) > 0
 
-  const toggleKlassen = `inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer select-none ${
+  // Einziger Render-Pfad: Wrapper-span (trägt Border + rounded-full) umschliesst
+  // immer den Toggle-Button; Trennlinie + Flag-Button werden nur bei Bedarf angehängt.
+  // overflow-hidden clippt die Ecken des Toggle-Buttons korrekt — visuell identisch
+  // zum früheren alleinstehenden Button mit rounded-full.
+  const borderKlasse = !aktiv
+    ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
+    : ''
+
+  const toggleKlassen = `inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer select-none rounded-none ${
     !aktiv
       ? 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'
       : ''
   }`
-
-  if (!zeigeLernzieleIcon) {
-    // Einfacher Fall: einziger Button, runde Umrandung wie bisher
-    return (
-      <button
-        onClick={onClick}
-        title={title}
-        className={`${toggleKlassen} rounded-full border-2 ${
-          !aktiv
-            ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
-            : ''
-        }`}
-        style={aktiv ? { backgroundColor: farbe, color: '#fff', borderColor: farbe } : undefined}
-      >
-        {label}
-        {count !== undefined && (
-          <span className={`text-[10px] font-mono ${aktiv ? 'opacity-80' : 'text-slate-400'}`}>
-            {count}
-          </span>
-        )}
-      </button>
-    )
-  }
-
-  // Erweiterter Fall: Wrapper-span mit zwei sibling-buttons (kein nested <button>)
-  const borderKlasse = !aktiv
-    ? 'border-slate-200 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500'
-    : ''
 
   return (
     <span
@@ -82,7 +62,7 @@ export function Chip({ label, title, count, aktiv, farbe, onClick, onLernzieleKl
       <button
         onClick={onClick}
         title={title}
-        className={`${toggleKlassen} rounded-none`}
+        className={toggleKlassen}
         style={aktiv ? { backgroundColor: farbe, color: '#fff' } : undefined}
       >
         {label}
@@ -93,33 +73,34 @@ export function Chip({ label, title, count, aktiv, farbe, onClick, onLernzieleKl
         )}
       </button>
 
-      {/* Trennlinie */}
-      <span
-        aria-hidden="true"
-        className={`w-px self-stretch ${
-          aktiv
-            ? 'bg-white/40'
-            : 'bg-slate-200 dark:bg-slate-600'
-        }`}
-      />
+      {zeigeLernzieleIcon && (
+        <>
+          {/* Trennlinie */}
+          <span
+            aria-hidden="true"
+            className={`w-px self-stretch ${
+              aktiv
+                ? 'bg-white/40'
+                : 'bg-slate-200 dark:bg-slate-600'
+            }`}
+          />
 
-      {/* Lernziele-Flag-Button */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation()
-          onLernzieleKlick()
-        }}
-        aria-label="Lernziele"
-        title="Lernziele"
-        className={`px-2 py-1.5 flex items-center cursor-pointer transition-colors ${
-          aktiv
-            ? 'hover:bg-white/20'
-            : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-        }`}
-        style={aktiv ? { color: 'rgba(255,255,255,0.85)' } : undefined}
-      >
-        <Flag className="w-3 h-3" aria-hidden="true" />
-      </button>
+          {/* Lernziele-Flag-Button — kompakte Grösse ist bewusstes Design (Chip-Höhe ~28px) */}
+          <button
+            onClick={onLernzieleKlick}
+            aria-label="Lernziele"
+            title="Lernziele"
+            className={`px-2.5 py-1.5 flex items-center cursor-pointer transition-colors ${
+              aktiv
+                ? 'hover:bg-white/20'
+                : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }`}
+            style={aktiv ? { color: 'rgba(255,255,255,0.85)' } : undefined}
+          >
+            <Flag className="w-3 h-3" aria-hidden="true" />
+          </button>
+        </>
+      )}
     </span>
   )
 }

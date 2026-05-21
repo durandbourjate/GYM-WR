@@ -96,6 +96,7 @@ export function ThemaDetailView({
               <Chip
                 key={ut}
                 label={ut}
+                title={ut}
                 count={anzahl}
                 aktiv={unterthemaFilter.has(ut)}
                 farbe={farbe}
@@ -114,6 +115,7 @@ export function ThemaDetailView({
             <Chip
               key={s}
               label={`${SCHWIERIGKEIT_STERNE[s] || '⭐'} ${SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}`}
+              title={SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}
               count={anzahl}
               aktiv={schwierigkeitFilter.has(s)}
               farbe={farbe}
@@ -132,6 +134,7 @@ export function ThemaDetailView({
               <Chip
                 key={t}
                 label={TYP_LABELS[t] || t}
+                title={TYP_LABELS[t] || t}
                 count={anzahl}
                 aktiv={typFilter.has(t)}
                 farbe={farbe}
