@@ -6873,8 +6873,8 @@ function importiereLernziele(body) {
     var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
     var sheet = fragensammlung.getSheetByName(LERNZIELE_TAB);
 
-    // Tab erstellen falls nicht vorhanden
-    var lernzielHeaders = ['id', 'fach', 'poolId', 'thema', 'unterthema', 'text', 'bloom', 'aktiv'];
+    // Tab erstellen falls nicht vorhanden — kanonisches Schema (LERNZIEL_HEADERS).
+    var lernzielHeaders = LERNZIEL_HEADERS;
     if (!sheet) {
       sheet = fragensammlung.insertSheet(LERNZIELE_TAB);
       sheet.getRange(1, 1, 1, lernzielHeaders.length).setValues([lernzielHeaders]);
