@@ -36,6 +36,8 @@ interface ThemaDetailProps {
   onZurueck: () => void
   onStarte: () => void
   fachFarben: Record<string, string>
+  onUnterthemaLernziele?: (unterthema: string) => void
+  lernzieleProUnterthema?: Record<string, number>
 }
 
 export function ThemaDetailView({
@@ -44,6 +46,7 @@ export function ThemaDetailView({
   onToggleUnterthema, onToggleSchwierigkeit, onToggleTyp,
   onToggleAlleUnterthemen, onToggleAlleSchwierigkeiten, onToggleAlleTypen,
   onZurueck, onStarte, fachFarben,
+  onUnterthemaLernziele, lernzieleProUnterthema,
 }: ThemaDetailProps) {
   const farbe = getFachFarbe(themaDetail.fach, fachFarben)
   // Immer alle 3 Schwierigkeitsstufen anzeigen (Pool-Fragen haben diff 1-3)
@@ -101,6 +104,8 @@ export function ThemaDetailView({
                 aktiv={unterthemaFilter.has(ut)}
                 farbe={farbe}
                 onClick={() => onToggleUnterthema(ut)}
+                onLernzieleKlick={onUnterthemaLernziele ? () => onUnterthemaLernziele(ut) : undefined}
+                lernzieleAnzahl={lernzieleProUnterthema?.[ut]}
               />
             )
           })}

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import { Shuffle, RotateCw, Star, Lock } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { useToast } from '@gymhofwil/shared'
@@ -90,7 +90,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     }
   }, [location.pathname, dashboardTab])
 
-  const [lzMiniModal, setLzMiniModal] = useState<{ fach: string; thema: string } | null>(null)
+  const [lzMiniModal, setLzMiniModal] = useState<{ fach: string; thema: string; fokusUnterthema?: string } | null>(null)
 
   // Navigation: Fachbereich → Thema → Filter → Übung starten
   const [aktiverFach, setAktiverFach] = useState<string | null>(null)
@@ -134,6 +134,22 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
     getStatus,
     getAktiveUnterthemen,
   })
+
+  // Anzahl aktiver Lernziele pro Unterthema für das aktuell geöffnete Thema.
+  // Rohdaten (lernziele, themaDetail) werden hier roh selektiert — kein
+  // .filter()-Literal im Zustand-Selektor (vgl. code-quality.md Zustand-Selektoren).
+  const lernzieleProUnterthema = useMemo<Record<string, number>>(() => {
+    if (!themaDetail) return {}
+    const counts: Record<string, number> = {}
+    for (const lz of lernziele) {
+      if (lz.aktiv === false) continue
+      if (lz.fach !== themaDetail.fach) continue
+      if (!(lz.thema === themaDetail.thema || lz.thema?.includes(themaDetail.thema) || themaDetail.thema?.includes(lz.thema))) continue
+      const key = lz.unterthema ?? ''
+      counts[key] = (counts[key] ?? 0) + 1
+    }
+    return counts
+  }, [lernziele, themaDetail])
 
   // Öffnet ein Thema-Detail und befüllt die Filter-Sets mit allen vorhandenen
   // Werten. Ein leeres Filter-Set bedeutet "nichts ausgewählt" (siehe
@@ -359,6 +375,11 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
             onZurueck={zurueckZuThemen}
             onStarte={handleStarteGefiltert}
             fachFarben={fachFarben}
+            lernzieleProUnterthema={lernzieleProUnterthema}
+            onUnterthemaLernziele={(ut) => {
+              if (!themaDetail) return
+              setLzMiniModal({ fach: themaDetail.fach, thema: themaDetail.thema, fokusUnterthema: ut })
+            }}
           />
         ) : (
           /* ===================== THEMEN-ÜBERSICHT (Fach → Thema Karten) ===================== */
@@ -490,6 +511,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                 thema={lzMiniModal.thema}
                 lernziele={lernziele}
                 fortschritte={fortschritte}
+                fokusUnterthema={lzMiniModal.fokusUnterthema}
                 onSchliessen={() => setLzMiniModal(null)}
                 onUeben={() => {
                   setLzMiniModal(null)
