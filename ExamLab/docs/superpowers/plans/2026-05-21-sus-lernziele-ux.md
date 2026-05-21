@@ -469,6 +469,8 @@ git commit -m "feat(lernziele): Schwierigkeit als Signal-Balken statt Stern-Emoj
 
 ### Task 12: Volle Suite + Browser-E2E auf Staging
 
+> **Übernommen aus Task-5-Code-Review:** Der Test `'fokusUnterthema scrollt nicht wenn Detail-Karte offen ist'` in `LernzieleAkkordeon.test.tsx` durchläuft den Pfad, prüft die Wirkung aber nicht — es fehlt eine `expect(scrollIntoViewMock).not.toHaveBeenCalled()`-Assertion, solange die Detail-Karte offen ist. Diese eine Assertion ergänzen, damit der Test ein Regress von Fix 1 wirklich fängt.
+
 - [ ] **Step 1: Gesamt-Checks**
 
 Run: `cd ExamLab && npx tsc -b && npx vitest run && npm run build`
