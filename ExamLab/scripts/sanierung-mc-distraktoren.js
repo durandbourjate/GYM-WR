@@ -325,3 +325,138 @@ function berechneRangPlan_(anzahlAuffaellig, restHistogramm) {
   }
   return plan;
 }
+
+/**
+ * PHASE 1 — Generiert pro auffälliger Frage 3+ neue Distraktoren auf den
+ * Ziel-Längen. Batchweise, Cursor-resumable. So oft neu starten, bis der Log
+ * "FERTIG" meldet.
+ */
+function phase1_generierung() {
+  var startMs = Date.now();
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var review = ss.getSheetByName(REVIEW_TAB);
+  if (!review) { Logger.log('ABBRUCH: Review-Sheet fehlt — erst Phase 0 ausführen.'); return; }
+
+  var headers = reviewHeaders_();
+  var daten = review.getDataRange().getValues();
+  var start = cursorLesen_(CURSOR_P1);
+  var verarbeitet = 0, fehler = 0;
+
+  for (var i = Math.max(1, start); i < daten.length; i++) {
+    if (Date.now() - startMs > ZEIT_BUDGET_MS) {
+      cursorSchreiben_(CURSOR_P1, i);
+      Logger.log('PHASE 1 — Zeitbudget erreicht bei Zeile ' + i + '. Erneut starten.');
+      return;
+    }
+    var row = daten[i];
+    // schon generiert? (distraktor_neu_1 gefüllt) → überspringen
+    if (String(row[rcol_('distraktor_neu_1')] || '').trim()) continue;
+
+    var anzahl = Number(row[rcol_('anzahl_distraktoren')]) || 0;
+    var korrektLen = Number(row[rcol_('korrekt_len')]) || 0;
+    var zielRang = Number(row[rcol_('ziel_rang')]) || 1;
+    var frageId = String(row[rcol_('id')]);
+    if (anzahl < 1 || korrektLen < 1) continue;
+
+    var altDistraktoren = [];
+    for (var k = 1; k <= anzahl; k++) {
+      altDistraktoren.push(String(row[rcol_('distraktor_alt_' + k)] || ''));
+    }
+    var zielLaengen = berechneZielLaengen_(korrektLen, zielRang, anzahl, frageId);
+
+    try {
+      var neu = generiereDistraktoren_(
+        String(row[rcol_('fragetext')]),
+        String(row[rcol_('korrekt_text')]),
+        altDistraktoren,
+        zielLaengen
+      );
+      // zurückschreiben
+      var rNr = i + 1;
+      for (var n = 0; n < anzahl; n++) {
+        var txt = neu[n] || '';
+        review.getRange(rNr, rcol_('distraktor_neu_' + (n + 1)) + 1).setValue(txt);
+        review.getRange(rNr, rcol_('neu_len_' + (n + 1)) + 1).setValue(textLaenge_(txt));
+      }
+      review.getRange(rNr, rcol_('ist_rang') + 1)
+        .setValue(rangAusLaengen_(korrektLen, neu.map(textLaenge_)));
+      verarbeitet++;
+    } catch (e) {
+      fehler++;
+      Logger.log('FEHLER Zeile ' + (i + 1) + ' (' + frageId + '): ' + e.message);
+    }
+  }
+
+  cursorLoeschen_(CURSOR_P1);
+  Logger.log('PHASE 1 — FERTIG. Verarbeitet: ' + verarbeitet + ', Fehler: ' + fehler);
+}
+
+/**
+ * Ziel-Längen für die Distraktoren: (anzahl+1−zielRang) länger als die korrekte
+ * Antwort, der Rest kürzer. Deterministischer Jitter pro Distraktor.
+ */
+function berechneZielLaengen_(korrektLen, zielRang, anzahl, frageId) {
+  var anzLaenger = (anzahl + 1) - zielRang;
+  var ziele = [];
+  for (var i = 0; i < anzahl; i++) {
+    var j = pseudoZufall_(frageId + '#' + i);  // 0..1
+    var laenge;
+    if (i < anzLaenger) {
+      laenge = Math.round(korrektLen * (1.08 + j * 0.32));   // 1.08x .. 1.40x
+    } else {
+      laenge = Math.round(korrektLen * (0.72 + j * 0.24));   // 0.72x .. 0.96x
+    }
+    ziele.push(Math.max(laenge, 12));
+  }
+  return ziele;
+}
+
+/** Rang der korrekten Antwort gegeben ihre Länge + die Distraktor-Längen. */
+function rangAusLaengen_(korrektLen, distraktorLaengen) {
+  var laenger = 0;
+  for (var i = 0; i < distraktorLaengen.length; i++) {
+    if (distraktorLaengen[i] > korrektLen) laenger++;
+  }
+  return 1 + laenger;
+}
+
+/** Ein Claude-Call: schreibt die Distraktoren auf die Ziel-Längen um. */
+function generiereDistraktoren_(fragetext, korrektText, altDistraktoren, zielLaengen) {
+  var liste = '';
+  for (var i = 0; i < altDistraktoren.length; i++) {
+    liste += (i + 1) + '. ' + wrapUserData_('distraktor', altDistraktoren[i]) + '\n';
+  }
+  var laengenZeile = '';
+  for (var z = 0; z < zielLaengen.length; z++) {
+    laengenZeile += '- Distraktor ' + (z + 1) + ': ca. ' + zielLaengen[z] + ' Zeichen\n';
+  }
+
+  var prompt =
+    'Du überarbeitest die Distraktoren (falsche Antwortoptionen) einer ' +
+    'Multiple-Choice-Prüfungsfrage. Ziel: Die Länge einer Option darf nicht ' +
+    'verraten, ob sie korrekt ist.\n\n' +
+    'Fragetext:\n' + wrapUserData_('fragetext', fragetext) + '\n\n' +
+    'Korrekte Antwort (NICHT verändern, nur als Kontext):\n' +
+    wrapUserData_('korrekt', korrektText) + '\n\n' +
+    'Aktuelle Distraktoren (alle FALSCH — überarbeite sie):\n' + liste + '\n' +
+    'Anforderungen pro Distraktor:\n' +
+    '- Bleibt inhaltlich EINDEUTIG FALSCH relativ zur Frage. Keine versehentlich ' +
+    'korrekte Aussage.\n' +
+    '- Bleibt ein fachlich plausibler Ablenker — kein Füllwort-Geschwafel, keine ' +
+    'offensichtlich unsinnige Aussage.\n' +
+    '- Ziel-Längen (±15 %), erreicht durch mehr fachliche Vollständigkeit und ' +
+    'Präzision, nicht durch Padding:\n' + laengenZeile +
+    '- Wiederhole NICHT die korrekte Antwort und keinen anderen Distraktor.\n\n' +
+    'Antworte ausschliesslich als JSON: { "distraktoren": ["...", ...] } — genau ' +
+    altDistraktoren.length + ' Einträge, in derselben Reihenfolge.';
+
+  var antwort = rufeClaudeAuf_(prompt, 2048);
+  if (!antwort || !Array.isArray(antwort.distraktoren)) {
+    throw new Error('Claude-Antwort ohne distraktoren-Array');
+  }
+  if (antwort.distraktoren.length !== altDistraktoren.length) {
+    throw new Error('Claude lieferte ' + antwort.distraktoren.length
+      + ' statt ' + altDistraktoren.length + ' Distraktoren');
+  }
+  return antwort.distraktoren.map(function (d) { return String(d || ''); });
+}
