@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { Shuffle, RotateCw, Star, Lock } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
+import { useToast } from '@gymhofwil/shared'
 import { useUebenAuthStore } from '../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
 import { useUebenUebungsStore } from '../../store/ueben/uebungsStore'
@@ -38,6 +39,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
   const { starteSession, starteLernzielSession } = useUebenUebungsStore()
+  const toast = useToast()
   const { getThemenFortschritt, fortschritte, lernziele } = useUebenFortschrittStore()
   const { auftraege } = useUebenAuftragStore()
   const { openUebung } = useSuSNavigation()
@@ -495,8 +497,9 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
                 }}
                 onLernzielUeben={async (lz) => {
                   setLzMiniModal(null)
-                  await starteLernzielSession(lz)
-                  openUebung(lz.thema)
+                  const ok = await starteLernzielSession(lz)
+                  if (ok) openUebung(lz.thema)
+                  else toast.error('Die Übung konnte nicht geladen werden.')
                 }}
               />
             )}

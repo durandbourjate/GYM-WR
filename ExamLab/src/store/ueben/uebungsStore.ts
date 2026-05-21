@@ -37,8 +37,9 @@ interface UebungsState {
   historie: GespeichertesErgebnis[]
 
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[], freiwillig?: boolean) => Promise<void>
-  /** Startet eine Übe-Session gefiltert auf die Fragen eines einzelnen Lernziels. */
-  starteLernzielSession: (lernziel: Lernziel) => Promise<void>
+  /** Startet eine Übe-Session gefiltert auf die Fragen eines einzelnen Lernziels.
+   * Gibt `true` zurück wenn die Session erfolgreich gestartet wurde, `false` bei Fehler. */
+  starteLernzielSession: (lernziel: Lernziel) => Promise<boolean>
   beantworte: (antwort: unknown) => void
   beantworteById: (frageId: string, antwort: Antwort) => void
   /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen + Üben-Modus) */
@@ -155,7 +156,7 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
   starteLernzielSession: async (lernziel) => {
     const gruppe = useUebenGruppenStore.getState().aktiveGruppe
     const user = useUebenAuthStore.getState().user
-    if (!gruppe || !user) return
+    if (!gruppe || !user) return false
 
     set({ ladeStatus: 'laden' })
 
@@ -172,8 +173,10 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
         gruppe.id, user.email, lernziel.fach, lernziel.thema,
         gefilterte, 'standard', undefined, freiwillig,
       )
+      return get().ladeStatus !== 'fehler'
     } catch {
       set({ ladeStatus: 'fehler' })
+      return false
     }
   },
 

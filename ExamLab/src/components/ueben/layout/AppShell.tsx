@@ -1,5 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useToast } from '@gymhofwil/shared'
 import { useUebenAuthStore } from '../../../store/ueben/authStore'
 import { useUebenGruppenStore } from '../../../store/ueben/gruppenStore'
 import { useUebenUebungsStore } from '../../../store/ueben/uebungsStore'
@@ -23,6 +24,7 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
   const { user } = useUebenAuthStore()
   const { aktiveGruppe } = useUebenGruppenStore()
   const { openDashboard, back, openUebung } = useSuSNavigation()
+  const toast = useToast()
 
   // Screen aus URL ableiten
   const location = useLocation()
@@ -81,8 +83,9 @@ export default function AppShell({ children, onExamLabHome: _onExamLabHome, onMo
           }}
           onLernzielUeben={async (lz) => {
             setLernzieleOffen(false)
-            await useUebenUebungsStore.getState().starteLernzielSession(lz)
-            openUebung(lz.thema)
+            const ok = await useUebenUebungsStore.getState().starteLernzielSession(lz)
+            if (ok) openUebung(lz.thema)
+            else toast.error('Die Übung konnte nicht geladen werden.')
           }}
         />
       )}

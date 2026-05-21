@@ -113,14 +113,17 @@ describe('uebungsStore.starteLernzielSession', () => {
     vi.mocked(uebenFragenAdapter.ladeFragen).mockResolvedValue(ALLE_FRAGEN)
   })
 
-  it('ruft starteSession nur mit den Fragen aus fragenIds auf (f2 + f4, nicht f1/f3/f5)', async () => {
+  it('ruft starteSession nur mit den Fragen aus fragenIds auf (f2 + f4, nicht f1/f3/f5) und gibt true zurück', async () => {
     const starteSessionSpy = vi.spyOn(
       useUebenUebungsStore.getState(),
       'starteSession',
-    ).mockResolvedValue(undefined)
+    ).mockImplementation(async (..._args) => {
+      useUebenUebungsStore.setState({ ladeStatus: 'fertig' })
+    })
 
-    await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
+    const result = await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
 
+    expect(result).toBe(true)
     expect(starteSessionSpy).toHaveBeenCalledTimes(1)
 
     // fragenOverride prüfen: muss genau f2 und f4 enthalten (5. Argument)
@@ -148,7 +151,9 @@ describe('uebungsStore.starteLernzielSession', () => {
     const starteSessionSpy = vi.spyOn(
       useUebenUebungsStore.getState(),
       'starteSession',
-    ).mockResolvedValue(undefined)
+    ).mockImplementation(async (..._args) => {
+      useUebenUebungsStore.setState({ ladeStatus: 'fertig' })
+    })
 
     await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
 
@@ -163,7 +168,9 @@ describe('uebungsStore.starteLernzielSession', () => {
     const starteSessionSpy = vi.spyOn(
       useUebenUebungsStore.getState(),
       'starteSession',
-    ).mockResolvedValue(undefined)
+    ).mockImplementation(async (..._args) => {
+      useUebenUebungsStore.setState({ ladeStatus: 'fertig' })
+    })
 
     await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
 
@@ -171,7 +178,7 @@ describe('uebungsStore.starteLernzielSession', () => {
     expect(freiwillig).toBe(false)
   })
 
-  it('bricht sofort ab (kein starteSession-Call) wenn keine aktive Gruppe vorhanden', async () => {
+  it('bricht sofort ab (kein starteSession-Call) und gibt false zurück wenn keine aktive Gruppe vorhanden', async () => {
     vi.mocked(useUebenGruppenStore.getState).mockReturnValue({
       aktiveGruppe: null,
     } as ReturnType<typeof useUebenGruppenStore.getState>)
@@ -181,12 +188,13 @@ describe('uebungsStore.starteLernzielSession', () => {
       'starteSession',
     ).mockResolvedValue(undefined)
 
-    await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
+    const result = await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
 
+    expect(result).toBe(false)
     expect(starteSessionSpy).not.toHaveBeenCalled()
   })
 
-  it('bricht sofort ab wenn kein eingeloggter User vorhanden', async () => {
+  it('bricht sofort ab und gibt false zurück wenn kein eingeloggter User vorhanden', async () => {
     vi.mocked(useUebenAuthStore.getState).mockReturnValue({
       user: null,
       istAngemeldet: false,
@@ -197,8 +205,9 @@ describe('uebungsStore.starteLernzielSession', () => {
       'starteSession',
     ).mockResolvedValue(undefined)
 
-    await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
+    const result = await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
 
+    expect(result).toBe(false)
     expect(starteSessionSpy).not.toHaveBeenCalled()
   })
 
@@ -211,7 +220,9 @@ describe('uebungsStore.starteLernzielSession', () => {
     const starteSessionSpy = vi.spyOn(
       useUebenUebungsStore.getState(),
       'starteSession',
-    ).mockResolvedValue(undefined)
+    ).mockImplementation(async (..._args) => {
+      useUebenUebungsStore.setState({ ladeStatus: 'fertig' })
+    })
 
     await useUebenUebungsStore.getState().starteLernzielSession(lernzielOhneIds)
 
@@ -220,11 +231,12 @@ describe('uebungsStore.starteLernzielSession', () => {
     expect(fragenOverride).toEqual([])
   })
 
-  it('setzt ladeStatus auf "fehler" wenn ladeFragen wirft (kein Silent-Fail)', async () => {
+  it('setzt ladeStatus auf "fehler" und gibt false zurück wenn ladeFragen wirft (kein Silent-Fail)', async () => {
     vi.mocked(uebenFragenAdapter.ladeFragen).mockRejectedValue(new Error('Netzwerkfehler'))
 
-    await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
+    const result = await useUebenUebungsStore.getState().starteLernzielSession(LERNZIEL_KONJUNKTUR)
 
+    expect(result).toBe(false)
     expect(useUebenUebungsStore.getState().ladeStatus).toBe('fehler')
   })
 })

@@ -15,7 +15,7 @@ vi.mock('../../../store/ueben/gruppenStore', () => ({
 }))
 
 // ueben/uebungsStore: keine laufende Session, mit starteLernzielSession-Mock
-const starteLernzielSessionMock = vi.fn().mockResolvedValue(undefined)
+const starteLernzielSessionMock = vi.fn().mockResolvedValue(true)
 vi.mock('../../../store/ueben/uebungsStore', () => ({
   useUebenUebungsStore: {
     setState: vi.fn(),
@@ -119,6 +119,18 @@ vi.mock('../SuSHilfePanel', () => ({
   ),
 }))
 
+// @gymhofwil/shared: useToast stub
+const toastErrorMock = vi.fn()
+vi.mock('@gymhofwil/shared', () => ({
+  useToast: () => ({
+    error: toastErrorMock,
+    success: vi.fn(),
+    info: vi.fn(),
+    warning: vi.fn(),
+    dismiss: vi.fn(),
+  }),
+}))
+
 import AppShell from './AppShell'
 
 // ---------------------------------------------------------------------------
@@ -140,8 +152,9 @@ describe('AppShell — Lernziele-Button', () => {
   beforeEach(() => {
     mockMatchMedia()
     ladeLernzieleMock.mockReset()
-    starteLernzielSessionMock.mockReset().mockResolvedValue(undefined)
+    starteLernzielSessionMock.mockReset().mockResolvedValue(true)
     openUebungMock.mockReset()
+    toastErrorMock.mockReset()
   })
 
   it('zeigt einen Lernziele-Button im Header wenn SuS eingeloggt ist', () => {
@@ -221,7 +234,44 @@ describe('AppShell — Lernziele-Button', () => {
     // (b) openUebung wurde mit dem thema des Lernziels aufgerufen
     expect(openUebungMock).toHaveBeenCalledWith(TEST_LERNZIEL.thema)
 
-    // (c) Akkordeon wurde geschlossen (lernzieleOffen → false)
+    // (c) Reihenfolge: starteLernzielSession muss vor openUebung gelaufen sein
+    expect(starteLernzielSessionMock.mock.invocationCallOrder[0])
+      .toBeLessThan(openUebungMock.mock.invocationCallOrder[0])
+
+    // (d) Kein Toast bei Erfolg
+    expect(toastErrorMock).not.toHaveBeenCalled()
+
+    // (e) Akkordeon wurde geschlossen (lernzieleOffen → false)
     expect(screen.queryByText('Alle Lernziele')).not.toBeInTheDocument()
+  })
+
+  it('onLernzielUeben Fehler-Pfad: openUebung wird NICHT aufgerufen und Toast erscheint wenn starteLernzielSession false zurückgibt', async () => {
+    starteLernzielSessionMock.mockResolvedValue(false)
+
+    render(
+      <MemoryRouter initialEntries={['/sus/ueben']}>
+        <AppShell>
+          <div>Kinder</div>
+        </AppShell>
+      </MemoryRouter>,
+    )
+
+    // Akkordeon öffnen
+    fireEvent.click(screen.getByRole('button', { name: 'Lernziele' }))
+
+    // Üben-Button klicken
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Lernziel üben' }))
+    })
+
+    // (a) starteLernzielSession wurde aufgerufen
+    expect(starteLernzielSessionMock).toHaveBeenCalledTimes(1)
+
+    // (b) openUebung darf NICHT aufgerufen worden sein
+    expect(openUebungMock).not.toHaveBeenCalled()
+
+    // (c) Toast-Fehlermeldung wurde angezeigt
+    expect(toastErrorMock).toHaveBeenCalledTimes(1)
+    expect(toastErrorMock).toHaveBeenCalledWith('Die Übung konnte nicht geladen werden.')
   })
 })
