@@ -1,7 +1,7 @@
 ---
 title: SuS-Lernziele-UX — Üben nach Lernziel
 date: 2026-05-21
-status: Spec-Review ausstehend
+status: Spec-Review bestanden — User-Review ausstehend
 verwandt: 2026-05-21-lernziele-backend-bridge-design.md (Datenschicht — kanonische Lernziele + fragenIds), 2026-05-11-cluster-g-icon-system-design.md (Icon-Registry), 2026-05-17-cluster-e-3-bis-e-5-favoriten-design.md (Star = Favorit)
 ---
 
@@ -25,7 +25,7 @@ Der Befund ist die Grundlage der zentralen Architektur-Entscheidung (§4 #1). Di
 - **Storage-Type:** `FrageSummary.lernzielIds?: string[]` (`src/types/fragen-storage.ts:133`).
 - **Tagging-Wege (LP-seitig):** Excel-Import (`src/utils/excelImport.ts`), Batch-Operation (`src/components/lp/fragensammlung/BatchConfirmModal.tsx`), Frageneditor-Multiselect `LernzielWaehler` (`packages/shared/src/editor/components/LernzielWaehler.tsx`, eingebunden in `MetadataSection.tsx`).
 - **Backend:** `apps-script-code.js` speichert `lernzielIds` als komma-getrennte Sheet-Spalte (Schreiben + Lesen).
-- **Anzeige LP:** `DetailKarte.tsx` / `KompaktZeile.tsx` zeigen ein Lernziele-Zähler-Badge.
+- **Anzeige LP:** `DetailKarte.tsx` / `KompaktZeile.tsx` (`src/components/lp/fragensammlung/fragenbrowser/`) zeigen ein Lernziele-Zähler-Badge.
 
 ### 2.2 Lernziel-Entität — vorhanden
 `Lernziel` (`packages/shared/src/types/fragen-core.ts`): `{ id, fach, thema, unterthema?, text, bloom, poolId?, aktiv?, fragenIds? }`. Das Feld **`fragenIds?: string[]` ist nicht gespeichert, sondern wird vom Backend pro Abruf berechnet** (`uebenLadeLernzieleV2`). Es ist die Liste der Fragen, die zu diesem Lernziel gehören — der Schlüssel für „Üben nach Lernziel".
@@ -34,7 +34,7 @@ Der Befund ist die Grundlage der zentralen Architektur-Entscheidung (§4 #1). Di
 - `LernzieleAkkordeon` (`src/components/ueben/LernzieleAkkordeon.tsx`, Default-Export): Voll-Modal Fach → Thema → Lernziele mit Status-Icons. Props: `lernziele`, `fortschritte`, `onSchliessen`, `onThemaUeben`. **Nur „Fragen üben" pro Thema** — kein Einstieg pro Lernziel.
 - `LernzieleMiniModal` (gleiche Datei, Named-Export, Z. 204–270): Mini-Modal für ein Thema, Lernziele nach Unterthema gruppiert, „üben"-Button thema-genau.
 - `AppShell.tsx` (`src/components/ueben/layout/`): `const [lernzieleOffen, setLernzieleOffen] = useState(false)` (Z. 32). `setLernzieleOffen(true)` wird **nie** aufgerufen — Akkordeon unerreichbar.
-- `LernzieleMiniModal` **ist** erreichbar: `ThemaKarte.tsx` hat einen Flag-Button (`onLernzieleKlick`), `Dashboard.tsx` öffnet damit `setLzMiniModal({fach, thema})` (Z. 486–497).
+- `LernzieleMiniModal` **ist** erreichbar: `ThemaKarte.tsx` (`src/components/ueben/`) hat einen Flag-Button (`onLernzieleKlick`), `Dashboard.tsx` (`src/components/ueben/`) öffnet damit `setLzMiniModal({fach, thema})`.
 - Lernziele werden geladen: `useUebenFortschrittStore.ladeLernziele(gruppeId)` (`fortschrittStore.ts:227-234`) → `appsScriptAdapter.ladeLernziele` → `uebenLadeLernzieleV2` → `Lernziel[]` inkl. `fragenIds`.
 
 ### 2.4 Üben-Start — vorhanden, parametrisierbar
