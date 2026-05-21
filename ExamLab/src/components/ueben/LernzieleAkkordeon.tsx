@@ -6,21 +6,24 @@ import { lernzielStatus } from '../../utils/ueben/mastery'
 import { gruppiereLernziele } from '../../utils/lernzieleGruppierung'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
 import { TYPO } from '../../styles/typografie'
+import { LernzielKarte } from './LernzielKarte'
 
 interface Props {
   lernziele: Lernziel[]
   fortschritte: Record<string, FragenFortschritt>
   onSchliessen: () => void
   onThemaUeben: (thema: string) => void
+  onLernzielUeben?: (lz: Lernziel) => void
 }
 
 /**
  * Lernziele-Akkordeon — nach Vorbild der Übungspools.
  * Struktur: Fach (aufklappbar) → Thema (aufklappbar) → Lernziele mit Status
  */
-export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliessen, onThemaUeben }: Props) {
+export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliessen, onThemaUeben, onLernzielUeben }: Props) {
   const [offeneFaecher, setOffeneFaecher] = useState<Set<string>>(new Set())
   const [offeneThemen, setOffeneThemen] = useState<Set<string>>(new Set())
+  const [gewaehltesLernziel, setGewaehltesLernziel] = useState<Lernziel | null>(null)
 
   // Gruppierung: Fach → Thema → { meta: LZ[], unterthemen: { ut: LZ[] } }
   const fachMap = gruppiereLernziele(lernziele.filter(lz => lz.aktiv !== false))
@@ -49,7 +52,19 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
     return liste.map(lz => {
       const status = lernzielStatus(lz, fp)
       return (
-        <div key={lz.id} className="flex items-start gap-2 text-sm">
+        <div
+          key={lz.id}
+          role="button"
+          tabIndex={0}
+          onClick={() => setGewaehltesLernziel(lz)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setGewaehltesLernziel(lz)
+            }
+          }}
+          className="flex items-start gap-2 text-sm rounded-lg px-2 py-1 -mx-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
+        >
           <span className="mt-0.5 shrink-0">
             <LernzielStatusIcon status={status} />
           </span>
@@ -92,7 +107,15 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
 
         {/* Scrollbarer Inhalt */}
         <div className="overflow-y-auto flex-1 p-4 space-y-3">
-          {faecher.map(fach => {
+          {/* Master-Detail-Swap: Lernziel-Detailkarte statt Fach-Liste */}
+          {gewaehltesLernziel ? (
+            <LernzielKarte
+              lernziel={gewaehltesLernziel}
+              fortschritte={fortschritte}
+              onUeben={onLernzielUeben ?? (() => {})}
+              onZurueck={() => setGewaehltesLernziel(null)}
+            />
+          ) : faecher.map(fach => {
             const themen = fachMap[fach]
             const themenKeys = Object.keys(themen).sort()
             const fachOffen = offeneFaecher.has(fach)
