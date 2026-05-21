@@ -114,7 +114,7 @@ Sieben Endpoints in `apps-script-code.js`, alle auf den `Lernziele`-Tab in
 | `speichereLernziel` (Editor CREATE) | schreibt `Lehrplanziele`, 9 Spalten, `ebene='fein'` hartcodiert | schreibt `Lernziele` header-basiert: `fach, thema, unterthema, text, bloom`, `aktiv=true`, `poolId=''` |
 | `aktualisiereLernziel` (Editor UPDATE) | updatet `Lehrplanziele` positionsbasiert | updatet `Lernziele` header-basiert, akzeptiert `unterthema` |
 | `loescheLernziel` (Editor DELETE) | `deleteRow` (Hard-Delete) | **Soft-Delete:** setzt `aktiv=false`. Fragen-Referenzen bleiben gültig |
-| `uebenSpeichereLernziel` (Pool/SuS Upsert) | **Bug:** 6 Spalten positionsbasiert → Daten-Korruption | header-basiert, kanonisches Schema |
+| `uebenSpeichereLernziel` (Pool/SuS Upsert) | **Bug:** 6 Spalten positionsbasiert → Daten-Korruption | header-basiert, kanonisches Schema; Upsert weiter über `id` als Schlüssel |
 | `uebenLadeLernzieleV2` (SuS READ) | liest `Lernziele`-Tab, `fragenIds` aus (oft leerer) Spalte | `fragenIds` frisch berechnet (s.u.); filtert `aktiv=false` serverseitig raus |
 | `importiereLernziele` (Pool-Import) | header-basiert, 8 Spalten, self-heal `unterthema` | an kanonisches Schema angeglichen (weitgehend unverändert) |
 
@@ -177,7 +177,8 @@ Ein einmaliges Apps-Script-Skript `ExamLab/scripts/migrate-lernziele-bridge.js`
    (`FRAGENSAMMLUNG_ID`) — beide header-basiert, egal in welchem historischen
    Schema.
 2. Mappt beide auf das kanonische Schema (`Lehrplanziele`-Zeilen: `unterthema=''`,
-   `poolId=''`, `aktiv=true`).
+   `poolId=''`, `aktiv=true`). Native `Lernziele`-Zeilen ohne `aktiv`-Wert (Altdaten
+   aus dem 6-Spalten-Schema) bekommen `aktiv=true`.
 3. **Auto-Dedup** über `(fach, text)`-Exaktmatch. Survivor-Präferenz: native
    `Lernziele`-Zeile vor migrierter `Lehrplanziele`-Zeile; bei Gleichstand die
    Zeile mit mehr gefüllten Feldern. Baut `idRemap: {verworfeneId → SurvivorId}`.
