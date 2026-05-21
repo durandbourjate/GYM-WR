@@ -31,6 +31,8 @@ export interface FortschrittService {
     fortschritte: FragenFortschritt[]
     sessions: SessionEintrag[]
   }>
+  /** Lädt den eigenen Fortschritt eines Mitglieds vom Backend (SuS-Read-Back). */
+  ladeFortschritt(gruppeId: string, email: string): Promise<FragenFortschritt[]>
   ladeLernziele(gruppeId: string): Promise<Lernziel[]>
   speichereLernziel(gruppeId: string, lernziel: Lernziel): Promise<{ id: string }>
   speichereFortschritt(

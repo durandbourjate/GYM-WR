@@ -7,6 +7,8 @@ import { db } from '../../utils/ueben/indexedDB'
 import { uebenFortschrittAdapter } from '../../adapters/ueben/appsScriptAdapter'
 import { useUebenSettingsStore } from './settingsStore'
 import { useUebenGruppenStore } from './gruppenStore'
+import { useUebenAuthStore } from './authStore'
+import { mergeFortschritte } from '../../utils/ueben/fortschrittMerge'
 
 const STORAGE_KEY = 'ueben-fortschritt'
 const SYNC_QUEUE_KEY = 'ueben-fortschritt-sync-queue'
@@ -92,6 +94,23 @@ function speichereInLocalStorage(fortschritte: Record<string, FragenFortschritt>
   db.setFortschritt(fortschritte).catch(() => {})
 }
 
+/** Lädt den gerätelokal gecachten Fortschritt: IndexedDB zuerst, dann localStorage. */
+async function ladeLokalenFortschritt(): Promise<Record<string, FragenFortschritt>> {
+  try {
+    const idbData = await db.getFortschritt()
+    if (idbData && Object.keys(idbData).length > 0) return idbData
+  } catch { /* Fallback auf localStorage */ }
+  try {
+    const gespeichert = localStorage.getItem(STORAGE_KEY)
+    if (!gespeichert) return {}
+    const parsed = JSON.parse(gespeichert) as Record<string, FragenFortschritt>
+    db.setFortschritt(parsed).catch(() => {}) // Migration zu IndexedDB
+    return parsed
+  } catch {
+    return {} // Korrupte Daten — ignorieren
+  }
+}
+
 export const useUebenFortschrittStore = create<UebenFortschrittState>((set, get) => ({
   fortschritte: {},
 
@@ -127,24 +146,25 @@ export const useUebenFortschrittStore = create<UebenFortschrittState>((set, get)
   },
 
   ladeFortschritt: async () => {
-    // IndexedDB zuerst versuchen
-    try {
-      const idbData = await db.getFortschritt()
-      if (idbData && Object.keys(idbData).length > 0) {
-        set({ fortschritte: idbData })
-        return
-      }
-    } catch { /* Fallback auf localStorage */ }
+    // 1. Gerätelokalen Stand laden — sofort sichtbar, funktioniert auch offline.
+    const lokal = await ladeLokalenFortschritt()
+    if (Object.keys(lokal).length > 0) set({ fortschritte: lokal })
 
-    // Fallback: localStorage
+    // 2. Backend-Read-Back: eigenen Fortschritt vom Server holen und mergen.
+    // Ohne diesen Schritt zeigt die Fortschritt-Ansicht nur gerätelokale Daten —
+    // auf einem anderen Browser/Gerät bliebe sie leer.
+    const gruppe = useUebenGruppenStore.getState().aktiveGruppe
+    const email = useUebenAuthStore.getState().user?.email
+    if (!gruppe?.id || !email) return
     try {
-      const gespeichert = localStorage.getItem(STORAGE_KEY)
-      if (!gespeichert) return
-      const parsed = JSON.parse(gespeichert) as Record<string, FragenFortschritt>
-      set({ fortschritte: parsed })
-      // Migration zu IndexedDB
-      db.setFortschritt(parsed).catch(() => {})
-    } catch { /* Korrupte Daten — ignorieren */ }
+      const backend = await uebenFortschrittAdapter.ladeFortschritt(gruppe.id, email)
+      if (backend.length === 0) return
+      const merged = mergeFortschritte(get().fortschritte, backend)
+      set({ fortschritte: merged })
+      speichereInLocalStorage(merged)
+    } catch {
+      // Backend nicht erreichbar — gerätelokaler Stand bleibt erhalten
+    }
   },
 
   getMastery: (fragenId) => {

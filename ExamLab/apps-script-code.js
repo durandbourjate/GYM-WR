@@ -11739,12 +11739,15 @@ function berechneMasteryMitRecency_(baseMastery, letzterVersuch) {
  * Fortschritt laden für ein Mitglied (alle Fragen oder gefiltert).
  */
 function uebenLadeFortschritt(body) {
-  var gruppeId = body.gruppeId;
-  var email = (body.email || '').toLowerCase().trim();
-
-  var gruppen = alleGruppenLaden_();
-  var gruppe = gruppen.find(function(g) { return g.id === gruppeId; });
-  if (!gruppe) return jsonResponse({ success: false, error: 'Gruppe nicht gefunden' });
+  // IDOR-Schutz: Token muss zur angefragten Email gehören — ein SuS darf nur
+  // den eigenen Fortschritt laden, nicht den fremder Mitglieder.
+  var auth = istGruppenMitglied_(body, body.gruppeId);
+  if (!auth) {
+    auditLog_('ladeFortschritt:DENIED', (body.email || ''), { gruppeId: body.gruppeId });
+    return jsonResponse({ success: false, error: 'Keine Berechtigung' });
+  }
+  var email = auth.email;
+  var gruppe = auth.gruppe;
 
   try {
     var ss = SpreadsheetApp.openById(gruppe.fragensammlungSheetId);
@@ -11766,6 +11769,8 @@ function uebenLadeFortschritt(body) {
         richtigInFolge: Number(daten[i][headers.indexOf('richtiginfolge')]),
         mastery: String(daten[i][headers.indexOf('mastery')]),
         letzterVersuch: String(daten[i][headers.indexOf('letzterversuch')]),
+        sessionIds: String(daten[i][headers.indexOf('sessionids')] || '')
+          .split(',').filter(function(s) { return s; }),
       });
     }
 

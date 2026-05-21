@@ -262,6 +262,21 @@ class AppsScriptFortschrittAdapter implements FortschrittService {
     return response.data
   }
 
+  async ladeFortschritt(gruppeId: string, email: string): Promise<FragenFortschritt[]> {
+    const response = await uebenApiClient.post<{
+      success: boolean
+      data?: Array<Omit<FragenFortschritt, 'email' | 'sessionIds'> & { sessionIds?: string[] }>
+      error?: string
+    }>('uebenLadeFortschritt', { gruppeId, email }, this.getToken())
+
+    if (!response?.success || !Array.isArray(response.data)) return []
+    return response.data.map((fp) => ({
+      ...fp,
+      email,
+      sessionIds: Array.isArray(fp.sessionIds) ? fp.sessionIds : [],
+    }))
+  }
+
   async ladeLernziele(gruppeId: string): Promise<Lernziel[]> {
     const response = await uebenApiClient.post<{
       success: boolean
