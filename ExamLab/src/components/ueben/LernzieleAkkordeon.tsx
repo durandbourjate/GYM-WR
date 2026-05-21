@@ -3,6 +3,7 @@ import { CheckCircle2, Circle, Flag, X, Play, ChevronUp, ChevronDown } from 'luc
 import type { Lernziel } from '../../types/pool'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 import { lernzielStatus } from '../../utils/ueben/mastery'
+import { gruppiereLernziele } from '../../utils/lernzieleGruppierung'
 import { getFachFarbe } from '../../utils/ueben/fachFarben'
 import { TYPO } from '../../styles/typografie'
 
@@ -22,21 +23,7 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
   const [offeneThemen, setOffeneThemen] = useState<Set<string>>(new Set())
 
   // Gruppierung: Fach → Thema → { meta: LZ[], unterthemen: { ut: LZ[] } }
-  interface ThemaGruppe { meta: Lernziel[]; unterthemen: Record<string, Lernziel[]> }
-  const fachMap: Record<string, Record<string, ThemaGruppe>> = {}
-  for (const lz of lernziele) {
-    if (lz.aktiv === false) continue
-    const fach = lz.fach || 'Andere'
-    const thema = lz.thema || 'Allgemein'
-    if (!fachMap[fach]) fachMap[fach] = {}
-    if (!fachMap[fach][thema]) fachMap[fach][thema] = { meta: [], unterthemen: {} }
-    if (lz.unterthema) {
-      if (!fachMap[fach][thema].unterthemen[lz.unterthema]) fachMap[fach][thema].unterthemen[lz.unterthema] = []
-      fachMap[fach][thema].unterthemen[lz.unterthema].push(lz)
-    } else {
-      fachMap[fach][thema].meta.push(lz)
-    }
-  }
+  const fachMap = gruppiereLernziele(lernziele.filter(lz => lz.aktiv !== false))
 
   const faecher = Object.keys(fachMap).sort()
 
