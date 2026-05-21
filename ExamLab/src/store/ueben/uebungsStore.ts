@@ -2,7 +2,11 @@ import { create } from 'zustand'
 import type { Frage } from '../../types/ueben/fragen'
 import type { Antwort, Selbstbewertung } from '../../types/antworten'
 import type { UebungsSession, SessionErgebnis, SessionModus, ThemaQuelle } from '../../types/ueben/uebung'
+import type { Lernziel } from '@gymhofwil/shared'
 import { uebenFragenAdapter } from '../../adapters/ueben/appsScriptAdapter'
+import { useUebenGruppenStore } from './gruppenStore'
+import { useUebenAuthStore } from './authStore'
+import { useThemenSichtbarkeitStore } from './themenSichtbarkeitStore'
 import { erstelleSessionBlock } from '../../utils/ueben/sessionBlockBau'
 import { pruefeClientseitig } from '../../utils/ueben/pruefeClientseitig'
 import { ladeLoesungenViaPreload } from '../../utils/ueben/loesungsPreloadFetch'
@@ -33,6 +37,8 @@ interface UebungsState {
   historie: GespeichertesErgebnis[]
 
   starteSession: (gruppeId: string, email: string, fach: string, thema: string, fragenOverride?: Frage[], modus?: SessionModus, quellen?: ThemaQuelle[], freiwillig?: boolean) => Promise<void>
+  /** Startet eine Übe-Session gefiltert auf die Fragen eines einzelnen Lernziels. */
+  starteLernzielSession: (lernziel: Lernziel) => Promise<void>
   beantworte: (antwort: unknown) => void
   beantworteById: (frageId: string, antwort: Antwort) => void
   /** Zwischenstand ohne Korrektur speichern (für Multi-Feld-Fragetypen + Üben-Modus) */
@@ -144,6 +150,25 @@ export const useUebenUebungsStore = create<UebungsState>((set, get) => ({
     } catch {
       set({ ladeStatus: 'fehler' })
     }
+  },
+
+  starteLernzielSession: async (lernziel) => {
+    const gruppe = useUebenGruppenStore.getState().aktiveGruppe
+    const user = useUebenAuthStore.getState().user
+    if (!gruppe || !user) return
+
+    const alleFragen = await uebenFragenAdapter.ladeFragen(gruppe.id)
+    const ids = new Set(lernziel.fragenIds ?? [])
+    const gefilterte = alleFragen.filter(f => ids.has(f.id))
+
+    const { getStatus, freischaltungen } = useThemenSichtbarkeitStore.getState()
+    const freiwillig = freischaltungen.length > 0
+      && getStatus(lernziel.fach, lernziel.thema) === 'nicht_freigeschaltet'
+
+    await get().starteSession(
+      gruppe.id, user.email, lernziel.fach, lernziel.thema,
+      gefilterte, 'standard', undefined, freiwillig,
+    )
   },
 
   beantworte: (antwort) => {
