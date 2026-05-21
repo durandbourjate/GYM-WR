@@ -6,9 +6,39 @@
 
 ---
 
-## 🚀 NÄCHSTE SESSION — Wiedereinstieg
+## NÄCHSTE SESSION — Wiedereinstieg
 
-**HEAD main:** `b927dba` — Item 4 E2E-verified (Apps-Script Bulk-Edit Performance) + Frontend-Reload-Hotfix LIVE (18.05.2026 SPÄTER).
+### Stand 21.05.2026 — Bug #5 + Bug #1 + MC-Audit-Skript LIVE
+
+**HEAD main:** HANDOFF-Update über den 3 Code-Commits `487a8bb`, `8b74f27`, `382ff15`.
+Auf Staging mit echtem Login E2E-verifiziert, dann preview -> main gemergt.
+
+- **Bug #5** (`fix(ueben)`, `487a8bb`): Filter-Abwahl im Übungsmodus reaktivierte
+  das ganze Thema, weil ein leeres Filter-Set "alle" bedeutete. Filter werden
+  jetzt beim Themen-Öffnen (`oeffneThema`) mit allen Werten vorbefüllt; leeres
+  Set = 0 Fragen, Start deaktiviert. E2E auf Staging (FIBU-Thema) grün.
+- **Bug #1** (`feat(ueben)`, `8b74f27`): Schüler-Fortschritt wurde nie vom
+  Backend zurückgeladen (gerätelokal). `ladeFortschritt()` lädt jetzt lokal +
+  Backend, merged per Frage (mehr Versuche gewinnt). `uebenLadeFortschritt`
+  IDOR-gehärtet (`istGruppenMitglied_`) + gibt `sessionIds` zurück. E2E grün:
+  Cache-Wipe -> Reload -> Fortschritt kommt vom Backend zurück.
+- **#6** (`chore(scripts)`, `382ff15`): `scripts/diagnose-mc-laengste-antwort.js`
+  — Apps-Script-Diagnose, ob bei MC-Fragen die korrekte Antwort auffällig oft
+  die längste Option ist.
+
+**Gates:** tsc -b, vitest 2015 + 4 todo, build, 9 Audit-Gates — alle grün.
+
+**OFFEN:**
+- **Apps-Script-Deploy nötig** für Bug #1: Der Read-Back läuft bereits gegen den
+  alten deployten Endpoint, aber `sessionIds` (-> Streak) und die IDOR-Härtung
+  werden erst nach dem Deploy von `apps-script-code.js` aktiv.
+- **`diagnose-mc-laengste-antwort.js` ausführen** (in den Apps-Script-Editor
+  einfügen + laufen lassen), um das Ausmass des MC-Längen-Musters zu sehen.
+- **Design-Trio offen:** #2 Header-Überarbeitung "Prüfung bearbeiten",
+  #3 Lösch-/Aktions-Icons in der Prüfungs-/Übungs-Übersicht,
+  #4 Lernziele bis Unterthema anzeigen.
+
+---
 
 ### Stand 18.05.2026 SPÄTER-2 — Item 4 Apps-Script E2E + Bulk-Reload-Hotfix
 
