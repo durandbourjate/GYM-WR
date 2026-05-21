@@ -6991,76 +6991,64 @@ function importiereLehrplanzieleEndpoint(body) {
   }
 }
 
+// Kanonisches Schema des Lernziele-Tabs (FRAGENSAMMLUNG_ID).
+var LERNZIEL_HEADERS = ['id', 'fach', 'thema', 'unterthema', 'text', 'bloom', 'poolId', 'aktiv'];
+
+/** Header-Namen → 0-basierter Spaltenindex. Schützt gegen leeres Sheet (S130). */
+function lernzielHeaderMap_(sheet) {
+  var lastCol = sheet.getLastColumn();
+  var headers = lastCol > 0
+    ? sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function (h) { return String(h).trim(); })
+    : [];
+  var map = {};
+  for (var i = 0; i < headers.length; i++) map[headers[i]] = i;
+  return map;
+}
+
+/** Öffnet (oder erstellt) den Lernziele-Tab mit kanonischem Header. */
+function holeLernzieleSheet_(ss) {
+  var sheet = ss.getSheetByName(LERNZIELE_TAB);
+  if (!sheet) {
+    sheet = ss.insertSheet(LERNZIELE_TAB);
+    sheet.getRange(1, 1, 1, LERNZIEL_HEADERS.length).setValues([LERNZIEL_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
 function ladeLernziele(body) {
   try {
     var email = body.email;
     var fachFilter = body.fach || '';
-
     if (!email || !istZugelasseneLP(email)) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
-
-    // Zuerst: Zentrale Lehrplan-DB versuchen (bevorzugt)
-    try {
-      var lehrplanSheet = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID).getSheetByName('Lehrplanziele');
-      if (lehrplanSheet) {
-        var lpData = getSheetData(lehrplanSheet);
-        if (lpData.length > 0) {
-          var lernziele = [];
-          for (var li = 0; li < lpData.length; li++) {
-            var lpRow = lpData[li];
-            if (fachFilter && lpRow.fach !== fachFilter) continue;
-            lernziele.push({
-              id: lpRow.id,
-              fach: lpRow.fach || '',
-              poolId: '',
-              thema: lpRow.thema || '',
-              text: lpRow.text || '',
-              bloom: lpRow.bloom || '',
-              ebene: lpRow.ebene || '',
-              aktiv: true
-            });
-          }
-          return jsonResponse({ lernziele: lernziele });
-        }
-      }
-    } catch (e) { /* Lehrplan-Sheet nicht konfiguriert — Fallback auf Pool-Lernziele */ }
-
-    // Fallback: Pool-Lernziele aus Fragensammlung (bisherige Logik)
-    var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
-    var sheet = fragensammlung.getSheetByName(LERNZIELE_TAB);
-
-    if (!sheet) {
-      return jsonResponse({ lernziele: [] });
-    }
+    var ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = ss.getSheetByName(LERNZIELE_TAB);
+    if (!sheet) return jsonResponse({ lernziele: [] });
 
     var data = getSheetData(sheet);
     var lernziele = [];
-
     for (var i = 0; i < data.length; i++) {
       var row = data[i];
       if (fachFilter && row.fach !== fachFilter) continue;
       lernziele.push({
         id: row.id,
         fach: row.fach || '',
-        poolId: row.poolId || '',
         thema: row.thema || '',
+        unterthema: row.unterthema || '',
         text: row.text || '',
         bloom: row.bloom || '',
-        aktiv: row.aktiv !== 'false'
+        poolId: row.poolId || '',
+        aktiv: String(row.aktiv) !== 'false',
       });
     }
-
     return jsonResponse({ lernziele: lernziele });
   } catch (error) {
     return jsonResponse({ error: error.message });
   }
 }
 
-/**
- * Einzelnes Lernziel erstellen (LP-only).
- * Schreibt in die zentrale Lehrplan-DB (LEHRPLAN_SHEET_ID → Lehrplanziele).
- */
 function speichereLernzielEndpoint(body) {
   try {
     var email = body.email;
@@ -7071,18 +7059,21 @@ function speichereLernzielEndpoint(body) {
     if (!lz || !lz.text || !lz.fach) {
       return jsonResponse({ error: 'Lernziel-Text und Fach sind Pflichtfelder' });
     }
+    var ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = holeLernzieleSheet_(ss);
+    var col = lernzielHeaderMap_(sheet);
 
-    var ss = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID);
-    var sheet = ss.getSheetByName('Lehrplanziele');
-    if (!sheet) {
-      sheet = ss.insertSheet('Lehrplanziele');
-      sheet.getRange(1, 1, 1, 9).setValues([['id', 'ebene', 'parentId', 'fach', 'gefaess', 'semester', 'thema', 'text', 'bloom']]);
-    }
-
-    // ID generieren: lz-{fach}-{timestamp}
     var id = 'lz-' + (lz.fach || 'allg').toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Date.now();
-    var rowValues = [id, 'fein', '', lz.fach || '', '', '', lz.thema || '', lz.text, lz.bloom || 'K1'];
-    sheet.appendRow(rowValues);
+    var werte = {
+      id: id, fach: lz.fach || '', thema: lz.thema || '', unterthema: lz.unterthema || '',
+      text: lz.text, bloom: lz.bloom || 'K2', poolId: '', aktiv: 'true'
+    };
+    var maxIdx = 0;
+    for (var k in col) { if (col[k] > maxIdx) maxIdx = col[k]; }
+    var row = [];
+    for (var c = 0; c <= maxIdx; c++) row.push('');
+    for (var key in werte) { if (col[key] !== undefined) row[col[key]] = werte[key]; }
+    sheet.appendRow(row);
 
     auditLog_('speichereLernziel:CREATE', email, { lernzielId: id, fach: lz.fach });
     return jsonResponse({ erfolg: true, id: id });
@@ -7091,9 +7082,6 @@ function speichereLernzielEndpoint(body) {
   }
 }
 
-/**
- * Bestehendes Lernziel aktualisieren (LP-only).
- */
 function aktualisiereLernzielEndpoint(body) {
   try {
     var email = body.email || body.callerEmail;
@@ -7101,23 +7089,24 @@ function aktualisiereLernzielEndpoint(body) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
     var lz = body.lernziel;
-    if (!lz || !lz.id) {
-      return jsonResponse({ error: 'Lernziel-ID fehlt' });
-    }
+    if (!lz || !lz.id) return jsonResponse({ error: 'Lernziel-ID fehlt' });
 
-    var ss = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID);
-    var sheet = ss.getSheetByName('Lehrplanziele');
-    if (!sheet) return jsonResponse({ error: 'Lehrplanziele-Sheet nicht gefunden' });
-
+    var ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = ss.getSheetByName(LERNZIELE_TAB);
+    if (!sheet) return jsonResponse({ error: 'Lernziele-Tab nicht gefunden' });
+    var col = lernzielHeaderMap_(sheet);
+    if (col['id'] === undefined) return jsonResponse({ error: 'Lernziele-Tab ohne id-Spalte' });
     var data = sheet.getDataRange().getValues();
-    for (var i = 1; i < data.length; i++) {
-      if (String(data[i][0]) === String(lz.id)) {
-        // Spalten: id, ebene, parentId, fach, gefaess, semester, thema, text, bloom
-        if (lz.fach !== undefined) sheet.getRange(i + 1, 4).setValue(lz.fach);
-        if (lz.thema !== undefined) sheet.getRange(i + 1, 7).setValue(lz.thema);
-        if (lz.text !== undefined) sheet.getRange(i + 1, 8).setValue(lz.text);
-        if (lz.bloom !== undefined) sheet.getRange(i + 1, 9).setValue(lz.bloom);
 
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][col['id']]) === String(lz.id)) {
+        var felder = ['fach', 'thema', 'unterthema', 'text', 'bloom'];
+        for (var f = 0; f < felder.length; f++) {
+          var name = felder[f];
+          if (lz[name] !== undefined && col[name] !== undefined) {
+            sheet.getRange(i + 1, col[name] + 1).setValue(lz[name]);
+          }
+        }
         auditLog_('aktualisiereLernziel:UPDATE', email, { lernzielId: lz.id });
         return jsonResponse({ erfolg: true, id: lz.id });
       }
@@ -7128,9 +7117,6 @@ function aktualisiereLernzielEndpoint(body) {
   }
 }
 
-/**
- * Lernziel löschen (Soft-Delete: Zeile entfernen aus Sheet, LP-only).
- */
 function loescheLernzielEndpoint(body) {
   try {
     var email = body.email || body.callerEmail;
@@ -7138,19 +7124,21 @@ function loescheLernzielEndpoint(body) {
       return jsonResponse({ error: 'Nur für Lehrpersonen' });
     }
     var lernzielId = body.lernzielId;
-    if (!lernzielId) {
-      return jsonResponse({ error: 'Lernziel-ID fehlt' });
+    if (!lernzielId) return jsonResponse({ error: 'Lernziel-ID fehlt' });
+
+    var ss = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+    var sheet = ss.getSheetByName(LERNZIELE_TAB);
+    if (!sheet) return jsonResponse({ error: 'Lernziele-Tab nicht gefunden' });
+    var col = lernzielHeaderMap_(sheet);
+    if (col['id'] === undefined || col['aktiv'] === undefined) {
+      return jsonResponse({ error: 'Lernziele-Tab ohne id/aktiv-Spalte' });
     }
-
-    var ss = SpreadsheetApp.openById(LEHRPLAN_SHEET_ID);
-    var sheet = ss.getSheetByName('Lehrplanziele');
-    if (!sheet) return jsonResponse({ error: 'Lehrplanziele-Sheet nicht gefunden' });
-
     var data = sheet.getDataRange().getValues();
+
     for (var i = 1; i < data.length; i++) {
-      if (String(data[i][0]) === String(lernzielId)) {
-        sheet.deleteRow(i + 1);
-        auditLog_('loescheLernziel:DELETE', email, { lernzielId: lernzielId });
+      if (String(data[i][col['id']]) === String(lernzielId)) {
+        sheet.getRange(i + 1, col['aktiv'] + 1).setValue('false');
+        auditLog_('loescheLernziel:SOFTDELETE', email, { lernzielId: lernzielId });
         return jsonResponse({ erfolg: true });
       }
     }
