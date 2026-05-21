@@ -17,6 +17,60 @@ interface Props {
 }
 
 /**
+ * Einzelne Lernziel-Zeile — interaktiv wenn onKlick übergeben, sonst passiv.
+ * Wird von LernzieleAkkordeon (Fach-Baum) und LernzieleMiniModal (Thema-Liste) genutzt.
+ */
+function LernzielZeile({ lz, fortschritte, onKlick }: {
+  lz: Lernziel
+  fortschritte: Record<string, FragenFortschritt>
+  onKlick?: (lz: Lernziel) => void
+}) {
+  const status = lernzielStatus(lz, fortschritte)
+
+  if (onKlick) {
+    return (
+      <div
+        key={lz.id}
+        role="button"
+        tabIndex={0}
+        onClick={() => onKlick(lz)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onKlick(lz)
+          }
+        }}
+        className="flex items-start gap-2 text-sm rounded-lg px-2 py-1 -mx-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
+      >
+        <span className="mt-0.5 shrink-0">
+          <LernzielStatusIcon status={status} />
+        </span>
+        <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
+          {lz.text}
+        </span>
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">
+          {lz.bloom}
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <div key={lz.id} className="flex items-start gap-2 text-sm">
+      <span className="mt-0.5 shrink-0">
+        <LernzielStatusIcon status={status} />
+      </span>
+      <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
+        {lz.text}
+      </span>
+      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">
+        {lz.bloom}
+      </span>
+    </div>
+  )
+}
+
+/**
  * Lernziele-Akkordeon — nach Vorbild der Übungspools.
  * Struktur: Fach (aufklappbar) → Thema (aufklappbar) → Lernziele mit Status
  */
@@ -45,37 +99,6 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
       if (neu.has(key)) neu.delete(key)
       else neu.add(key)
       return neu
-    })
-  }
-
-  function renderLernzielListe(liste: Lernziel[], fp: Record<string, FragenFortschritt>) {
-    return liste.map(lz => {
-      const status = lernzielStatus(lz, fp)
-      return (
-        <div
-          key={lz.id}
-          role="button"
-          tabIndex={0}
-          onClick={() => setGewaehltesLernziel(lz)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              setGewaehltesLernziel(lz)
-            }
-          }}
-          className="flex items-start gap-2 text-sm rounded-lg px-2 py-1 -mx-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
-        >
-          <span className="mt-0.5 shrink-0">
-            <LernzielStatusIcon status={status} />
-          </span>
-          <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
-            {lz.text}
-          </span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">
-            {lz.bloom}
-          </span>
-        </div>
-      )
     })
   }
 
@@ -184,7 +207,9 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
                               {gruppe.meta.length > 0 && (
                                 <div className="space-y-1.5">
                                   <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Übergeordnet</p>
-                                  {renderLernzielListe(gruppe.meta, fortschritte)}
+                                  {gruppe.meta.map(lz => (
+                                    <LernzielZeile key={lz.id} lz={lz} fortschritte={fortschritte} onKlick={setGewaehltesLernziel} />
+                                  ))}
                                 </div>
                               )}
                               {/* Unterthemen mit ihren Lernzielen */}
@@ -194,7 +219,9 @@ export default function LernzieleAkkordeon({ lernziele, fortschritte, onSchliess
                                     <p className="text-xs font-medium dark:text-slate-300">{ut}</p>
                                     <span className="text-[10px] text-slate-400">{gruppe.unterthemen[ut].length} LZ</span>
                                   </div>
-                                  {renderLernzielListe(gruppe.unterthemen[ut], fortschritte)}
+                                  {gruppe.unterthemen[ut].map(lz => (
+                                    <LernzielZeile key={lz.id} lz={lz} fortschritte={fortschritte} onKlick={setGewaehltesLernziel} />
+                                  ))}
                                 </div>
                               ))}
                               <button
@@ -241,11 +268,12 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
   // Refs für fokusUnterthema-Scroll — ein Ref pro Unterthema-Gruppe
   const utRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
+  // Fix 1: gewaehltesLernziel als Dependency + Guard, damit kein Scroll wenn Detail-Karte offen
   useEffect(() => {
-    if (!fokusUnterthema) return
+    if (!fokusUnterthema || gewaehltesLernziel) return
     const el = utRefs.current[fokusUnterthema]
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }, [fokusUnterthema])
+  }, [fokusUnterthema, gewaehltesLernziel])
 
   const farbe = getFachFarbe(fach, {})
   const relevante = lernziele.filter(lz => lz.aktiv !== false && lz.fach === fach && (lz.thema === thema || lz.thema?.includes(thema) || thema?.includes(lz.thema)))
@@ -292,7 +320,9 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
             <div className="overflow-y-auto flex-1 space-y-3 mb-4">
               {meta.length > 0 && (
                 <div className="space-y-1.5">
-                  {meta.map(lz => renderLZ(lz, fortschritte, setGewaehltesLernziel))}
+                  {meta.map(lz => (
+                    <LernzielZeile key={lz.id} lz={lz} fortschritte={fortschritte} onKlick={setGewaehltesLernziel} />
+                  ))}
                 </div>
               )}
               {utKeys.map(ut => (
@@ -302,7 +332,9 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
                 >
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">{ut}</p>
                   <div className="space-y-1.5">
-                    {utGruppen[ut].map(lz => renderLZ(lz, fortschritte, setGewaehltesLernziel))}
+                    {utGruppen[ut].map(lz => (
+                      <LernzielZeile key={lz.id} lz={lz} fortschritte={fortschritte} onKlick={setGewaehltesLernziel} />
+                    ))}
                   </div>
                 </div>
               ))}
@@ -330,54 +362,4 @@ function LernzielStatusIcon({ status }: { status: ReturnType<typeof lernzielStat
   if (status === 'gefestigt') return <Circle className="w-4 h-4 fill-blue-500 text-blue-500" aria-label="gefestigt" />
   if (status === 'inArbeit') return <Circle className="w-4 h-4 fill-yellow-500 text-yellow-500" aria-label="in Arbeit" />
   return <Flag className="w-4 h-4 text-slate-400" aria-label="offen" />
-}
-
-/** Einzelnes Lernziel rendern (für Mini-Modal).
- *  Wird onLernzielKlick übergeben, wird die Zeile als interaktive Schaltfläche gerendert. */
-function renderLZ(
-  lz: Lernziel,
-  fortschritte: Record<string, FragenFortschritt>,
-  onLernzielKlick?: (lz: Lernziel) => void,
-) {
-  const status = lernzielStatus(lz, fortschritte)
-  if (onLernzielKlick) {
-    return (
-      <div
-        key={lz.id}
-        role="button"
-        tabIndex={0}
-        onClick={() => onLernzielKlick(lz)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            onLernzielKlick(lz)
-          }
-        }}
-        className="flex items-start gap-2 text-sm rounded-lg px-2 py-1 -mx-2 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/60 transition-colors"
-      >
-        <span className="mt-0.5 shrink-0">
-          <LernzielStatusIcon status={status} />
-        </span>
-        <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
-          {lz.text}
-        </span>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">
-          {lz.bloom}
-        </span>
-      </div>
-    )
-  }
-  return (
-    <div key={lz.id} className="flex items-start gap-2 text-sm">
-      <span className="mt-0.5 shrink-0">
-        <LernzielStatusIcon status={status} />
-      </span>
-      <span className={`flex-1 ${status === 'gemeistert' ? 'line-through text-slate-400' : 'dark:text-slate-300'}`}>
-        {lz.text}
-      </span>
-      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shrink-0">
-        {lz.bloom}
-      </span>
-    </div>
-  )
 }
