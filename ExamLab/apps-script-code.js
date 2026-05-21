@@ -12567,40 +12567,42 @@ function uebenSpeichereLernziel(body) {
     auditLog_('speichereLernziel:DENIED', (body.email || ''), { gruppeId: body.gruppeId });
     return jsonResponse({ success: false, error: 'Keine Berechtigung' });
   }
-
   var gruppe = auth.gruppe;
   var lz = body.lernziel;
   if (!lz || !lz.id || !lz.text || !lz.fach) {
     return jsonResponse({ success: false, error: 'Lernziel-Daten unvollständig' });
   }
-
   try {
     var sheetId = gruppe.typ === 'familie' ? gruppe.fragensammlungSheetId : FRAGENSAMMLUNG_ID;
     var ss = SpreadsheetApp.openById(sheetId);
-    var lzSheet = ss.getSheetByName('Lernziele');
+    var sheet = holeLernzieleSheet_(ss);
+    var col = lernzielHeaderMap_(sheet);
+    var data = sheet.getDataRange().getValues();
 
-    // Tab erstellen falls nicht vorhanden
-    if (!lzSheet) {
-      lzSheet = ss.insertSheet('Lernziele');
-      lzSheet.appendRow(['id', 'text', 'fach', 'thema', 'bloom', 'fragenIds']);
-      lzSheet.setFrozenRows(1);
-    }
+    var werte = {
+      id: lz.id, fach: lz.fach, thema: lz.thema || '', unterthema: lz.unterthema || '',
+      text: lz.text, bloom: lz.bloom || 'K2', poolId: lz.poolId || '',
+      aktiv: lz.aktiv === false ? 'false' : 'true'
+    };
 
-    var daten = lzSheet.getDataRange().getValues();
-    var fragenIdsStr = (lz.fragenIds || []).join(', ');
-
-    // Bestehend → Update
-    for (var i = 1; i < daten.length; i++) {
-      if (String(daten[i][0]) === lz.id) {
-        var zeile = i + 1;
-        lzSheet.getRange(zeile, 1, 1, 6).setValues([[lz.id, lz.text, lz.fach, lz.thema || '', lz.bloom || 'K2', fragenIdsStr]]);
+    // Bestehend → Update (header-basiert)
+    for (var i = 1; i < data.length; i++) {
+      if (col['id'] !== undefined && String(data[i][col['id']]) === String(lz.id)) {
+        for (var key in werte) {
+          if (col[key] !== undefined) sheet.getRange(i + 1, col[key] + 1).setValue(werte[key]);
+        }
         auditLog_('speichereLernziel:UPDATE', auth.email, { gruppeId: body.gruppeId, lernzielId: lz.id });
         return jsonResponse({ success: true, data: { id: lz.id } });
       }
     }
 
-    // Neu → Append
-    lzSheet.appendRow([lz.id, lz.text, lz.fach, lz.thema || '', lz.bloom || 'K2', fragenIdsStr]);
+    // Neu → Append (header-basiert)
+    var maxIdx = 0;
+    for (var k in col) { if (col[k] > maxIdx) maxIdx = col[k]; }
+    var row = [];
+    for (var c = 0; c <= maxIdx; c++) row.push('');
+    for (var key2 in werte) { if (col[key2] !== undefined) row[col[key2]] = werte[key2]; }
+    sheet.appendRow(row);
     auditLog_('speichereLernziel:CREATE', auth.email, { gruppeId: body.gruppeId, lernzielId: lz.id });
     return jsonResponse({ success: true, data: { id: lz.id } });
   } catch (e) {
