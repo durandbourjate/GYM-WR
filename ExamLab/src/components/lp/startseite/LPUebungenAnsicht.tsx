@@ -29,6 +29,7 @@ export interface LPUebungenAnsichtProps {
   handleNeueUebung: () => void
   handleBearbeiten: (c: PruefungsConfig) => void
   handleDuplizieren: (c: PruefungsConfig) => void
+  handleLoeschen: (c: PruefungsConfig) => void
   findeTrackerSummary: (id: string) => TrackerPruefungSummary | undefined
 }
 
@@ -42,7 +43,7 @@ export function LPUebungenAnsicht(props: LPUebungenAnsichtProps) {
     verfuegbareFachbereiche, verfuegbareGefaesse, filterFach, toggleFachFilter,
     filterGefaess, setFilterGefaess, filterStatus, setFilterStatus,
     sortierung, setSortierung, resetFilter,
-    handleNeueUebung, handleBearbeiten, handleDuplizieren, findeTrackerSummary,
+    handleNeueUebung, handleBearbeiten, handleDuplizieren, handleLoeschen, findeTrackerSummary,
   } = props
 
   return (
@@ -97,14 +98,14 @@ export function LPUebungenAnsicht(props: LPUebungenAnsichtProps) {
                 <span>⭐</span> Favoriten
               </h3>
               {favoritenUebungen.map(c => (
-                <PruefungsKarte key={`fav-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+                <PruefungsKarte key={`fav-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} onLoeschen={handleLoeschen} trackerSummary={findeTrackerSummary(c.id)} />
               ))}
               <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
             </div>
           )}
 
           {gefilterteUebungen.map(c => (
-            <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+            <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} onLoeschen={handleLoeschen} trackerSummary={findeTrackerSummary(c.id)} />
           ))}
         </div>
       )}

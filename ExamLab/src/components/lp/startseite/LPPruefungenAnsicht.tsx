@@ -45,6 +45,7 @@ export interface LPPruefungenAnsichtProps {
   handleNeue: () => void
   handleBearbeiten: (c: PruefungsConfig) => void
   handleDuplizieren: (c: PruefungsConfig) => void
+  handleLoeschen: (c: PruefungsConfig) => void
   findeTrackerSummary: (id: string) => TrackerPruefungSummary | undefined
 }
 
@@ -61,7 +62,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
     filterStatus, setFilterStatus, sortierung, setSortierung, resetFilter,
     multiDashboardOffen, setMultiDashboardOffen,
     multiDashboardAuswahl, setMultiDashboardAuswahl,
-    handleNeue, handleBearbeiten, handleDuplizieren, findeTrackerSummary,
+    handleNeue, handleBearbeiten, handleDuplizieren, handleLoeschen, findeTrackerSummary,
   } = props
 
   return (
@@ -166,7 +167,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
                 <span>⭐</span> Favoriten
               </h3>
               {favoritenPruefungen.map(c => (
-                <PruefungsKarte key={`fav-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+                <PruefungsKarte key={`fav-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} onLoeschen={handleLoeschen} trackerSummary={findeTrackerSummary(c.id)} />
               ))}
               <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
             </div>
@@ -179,7 +180,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
                 Zuletzt
               </h3>
               {letzteFuenf.map(c => (
-                <PruefungsKarte key={`recent-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+                <PruefungsKarte key={`recent-${c.id}`} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} onLoeschen={handleLoeschen} trackerSummary={findeTrackerSummary(c.id)} />
               ))}
               <div className="border-b border-slate-200 dark:border-slate-700 pt-2 mb-1" />
               <h3 className={`${TYPO.caption} font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide pt-1`}>
@@ -195,7 +196,7 @@ export function LPPruefungenAnsicht(props: LPPruefungenAnsichtProps) {
             </p>
           )}
           {gefilterteConfigs.map(c => (
-            <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} trackerSummary={findeTrackerSummary(c.id)} />
+            <PruefungsKarte key={c.id} config={c} onBearbeiten={handleBearbeiten} onDuplizieren={handleDuplizieren} onLoeschen={handleLoeschen} trackerSummary={findeTrackerSummary(c.id)} />
           ))}
         </div>
       )}

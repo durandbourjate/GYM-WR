@@ -23,6 +23,8 @@ import { leereUebung } from './vorbereitung/configVorlagen'
 import { LPUebungenAnsicht } from './startseite/LPUebungenAnsicht'
 import { LPPruefungenAnsicht } from './startseite/LPPruefungenAnsicht'
 import { PageTitle } from '../shared/PageTitle'
+import BaseDialog from '../ui/BaseDialog'
+import { apiService } from '../../services/apiService.ts'
 
 // Lazy-loaded Komponenten: Werden erst bei Bedarf geladen (spart ~400KB beim Initial Load)
 // lazyMitRetry: bei Chunk-Hash-Mismatch nach Deploy automatischer Page-Reload.
@@ -141,6 +143,8 @@ function LPStartseiteInner() {
 
   // UI-State (nicht Hook-extrahiert)
   const [editConfig, setEditConfig] = useState<PruefungsConfig | null>(null)
+  const [loeschConfig, setLoeschConfig] = useState<PruefungsConfig | null>(null)
+  const [loescht, setLoescht] = useState(false)
   const [multiDashboardOffen, setMultiDashboardOffen] = useState(false)
   const [multiDashboardAuswahl, setMultiDashboardAuswahl] = useState<Set<string>>(new Set())
 
@@ -293,6 +297,29 @@ function LPStartseiteInner() {
     openComposer(`${config.titel} (Kopie)`)
   }
 
+  function handleLoeschen(config: PruefungsConfig): void {
+    setLoeschConfig(config)
+  }
+
+  async function bestaetigeLoeschen(): Promise<void> {
+    if (!loeschConfig) return
+    setLoescht(true)
+    try {
+      if (!istDemoModus && apiService.istKonfiguriert()) {
+        const ok = await apiService.loeschePruefung(user!.email, loeschConfig.id)
+        if (!ok) {
+          toast.error('Löschen fehlgeschlagen')
+          return
+        }
+      }
+      toast.success(loeschConfig.typ === 'formativ' ? 'Übung gelöscht' : 'Prüfung gelöscht')
+      setLoeschConfig(null)
+      reload()
+    } finally {
+      setLoescht(false)
+    }
+  }
+
   function handleZurueck(): void {
     backToDashboard()
     reload()
@@ -356,6 +383,7 @@ function LPStartseiteInner() {
               handleNeueUebung={handleNeueUebung}
               handleBearbeiten={handleBearbeiten}
               handleDuplizieren={handleDuplizieren}
+              handleLoeschen={handleLoeschen}
               findeTrackerSummary={findeTrackerSummary}
             />
           )}
@@ -397,6 +425,7 @@ function LPStartseiteInner() {
           handleNeue={handleNeue}
           handleBearbeiten={handleBearbeiten}
           handleDuplizieren={handleDuplizieren}
+          handleLoeschen={handleLoeschen}
           findeTrackerSummary={findeTrackerSummary}
         />
       )}
@@ -451,6 +480,42 @@ function LPStartseiteInner() {
           />
         </Suspense>
       )}
+
+      {/* Löschen-Bestätigungsdialog */}
+      <BaseDialog
+        open={!!loeschConfig}
+        onClose={() => { if (!loescht) setLoeschConfig(null) }}
+        title={loeschConfig?.typ === 'formativ' ? 'Übung löschen?' : 'Prüfung löschen?'}
+        maxWidth="sm"
+        footer={
+          <>
+            <button
+              onClick={() => setLoeschConfig(null)}
+              disabled={loescht}
+              className="flex-1 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer font-medium text-sm disabled:opacity-40"
+            >
+              Abbrechen
+            </button>
+            <button
+              onClick={bestaetigeLoeschen}
+              disabled={loescht}
+              className="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer font-medium text-sm disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {loescht && (
+                <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              )}
+              {loescht ? 'Wird gelöscht...' : 'Endgültig löschen'}
+            </button>
+          </>
+        }
+      >
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+          &laquo;{loeschConfig?.titel || 'Unbenannt'}&raquo; unwiderruflich löschen?
+        </p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Die Konfiguration wird aus dem System entfernt. Bereits abgegebene Antworten bleiben in Google Drive erhalten.
+        </p>
+      </BaseDialog>
     </div>
   )
 }
