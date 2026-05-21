@@ -569,3 +569,130 @@ function pruefeDistraktoren_(fragetext, korrektText, neuDistraktoren) {
     ? antwort.begruendung : '';
   return { status: status, begruendung: begruendung };
 }
+
+/**
+ * PHASE 3 — Schreibt Zeilen mit review_status='freigegeben' und leerem
+ * geschrieben_am zurück in die Fragensammlung. Ersetzt in typDaten.optionen
+ * (und der Legacy-optionen-Spalte, falls vorhanden) die Distraktor-Texte.
+ * Die korrekte Antwort wird NIE angefasst. DRY_RUN-aware, Cursor-resumable.
+ */
+function phase3_rueckschreiben() {
+  var startMs = Date.now();
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var review = ss.getSheetByName(REVIEW_TAB);
+  if (!review) { Logger.log('ABBRUCH: Review-Sheet fehlt.'); return; }
+
+  // id → {tab, rowIndex} der Fragensammlung aufbauen
+  var index = baueFrageIndex_(ss);
+
+  var daten = review.getDataRange().getValues();
+  var start = cursorLesen_(CURSOR_P3);
+  var geschrieben = 0, uebersprungen = 0, fehler = 0;
+
+  for (var i = Math.max(1, start); i < daten.length; i++) {
+    if (Date.now() - startMs > ZEIT_BUDGET_MS) {
+      cursorSchreiben_(CURSOR_P3, i);
+      Logger.log('PHASE 3 — Zeitbudget erreicht bei Zeile ' + i + '. Erneut starten.');
+      return;
+    }
+    var row = daten[i];
+    var rStatus = String(row[rcol_('review_status')] || '').trim().toLowerCase();
+    if (rStatus !== 'freigegeben') { uebersprungen++; continue; }
+    if (String(row[rcol_('geschrieben_am')] || '').trim()) { uebersprungen++; continue; }
+
+    var frageId = String(row[rcol_('id')]);
+    var ziel = index[frageId];
+    if (!ziel) {
+      fehler++;
+      Logger.log('FEHLER: Frage-ID ' + frageId + ' nicht in der Fragensammlung gefunden.');
+      continue;
+    }
+
+    var anzahl = Number(row[rcol_('anzahl_distraktoren')]) || 0;
+    var neu = [];
+    for (var k = 1; k <= anzahl; k++) {
+      neu.push(String(row[rcol_('distraktor_neu_' + k)] || ''));
+    }
+
+    try {
+      if (!DRY_RUN) {
+        schreibeDistraktorenZurueck_(ss, ziel, neu);
+        review.getRange(i + 1, rcol_('geschrieben_am') + 1)
+          .setValue(new Date().toISOString());
+      }
+      geschrieben++;
+    } catch (e) {
+      fehler++;
+      Logger.log('FEHLER beim Schreiben von ' + frageId + ': ' + e.message);
+    }
+  }
+
+  cursorLoeschen_(CURSOR_P3);
+  Logger.log('=== PHASE 3 — ' + (DRY_RUN ? 'DRY-RUN' : 'ECHT') + ' ===');
+  Logger.log((DRY_RUN ? 'WÜRDE schreiben' : 'Geschrieben') + ': ' + geschrieben
+    + ', übersprungen: ' + uebersprungen + ', Fehler: ' + fehler);
+  if (DRY_RUN) Logger.log('DRY_RUN=true — nichts geschrieben. Auf false setzen für echt.');
+}
+
+/** Baut {id: {tab, rowIndex, typCol, idCol, typDatenCol, optionenCol}} der Fragensammlung. */
+function baueFrageIndex_(ss) {
+  var index = {};
+  for (var t = 0; t < SANIERUNG_TABS.length; t++) {
+    var sheet = ss.getSheetByName(SANIERUNG_TABS[t]);
+    if (!sheet) continue;
+    var daten = sheet.getDataRange().getValues();
+    if (daten.length < 2) continue;
+    var headers = daten[0].map(function (h) { return String(h).trim(); });
+    var idCol = headers.indexOf('id');
+    var typDatenCol = headers.indexOf('typDaten');
+    var optionenCol = headers.indexOf('optionen');
+    if (idCol < 0) continue;
+    for (var i = 1; i < daten.length; i++) {
+      var id = String(daten[i][idCol] || '');
+      if (!id) continue;
+      index[id] = {
+        tab: SANIERUNG_TABS[t], rowIndex: i + 1,
+        typDatenCol: typDatenCol, optionenCol: optionenCol,
+      };
+    }
+  }
+  return index;
+}
+
+/**
+ * Ersetzt die Distraktor-Texte einer Frage. Die Distraktoren werden in der
+ * Array-Reihenfolge von typDaten.optionen (korrekt:false-Optionen) ersetzt —
+ * dieselbe Reihenfolge, in der Phase 0 distraktor_alt_* befüllt hat.
+ */
+function schreibeDistraktorenZurueck_(ss, ziel, neuDistraktoren) {
+  var sheet = ss.getSheetByName(ziel.tab);
+  var ersetzeIn = function (optionen) {
+    var di = 0;
+    for (var o = 0; o < optionen.length; o++) {
+      if (optionen[o] && optionen[o].korrekt) continue;  // korrekte: nie anfassen
+      if (di < neuDistraktoren.length) {
+        optionen[o].text = neuDistraktoren[di];
+        di++;
+      }
+    }
+    return optionen;
+  };
+
+  // typDaten.optionen
+  if (ziel.typDatenCol >= 0) {
+    var cell = sheet.getRange(ziel.rowIndex, ziel.typDatenCol + 1);
+    var td = sicherJsonParse_(cell.getValue());
+    if (td && Array.isArray(td.optionen)) {
+      td.optionen = ersetzeIn(td.optionen);
+      cell.setValue(JSON.stringify(td));
+    }
+  }
+  // Legacy-optionen-Spalte, falls befüllt
+  if (ziel.optionenCol >= 0) {
+    var oCell = sheet.getRange(ziel.rowIndex, ziel.optionenCol + 1);
+    var direkt = sicherJsonParse_(oCell.getValue());
+    if (Array.isArray(direkt)) {
+      oCell.setValue(JSON.stringify(ersetzeIn(direkt)));
+    }
+  }
+}
