@@ -32,7 +32,7 @@
 - `src/components/ueben/dashboard/ThemaDetailView.tsx` — Unterthema-Chips mit Flag-Icon; Schwierigkeit `⭐` → `SchwierigkeitIcon`.
 - `src/components/lp/fragensammlung/fragenbrowser/DetailKarte.tsx` + `KompaktZeile.tsx` — `Target` → `Flag`.
 - SuS-Fortschritt-Analyse (`SuSAnalyse.tsx`, Pfad in Task 10 verifizieren) — Mastery-`Star` → `CircleCheck`.
-- `src/components/ueben/SuSHilfePanel.tsx` — Hilfe-Legende: Mastery-Icon (Task 10) + Schwierigkeits-Icon (Task 11) an die neuen Icons angleichen.
+- `src/components/ueben/SuSHilfePanel.tsx` — Hilfe-Legende: Schwierigkeits-Icon an das neue Signal-Icon angleichen (Task 11).
 
 **Type-Hinweis:** `LernzieleAkkordeon` importiert `Lernziel` aus `../../types/pool`, `mastery.ts` aus `@shared/types/fragen-core`. Beim Coden den Type verwenden, den `lernzielStatus()` erwartet (`@shared/types/fragen-core` — trägt `fragenIds`). Falls `types/pool` nur re-exportiert, ist beides identisch — kurz verifizieren, nicht annehmen.
 
@@ -390,7 +390,6 @@ git commit -m "refactor(lernziele): LP-Lernziele-Icon auf Flag vereinheitlicht"
 
 **Files:**
 - Modify: SuS-Fortschritt-Analyse (`SuSAnalyse.tsx` — Pfad in Step 1 verifizieren).
-- Modify: `src/components/ueben/SuSHilfePanel.tsx` — Mastery-Legende.
 
 - [ ] **Step 1: Stelle lokalisieren**
 
@@ -399,7 +398,7 @@ Die Stelle finden, an der `Star` für „Gemeistert"/Mastery steht (laut Audit `
 
 - [ ] **Step 2: Ändern**
 
-An der Mastery-„Gemeistert"-Stelle `Star` → `CircleCheck` (Import + Nutzung, gleiche Klassen). Ausserdem in `src/components/ueben/SuSHilfePanel.tsx` die Mastery-Legende auf `CircleCheck` umstellen (dort wird Mastery heute mit `Star` dokumentiert) — `grep -n "Star" src/components/ueben/SuSHilfePanel.tsx`, die Mastery-Legenden-Stelle anpassen, damit die Hilfe zur UI passt. Die Schwierigkeits-`Star`-Stelle im Hilfe-Panel hier NICHT anfassen (das macht Task 11).
+An der Mastery-„Gemeistert"-Stelle `Star` → `CircleCheck` (Import + Nutzung, gleiche Klassen). Hinweis: `SuSHilfePanel.tsx` dokumentiert Mastery mit farbigen Quadraten (kein `Star`) — dort ist für Task 10 nichts zu tun. Die `Star`-Stellen im Hilfe-Panel betreffen Schwierigkeit (Task 11) und Gamification (out of scope), nicht Mastery.
 
 - [ ] **Step 3: Prüfen**
 
@@ -408,7 +407,7 @@ Run: `cd ExamLab && npx tsc -b` → clean. Betroffene Komponententests grün.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add -- <SuSAnalyse-Datei> ExamLab/src/components/ueben/SuSHilfePanel.tsx
+git add -- <SuSAnalyse-Datei>
 git commit -m "refactor(lernziele): SuS-Mastery-Icon auf CircleCheck (Star = nur Favorit)"
 ```
 
