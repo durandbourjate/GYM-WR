@@ -167,8 +167,8 @@ geprüft, ohne Test-Framework.
 Für eine Frage mit Ziel-Rang `r` (1 = längste … 4 = kürzeste) und fixer korrekter
 Antwort der Länge `L_korrekt`:
 
-- Es braucht `(4 − r)` Distraktoren *länger* und `(r − 1)` Distraktoren *kürzer*
-  als `L_korrekt`.
+- Es braucht `(r − 1)` Distraktoren *länger* und `(4 − r)` Distraktoren *kürzer*
+  als `L_korrekt` (Rang `r` = 1 + Anzahl längerer Distraktoren).
 - Daraus werden 3 Ziel-Längen mit etwas Jitter abgeleitet (damit die Längen selbst
   kein perfektes Muster bilden).
 - **Claude-Instruktion** je Distraktor:
