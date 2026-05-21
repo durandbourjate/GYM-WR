@@ -143,10 +143,11 @@ describe('LernzielKarte', () => {
     expect(btn).not.toBeDisabled()
   })
 
-  it('zeigt Lernziel-Text und Bloom-Badge', () => {
+  it('zeigt Lernziel-Text und Bloom-Badge mit Label', () => {
     render(<LernzielKarte {...baseProps} />)
     expect(screen.getByText(/Marketingmix/)).toBeInTheDocument()
-    expect(screen.getByText(/K2/)).toBeInTheDocument()
+    // Badge zeigt Code + deutsches Label, z.B. „K2 Verstehen"
+    expect(screen.getByText(/K2 Verstehen/)).toBeInTheDocument()
   })
 
   it('zeigt Breadcrumb fach › thema', () => {
