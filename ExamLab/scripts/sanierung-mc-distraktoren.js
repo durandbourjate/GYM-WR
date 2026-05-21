@@ -146,6 +146,9 @@ function rufeClaudeAuf_(userPrompt, maxTokens) {
     throw new Error('Claude API ' + status + ': ' + response.getContentText().substring(0, 200));
   }
   var result = JSON.parse(response.getContentText());
+  if (!result.content || !result.content[0] || !result.content[0].text) {
+    throw new Error('Unerwartete Claude-Antwort-Struktur: ' + response.getContentText().substring(0, 300));
+  }
   var text = result.content[0].text;
   var cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   return JSON.parse(cleaned);
