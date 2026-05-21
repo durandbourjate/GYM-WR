@@ -130,9 +130,9 @@ verrät (Rückfall-Prävention zur MC-Sanierung)."
 
 ---
 
-## Task 2: Multi-MC-Analyse-Funktion
+## Task 2: Diagnose-Skript erweitern
 
-Erweitert das Diagnose-Skript um eine Analyse der ~238 Multi-Choice-MC. Liefert nur den Befund — keine Sanierung.
+Zwei Änderungen am Diagnose-Skript: (a) neue Multi-MC-Analyse, (b) die `Befund`-Logik der bestehenden `diagnoseMcLaengsteAntwort()` gated zusätzlich auf `kuerzesteProzent` — sonst könnte der Schluss-Re-Run «UNAUFFÄLLIG» melden, obwohl das invertierte Muster (korrekte = systematisch kürzeste) entstanden ist.
 
 **Files:**
 - Modify: `ExamLab/scripts/diagnose-mc-laengste-antwort.js` (neue Funktion ans Dateiende, vor den Helfern oder danach — Helfer werden geteilt)
@@ -232,19 +232,49 @@ function diagnoseMcMultiLaenge() {
 }
 ```
 
-- [ ] **Step 2: Syntax prüfen**
+- [ ] **Step 2: `Befund`-Logik von `diagnoseMcLaengsteAntwort()` erweitern**
+
+Finde in `diagnoseMcLaengsteAntwort()` den `bewertung`-Block. Aktuell:
+
+```js
+  var bewertung;
+  if (laengsteProzent > zufallProzent * 1.5) {
+    bewertung = 'AUFFÄLLIG — die korrekte Antwort ist deutlich öfter die längste als der Zufall erwarten lässt.';
+  } else if (laengsteProzent > zufallProzent * 1.2) {
+    bewertung = 'LEICHT ERHÖHT — überprüfenswert.';
+  } else {
+    bewertung = 'UNAUFFÄLLIG — kein systematisches Längen-Muster.';
+  }
+```
+
+Ersetze ihn durch (gated jetzt auf das Maximum aus `laengsteProzent` und `kuerzesteProzent` — beide Richtungen sind ein Tell):
+
+```js
+  var bewertung;
+  var maxAbweichung = Math.max(laengsteProzent, kuerzesteProzent);
+  if (maxAbweichung > zufallProzent * 1.5) {
+    bewertung = 'AUFFÄLLIG — die Länge verrät die Korrektheit (längste oder kürzeste Option deutlich über Zufall).';
+  } else if (maxAbweichung > zufallProzent * 1.2) {
+    bewertung = 'LEICHT ERHÖHT — überprüfenswert.';
+  } else {
+    bewertung = 'UNAUFFÄLLIG — kein systematisches Längen-Muster (weder längste noch kürzeste).';
+  }
+```
+
+- [ ] **Step 3: Syntax prüfen**
 
 Run: `node --check "ExamLab/scripts/diagnose-mc-laengste-antwort.js"`
 Expected: kein Output, Exit-Code 0.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
 git add ExamLab/scripts/diagnose-mc-laengste-antwort.js
-git commit -m "feat(diagnose): Multi-Choice-MC-Längenanalyse
+git commit -m "feat(diagnose): Multi-MC-Analyse + kürzeste-Option-Gate
 
-diagnoseMcMultiLaenge() prüft, ob bei Mehrfachauswahl-Fragen die
-korrekten Optionen systematisch länger sind als die Distraktoren."
+diagnoseMcMultiLaenge() prüft Mehrfachauswahl-Fragen. Befund-Logik von
+diagnoseMcLaengsteAntwort() gated jetzt auch auf kuerzesteProzent —
+das invertierte Längen-Muster wird nicht mehr als UNAUFFÄLLIG gewertet."
 ```
 
 ---
@@ -1140,6 +1170,7 @@ Diese Schritte braucht die Lehrperson im Apps-Script-Editor + Google-Account. Si
 - [ ] `phase0_planung()` ausführen.
 - [ ] Protokolle lesen: die **projizierte Schluss-Verteilung** prüfen — jeder Rang ~25 %.
 - [ ] Bei grober Abweichung: NICHT fortfahren, Rang-Plan-Logik prüfen.
+- [ ] Den geloggten Wert **«Übersprungen (>5 Distraktoren)»** prüfen — er sollte nahe 0 sein. Bei nennenswerter Zahl bleiben diese Fragen auffällig und gefährden den Schluss-«UNAUFFÄLLIG»-Befund; dann `MAX_DISTRAKTOREN` erhöhen (Review-Sheet hat dann mehr Spalten) und Phase 0 neu planen.
 - [ ] Review-Tab `MC-Sanierung-Review` in der Tabelle kontrollieren (Zeilen vorhanden, `distraktor_alt_*` gefüllt).
 
 ## R5 — Phase 1 ausführen
