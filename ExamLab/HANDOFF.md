@@ -34,9 +34,16 @@ Auf Staging mit echtem Login E2E-verifiziert, dann preview -> main gemergt.
   werden erst nach dem Deploy von `apps-script-code.js` aktiv.
 - **`diagnose-mc-laengste-antwort.js` ausführen** (in den Apps-Script-Editor
   einfügen + laufen lassen), um das Ausmass des MC-Längen-Musters zu sehen.
-- **Design-Trio offen:** #2 Header-Überarbeitung "Prüfung bearbeiten",
-  #3 Lösch-/Aktions-Icons in der Prüfungs-/Übungs-Übersicht,
-  #4 Lernziele bis Unterthema anzeigen.
+- **Design-Trio: gebrainstormt + Spec geschrieben, BEREIT ZUR UMSETZUNG.**
+  Spec: `docs/superpowers/specs/2026-05-21-design-trio-header-icons-lernziele-design.md`.
+  Alle drei Teil-Designs vom User genehmigt. Nächster Schritt: `writing-plans`-Skill
+  → Implementierungsplan → Umsetzung. Empfohlene Reihenfolge: #3, #2, #4.
+  - #2 Editor-Header «Prüfung bearbeiten»: globales Chrome oben, Editor-Leiste
+    (Titel + Tabs + Aktions-Icons) unten. Nur `PruefungsComposer` betroffen.
+  - #3 Übersichts-Karte: Duplizieren/Bearbeiten als Icons + neues Lösch-Icon
+    (`PruefungsKarte` + `LPPruefungenAnsicht` + `LPUebungenAnsicht`).
+  - #4 Unterthema-Feld im Lernziel-Editor (`LernzielTab` + Apps-Script). Die
+    Anzeige (`LernzieleAkkordeon`/`LernzieleMiniModal`) kann Unterthemen schon.
 
 ---
 
