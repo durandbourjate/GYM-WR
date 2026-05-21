@@ -1,17 +1,10 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Check, ChevronDown, Pencil, Trash2 } from 'lucide-react'
+import type { Lernziel } from '@shared/types/fragen-core'
 import { postJson } from '../../services/apiClient'
+import { gruppiereLernziele } from '../../utils/lernzieleGruppierung'
 import { TYPO } from '../../styles/typografie'
 import { TabStarToggle } from '../lp/TabStarToggle'
-
-interface Lernziel {
-  id: string
-  fach: string
-  thema: string
-  text: string
-  bloom: string
-  ebene?: string
-}
 
 interface Props {
   email: string
@@ -39,14 +32,16 @@ export default function LernzielTab({ email }: Props) {
 
   // Neu-Erstellen-State
   const [zeigeNeu, setZeigeNeu] = useState(false)
-  const [neuDaten, setNeuDaten] = useState<Partial<Lernziel>>({ fach: '', thema: '', text: '', bloom: 'K2' })
+  const [neuDaten, setNeuDaten] = useState<Partial<Lernziel>>({ fach: '', thema: '', unterthema: '', text: '', bloom: 'K2' })
 
   // Speicher-Status
   const [speicherStatus, setSpeicherStatus] = useState<{ art: 'info' | 'erfolg' | 'fehler'; text: string } | null>(null)
 
-  // Einklapp-State (Default: alles eingeklappt). Key für Thema: `${fach}::${thema}`.
+  // Einklapp-State (Default: alles eingeklappt). Key für Thema: `${fach}::${thema}`,
+  // Key für Unterthema: `${fach}::${thema}::${ut}`.
   const [expandedFaecher, setExpandedFaecher] = useState<Set<string>>(new Set())
   const [expandedThemen, setExpandedThemen] = useState<Set<string>>(new Set())
+  const [expandedUnterthemen, setExpandedUnterthemen] = useState<Set<string>>(new Set())
   const filterAktiv = Boolean(suchtext || filterFach || filterBloom)
 
   function toggleFach(fach: string) {
@@ -58,6 +53,13 @@ export default function LernzielTab({ email }: Props) {
   }
   function toggleThema(key: string) {
     setExpandedThemen(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key); else next.add(key)
+      return next
+    })
+  }
+  function toggleUnterthema(key: string) {
+    setExpandedUnterthemen(prev => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key); else next.add(key)
       return next
@@ -75,7 +77,7 @@ export default function LernzielTab({ email }: Props) {
     setLadeStatus('laden')
     try {
       const result = await postJson<{ lernziele: Lernziel[] }>('ladeLernziele', { email, callerEmail: email })
-      setLernziele(result?.lernziele || [])
+      setLernziele((result?.lernziele || []).filter(l => l.aktiv !== false))
       setLadeStatus('fertig')
     } catch (err) {
       setFehler(String(err))
@@ -102,19 +104,8 @@ export default function LernzielTab({ email }: Props) {
     })
   }, [lernziele, filterFach, filterBloom, suchtext])
 
-  // Gruppiert nach Fach → Thema
-  const gruppiert = useMemo(() => {
-    const map = new Map<string, Map<string, Lernziel[]>>()
-    for (const lz of gefiltert) {
-      const fach = lz.fach || 'Ohne Fach'
-      const thema = lz.thema || 'Ohne Thema'
-      if (!map.has(fach)) map.set(fach, new Map())
-      const themaMap = map.get(fach)!
-      if (!themaMap.has(thema)) themaMap.set(thema, [])
-      themaMap.get(thema)!.push(lz)
-    }
-    return map
-  }, [gefiltert])
+  // Gruppiert nach Fach → Thema → Unterthema
+  const gruppiert = useMemo(() => gruppiereLernziele(gefiltert), [gefiltert])
 
   // === CRUD-Operationen ===
 
@@ -128,7 +119,7 @@ export default function LernzielTab({ email }: Props) {
       })
       if (result?.erfolg) {
         setLernziele(prev => [...prev, { ...neuDaten, id: result.id } as Lernziel])
-        setNeuDaten({ fach: neuDaten.fach, thema: '', text: '', bloom: 'K2' })
+        setNeuDaten({ fach: neuDaten.fach, thema: '', unterthema: '', text: '', bloom: 'K2' })
         setSpeicherStatus({ art: 'erfolg', text: 'Erstellt' })
         setTimeout(() => setSpeicherStatus(null), 2000)
       }
@@ -177,7 +168,46 @@ export default function LernzielTab({ email }: Props) {
 
   function startEdit(lz: Lernziel) {
     setEditId(lz.id)
-    setEditDaten({ fach: lz.fach, thema: lz.thema, text: lz.text, bloom: lz.bloom })
+    setEditDaten({ fach: lz.fach, thema: lz.thema, unterthema: lz.unterthema, text: lz.text, bloom: lz.bloom })
+  }
+
+  // Einzelne Lernziel-Zeile (Bloom-Badge, Text, Bearbeiten/Löschen, Edit-Modus).
+  // Identisch verwendet für meta-Lernziele und Unterthemen-Lernziele.
+  function renderLernzielZeile(lz: Lernziel) {
+    return (
+      <div key={lz.id} className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/30 flex items-start gap-3 group">
+        {editId === lz.id ? (
+          // Edit-Modus
+          <div className="flex-1 space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              <input value={editDaten.fach || ''} onChange={e => setEditDaten({ ...editDaten, fach: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" placeholder="Fach" />
+              <input value={editDaten.thema || ''} onChange={e => setEditDaten({ ...editDaten, thema: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" placeholder="Thema" />
+              <input value={editDaten.unterthema || ''} onChange={e => setEditDaten({ ...editDaten, unterthema: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" placeholder="Unterthema" />
+              <select value={editDaten.bloom || 'K2'} onChange={e => setEditDaten({ ...editDaten, bloom: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600">
+                {BLOOM_STUFEN.map(b => <option key={b} value={b}>{b}</option>)}
+              </select>
+            </div>
+            <textarea value={editDaten.text || ''} onChange={e => setEditDaten({ ...editDaten, text: e.target.value })} rows={2} className="w-full px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" />
+            <div className="flex gap-2">
+              <button onClick={aktualisiereLernziel} className="px-3 py-1 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded text-xs font-medium">Speichern</button>
+              <button onClick={() => { setEditId(null); setEditDaten({}) }} className="px-3 py-1 text-slate-500 hover:text-slate-700 text-xs">Abbrechen</button>
+            </div>
+          </div>
+        ) : (
+          // Anzeige-Modus
+          <>
+            <span className="shrink-0 mt-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+              {lz.bloom}
+            </span>
+            <p className="flex-1 text-sm text-slate-700 dark:text-slate-300">{lz.text}</p>
+            <div className="shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button onClick={() => startEdit(lz)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 inline-flex items-center" title="Bearbeiten" aria-label="Bearbeiten"><Pencil className="w-3.5 h-3.5" /></button>
+              <button onClick={() => loescheLernziel(lz.id)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-red-500 inline-flex items-center" title="Löschen" aria-label="Löschen"><Trash2 className="w-3.5 h-3.5" /></button>
+            </div>
+          </>
+        )}
+      </div>
+    )
   }
 
   // Header bleibt in allen Pfaden sichtbar (Cluster E.4: TabStarToggle darf nicht in Early-Returns versteckt sein)
@@ -284,6 +314,15 @@ export default function LernzielTab({ email }: Props) {
               />
             </div>
             <div>
+              <label className="text-xs text-slate-600 dark:text-slate-300">Unterthema</label>
+              <input
+                value={neuDaten.unterthema || ''}
+                onChange={e => setNeuDaten({ ...neuDaten, unterthema: e.target.value })}
+                placeholder="z.B. BIP, Inflation"
+                className="w-full px-3 py-1.5 border rounded-lg text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600"
+              />
+            </div>
+            <div>
               <label className="text-xs text-slate-600 dark:text-slate-300">Lernziel-Text *</label>
               <textarea
                 value={neuDaten.text || ''}
@@ -304,10 +343,13 @@ export default function LernzielTab({ email }: Props) {
         )}
       </div>
 
-      {/* Lernziel-Liste gruppiert */}
-      {Array.from(gruppiert.entries()).map(([fach, themaMap]) => {
+      {/* Lernziel-Liste gruppiert: Fach → Thema → (Übergeordnet + Unterthemen) */}
+      {Object.entries(gruppiert).map(([fach, themaMap]) => {
         const fachOffen = filterAktiv || expandedFaecher.has(fach)
-        const fachAnzahl = Array.from(themaMap.values()).reduce((sum, l) => sum + l.length, 0)
+        const fachAnzahl = Object.values(themaMap).reduce(
+          (sum, g) => sum + g.meta.length + Object.values(g.unterthemen).reduce((s, arr) => s + arr.length, 0),
+          0,
+        )
         return (
         <div key={fach} className="border rounded-xl dark:border-slate-700 overflow-hidden">
           <button
@@ -321,7 +363,10 @@ export default function LernzielTab({ email }: Props) {
               <ChevronDown className={`w-3.5 h-3.5 transition-transform ${fachOffen ? 'rotate-180' : ''}`} />
             </span>
           </button>
-          {fachOffen && Array.from(themaMap.entries()).map(([thema, lzListe]) => {
+          {fachOffen && Object.keys(themaMap).sort().map(thema => {
+            const gruppe = themaMap[thema]
+            const utKeys = Object.keys(gruppe.unterthemen).sort()
+            const themaAnzahl = gruppe.meta.length + utKeys.reduce((s, ut) => s + gruppe.unterthemen[ut].length, 0)
             const themaKey = `${fach}::${thema}`
             const themaOffen = filterAktiv || expandedThemen.has(themaKey)
             return (
@@ -333,43 +378,44 @@ export default function LernzielTab({ email }: Props) {
               >
                 <span className="text-xs font-medium text-slate-600 dark:text-slate-400">{thema}</span>
                 <span className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
-                  <span>{lzListe.length}</span>
+                  <span>{themaAnzahl}</span>
                   <ChevronDown className={`w-3 h-3 transition-transform ${themaOffen ? 'rotate-180' : ''}`} />
                 </span>
               </button>
-              {themaOffen && lzListe.map(lz => (
-                <div key={lz.id} className="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/30 flex items-start gap-3 group">
-                  {editId === lz.id ? (
-                    // Edit-Modus
-                    <div className="flex-1 space-y-2">
-                      <div className="grid grid-cols-3 gap-2">
-                        <input value={editDaten.fach || ''} onChange={e => setEditDaten({ ...editDaten, fach: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" placeholder="Fach" />
-                        <input value={editDaten.thema || ''} onChange={e => setEditDaten({ ...editDaten, thema: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" placeholder="Thema" />
-                        <select value={editDaten.bloom || 'K2'} onChange={e => setEditDaten({ ...editDaten, bloom: e.target.value })} className="px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600">
-                          {BLOOM_STUFEN.map(b => <option key={b} value={b}>{b}</option>)}
-                        </select>
-                      </div>
-                      <textarea value={editDaten.text || ''} onChange={e => setEditDaten({ ...editDaten, text: e.target.value })} rows={2} className="w-full px-2 py-1 border rounded text-sm dark:bg-slate-800 dark:text-white dark:border-slate-600" />
-                      <div className="flex gap-2">
-                        <button onClick={aktualisiereLernziel} className="px-3 py-1 bg-slate-800 text-white dark:bg-slate-200 dark:text-slate-800 rounded text-xs font-medium">Speichern</button>
-                        <button onClick={() => { setEditId(null); setEditDaten({}) }} className="px-3 py-1 text-slate-500 hover:text-slate-700 text-xs">Abbrechen</button>
-                      </div>
+              {themaOffen && (
+                <div>
+                  {/* Übergeordnete Lernziele (ohne Unterthema) */}
+                  {gruppe.meta.length > 0 && (
+                    <div>
+                      {utKeys.length > 0 && (
+                        <p className="px-4 pt-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">Übergeordnet</p>
+                      )}
+                      {gruppe.meta.map(lz => renderLernzielZeile(lz))}
                     </div>
-                  ) : (
-                    // Anzeige-Modus
-                    <>
-                      <span className="shrink-0 mt-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
-                        {lz.bloom}
-                      </span>
-                      <p className="flex-1 text-sm text-slate-700 dark:text-slate-300">{lz.text}</p>
-                      <div className="shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => startEdit(lz)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 inline-flex items-center" title="Bearbeiten" aria-label="Bearbeiten"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => loescheLernziel(lz.id)} className="p-1 text-slate-600 dark:text-slate-300 hover:text-red-500 inline-flex items-center" title="Löschen" aria-label="Löschen"><Trash2 className="w-3.5 h-3.5" /></button>
-                      </div>
-                    </>
                   )}
+                  {/* Lernziele je Unterthema (aufklappbar) */}
+                  {utKeys.map(ut => {
+                    const utKey = `${fach}::${thema}::${ut}`
+                    const utOffen = filterAktiv || expandedUnterthemen.has(utKey)
+                    return (
+                      <div key={ut}>
+                        <button
+                          type="button"
+                          onClick={() => toggleUnterthema(utKey)}
+                          className="w-full px-4 py-1.5 pl-6 bg-slate-50/60 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-between text-left"
+                        >
+                          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{ut}</span>
+                          <span className="flex items-center gap-2 text-[10px] text-slate-500 dark:text-slate-400">
+                            <span>{gruppe.unterthemen[ut].length}</span>
+                            <ChevronDown className={`w-3 h-3 transition-transform ${utOffen ? 'rotate-180' : ''}`} />
+                          </span>
+                        </button>
+                        {utOffen && gruppe.unterthemen[ut].map(lz => renderLernzielZeile(lz))}
+                      </div>
+                    )
+                  })}
                 </div>
-              ))}
+              )}
             </div>
             )
           })}
