@@ -186,6 +186,10 @@ function phase0_planung() {
     var optionenCol = headers.indexOf('optionen');
     var geloeschtCol = headers.indexOf('geloescht_am');
     if (typCol < 0) continue;
+    if (idCol < 0 || fragetextCol < 0) {
+      Logger.log('WARNUNG: Tab "' + SANIERUNG_TABS[t] + '" fehlt id- oder fragetext-Spalte, übersprungen.');
+      continue;
+    }
 
     for (var i = 1; i < daten.length; i++) {
       if (String(daten[i][typCol]).trim() !== 'mc') continue;
