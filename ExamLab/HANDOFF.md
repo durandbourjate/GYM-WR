@@ -8,42 +8,42 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
-### Stand 21.05.2026 — Bug #5 + Bug #1 + MC-Audit-Skript LIVE
+### Stand 21.05.2026 SPÄT — Design-Trio #2 + #3 LIVE
 
-**HEAD main:** HANDOFF-Update über den 3 Code-Commits `487a8bb`, `8b74f27`, `382ff15`.
-Auf Staging mit echtem Login E2E-verifiziert, dann preview -> main gemergt.
+**HEAD main:** `284328a` (= `preview`). Design-Trio Teil #2 (Editor-Leiste) +
+Teil #3 (Übersichts-Icons) auf Staging mit echtem LP-Login E2E-verifiziert,
+dann nach `main` gemergt.
 
-- **Bug #5** (`fix(ueben)`, `487a8bb`): Filter-Abwahl im Übungsmodus reaktivierte
-  das ganze Thema, weil ein leeres Filter-Set "alle" bedeutete. Filter werden
-  jetzt beim Themen-Öffnen (`oeffneThema`) mit allen Werten vorbefüllt; leeres
-  Set = 0 Fragen, Start deaktiviert. E2E auf Staging (FIBU-Thema) grün.
-- **Bug #1** (`feat(ueben)`, `8b74f27`): Schüler-Fortschritt wurde nie vom
-  Backend zurückgeladen (gerätelokal). `ladeFortschritt()` lädt jetzt lokal +
-  Backend, merged per Frage (mehr Versuche gewinnt). `uebenLadeFortschritt`
-  IDOR-gehärtet (`istGruppenMitglied_`) + gibt `sessionIds` zurück. E2E grün:
-  Cache-Wipe -> Reload -> Fortschritt kommt vom Backend zurück.
-- **#6** (`chore(scripts)`, `382ff15`): `scripts/diagnose-mc-laengste-antwort.js`
-  — Apps-Script-Diagnose, ob bei MC-Fragen die korrekte Antwort auffällig oft
-  die längste Option ist.
+- **Teil #3** (`91e2d5a` + Fix `a2e34b2`): `PruefungsKarte` zeigt Bearbeiten/
+  Duplizieren/Löschen als Icon-Buttons; neuer Lösch-Flow (`BaseDialog` +
+  `apiService.loeschePruefung` + Toast + Reload) in `LPStartseite`, Prop
+  `onLoeschen` durch `LPPruefungenAnsicht` + `LPUebungenAnsicht` gefädelt.
+- **Teil #2** (`d39f143` + `730064b`): Neue `PruefungsComposerLeiste`
+  (Titel + Editor-Tabs + Speicher-Status + Aktions-Icons). `PruefungsComposer`
+  reicht `breadcrumbs`/`statusText`/`aktionsButtons` nicht mehr an den Header —
+  die globale `TabKaskade` bekommt volle Breite. Bottom-Lösch-Link entfernt.
+- Plan: `docs/superpowers/plans/2026-05-21-editor-header-und-uebersicht-icons.md`.
 
-**Gates:** tsc -b, vitest 2015 + 4 todo, build, 9 Audit-Gates — alle grün.
+**Gates:** tsc -b, vitest 2023 + 4 todo, build, 9 Audit-Gates — alle grün.
+**E2E Staging:** #3 (Karten-Icons, Bearbeiten/Duplizieren/Löschen+Dialog, Prüfen
+UND Üben) + #2 (Header volle Breite, Leiste, Speichern, Icons conditional) — grün,
+keine Konsolen-Fehler.
+
+**E2E-Befunde (kein Blocker):**
+- Status-Text in der Leiste erschien im Test nicht — `statusText`-Logik ist
+  byte-identisch zum alten Header, kein Regress; ggf. vorbestehend.
+- Datum-Feld nach Wiederöffnen einer gespeicherten Prüfung leer (`dd.mm.yyyy`) —
+  betrifft `ConfigTab`/Datums-Roundtrip, NICHT das Design-Trio. Separat prüfen.
 
 **OFFEN:**
-- **Apps-Script-Deploy nötig** für Bug #1: Der Read-Back läuft bereits gegen den
-  alten deployten Endpoint, aber `sessionIds` (-> Streak) und die IDOR-Härtung
-  werden erst nach dem Deploy von `apps-script-code.js` aktiv.
-- **`diagnose-mc-laengste-antwort.js` ausführen** (in den Apps-Script-Editor
-  einfügen + laufen lassen), um das Ausmass des MC-Längen-Musters zu sehen.
-- **Design-Trio: gebrainstormt + Spec geschrieben, BEREIT ZUR UMSETZUNG.**
-  Spec: `docs/superpowers/specs/2026-05-21-design-trio-header-icons-lernziele-design.md`.
-  Alle drei Teil-Designs vom User genehmigt. Nächster Schritt: `writing-plans`-Skill
-  → Implementierungsplan → Umsetzung. Empfohlene Reihenfolge: #3, #2, #4.
-  - #2 Editor-Header «Prüfung bearbeiten»: globales Chrome oben, Editor-Leiste
-    (Titel + Tabs + Aktions-Icons) unten. Nur `PruefungsComposer` betroffen.
-  - #3 Übersichts-Karte: Duplizieren/Bearbeiten als Icons + neues Lösch-Icon
-    (`PruefungsKarte` + `LPPruefungenAnsicht` + `LPUebungenAnsicht`).
-  - #4 Unterthema-Feld im Lernziel-Editor (`LernzielTab` + Apps-Script). Die
-    Anzeige (`LernzieleAkkordeon`/`LernzieleMiniModal`) kann Unterthemen schon.
+- **`diagnose-mc-laengste-antwort.js` ausgeführt** — Befund GRAVIEREND:
+  759/1023 Single-MC (74,2%) haben die korrekte Antwort als längste Option
+  (Zufall 25%). Eigenes Sanierungs-Projekt (Distraktoren angleichen +
+  Generierungs-Constraint), braucht Brainstorming→Spec→Plan.
+- **Design-Trio Teil #4 «Lernziele bis Unterthema»** zurückgestellt: Editor-
+  Lernziele (`Lehrplanziele`-Sheet) und SuS-Anzeige-Lernziele (`Lernziele`-Sheet)
+  sind getrennte Backends. User will «volle Backend-Bridge» → eigene
+  Brainstorming→Spec→Plan-Runde nötig.
 
 ---
 
