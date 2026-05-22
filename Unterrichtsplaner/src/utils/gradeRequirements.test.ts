@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import {
   getGymStufe,
   getGradeRequirements,
@@ -14,23 +14,41 @@ function makeCourse(id: string, cls: string, typ: string, les: 1 | 2 | 3, col: n
 }
 
 describe('getGymStufe', () => {
+  // Explizites maturaYear=2026 → datums-unabhängig deterministisch (SJ-Ende 2026).
   it('ordnet Klasse 29c bei SJ-Ende 2026 GYM1 zu', () => {
-    expect(getGymStufe('29c')).toBe('GYM1')
+    expect(getGymStufe('29c', 2026)).toBe('GYM1')
   })
   it('nimmt die erste 2-stellige Zahl im Klassennamen', () => {
-    expect(getGymStufe('28bc29fs')).toBe('GYM2')
-    expect(getGymStufe('27a28f')).toBe('GYM3')
+    expect(getGymStufe('28bc29fs', 2026)).toBe('GYM2')
+    expect(getGymStufe('27a28f', 2026)).toBe('GYM3')
   })
   it('ordnet GYM4 und GYM5 (TaF) korrekt zu', () => {
-    expect(getGymStufe('26d')).toBe('GYM4')
-    expect(getGymStufe('25s')).toBe('GYM5')
+    expect(getGymStufe('26d', 2026)).toBe('GYM4')
+    expect(getGymStufe('25s', 2026)).toBe('GYM5')
   })
   it('liefert UNKNOWN bei fehlender Zahl oder zu grossem Abstand', () => {
-    expect(getGymStufe('abc')).toBe('UNKNOWN')
-    expect(getGymStufe('24x')).toBe('UNKNOWN')
+    expect(getGymStufe('abc', 2026)).toBe('UNKNOWN')
+    expect(getGymStufe('24x', 2026)).toBe('UNKNOWN')
   })
   it('respektiert den maturaYear-Override', () => {
     expect(getGymStufe('30a', 2027)).toBe('GYM1')
+  })
+})
+
+describe('getGymStufe — dynamischer Schuljahr-Default (ohne maturaYear)', () => {
+  afterEach(() => { vi.useRealTimers() })
+
+  it('leitet das SJ-Endjahr aus dem Datum ab — ab Juli zählt das neue Schuljahr', () => {
+    vi.useFakeTimers()
+    // Vor Juli: laufendes SJ endet im aktuellen Jahr (SJ 25/26 → Ende 2026)
+    vi.setSystemTime(new Date('2026-06-30T12:00:00'))
+    expect(getGymStufe('29c')).toBe('GYM1')
+    // Ab Juli: neues Schuljahr → Endjahr ist das Folgejahr (SJ 26/27 → Ende 2027)
+    vi.setSystemTime(new Date('2026-07-01T12:00:00'))
+    expect(getGymStufe('29c')).toBe('GYM2')
+    // Mitten im neuen Schuljahr
+    vi.setSystemTime(new Date('2026-09-15T12:00:00'))
+    expect(getGymStufe('29c')).toBe('GYM2')
   })
 })
 

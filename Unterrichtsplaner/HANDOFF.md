@@ -1,8 +1,8 @@
-# Unterrichtsplaner – Handoff v3.106
+# Unterrichtsplaner – Handoff v3.107
 
-## Status: v3.106 — Harmonisierung mit ExamLab (Toast, Lint-Gates)
+## Status: v3.107 — Bugfix getGymStufe (dynamisches Schuljahr-Endjahr)
 
-**Aktuelle Version:** v3.106 (20.05.2026)
+**Aktuelle Version:** v3.107 (22.05.2026)
 
 ---
 
@@ -28,6 +28,10 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 ---
 
 ## Letzte Sessions
+
+### 22.05.2026 — v3.107: Bugfix getGymStufe SJ-Default
+
+`getGymStufe` (`utils/gradeRequirements.ts`) hatte das SJ-Endjahr hart auf `2026` verdrahtet (`maturaYear ?? 2026`); alle 4 Produktiv-Aufrufer rufen ohne `maturaYear` auf → ab SJ 26/27 falsche GYM-Stufe (latenter Bug). Fix: neuer Helper `aktuellesSchuljahrEndjahr()` leitet das Endjahr aus dem Datum ab (Konvention wie `PlannerTabs.tsx`: ab Juli zählt das neue Schuljahr). TDD: Regressionstest mit `vi.setSystemTime` (Juli-Rollover); bestehende `getGymStufe`-Tests auf explizites `maturaYear: 2026` gehärtet (datums-unabhängig). tsc + 44 vitest-Tests + build grün.
 
 ### 20.05.2026 — UP-4 + Backlog-Audit (erledigt)
 
@@ -170,6 +174,7 @@ Tabs in Kopfzeile, Kursfilter als Dropdown, TaF nach Settings, Legend→HelpBar.
 
 | Version | Datum | Beschreibung |
 |---------|-------|-------------|
+| v3.107 | 22.05.2026 | Bugfix getGymStufe: dynamisches SJ-Endjahr statt hardcoded 2026 |
 | v3.106 | 20.05.2026 | Bundle 1+2: Toast → shared, 54 alert→Toast, 80 any-Token migriert, Lint-Gates aktiv, npm workspaces |
 | v3.105 | 25.03.2026 | Design-Cleanup: gray→slate (322 Stellen) + Farbduplikate behoben |
 | v3.104+ | 24.03.2026 | Bugfixes (Kontextmenü, Versionsticker), HANDOFF-Trim |

@@ -23,9 +23,18 @@ import type { AssessmentRule } from '../store/settingsStore';
 export type GymStufe = 'GYM1' | 'GYM2' | 'GYM3' | 'GYM4' | 'GYM5' | 'UNKNOWN';
 
 /**
+ * Endjahr des aktuellen Schuljahres aus dem Datum ableiten.
+ * Konvention wie PlannerTabs.tsx (getMonth() >= 6): ab Juli zählt das neue Schuljahr.
+ * SJ 25/26 endet 2026, SJ 26/27 endet 2027, …
+ */
+function aktuellesSchuljahrEndjahr(now: Date = new Date()): number {
+  return now.getMonth() >= 6 ? now.getFullYear() + 1 : now.getFullYear();
+}
+
+/**
  * Derive GYM level from class name and school year.
  * Class names like "29c", "28bc29fs", "27a28f" — extract the lowest number.
- * For SJ 25/26: Matura 2029 = GYM1, 2028 = GYM2, 2027 = GYM3, 2026 = GYM4
+ * Diff Maturjahrgang − SJ-Endjahr: 3 = GYM1, 2 = GYM2, 1 = GYM3, 0 = GYM4, −1 = GYM5 (TaF).
  */
 export function getGymStufe(cls: string, maturaYear?: number): GymStufe {
   // Extract first 2-digit number from class name
@@ -33,9 +42,8 @@ export function getGymStufe(cls: string, maturaYear?: number): GymStufe {
   if (!match) return 'UNKNOWN';
   const mj = parseInt(match[1], 10) + 2000; // e.g. 29 → 2029
 
-  // Default: SJ 25/26 means GYM1 graduates in 2029
-  // maturaYear param allows override for different school years
-  const sjEndYear = maturaYear ?? 2026; // End year of current school year
+  // SJ-Endjahr dynamisch aus dem Datum; maturaYear erlaubt einen expliziten Override.
+  const sjEndYear = maturaYear ?? aktuellesSchuljahrEndjahr();
 
   const diff = mj - sjEndYear;
   if (diff === 3) return 'GYM1';
