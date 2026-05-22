@@ -12,6 +12,7 @@ import type { SubjectConfig } from '../store/settingsStore';
 import type { CurriculumGoal } from '../data/curriculumGoals';
 import type { AssessmentRule } from '../store/settingsStore';
 import type { LessonType } from '../types';
+import { aktuellesSchuljahrStartjahr } from '../utils/schuljahr';
 
 export function PlannerTabs() {
   const toast = useToast();
@@ -31,8 +32,7 @@ export function PlannerTabs() {
 
   // Auto-detect best preset based on current date
   const defaultPresetId = (() => {
-    const now = new Date();
-    const year = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+    const year = aktuellesSchuljahrStartjahr();
     const preset = getPresetForYear(year);
     return preset?.id ?? '';
   })();
@@ -408,8 +408,7 @@ export function WelcomeScreen() {
   const [showPartial, setShowPartial] = useState(false);
 
   const defaultPresetId = (() => {
-    const now = new Date();
-    const year = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+    const year = aktuellesSchuljahrStartjahr();
     return getPresetForYear(year)?.id ?? SCHOOL_YEAR_PRESETS[0]?.id ?? '';
   })();
 
