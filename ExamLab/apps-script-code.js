@@ -17063,7 +17063,9 @@ function seedTestdatenSessionsUndFortschritt_(spreadsheetId) {
     var ids = Object.keys(fragenStatus);
     for (var fk = 0; fk < ids.length; fk++) {
       var st2 = fragenStatus[ids[fk]];
-      var mastery = st2.versuche === 0 ? 0 : Math.round((st2.richtig / st2.versuche) * 100);
+      // mastery als MasteryStufe-String (analog Produktionspfad berechneMastery_) —
+      // NICHT als Prozentzahl, sonst type-fremde Werte im Fortschritt-Sheet.
+      var mastery = berechneMastery_(st2.richtigInFolge);
       fortschrittZeilen.push([
         email, ids[fk], st2.versuche, st2.richtig, st2.richtigInFolge,
         mastery, st2.letzterVersuch, st2.sessionIds.join(',')
