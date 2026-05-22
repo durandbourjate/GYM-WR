@@ -12,6 +12,8 @@
 
 **Konventionen (`.claude/rules/`):** TDD wo Logik vorhanden ist (@superpowers:test-driven-development). Vor jedem Commit `npx tsc -b` + betroffene vitest grün. Schweizer Hochdeutsch (`ss`, nicht `ß`). Domain-Begriffe deutsch, Programming-Primitives englisch. Keine neuen `as any`, keine Emojis im Produktivcode. Tests colocated als `*.test.tsx`.
 
+> **Ausführungs-Stand (22.05.2026):** Tasks 1–8 umgesetzt, je 2-stufig reviewed (Spec + Code-Quality) und committed auf `feature/lernziele-bridge-spec` (HEAD `27a7436`, working tree clean). **Offen: Task 9, 10, 11, 12.** Fortsetzung via `superpowers:subagent-driven-development`. Die zwei Notizen in §Task 12 sind aus Code-Reviews übernommene Punkte, die dort mitzuerledigen sind.
+
 ---
 
 ## File Structure
