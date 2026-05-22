@@ -279,7 +279,8 @@ describe('LernzieleMiniModal — Master-Detail', () => {
     const lernzielZeile = screen.getByRole('button', { name: /Marketingmix/i })
     await user.click(lernzielZeile)
 
-    // Detail-Karte ist jetzt offen — scrollIntoView darf nicht mehr aufgerufen werden
+    // Detail-Karte ist jetzt offen — scrollIntoView darf NICHT aufgerufen worden sein
+    expect(scrollIntoViewMock).not.toHaveBeenCalled()
     scrollIntoViewMock.mockClear()
 
     // Zurück zur Liste
