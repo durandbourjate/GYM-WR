@@ -472,3 +472,27 @@ Drei Test-Schichten, jeweils klarer Ort:
 
 `npm run lint:no-alert --prefix ExamLab` (analog `lint:as-any`) verhindert Neueinführung von
 `alert()`/`window.alert()` in produktivem Code.
+
+## scrollIntoView({behavior:'smooth'}) verpufft beim Mount (LernzieleMiniModal, 22.05.2026)
+
+**Problem:** Ein `el.scrollIntoView({ behavior: 'smooth', block: 'start' })` in einem
+`useEffect`, der beim **Mount** einer Komponente läuft (z.B. ein gerade geöffnetes
+Modal), scrollt im echten Browser **nicht** — `scrollTop` bleibt 0. Der Effekt
+feuert, das Element ist korrekt und `isConnected`, der Container läuft über —
+trotzdem passiert nichts. Ein späterer `scrollIntoView` (nach User-Interaktion)
+funktioniert dagegen.
+
+**Konkret aufgetreten (LernzieleMiniModal):** `fokusUnterthema`-Auto-Scroll beim
+Modal-Öffnen. Browser-E2E auf Staging + `scrollIntoView`-Instrumentierung: Aufruf
+mit `{behavior:'smooth', block:'start'}`, `scrollTop` 0 → 0. Mit erzwungenem
+`behavior:'auto'`: `scrollTop` 0 → 2138 (Scroll funktioniert).
+
+**Regel:** Für einen Scroll, der **beim Mount** ausgelöst wird (im `useEffect`/
+`useLayoutEffect` ohne vorherige User-Interaktion), `behavior: 'auto'` verwenden,
+nicht `'smooth'`. Instant-Scroll ist beim Öffnen ohnehin die bessere UX. `'smooth'`
+nur für Scrolls, die durch eine spätere User-Aktion ausgelöst werden.
+
+**Erkennung:** vitest/jsdom fängt das NICHT — jsdom hat kein echtes Layout/Scrolling,
+`scrollIntoView` ist dort ein Mock; der Unit-Test kann nur die Argumente prüfen
+(`toHaveBeenCalledWith(objectContaining({ behavior: 'auto' }))`). Einziger
+zuverlässiger Detektor ist Browser-E2E mit `scrollTop`-Inspektion.
