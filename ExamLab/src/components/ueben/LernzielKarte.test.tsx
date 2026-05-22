@@ -88,6 +88,26 @@ describe('berechneKartenDaten', () => {
     expect(result.nichtSicher).toBe(3)
     expect(result.letzterVersuch).toBeNull()
   })
+
+  it('ungültige mastery-Werte zählen als "neu" (Bucket-Summe bleibt = total)', () => {
+    // Realdaten-Fall: das Backend kann mastery type-fremd liefern — z.B. einen
+    // numerischen String aus dem Test-Seeder oder '' aus einer leeren Sheet-Zelle.
+    // berechneKartenDaten muss solche Werte als 'neu' verbuchen, sonst landen sie
+    // in einem Rogue-Bucket-Key und total ≠ Summe(buckets).
+    const lernziel = mockLernziel({ fragenIds: ['a', 'b', 'c'] })
+    const fortschritte: Record<string, FragenFortschritt> = {
+      a: mockFortschritt('gemeistert', '2026-05-01T10:00:00.000Z'),
+      b: { ...mockFortschritt('neu', '2026-05-02T10:00:00.000Z'), mastery: '80' as unknown as FragenFortschritt['mastery'] /* Defensive: simuliert numerischen Backend-Wert */ },
+      c: { ...mockFortschritt('neu', '2026-05-03T10:00:00.000Z'), mastery: '' as unknown as FragenFortschritt['mastery'] /* Defensive: simuliert leere Sheet-Zelle */ },
+    }
+
+    const result = berechneKartenDaten(lernziel, fortschritte)
+
+    const bucketSumme =
+      result.buckets.gemeistert + result.buckets.gefestigt + result.buckets.ueben + result.buckets.neu
+    expect(bucketSumme).toBe(result.total)
+    expect(result.buckets).toEqual({ gemeistert: 1, gefestigt: 0, ueben: 0, neu: 2 })
+  })
 })
 
 // ─── LernzielKarte (Render-Tests) ─────────────────────────────────────────────

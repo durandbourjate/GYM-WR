@@ -36,7 +36,10 @@ export function berechneKartenDaten(
 
   for (const id of ids) {
     const fp = fortschritte[id]
-    const stufe = fp?.mastery ?? 'neu'
+    // mastery defensiv normalisieren — Backend liefert type-fremde Werte (S118):
+    // numerischer String (Test-Seeder) oder '' (leere Zelle) → sonst Rogue-Bucket.
+    const roh = fp?.mastery
+    const stufe = roh === 'gemeistert' || roh === 'gefestigt' || roh === 'ueben' ? roh : 'neu'
     buckets[stufe]++
     if (fp?.letzterVersuch && (!letzterVersuch || fp.letzterVersuch > letzterVersuch)) {
       letzterVersuch = fp.letzterVersuch
