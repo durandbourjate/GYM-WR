@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react'
-import { TrendingUp, Flame, Star, Pencil } from 'lucide-react'
+import { TrendingUp, Flame, CircleCheck, Pencil } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useUebenFortschrittStore } from '../../store/ueben/fortschrittStore'
 import { useUebenGruppenStore } from '../../store/ueben/gruppenStore'
@@ -151,7 +151,7 @@ export default function SuSAnalyse() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <MiniKarte label="Level" wert={stats.level} icon={<TrendingUp className="w-5 h-5" aria-hidden="true" />} />
         <MiniKarte label="Streak" wert={stats.streak} icon={<Flame className="w-5 h-5" aria-hidden="true" />} />
-        <MiniKarte label="Gemeistert" wert={stats.gemeistert} icon={<Star className="w-5 h-5" aria-hidden="true" />} />
+        <MiniKarte label="Gemeistert" wert={stats.gemeistert} icon={<CircleCheck className="w-5 h-5" aria-hidden="true" />} />
         <MiniKarte label="Versuche" wert={stats.versuche} icon={<Pencil className="w-5 h-5" aria-hidden="true" />} />
       </div>
 
