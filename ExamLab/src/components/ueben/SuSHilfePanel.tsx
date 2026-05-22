@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Lightbulb, Star, Flag, Circle, CheckCircle2, Shuffle, RotateCw, Play } from 'lucide-react'
+import { Lightbulb, Star, Flag, Circle, CircleCheck, Shuffle, RotateCw, Play } from 'lucide-react'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 import { TYPO } from '../../styles/typografie'
 import { SchwierigkeitIcon } from './dashboard/SchwierigkeitIcon'
@@ -217,7 +217,7 @@ function HilfeLernziele() {
       <div className="flex items-center gap-2"><Flag className="w-4 h-4 text-slate-400" /> <span>Offen — noch nicht bearbeitet.</span></div>
       <div className="flex items-center gap-2"><Circle className="w-4 h-4 fill-yellow-500 text-yellow-500" /> <span>In Arbeit — erste Fragen beantwortet.</span></div>
       <div className="flex items-center gap-2"><Circle className="w-4 h-4 fill-blue-500 text-blue-500" /> <span>Gefestigt — Fragen mehrmals richtig.</span></div>
-      <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> <span>Gemeistert — Lernziel erreicht!</span></div>
+      <div className="flex items-center gap-2"><CircleCheck className="w-4 h-4 text-green-500" /> <span>Gemeistert — Lernziel erreicht!</span></div>
     </div>
     <Tipp>Klicke auf den <Play className="w-3 h-3 inline" /> Fragen üben Button bei einem Lernziel um direkt zum entsprechenden Thema zu gelangen.</Tipp>
   </>

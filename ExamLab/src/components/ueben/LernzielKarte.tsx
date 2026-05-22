@@ -1,5 +1,5 @@
 // ExamLab/src/components/ueben/LernzielKarte.tsx
-import { ArrowLeft, Trophy, CheckCircle2, Circle, Flag } from 'lucide-react'
+import { ArrowLeft, Trophy, CircleCheck, Circle, Flag } from 'lucide-react'
 import type { Lernziel } from '@shared/types/fragen-core'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 import { lernzielStatus } from '../../utils/ueben/mastery'
@@ -56,7 +56,7 @@ export function berechneKartenDaten(
 
 /** Status-Icon analog zu LernzieleAkkordeon — gleiche Farblogik */
 function StatusIcon({ status }: { status: LernzielStatus }) {
-  if (status === 'gemeistert') return <CheckCircle2 className="w-5 h-5 text-green-500" aria-label="gemeistert" />
+  if (status === 'gemeistert') return <CircleCheck className="w-5 h-5 text-green-500" aria-label="gemeistert" />
   if (status === 'gefestigt') return <Circle className="w-5 h-5 fill-blue-500 text-blue-500" aria-label="gefestigt" />
   if (status === 'inArbeit') return <Circle className="w-5 h-5 fill-yellow-500 text-yellow-500" aria-label="in Arbeit" />
   return <Flag className="w-5 h-5 text-slate-400" aria-label="offen" />

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { CheckCircle2, Circle, Flag, X, Play, ChevronUp, ChevronDown } from 'lucide-react'
+import { CircleCheck, Circle, Flag, X, Play, ChevronUp, ChevronDown } from 'lucide-react'
 import type { Lernziel } from '../../types/pool'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 import { lernzielStatus } from '../../utils/ueben/mastery'
@@ -360,7 +360,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
 
 /** Status-Icon für Lernziel-Listen */
 function LernzielStatusIcon({ status }: { status: ReturnType<typeof lernzielStatus> }) {
-  if (status === 'gemeistert') return <CheckCircle2 className="w-4 h-4 text-green-500" aria-label="gemeistert" />
+  if (status === 'gemeistert') return <CircleCheck className="w-4 h-4 text-green-500" aria-label="gemeistert" />
   if (status === 'gefestigt') return <Circle className="w-4 h-4 fill-blue-500 text-blue-500" aria-label="gefestigt" />
   if (status === 'inArbeit') return <Circle className="w-4 h-4 fill-yellow-500 text-yellow-500" aria-label="in Arbeit" />
   return <Flag className="w-4 h-4 text-slate-400" aria-label="offen" />
