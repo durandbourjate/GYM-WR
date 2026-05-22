@@ -1,8 +1,8 @@
-# Unterrichtsplaner – Handoff v3.107
+# Unterrichtsplaner – Handoff v3.108
 
-## Status: v3.107 — Bugfix getGymStufe (dynamisches Schuljahr-Endjahr)
+## Status: v3.108 — Schuljahr-Helper (getMonth-Konvention zentralisiert)
 
-**Aktuelle Version:** v3.107 (22.05.2026)
+**Aktuelle Version:** v3.108 (22.05.2026)
 
 ---
 
@@ -28,6 +28,10 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 ---
 
 ## Letzte Sessions
+
+### 22.05.2026 — v3.108: Schuljahr-Helper (getMonth-Konvention zentralisiert)
+
+Die „ab Juli zählt das neue Schuljahr"-Konvention (`getMonth() >= 6`) lag dreifach inline: `gradeRequirements.ts` (Endjahr) + `PlannerTabs.tsx` (2× Startjahr für `defaultPresetId`). Folge-Refactor zu v3.107. Neuer Helper `utils/schuljahr.ts` mit `aktuellesSchuljahrStartjahr()` + `aktuellesSchuljahrEndjahr()` (Endjahr = Startjahr + 1) — die `getMonth()`-Schwelle lebt jetzt an genau einer Stelle. Verhalten unverändert, bestehende `getGymStufe`-Tests bleiben grün. TDD: `schuljahr.test.ts` (3 Tests). tsc + 47 vitest-Tests + build grün.
 
 ### 22.05.2026 — v3.107: Bugfix getGymStufe SJ-Default
 

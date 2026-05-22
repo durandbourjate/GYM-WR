@@ -8,6 +8,24 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 22.05.2026 SPÄT-2 — LernzieleMiniModal fokusUnterthema-Scroll gefixt
+
+Das Unterthema-Mini-Modal scrollte beim Öffnen nicht zur angeklickten Sektion.
+Browser-E2E auf Staging + `scrollIntoView`-Instrumentierung: `scrollIntoView({behavior:'smooth'})`
+im Mount-`useEffect` verpufft komplett (`scrollTop` bleibt 0); `behavior:'auto'`
+scrollt zuverlässig (0 → 2138). Fix: `behavior:'smooth'`→`'auto'` in
+`LernzieleAkkordeon.tsx` (`block:'start'` bleibt korrekt). Lernschleife-Regel in
+`.claude/rules/code-quality.md`. Re-E2E auf Staging grün (FIBU, Unterthema
+„Bilanz, Inventar & Bewertung": Modal öffnet direkt auf der Sektion; Master-Detail
++ Schliessen ok, 0 Konsolen-Fehler). Damit ist das vormals offene „D Schritt 8–10"
+browser-getestet.
+
+Commits: `71ee688` (block:'start') · `4c9221b` (behavior:'auto') · `751d665`
+(Lernschleife-Regel). Gates: tsc · vitest 2111 + 4 todo · build grün.
+
+**OFFEN für nächste Session:** Bug B (Apps-Script Test-Seeder `mastery` als Zahl),
+MC-Sanierung Teil B, Backend-Migration.
+
 ### Stand 22.05.2026 SPÄT — SuS-Lernziele-UX + Lernziele-Bridge LIVE auf main
 
 **Browser-E2E auf Staging durch, ein Bug gefunden + gefixt, LP-Freigabe erteilt, per FF-Merge `feature/lernziele-bridge-spec` → `main`.** SuS-Lernziele-UX („Üben nach Lernziel") + Lernziele-Bridge (Datenschicht) sind zusammen produktiv. Header-`Flag` → Lernziele-Akkordeon · klickbare Lernziele → Lernziel-Karte · „Üben" startet die aufs Lernziel gefilterte Session (reiner Client-Filter) · Icon-Konsistenz (Lernziele=`Flag`, Mastery=`CircleCheck`, Schwierigkeit=Signal-Balken).
