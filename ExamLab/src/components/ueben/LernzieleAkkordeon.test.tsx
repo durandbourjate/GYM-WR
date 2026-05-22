@@ -248,6 +248,34 @@ describe('LernzieleMiniModal — Master-Detail', () => {
     expect(screen.getByText('Der Schüler kann die Marketingmix-Instrumente erklären.')).toBeInTheDocument()
   })
 
+  it('scrollt beim Öffnen mit fokusUnterthema die Sektion an den oberen Rand (block: start)', () => {
+    const scrollIntoViewMock = vi.fn()
+    // jsdom unterstützt scrollIntoView nicht nativ — global patchen
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
+
+    const lzMitUt = mockLernziel({
+      id: 'lz-ut-scroll',
+      fach: 'BWL',
+      thema: 'Marketing',
+      text: 'Der Schüler kann die Produktpolitik erklären.',
+      unterthema: 'Produktpolitik',
+    })
+
+    render(
+      <LernzieleMiniModal
+        {...defaultMiniProps}
+        lernziele={[lzMitUt]}
+        fokusUnterthema="Produktpolitik"
+      />,
+    )
+
+    // Das angeklickte Unterthema soll an den oberen Rand des Modal-Scrollbereichs
+    // springen (block:'start'), nicht nur minimal sichtbar werden (block:'nearest').
+    expect(scrollIntoViewMock).toHaveBeenCalledWith(
+      expect.objectContaining({ block: 'start' }),
+    )
+  })
+
   it('fokusUnterthema scrollt nicht wenn Detail-Karte offen ist', async () => {
     // Fix 1: useEffect-Guard — scrollIntoView darf NICHT laufen wenn gewaehltesLernziel gesetzt ist
     const scrollIntoViewMock = vi.fn()

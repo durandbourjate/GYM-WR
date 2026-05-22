@@ -273,7 +273,7 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
   useEffect(() => {
     if (!fokusUnterthema || gewaehltesLernziel) return
     const el = utRefs.current[fokusUnterthema]
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [fokusUnterthema, gewaehltesLernziel])
 
   const farbe = getFachFarbe(fach, {})
