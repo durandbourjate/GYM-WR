@@ -16,20 +16,12 @@
 
 import type { Course, Week, LessonDetail } from '../types';
 import type { AssessmentRule } from '../store/settingsStore';
+import { aktuellesSchuljahrEndjahr } from './schuljahr';
 
 // Current school year: Maturjahrgang → GYM-Stufe in SJ 25/26
 // 29 → GYM1, 28 → GYM2, 27 → GYM3, 26 → GYM4
 
 export type GymStufe = 'GYM1' | 'GYM2' | 'GYM3' | 'GYM4' | 'GYM5' | 'UNKNOWN';
-
-/**
- * Endjahr des aktuellen Schuljahres aus dem Datum ableiten.
- * Konvention wie PlannerTabs.tsx (getMonth() >= 6): ab Juli zählt das neue Schuljahr.
- * SJ 25/26 endet 2026, SJ 26/27 endet 2027, …
- */
-function aktuellesSchuljahrEndjahr(now: Date = new Date()): number {
-  return now.getMonth() >= 6 ? now.getFullYear() + 1 : now.getFullYear();
-}
 
 /**
  * Derive GYM level from class name and school year.
