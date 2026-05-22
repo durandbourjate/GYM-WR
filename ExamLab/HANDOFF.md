@@ -8,25 +8,24 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
-### Stand 22.05.2026 — SuS-Lernziele-UX: Code KOMPLETT, Browser-E2E offen
+### Stand 22.05.2026 SPÄT — SuS-Lernziele-UX + Lernziele-Bridge LIVE auf main
 
-**Branch:** `feature/lernziele-bridge-spec` HEAD `061f4d3` (NICHT auf `main`). Working tree clean.
+**Browser-E2E auf Staging durch, ein Bug gefunden + gefixt, LP-Freigabe erteilt, per FF-Merge `feature/lernziele-bridge-spec` → `main`.** SuS-Lernziele-UX („Üben nach Lernziel") + Lernziele-Bridge (Datenschicht) sind zusammen produktiv. Header-`Flag` → Lernziele-Akkordeon · klickbare Lernziele → Lernziel-Karte · „Üben" startet die aufs Lernziel gefilterte Session (reiner Client-Filter) · Icon-Konsistenz (Lernziele=`Flag`, Mastery=`CircleCheck`, Schwierigkeit=Signal-Balken).
 
-Neues Feature **SuS-Lernziele-UX** („Üben nach Lernziel") — Brainstorming → Spec → Plan → Umsetzung in einer Session. Alle 12 Plan-Tasks umgesetzt, jeder Task 2-stufig reviewed (Spec-Compliance + Code-Quality), finales Gesamt-Review bestanden (fing + fixte einen Critical: `LernzieleMiniModal` lag im falschen `Dashboard`-Ternary-Zweig → Einstieg 2 war tot; Fix `061f4d3` + Integrationstest).
+- **Spec/Plan/E2E-Plan:** `docs/superpowers/specs/2026-05-21-sus-lernziele-ux-design.md` · `docs/superpowers/plans/2026-05-21-sus-lernziele-ux.md` · `docs/superpowers/plans/2026-05-22-sus-lernziele-ux-e2e-testplan.md`
 
-- **Spec:** `docs/superpowers/specs/2026-05-21-sus-lernziele-ux-design.md`
-- **Plan:** `docs/superpowers/plans/2026-05-21-sus-lernziele-ux.md` (trägt oben einen „Ausführungs-Stand"-Block)
-- **E2E-Test-Plan:** `docs/superpowers/plans/2026-05-22-sus-lernziele-ux-e2e-testplan.md` ← **fertig — hier weitermachen**
+**E2E-Resultat (echte LP+SuS-Logins, Staging):** Szenario A (Header→Akkordeon), B (Lernziel-Karte), C (Üben-Flow), E (Icon-Konsistenz), F (Light/Dark + Regression) — alle bestanden. Szenario D (Unterthema-Mini-Modal): Schritt 11 (Chip-Toggle) bestanden; Schritt 8–10 nicht prüfbar — in den Daten existieren keine Lernziele auf Unterthema-Ebene, der Unterthema-`Flag` rendert nie. Critical-Fix `061f4d3` ist integrationstest-abgedeckt.
 
-**Umgesetzt:** Header-`Flag`-Button → Lernziele-Akkordeon · Unterthema-`Flag`-Icon → Mini-Modal · klickbare Lernziele → Lernziel-Karte (Fortschritt, Bloom, Pokal bei „gemeistert") · „Üben" startet die auf das Lernziel gefilterte Session (reiner Client-Filter, KEINE Backend-Änderung) · Icon-Konsistenz: Lernziele=`Flag`, `Star`=nur Favorit, Mastery=`CircleCheck`, Schwierigkeit=Signal-Balken.
+**Bug im E2E gefunden + gefixt (`dd08967`):** `LernzielKarte::berechneKartenDaten` machte `buckets[fp?.mastery ?? 'neu']++` — dynamischer Object-Key ohne Validierung. Type-fremde `mastery`-Werte (numerischer String, s. Bug B) wurden zu Rogue-Keys → die Karte zeigte „0 / 2 gemeistert" mit leerer 4-Stufen-Aufschlüsselung (total ≠ Buckets-Summe). Fix: `mastery` strikt auf gültige `MasteryStufe` normalisieren (analog `lernzielStatus`) + Regressionstest. Re-Test auf Staging: Karte konsistent, Üben-Session korrekt.
 
-**Gates:** `tsc -b`, `vitest run` 2109 + 4 todo, `npm run build`, 9 Lint-Gates — alle grün.
+**Cleanup vorab (`50b1745`):** `CheckCircle2` → `CircleCheck` in `LernzieleAkkordeon`, `LernzielKarte`, `SuSHilfePanel` (deprecated Lucide-Alias, Mastery-Icon vereinheitlicht).
 
-**OFFEN:**
-0. *(Code-Cleanup vorab, kein User nötig)* `CheckCircle2` → `CircleCheck` in `LernzieleAkkordeon.tsx` (Import + `gemeistert`-Status-Icon) — deprecated Lucide-Alias, identischer Glyph, reiner Rename. Letzter Icon-Konsistenz-Restposten (`SuSAnalyse.tsx` nutzt schon `CircleCheck`). `refactor(lernziele):`-Commit. *(Hinweis: Der vom Final-Review gespawnte Chip „Dashboard-MiniModal-Ternary-Bug" ist mit `061f4d3` bereits erledigt — kein TODO.)*
-1. Branch auf Staging deployen — `git push origin feature/lernziele-bridge-spec:preview` (Deploy-Fenster beachten, vorher `cd ExamLab && npm run ci-check`).
-2. Browser-E2E auf Staging mit echten LP+SuS-Logins → `docs/superpowers/plans/2026-05-22-sus-lernziele-ux-e2e-testplan.md` abarbeiten.
-3. Merge-Gate (LP-Freigabe). Memory-Plan: Bridge + UX zusammen nach `main` mergen.
+**Gates:** `tsc -b` · `vitest run` 2110 + 4 todo · `npm run build` · 9 Lint-Gates — alle grün.
+
+**OFFEN für nächste Session:**
+1. **Bug B** (Apps-Script, pre-existing, Test-Daten-only): `seedTestdatenSessionsUndFortschritt_` (`apps-script-code.js` ~Z. 17066) schreibt die `mastery`-Spalte als Zahl-Prozent statt als `MasteryStufe`-String und korrumpiert so Test-Daten. Eigener Apps-Script-Fix + Re-Seed der Test-Gruppe nötig. Produktion unbetroffen — `berechneMastery_` schreibt korrekt.
+2. **D Schritt 8–10** browser-ungetestet, solange keine Lernziele auf Unterthema-Ebene existieren — bei Bedarf nachholen, wenn solche Lernziele angelegt werden.
+3. Backlog unverändert: MC-Sanierung Teil B, Backend-Migration (Details s. ältere Stände unten + Memory).
 
 ---
 
