@@ -8,6 +8,27 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 22.05.2026 — SuS-Lernziele-UX: Code KOMPLETT, Browser-E2E offen
+
+**Branch:** `feature/lernziele-bridge-spec` HEAD `061f4d3` (NICHT auf `main`). Working tree clean.
+
+Neues Feature **SuS-Lernziele-UX** („Üben nach Lernziel") — Brainstorming → Spec → Plan → Umsetzung in einer Session. Alle 12 Plan-Tasks umgesetzt, jeder Task 2-stufig reviewed (Spec-Compliance + Code-Quality), finales Gesamt-Review bestanden (fing + fixte einen Critical: `LernzieleMiniModal` lag im falschen `Dashboard`-Ternary-Zweig → Einstieg 2 war tot; Fix `061f4d3` + Integrationstest).
+
+- **Spec:** `docs/superpowers/specs/2026-05-21-sus-lernziele-ux-design.md`
+- **Plan:** `docs/superpowers/plans/2026-05-21-sus-lernziele-ux.md` (trägt oben einen „Ausführungs-Stand"-Block)
+- **E2E-Test-Plan:** `docs/superpowers/plans/2026-05-22-sus-lernziele-ux-e2e-testplan.md` ← **fertig — hier weitermachen**
+
+**Umgesetzt:** Header-`Flag`-Button → Lernziele-Akkordeon · Unterthema-`Flag`-Icon → Mini-Modal · klickbare Lernziele → Lernziel-Karte (Fortschritt, Bloom, Pokal bei „gemeistert") · „Üben" startet die auf das Lernziel gefilterte Session (reiner Client-Filter, KEINE Backend-Änderung) · Icon-Konsistenz: Lernziele=`Flag`, `Star`=nur Favorit, Mastery=`CircleCheck`, Schwierigkeit=Signal-Balken.
+
+**Gates:** `tsc -b`, `vitest run` 2109 + 4 todo, `npm run build`, 9 Lint-Gates — alle grün.
+
+**OFFEN (braucht DU):**
+1. Branch auf Staging deployen — `git push origin feature/lernziele-bridge-spec:preview` (Deploy-Fenster beachten, vorher `cd ExamLab && npm run ci-check`).
+2. Browser-E2E auf Staging mit echten LP+SuS-Logins → `docs/superpowers/plans/2026-05-22-sus-lernziele-ux-e2e-testplan.md` abarbeiten.
+3. Merge-Gate (LP-Freigabe). Memory-Plan: Bridge + UX zusammen nach `main` mergen.
+
+---
+
 ### Stand 21.05.2026 SPÄT — Design-Trio #2 + #3 LIVE
 
 **HEAD main:** `284328a` (= `preview`). Design-Trio Teil #2 (Editor-Leiste) +
