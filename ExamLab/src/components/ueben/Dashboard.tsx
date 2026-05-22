@@ -504,28 +504,30 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               )}
             </div>
 
-            {/* Lernziele Mini-Modal */}
-            {lzMiniModal && (
-              <LernzieleMiniModal
-                fach={lzMiniModal.fach}
-                thema={lzMiniModal.thema}
-                lernziele={lernziele}
-                fortschritte={fortschritte}
-                fokusUnterthema={lzMiniModal.fokusUnterthema}
-                onSchliessen={() => setLzMiniModal(null)}
-                onUeben={() => {
-                  setLzMiniModal(null)
-                  oeffneThema(lzMiniModal.fach, lzMiniModal.thema)
-                }}
-                onLernzielUeben={async (lz) => {
-                  setLzMiniModal(null)
-                  const ok = await starteLernzielSession(lz)
-                  if (ok) openUebung(lz.thema)
-                  else toast.error('Die Übung konnte nicht geladen werden.')
-                }}
-              />
-            )}
           </>
+        )}
+
+        {/* Lernziele Mini-Modal — ausserhalb des Übersicht/Detail-Ternary, damit es in
+            beiden Zweigen (Themen-Übersicht UND Thema-Detail) erreichbar ist. */}
+        {lzMiniModal && (
+          <LernzieleMiniModal
+            fach={lzMiniModal.fach}
+            thema={lzMiniModal.thema}
+            lernziele={lernziele}
+            fortschritte={fortschritte}
+            fokusUnterthema={lzMiniModal.fokusUnterthema}
+            onSchliessen={() => setLzMiniModal(null)}
+            onUeben={() => {
+              setLzMiniModal(null)
+              oeffneThema(lzMiniModal.fach, lzMiniModal.thema)
+            }}
+            onLernzielUeben={async (lz) => {
+              setLzMiniModal(null)
+              const ok = await starteLernzielSession(lz)
+              if (ok) openUebung(lz.thema)
+              else toast.error('Die Übung konnte nicht geladen werden.')
+            }}
+          />
         )}
         </>
         )}
