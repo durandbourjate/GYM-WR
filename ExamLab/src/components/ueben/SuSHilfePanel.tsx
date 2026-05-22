@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Lightbulb, Star, Flag, Circle, CheckCircle2, Shuffle, RotateCw, Play } from 'lucide-react'
 import { ResizableSidebar } from '@shared/ui/ResizableSidebar'
 import { TYPO } from '../../styles/typografie'
+import { SchwierigkeitIcon } from './dashboard/SchwierigkeitIcon'
 
 interface Props {
   onSchliessen: () => void
@@ -112,7 +113,7 @@ function HilfeUeben() {
     <h4 className={`${TYPO.body} font-semibold text-slate-800 dark:text-slate-100 mt-3`}>Filter</h4>
     <ul className="list-disc list-inside space-y-1">
       <li><strong>Unterthemen:</strong> Wähle gezielt einen Teilbereich aus.</li>
-      <li><strong>Schwierigkeit:</strong> <Star className="w-3.5 h-3.5 inline text-yellow-500" /> Einfach, <Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> Mittel, <Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /><Star className="w-3.5 h-3.5 inline text-yellow-500" /> Schwer.</li>
+      <li><strong>Schwierigkeit:</strong> <SchwierigkeitIcon stufe={1} className="w-3.5 h-3.5 inline" /> Einfach, <SchwierigkeitIcon stufe={2} className="w-3.5 h-3.5 inline" /> Mittel, <SchwierigkeitIcon stufe={3} className="w-3.5 h-3.5 inline" /> Schwer.</li>
       <li><strong>Fragetyp:</strong> MC, Lückentext, Berechnung, Zuordnung, etc.</li>
     </ul>
     <Tipp>Klicke "Alle ⇄" um alle Filter einer Kategorie ein-/auszuschalten.</Tipp>

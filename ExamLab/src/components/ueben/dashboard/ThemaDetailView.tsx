@@ -5,9 +5,9 @@ import type { ThemenInfo } from '../../../hooks/ueben/useThemenKomputationen'
 import { berechneSterne, sterneText } from '../../../utils/ueben/gamification'
 import { getFachFarbe } from '../../../utils/ueben/fachFarben'
 import { FilterSection, Chip, FortschrittsBalken, MasteryBadges } from './themaDetailHelpers'
+import { SchwierigkeitIcon } from './SchwierigkeitIcon'
 
 const SCHWIERIGKEIT_LABELS: Record<number, string> = { 1: 'Einfach', 2: 'Mittel', 3: 'Schwer' }
-const SCHWIERIGKEIT_STERNE: Record<number, string> = { 1: '⭐', 2: '⭐⭐', 3: '⭐⭐⭐' }
 
 const TYP_LABELS: Record<string, string> = {
   mc: 'Multiple Choice', multi: 'Multi', tf: 'Richtig/Falsch', fill: 'Lückentext', calc: 'Berechnung',
@@ -119,7 +119,7 @@ export function ThemaDetailView({
           return (
             <Chip
               key={s}
-              label={`${SCHWIERIGKEIT_STERNE[s] || '⭐'} ${SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}`}
+              label={<span className="inline-flex items-center gap-1"><SchwierigkeitIcon stufe={s} className="w-3.5 h-3.5" /> {SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}</span>}
               title={SCHWIERIGKEIT_LABELS[s] || `Stufe ${s}`}
               count={anzahl}
               aktiv={schwierigkeitFilter.has(s)}
