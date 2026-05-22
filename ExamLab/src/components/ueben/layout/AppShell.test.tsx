@@ -95,7 +95,7 @@ vi.mock('../LernzieleAkkordeon', () => ({
     onLernzielUeben?: (lz: typeof TEST_LERNZIEL) => void
   }) => (
     <div>
-      <h2>Alle Lernziele</h2>
+      <div>Alle Lernziele</div>
       <button type="button" aria-label="Schliessen" onClick={onSchliessen}>X</button>
       {onLernzielUeben && (
         <button
