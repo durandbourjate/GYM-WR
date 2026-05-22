@@ -88,6 +88,25 @@ function normalisiereLueckentext(frage: any): LueckentextFrage {
 
 **Komplementär:** In Pfaden die trotzdem gegen unvollständige Daten laufen können (z.B. `korrektur.ts`), defensive Array-Checks (`Array.isArray(x) && x.some(...)`) statt direkter Methodenaufrufe.
 
+## Dynamischer Object-Key braucht Key-Validierung (SuS-Lernziele-UX E2E, 22.05.2026)
+
+**Problem:** `buckets[wert]++` — generell `obj[dynamischerWert]` — ohne Validierung des Keys: ist `wert` ein type-fremder String, wird stillschweigend ein Rogue-Property angelegt; die erwarteten Keys bleiben unverändert. Ein Zähler/Bucket „verliert" Einträge, ohne einen Fehler zu werfen.
+
+**Konkret aufgetreten (SuS-Lernziele-UX):** `LernzielKarte::berechneKartenDaten` machte `buckets[fp?.mastery ?? 'neu']++`. Das Backend lieferte `mastery` type-fremd (numerischer String aus einem Test-Seeder). Resultat: `buckets['80']` statt eines der 4 echten Keys (`gemeistert`/`gefestigt`/`ueben`/`neu`) — die Buckets blieben 0, `total` zählte unabhängig → die Karte zeigte „0 / 2 gemeistert" mit leerer Aufschlüsselung.
+
+**Warum `??` / `||` nicht reichen:**
+- `wert ?? 'default'` fängt **nur** `null`/`undefined` — `''` und ungültige Strings schlüpfen durch.
+- `wert || 'default'` fängt zusätzlich falsy (`''`, `0`) — aber **nicht** truthy-Müll (`'80'`, `'inArbeit'`).
+
+**Regel:** Wird ein extern stammender Wert als **dynamischer Object-Key** benutzt, den Key explizit gegen die erlaubten Werte prüfen und Ungültiges auf den Default mappen:
+```ts
+const stufe = roh === 'gemeistert' || roh === 'gefestigt' || roh === 'ueben' ? roh : 'neu'
+buckets[stufe]++   // stufe ist garantiert ein echter Key
+```
+Ein `switch` mit expliziten `case`s (wie `lernzielStatus`) ist ebenso sicher — unbekannte Werte fallen durch. Naive `obj[x]++`-Zähler haben diese Sicherheit nicht.
+
+**Erkennung:** Eine Invariante ist verletzt (z.B. `Summe(buckets) !== total`). Unit-Tests mit sauberen Fixtures fangen das NICHT (Test-Fixture ≠ Realdaten) — ein Test mit einem type-fremden Wert deckt es auf.
+
 ## Backend-Bereinigung von Strings vs. Objekten (S122)
 
 **Problem:** Beim Bereinigen einer Pool-Frage darf `Object.assign({}, item)` NICHT auf String-Items angewendet werden — `Object.assign({}, "foo")` erzeugt `{0:'f',1:'o',2:'o'}` (Char-Objekt). Im Frontend wird das dann als `[object Object]` gerendert.
