@@ -1,7 +1,8 @@
 # MC-Sanierung: Distraktoren-Längen-Tell beseitigen
 
 - **Datum:** 2026-05-21
-- **Status:** Genehmigt (User-Approval pro Design-Abschnitt)
+- **Revision:** 2026-05-22 — Bestand-Sanierung (Phase 1+2) von der Anthropic-API auf Claude Code (Abo) umgestellt. Betroffen: «Architektur», «Per-Frage-Algorithmus», «Review & Verifikation», «Testing», «Deployment», «Risiken», «Explizit verworfen». Unverändert: Problem, Zielmetrik, Scope, Rang-Zuweisung, Prävention.
+- **Status:** Genehmigt (User-Approval pro Design-Abschnitt; Abo-Revision 2026-05-22 genehmigt)
 - **Kontext:** Ein Audit (`ExamLab/scripts/diagnose-mc-laengste-antwort.js`) hat ein
   systematisches Exam-Integritäts-Problem in der Fragensammlung aufgedeckt. Eigenes
   Content-/Tooling-Projekt, getrennt von der Backend-Migration.
@@ -85,30 +86,45 @@ diesen Bodensatz, solange er klein bleibt (siehe Rang-Zuweisung).
 
 ---
 
-## Architektur — Apps-Script-LLM-Pipeline + Review-Sheet
+## Architektur — Apps-Script + Claude Code + Review-Sheet
 
-Die Fragen liegen im Google Sheet (`FRAGENSAMMLUNG_ID`); ein Apps-Script ruft
-bereits Claude (Anthropic) auf (`kiAssistentEndpoint`, `apps-script-code.js:7302`,
-Modell `claude-sonnet-4-20250514`). Die Sanierung nutzt diese Infrastruktur.
+Die Fragen liegen im Google Sheet (`FRAGENSAMMLUNG_ID`). Die Sanierung teilt sich
+auf zwei Werkzeuge: ein **Apps-Script** für die deterministische Sheet-Mechanik
+(Planung, Rückschreiben) und eine **Claude-Code-Session** für die KI-Arbeit
+(Distraktoren generieren + prüfen). Die KI-Arbeit läuft damit über das Claude-Abo,
+nicht über die Anthropic-API — kein API-Key, keine Stückkosten, kein
+6-Minuten-Limit auf dem KI-Teil. Brücke zwischen beiden Werkzeugen ist eine CSV
+des Review-Tabs.
 
-**Neues Apps-Script-File:** `ExamLab/scripts/sanierung-mc-distraktoren.js` — zum
-Reinkopieren in den Apps-Script-Editor, analog `migrate-fibu-fragen.js`. `DRY_RUN
-= true` als Default. `run*`-Wrapper-Funktionen, damit jede Phase im
-Editor-Dropdown erscheint (Apps-Script blendet `_`-Suffix-Funktionen aus).
+> **Abgrenzung:** Der laufende ExamLab-KI-Assistent (`apps-script-code.js`,
+> `case 'generiereOptionen'`) ruft die Anthropic-API weiterhin auf — eine
+> deployte Web-Funktion kann kein persönliches Abo nutzen. Davon ist nur der
+> Präventions-Constraint betroffen (Prompt-Tweak, kein Mengenverbrauch). Die
+> Umstellung auf das Abo betrifft ausschliesslich den einmaligen Sanierungs-Batch.
+
+**Apps-Script-File:** `ExamLab/scripts/sanierung-mc-distraktoren.js` — zum
+Reinkopieren in den Apps-Script-Editor, analog `migrate-fibu-fragen.js`. Enthält
+nur noch Phase 0 + Phase 3 + Helfer; `DRY_RUN = true` als Default (schützt
+Phase 3). `run*`-Wrapper-Funktionen, damit jede Phase im Editor-Dropdown
+erscheint (Apps-Script blendet `_`-Suffix-Funktionen aus).
 
 ### Vier Phasen
 
-Jede Phase ist einzeln lauffähig, idempotent und resumable. Wegen des
-Apps-Script-6-Minuten-Limits speichert jede Phase einen Cursor in
-`PropertiesService` und wird vom LP so oft manuell neu gestartet, bis der Cursor
-das Ende erreicht.
-
-| Phase | Funktion | Tut |
+| Phase | Wer | Tut |
 |---|---|---|
-| 0 — Planung | `phase0_planung()` | Liest alle ~1023 Single-MC, klassifiziert jede, misst das Rang-Histogramm der 264 unauffälligen, weist den 759 je einen **Ziel-Rang** zu, legt den Review-Tab an und befüllt ihn. Loggt die projizierte Schluss-Verteilung. |
-| 1 — Generierung | `phase1_generierung()` | Pro auffälliger Frage ein Claude-Call → 3 neue Distraktoren. Batchweise (~100/Lauf), Cursor-resumable. Schreibt Vorschläge + berechneten `ist_rang` in die Review-Zeile. |
-| 2 — Checker | `phase2_checker()` | Zweiter, unabhängiger Claude-Pass pro Frage → `checker_status` + `checker_begruendung`. Batchweise. |
-| 3 — Rückschreiben | `phase3_rueckschreiben()` | Schreibt nur Zeilen mit `review_status = freigegeben` zurück in `typDaten.optionen` (+ Legacy-`optionen`-Spalte, falls vorhanden). Idempotent über `geschrieben_am`. |
+| 0 — Planung | Apps-Script `phase0_planung()` | Liest alle ~1023 Single-MC, klassifiziert jede, misst das Rang-Histogramm der 264 unauffälligen, weist den 759 je einen **Ziel-Rang** zu, legt den Review-Tab an und befüllt ihn. Loggt die projizierte Schluss-Verteilung. |
+| — Export | LP | Lädt den `MC-Sanierung-Review`-Tab als CSV herunter (Datei → Herunterladen → CSV). |
+| 1 — Generierung | **Claude Code** | Liest die CSV; generiert pro auffälliger Frage 3 neue Distraktoren; füllt `distraktor_neu_*`, `neu_len_*`, `ist_rang`. Die 759 Zeilen gebündelt in Batches (parallele Subagenten). |
+| 2 — Checker | **Claude Code** | Unabhängiger, frischer Checker-Pass pro Frage (eigener Subagent, kein geteilter Kontext mit Phase 1) → `checker_status` + `checker_begruendung`. |
+| — Import | LP | Importiert die gefüllte CSV zurück (Datei → Importieren → aktuelles Blatt ersetzen, Ziel `MC-Sanierung-Review`). |
+| 3 — Rückschreiben | Apps-Script `phase3_rueckschreiben()` | Schreibt nur Zeilen mit `review_status = freigegeben` zurück in `typDaten.optionen` (+ Legacy-`optionen`-Spalte, falls vorhanden). Idempotent über `geschrieben_am`. |
+
+Phase 0 und Phase 3 (Apps-Script) sind idempotent und — wegen des
+Apps-Script-6-Minuten-Limits — cursor-resumable über `PropertiesService`: der LP
+startet sie so oft neu, bis der Cursor das Ende erreicht. Phase 1+2 laufen in
+Claude Code ohne dieses Limit; die Batch-Bündelung übernimmt dort die
+Resumability-Rolle (eine unterbrochene Session setzt am nächsten unbefüllten
+Batch fort).
 
 ### Review-Sheet
 
@@ -162,16 +178,16 @@ geprüft, ohne Test-Framework.
 
 ---
 
-## Per-Frage-Sanierungs-Algorithmus (Phase 1)
+## Per-Frage-Sanierungs-Algorithmus (Phase 1, in Claude Code)
 
 Für eine Frage mit Ziel-Rang `r` (1 = längste … 4 = kürzeste) und fixer korrekter
 Antwort der Länge `L_korrekt`:
 
 - Es braucht `(r − 1)` Distraktoren *länger* und `(4 − r)` Distraktoren *kürzer*
   als `L_korrekt` (Rang `r` = 1 + Anzahl längerer Distraktoren).
-- Daraus werden 3 Ziel-Längen mit etwas Jitter abgeleitet (damit die Längen selbst
-  kein perfektes Muster bilden).
-- **Claude-Instruktion** je Distraktor:
+- Daraus leitet Claude Code 3 Ziel-Längen mit etwas Jitter ab (damit die Längen
+  selbst kein perfektes Muster bilden).
+- **Generierungs-Vorgabe** je Distraktor (Claude Code folgt ihr):
   - **(a)** bleibt inhaltlich **eindeutig falsch** relativ zur Frage;
   - **(b)** bleibt ein fachlich plausibler Ablenker — kein Füllwort-Geschwafel,
     keine offensichtlich fake Aussage;
@@ -179,16 +195,17 @@ Antwort der Länge `L_korrekt`:
     Padding);
   - **(d)** die korrekte Antwort wird weder verändert noch als Distraktor
     wiederholt.
-- Claude erhält Fragetext, korrekte Antwort (read-only, als Kontext + zur
-  Längen-Kalibrierung) und die 3 aktuellen Distraktoren.
+- Pro CSV-Zeile liest Claude Code: Fragetext, korrekte Antwort (read-only, als
+  Kontext + zur Längen-Kalibrierung), die 3 aktuellen Distraktoren, `korrekt_len`
+  und `ziel_rang`.
 - `ist_rang` wird nach der Generierung aus den realen Vorschlags-Längen berechnet.
   Verfehlt die Ausgabe den `ziel_rang`, wird die Zeile automatisch geflaggt.
 
 **Längen-Messung:** Phase 0 (`korrekt_len`), Phase 1 (`neu_len_*`, `ist_rang`) und
-das Diagnose-Skript müssen **dieselbe** Längen-Funktion verwenden (`textLaenge_`
-aus `diagnose-mc-laengste-antwort.js`: `String(text).trim().length`). Sonst können
-Phase-0-Projektion und Schluss-Re-Run unterschiedliche Grössen messen. Der Helfer
-wird in `sanierung-mc-distraktoren.js` identisch übernommen.
+das Diagnose-Skript müssen **dieselbe** Längen-Definition verwenden:
+`String(text).trim().length` (im Diagnose-Skript der Helfer `textLaenge_`). Sonst
+messen Phase-0-Projektion und Schluss-Re-Run unterschiedliche Grössen. Claude Code
+verwendet beim Füllen von `neu_len_*` exakt diese Definition.
 
 ---
 
@@ -196,10 +213,10 @@ wird in `sanierung-mc-distraktoren.js` identisch übernommen.
 
 ### Phase 2 — Checker-Pass
 
-Pro Frage ein **unabhängiger, frischer** Claude-Call — kein geteilter Kontext mit
-der Generierung; genau die Unabhängigkeit macht die Prüfung wertvoll. Eingabe:
-Fragetext, korrekte Antwort, die 3 *neuen* Distraktoren. Bewertung je neuem
-Distraktor:
+Pro Frage ein **unabhängiger, frischer** Checker-Pass — ausgeführt von einem
+eigenen Subagenten ohne geteilten Kontext mit der Generierung; genau die
+Unabhängigkeit macht die Prüfung wertvoll. Eingabe: Fragetext, korrekte Antwort,
+die 3 *neuen* Distraktoren. Bewertung je neuem Distraktor:
 
 1. **Korrektheit** — ist der Distraktor eindeutig falsch? Der katastrophale Fall
    ist ein versehentlich *wahr* gewordener Distraktor (zwei korrekte Antworten).
@@ -300,14 +317,15 @@ Ganzfrage-Generator) und den Constraint überall anwenden.
 
 ## Testing & Verifikation
 
-Dieses Projekt fasst **ausschliesslich Apps-Script-Werkzeuge** an (Migrations-Skript
-+ Diagnose-Erweiterung + Prompt-String). Kein React-Code, keine TypeScript-Typen —
-`tsc -b` / `vitest` / `npm run build` sind hier *nicht* die Gates (die bestehenden
-Migrations-Skripte des Projekts setzen diesen Präzedenzfall). Die Verifikation
-läuft über:
+Dieses Projekt fasst Apps-Script-Werkzeuge (Phase 0/3 + Diagnose-Erweiterung +
+Prompt-String) und eine Claude-Code-Generierung (Phase 1/2) an — kein React-Code,
+keine TypeScript-Typen. `tsc -b` / `vitest` / `npm run build` sind hier *nicht*
+die Gates (die bestehenden Migrations-Skripte des Projekts setzen diesen
+Präzedenzfall). Die Verifikation läuft über:
 
-- **`DRY_RUN = true`** beim Erst-Lauf jeder Phase — nur Logger + Review-Sheet, kein
-  Rückschreiben.
+- **`DRY_RUN = true`** beim Erst-Lauf von Phase 3 — nur Logger, kein Rückschreiben.
+  Phase 0 schreibt nur das Review-Sheet, Phase 1/2 nur die CSV — sie brauchen kein
+  `DRY_RUN`.
 - **Phase-0-Log der projizierten Schluss-Verteilung** — der LP bestätigt
   ~25/25/25/25, bevor Phase 1 startet (prüft die Rang-Mathematik ohne
   Test-Framework).
@@ -322,13 +340,15 @@ läuft über:
 
 Drei committete Repo-Dateien über einen Feature-Branch:
 
-- **neu** `ExamLab/scripts/sanierung-mc-distraktoren.js`
+- **neu** `ExamLab/scripts/sanierung-mc-distraktoren.js` (nur Phase 0 + 3 + Helfer)
 - **erweitert** `ExamLab/scripts/diagnose-mc-laengste-antwort.js` (Multi-MC-Pass)
 - **Prompt-Edit** in `ExamLab/apps-script-code.js` (`case 'generiereOptionen'`)
 
 Die `apps-script-code.js`-Änderung braucht einen **manuellen Apps-Script-Deploy**
-(neue Bereitstellung) durch den LP. Die beiden Skripte werden zum Ausführen in den
-Apps-Script-Editor kopiert. Kein Frontend-Deploy nötig.
+(neue Bereitstellung) durch den LP. `sanierung-mc-distraktoren.js` und
+`diagnose-mc-laengste-antwort.js` werden zum Ausführen in den Apps-Script-Editor
+kopiert. Phase 1+2 laufen in einer Claude-Code-Session — dafür ist kein API-Key
+und kein Editor-Skript nötig. Kein Frontend-Deploy nötig.
 
 ---
 
@@ -336,22 +356,27 @@ Apps-Script-Editor kopiert. Kein Frontend-Deploy nötig.
 
 | Datei | Änderung |
 |---|---|
-| `ExamLab/scripts/sanierung-mc-distraktoren.js` | **Neu.** 4-Phasen-Pipeline + Helfer, `DRY_RUN`-Default. |
+| `ExamLab/scripts/sanierung-mc-distraktoren.js` | **Neu.** Apps-Script mit Phase 0 (Planung) + Phase 3 (Rückschreiben) + Helfer; `DRY_RUN`-Default für Phase 3. |
 | `ExamLab/scripts/diagnose-mc-laengste-antwort.js` | **Erweitert.** Zweite Funktion `diagnoseMcMultiLaenge()` für die Multi-MC-Analyse. |
 | `ExamLab/apps-script-code.js` | **Prompt-Edit.** Längen-Constraint in `case 'generiereOptionen'` (+ ggf. weitere MC-Optionen erzeugende KI-Aktionen). |
 | `MC-Sanierung-Review` (Sheet-Tab) | **Neu.** Laufzeit-Artefakt in der Fragensammlung-Tabelle, kein Repo-File. |
+| Review-CSV (transiente Arbeitsdatei) | **Neu.** Export/Import-Brücke Sheet ↔ Claude Code. Enthält echte Prüfungsfragen → gitignored, kein Repo-File. |
 
 ---
 
 ## Komponenten-Schnitt / Isolation
 
-- `sanierung-mc-distraktoren.js` ist **self-contained**: 4 Phasen-Funktionen +
-  Helfer (`ladeSingleMcFragen_`, `berechneZielRaenge_`, `rufeClaudeAuf_`,
-  `schreibeReviewZeile_`, `leseOptionen_` / `schreibeOptionen_`). Kommuniziert mit
-  dem Rest nur über das Sheet (liest Fragensammlung-Tabs, schreibt Review-Tab und
-  zurück). Keine Kopplung an die React-App.
-- Jede Phase ist eine eigene, einzeln aufrufbare Funktion mit klarem Input
-  (Sheet-Zustand) und Output (Sheet-Zustand) — unabhängig testbar via `DRY_RUN`.
+- `sanierung-mc-distraktoren.js` ist **self-contained**: `phase0_planung()` +
+  `phase3_rueckschreiben()` + Helfer (`ladeSingleMcFragen_`,
+  `berechneZielRaenge_`, `schreibeReviewZeile_`, `leseOptionen_` /
+  `schreibeOptionen_`, `textLaenge_`). Kommuniziert mit dem Rest nur über das
+  Sheet. Keine Kopplung an die React-App. (`rufeClaudeAuf_` entfällt — die
+  KI-Arbeit liegt ausserhalb des Apps-Scripts.)
+- Phase 0 und Phase 3 sind je eine eigene, einzeln aufrufbare Funktion mit klarem
+  Input (Sheet-Zustand) und Output (Sheet-Zustand); Phase 3 ist via `DRY_RUN`
+  trocken prüfbar.
+- Die Claude-Code-Generierung (Phase 1+2) koppelt nur über die CSV ans
+  Apps-Script — dieselben Spalten rein wie raus, kein gemeinsamer Code.
 - Die Diagnose-Erweiterung ist eine separate Funktion neben der bestehenden —
   keine Änderung am bestehenden Single-MC-Pass.
 - Der Prompt-Edit ist eine lokalisierte String-Änderung in einem `case` —
@@ -376,8 +401,13 @@ Drei unabhängige Deliverables, empfohlene Reihenfolge:
 
 - **`abgelehnt`-Bodensatz:** Zu viele vom LP abgelehnte Vorschläge können den
   UNAUFFÄLLIG-Befund verhindern → zweite Generierungs-Runde (bekannte Schleife).
-- **Apps-Script-6-Min-Limit:** Phase 1 und 2 brauchen je ~7–10 manuelle Neustarts
-  (759 × ~3 s API-Latenz). Cursor-Resumability ist Pflicht.
+- **CSV-Round-Trip:** Export/Import zwischen Sheet und Claude Code ist ein
+  manueller LP-Schritt. Risiko: Spalten- oder Encoding-Drift beim Re-Import.
+  Mitigation: ganzer Tab als CSV (kein Teil-Paste), `id`-Spalte als stabiler
+  Schlüssel, LP prüft nach dem Import stichprobenartig.
+- **Abo-Verbrauch:** ~1'500 Generierungen + Checks laufen über das Claude-Abo; je
+  nach Abo-Stufe verteilt sich das über mehrere Sessions. Kein 6-Min-Limit mehr,
+  da Phase 1/2 nicht im Apps-Script laufen.
 - **Checker-Restrisiko:** Ein LLM-Checker kann einen wahr gewordenen Distraktor
   übersehen. Mitigation: konservatives Flaggen + Stichprobe + Eskalations-Regel.
 - **Weitere Generierungs-Pfade:** Falls neben `generiereOptionen` weitere
@@ -400,3 +430,8 @@ Drei unabhängige Deliverables, empfohlene Reihenfolge:
   Korrektheitsrisiko zu hoch.
 - **Sanierung der 264 bereits unauffälligen Fragen:** Unnötige Änderung an
   bereits korrektem Inhalt.
+- **Committetes Generierungs-Skript (Claude Agent SDK):** Ein wiederverwendbares
+  Node-Skript, das die Generierung programmatisch über das Abo treibt, wurde
+  zugunsten der direkten Claude-Code-Session verworfen — für einen Einmal-Job
+  Overhead (SDK-Setup, Abo-Auth-Konfiguration), und ein periodischer Audit ist
+  ohnehin nicht im Scope.
