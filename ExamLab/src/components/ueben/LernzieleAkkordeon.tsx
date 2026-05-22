@@ -273,7 +273,8 @@ export function LernzieleMiniModal({ thema, fach, lernziele, fortschritte, onSch
   useEffect(() => {
     if (!fokusUnterthema || gewaehltesLernziel) return
     const el = utRefs.current[fokusUnterthema]
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // behavior:'auto' (nicht 'smooth'): smooth-Scroll verpufft beim Modal-Mount
+    if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' })
   }, [fokusUnterthema, gewaehltesLernziel])
 
   const farbe = getFachFarbe(fach, {})

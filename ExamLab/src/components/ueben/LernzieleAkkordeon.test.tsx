@@ -248,7 +248,7 @@ describe('LernzieleMiniModal — Master-Detail', () => {
     expect(screen.getByText('Der Schüler kann die Marketingmix-Instrumente erklären.')).toBeInTheDocument()
   })
 
-  it('scrollt beim Öffnen mit fokusUnterthema die Sektion an den oberen Rand (block: start)', () => {
+  it('scrollt beim Öffnen mit fokusUnterthema zur Sektion (behavior auto, block start)', () => {
     const scrollIntoViewMock = vi.fn()
     // jsdom unterstützt scrollIntoView nicht nativ — global patchen
     window.HTMLElement.prototype.scrollIntoView = scrollIntoViewMock
@@ -269,10 +269,11 @@ describe('LernzieleMiniModal — Master-Detail', () => {
       />,
     )
 
-    // Das angeklickte Unterthema soll an den oberen Rand des Modal-Scrollbereichs
-    // springen (block:'start'), nicht nur minimal sichtbar werden (block:'nearest').
+    // behavior:'auto' — ein scrollIntoView({behavior:'smooth'}) verpufft beim
+    // Modal-Mount (Browser-E2E: scrollTop bleibt 0). 'auto' scrollt zuverlässig;
+    // block:'start' bringt die Sektion an den oberen Rand.
     expect(scrollIntoViewMock).toHaveBeenCalledWith(
-      expect.objectContaining({ block: 'start' }),
+      expect.objectContaining({ behavior: 'auto', block: 'start' }),
     )
   })
 
