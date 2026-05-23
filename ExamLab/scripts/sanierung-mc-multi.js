@@ -117,3 +117,153 @@ function reviewHeaders_() {
     'geschrieben_am', 'phase3_status'
   ];
 }
+
+// === PHASE 0 — PLANUNG =====================================================
+
+/**
+ * Phase 0: Tell-Score berechnen, rote Zone identifizieren, Review-Tab bauen.
+ *
+ * Ablauf:
+ *  1. Hart-Abbruch-Predicate: bricht ab wenn Review-Tab bereits LP-Arbeit hat
+ *     (mind. eine non-empty Zelle in distraktoren_neu_json oder review_status).
+ *  2. Iteriert Multi-MC der vier Fachbereich-Tabs (typ='mc', >=2 korrekt).
+ *  3. Berechnet pro Frage: tell_score, perfektes_ranking, soll_laenge.
+ *  4. Setzt in_roter_zone nach SCHWELLE_TELL_SCORE + SANIERE_PERFEKTES_RANKING_IMMER.
+ *  5. Schreibt Review-Tab komplett neu (alt überschrieben).
+ *  6. Loggt Zähler: rote Zone N, davon X perfektes Ranking, Y nur via Tell-Score.
+ */
+function phase0_planung() {
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var tab = ss.getSheetByName(REVIEW_TAB);
+
+  // 1. Hart-Abbruch-Predicate
+  if (tab) {
+    var existiertLpArbeit = pruefeReviewTabAufLpArbeit_(tab);
+    if (existiertLpArbeit) {
+      throw new Error(
+        'HART-ABBRUCH: Review-Tab "' + REVIEW_TAB + '" enthält bereits LP-Arbeit ' +
+        '(non-empty distraktoren_neu_json oder review_status). Tab manuell löschen ' +
+        'oder leeren, dann Phase 0 erneut starten.'
+      );
+    }
+  }
+
+  // 2-4. Multi-MC sammeln + bewerten
+  var zeilen = [];
+  var skipUnterzweiKorrekt = 0;
+  var skipKorrektNull = 0;
+  var roteZoneZaehler = 0;
+  var perfektRangZaehler = 0;
+  var nurTellScoreZaehler = 0;
+
+  for (var t = 0; t < SANIERUNG_TABS.length; t++) {
+    var sheet = ss.getSheetByName(SANIERUNG_TABS[t]);
+    if (!sheet) continue;
+    var daten = sheet.getDataRange().getValues();
+    if (daten.length < 2) continue;
+    var headers = daten[0].map(function (h) { return String(h).trim(); });
+    var idCol = headers.indexOf('id');
+    var typCol = headers.indexOf('typ');
+    var typDatenCol = headers.indexOf('typDaten');
+    var optionenCol = headers.indexOf('optionen');
+    var fragetextCol = headers.indexOf('fragetext');
+    var geloeschtCol = headers.indexOf('geloescht_am');
+    if (idCol < 0 || typCol < 0) continue;
+
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][typCol]).trim() !== 'mc') continue;
+      if (geloeschtCol >= 0 && String(daten[i][geloeschtCol] || '').trim()) continue;
+      var optionen = leseMcOptionen_(daten[i], typDatenCol, optionenCol);
+      if (!optionen || optionen.length < 2) continue;
+
+      var korrekte = optionen.filter(function (o) { return o && o.korrekt; });
+      if (korrekte.length < 2) { skipUnterzweiKorrekt++; continue; }
+      var distraktoren = optionen.filter(function (o) { return !(o && o.korrekt); });
+      if (distraktoren.length === 0) continue;
+
+      var korrektLaengen = korrekte.map(function (o) { return textLaenge_(o.text); });
+      var distraktorLaengen = distraktoren.map(function (o) { return textLaenge_(o.text); });
+      var korrektAvg = mw_(korrektLaengen);
+      var distraktorAvg = mw_(distraktorLaengen);
+
+      if (korrektAvg === 0) {
+        skipKorrektNull++;
+        Logger.log('  SKIP korrektAvg=0: id=' + daten[i][idCol] + ' tab=' + SANIERUNG_TABS[t]);
+        continue;
+      }
+
+      var tellScore = (korrektAvg - distraktorAvg) / korrektAvg;
+      var perfektesRanking = (mn_(korrektLaengen) > mx_(distraktorLaengen));
+      var sollLaenge = Math.round(korrektAvg);
+      var inRoterZone = (tellScore > SCHWELLE_TELL_SCORE)
+        || (perfektesRanking && SANIERE_PERFEKTES_RANKING_IMMER);
+
+      if (inRoterZone) {
+        roteZoneZaehler++;
+        if (perfektesRanking) perfektRangZaehler++;
+        else nurTellScoreZaehler++;
+      }
+
+      zeilen.push([
+        String(daten[i][idCol]),                       // id
+        SANIERUNG_TABS[t],                             // fachbereich
+        fragetextCol >= 0 ? String(daten[i][fragetextCol] || '') : '',  // frage_text
+        JSON.stringify(optionen),                       // optionen_alt_json
+        Math.round(korrektAvg),                        // korrekt_avg_len
+        Math.round(distraktorAvg),                     // distraktor_avg_len
+        Number(tellScore.toFixed(3)),                  // tell_score
+        perfektesRanking,                              // perfektes_ranking
+        inRoterZone,                                   // in_roter_zone
+        inRoterZone ? sollLaenge : '',                 // soll_laenge (nur bei rot)
+        '',                                            // distraktoren_neu_json
+        '',                                            // checker_status
+        '',                                            // checker_kommentar
+        '',                                            // checker_detail_json
+        '',                                            // review_status
+        '',                                            // lp_kommentar
+        '',                                            // geschrieben_am
+        ''                                             // phase3_status
+      ]);
+    }
+  }
+
+  // 5. Review-Tab komplett neu schreiben
+  if (!tab) tab = ss.insertSheet(REVIEW_TAB);
+  tab.clear();
+  var headers = reviewHeaders_();
+  tab.getRange(1, 1, 1, headers.length).setValues([headers]);
+  if (zeilen.length > 0) {
+    tab.getRange(2, 1, zeilen.length, headers.length).setValues(zeilen);
+  }
+  // Header fett, Auto-Filter, eingefrorene Header-Zeile
+  tab.setFrozenRows(1);
+  tab.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+
+  // 6. Zähler ausgeben
+  Logger.log('=== Phase 0 — Planung abgeschlossen ===');
+  Logger.log('Multi-MC gesamt: ' + zeilen.length);
+  if (skipUnterzweiKorrekt > 0) Logger.log('  (uebersprungen, <2 korrekt: ' + skipUnterzweiKorrekt + ')');
+  if (skipKorrektNull > 0) Logger.log('  (uebersprungen, korrekt_avg=0: ' + skipKorrektNull + ')');
+  Logger.log('Rote Zone: ' + roteZoneZaehler + ' Fragen');
+  Logger.log('  davon perfektes Ranking: ' + perfektRangZaehler);
+  Logger.log('  davon nur via Tell-Score: ' + nurTellScoreZaehler);
+  Logger.log('SCHWELLE_TELL_SCORE = ' + SCHWELLE_TELL_SCORE);
+  Logger.log('SANIERE_PERFEKTES_RANKING_IMMER = ' + SANIERE_PERFEKTES_RANKING_IMMER);
+  Logger.log('Review-Tab: ' + REVIEW_TAB + ' (' + tab.getSheetId() + ')');
+}
+
+/** Prüft Hart-Abbruch-Predicate: gibt true zurück wenn LP-Arbeit existiert. */
+function pruefeReviewTabAufLpArbeit_(tab) {
+  var range = tab.getDataRange();
+  if (range.getNumRows() < 2) return false;
+  var werte = range.getValues();
+  var headers = werte[0].map(function (h) { return String(h).trim(); });
+  var distrNeuCol = headers.indexOf('distraktoren_neu_json');
+  var revStatCol = headers.indexOf('review_status');
+  if (distrNeuCol < 0 && revStatCol < 0) return false; // alter Tab ohne diese Spalten
+  for (var r = 1; r < werte.length; r++) {
+    if (distrNeuCol >= 0 && String(werte[r][distrNeuCol] || '').trim() !== '') return true;
+    if (revStatCol >= 0 && String(werte[r][revStatCol] || '').trim() !== '') return true;
+  }
+  return false;
+}
