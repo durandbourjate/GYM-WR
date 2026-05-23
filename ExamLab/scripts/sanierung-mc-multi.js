@@ -308,7 +308,7 @@ function phase3_rueckschreiben() {
   // Frage-Index pro Fachbereich-Tab — einmal bauen für alle Updates.
   var frageIndex = baueFrageIndex_(ss);
 
-  var geschrieben = 0, uebersprungen = 0, errors = 0;
+  var geschrieben = 0, skipNichtFreigegeben = 0, skipBereitsGeschrieben = 0, errors = 0;
   var nowIso = new Date().toISOString();
 
   for (var r = 1; r < werte.length; r++) {
@@ -318,8 +318,8 @@ function phase3_rueckschreiben() {
     var bereitsGeschrieben = String(row[c.geschrieben] || '').trim();
 
     if (!inRot) continue;
-    if (revStat !== 'freigegeben') { uebersprungen++; continue; }
-    if (bereitsGeschrieben !== '') { uebersprungen++; continue; }
+    if (revStat !== 'freigegeben') { skipNichtFreigegeben++; continue; }
+    if (bereitsGeschrieben !== '') { skipBereitsGeschrieben++; continue; }
 
     var id = String(row[c.id]);
     var fach = String(row[c.fach]);
@@ -367,7 +367,8 @@ function phase3_rueckschreiben() {
   Logger.log('=== Phase 3 — Rückschreiben abgeschlossen ===');
   Logger.log('DRY_RUN = ' + DRY_RUN);
   Logger.log((DRY_RUN ? 'WÜRDE schreiben: ' : 'Geschrieben: ') + geschrieben);
-  Logger.log('Übersprungen (nicht freigegeben oder bereits geschrieben): ' + uebersprungen);
+  Logger.log('Übersprungen (nicht freigegeben): ' + skipNichtFreigegeben);
+  Logger.log('Übersprungen (bereits geschrieben — Idempotenz): ' + skipBereitsGeschrieben);
   Logger.log('Errors: ' + errors);
   if (errors > 0 && !DRY_RUN) {
     throw new Error('Phase 3 mit ' + errors + ' Errors abgebrochen. Bitte Logger lesen, manuell beheben.');
@@ -412,11 +413,12 @@ function schreibeDistraktorenZurueck_(loc, neueDistraktoren) {
   var altOptionen = leseMcOptionen_(loc.zeile, loc.typDatenCol, loc.optionenCol);
   if (!Array.isArray(altOptionen)) return { status: 'altOptionen kein Array' };
 
-  // Korrekt-Hash pre
-  var korrektPre = altOptionen
+  var nAltDistraktoren = altOptionen.filter(function (o) { return !(o && o.korrekt); }).length;
+
+  // Korrekt-Hash pre — JSON.stringify als Delimiter (kollisions-sicher gegen '||' in Texten).
+  var korrektPre = JSON.stringify(altOptionen
     .filter(function (o) { return o && o.korrekt; })
-    .map(function (o) { return String(o.text || ''); })
-    .join('||');
+    .map(function (o) { return String(o.text || ''); }));
 
   var neueOptionen = [];
   var distrIdx = 0;
@@ -428,7 +430,7 @@ function schreibeDistraktorenZurueck_(loc, neueDistraktoren) {
     } else {
       if (distrIdx >= neueDistraktoren.length) {
         return { status: 'zu wenig neueDistraktoren (' + neueDistraktoren.length
-          + ') fuer alt-Distraktoren (' + (altOptionen.length - korrektPre.split('||').length) + ')' };
+          + ') fuer alt-Distraktoren (' + nAltDistraktoren + ')' };
       }
       // Distraktor: nur Text ersetzen, alle anderen Felder beibehalten
       var neu = Object.assign({}, opt);
@@ -439,10 +441,9 @@ function schreibeDistraktorenZurueck_(loc, neueDistraktoren) {
   }
 
   // Korrekt-Hash post (Sanity-Check)
-  var korrektPost = neueOptionen
+  var korrektPost = JSON.stringify(neueOptionen
     .filter(function (o) { return o && o.korrekt; })
-    .map(function (o) { return String(o.text || ''); })
-    .join('||');
+    .map(function (o) { return String(o.text || ''); }));
   if (korrektPre !== korrektPost) {
     return { status: 'korrekt-Hash-Mismatch (Invariante verletzt!)' };
   }
