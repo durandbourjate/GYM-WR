@@ -235,7 +235,9 @@ function phase0_planung() {
   if (zeilen.length > 0) {
     tab.getRange(2, 1, zeilen.length, headers.length).setValues(zeilen);
   }
-  // Header fett, Auto-Filter, eingefrorene Header-Zeile
+  // Header fett + eingefrorene Header-Zeile (Auto-Filter wird hier nicht gesetzt;
+  // LP kann ihn bei Bedarf manuell aktivieren — `createFilter()` wirft bei
+  // wiederholtem Lauf, würde Idempotenz brechen).
   tab.setFrozenRows(1);
   tab.getRange(1, 1, 1, headers.length).setFontWeight('bold');
 
