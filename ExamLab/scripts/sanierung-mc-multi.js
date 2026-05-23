@@ -269,3 +269,195 @@ function pruefeReviewTabAufLpArbeit_(tab) {
   }
   return false;
 }
+
+// === PHASE 3 — RÜCKSCHREIBEN ===============================================
+
+/**
+ * Phase 3: Schreibt freigegebene Distraktoren in die Fragensammlung zurück.
+ *
+ * Filter: in_roter_zone === true && review_status === 'freigegeben'
+ *   && geschrieben_am === ''
+ *
+ * Pro Frage: liest die AKTUELLEN Optionen aus der Fragensammlung (NICHT
+ * optionen_alt_json — könnte stale sein), ersetzt nur die Distraktor-Texte
+ * an ihrer Index-Position. Korrekte Optionen werden NIE angefasst.
+ *
+ * Schutz:
+ *  - DRY_RUN-Toggle: bei true wird nur geloggt, nichts geschrieben.
+ *  - Korrekt-Hash-Audit: Hash der korrekten Optionen pre/post muss identisch sein.
+ *  - Idempotenz: geschrieben_am wird gesetzt, re-run überspringt.
+ */
+function phase3_rueckschreiben() {
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var tab = ss.getSheetByName(REVIEW_TAB);
+  if (!tab) throw new Error('Review-Tab fehlt: ' + REVIEW_TAB);
+
+  var werte = tab.getDataRange().getValues();
+  if (werte.length < 2) { Logger.log('Phase 3: leerer Review-Tab.'); return; }
+  var headers = werte[0].map(function (h) { return String(h).trim(); });
+  var c = {
+    id: rcol_(headers, 'id'),
+    fach: rcol_(headers, 'fachbereich'),
+    rot: rcol_(headers, 'in_roter_zone'),
+    distrNeu: rcol_(headers, 'distraktoren_neu_json'),
+    revStat: rcol_(headers, 'review_status'),
+    geschrieben: rcol_(headers, 'geschrieben_am'),
+    phaseStat: rcol_(headers, 'phase3_status')
+  };
+
+  // Frage-Index pro Fachbereich-Tab — einmal bauen für alle Updates.
+  var frageIndex = baueFrageIndex_(ss);
+
+  var geschrieben = 0, uebersprungen = 0, errors = 0;
+  var nowIso = new Date().toISOString();
+
+  for (var r = 1; r < werte.length; r++) {
+    var row = werte[r];
+    var inRot = row[c.rot] === true || String(row[c.rot]).toLowerCase() === 'true';
+    var revStat = String(row[c.revStat] || '').trim();
+    var bereitsGeschrieben = String(row[c.geschrieben] || '').trim();
+
+    if (!inRot) continue;
+    if (revStat !== 'freigegeben') { uebersprungen++; continue; }
+    if (bereitsGeschrieben !== '') { uebersprungen++; continue; }
+
+    var id = String(row[c.id]);
+    var fach = String(row[c.fach]);
+    var distrNeuJson = String(row[c.distrNeu] || '').trim();
+    if (!distrNeuJson) {
+      Logger.log('FEHLER id=' + id + ': distraktoren_neu_json leer trotz review_status=freigegeben');
+      errors++;
+      if (!DRY_RUN) tab.getRange(r + 1, c.phaseStat + 1).setValue('error: distraktoren_neu_json leer');
+      continue;
+    }
+    var neueDistraktoren = sicherJsonParse_(distrNeuJson);
+    if (!Array.isArray(neueDistraktoren)) {
+      Logger.log('FEHLER id=' + id + ': distraktoren_neu_json kein Array');
+      errors++;
+      if (!DRY_RUN) tab.getRange(r + 1, c.phaseStat + 1).setValue('error: distraktoren_neu_json kein Array');
+      continue;
+    }
+
+    var loc = frageIndex[fach + '#' + id];
+    if (!loc) {
+      Logger.log('FEHLER id=' + id + ' in fach=' + fach + ' nicht im Sheet gefunden');
+      errors++;
+      if (!DRY_RUN) tab.getRange(r + 1, c.phaseStat + 1).setValue('error: Frage nicht gefunden');
+      continue;
+    }
+
+    var ergebnis = schreibeDistraktorenZurueck_(loc, neueDistraktoren);
+    if (ergebnis.status !== 'ok') {
+      Logger.log('FEHLER id=' + id + ': ' + ergebnis.status);
+      errors++;
+      if (!DRY_RUN) tab.getRange(r + 1, c.phaseStat + 1).setValue('error: ' + ergebnis.status);
+      continue;
+    }
+
+    if (DRY_RUN) {
+      Logger.log('DRY_RUN würde schreiben: id=' + id + ' fach=' + fach
+        + ' n_distraktoren=' + neueDistraktoren.length);
+    } else {
+      tab.getRange(r + 1, c.geschrieben + 1).setValue(nowIso);
+      tab.getRange(r + 1, c.phaseStat + 1).setValue('geschrieben');
+    }
+    geschrieben++;
+  }
+
+  Logger.log('=== Phase 3 — Rückschreiben abgeschlossen ===');
+  Logger.log('DRY_RUN = ' + DRY_RUN);
+  Logger.log((DRY_RUN ? 'WÜRDE schreiben: ' : 'Geschrieben: ') + geschrieben);
+  Logger.log('Übersprungen (nicht freigegeben oder bereits geschrieben): ' + uebersprungen);
+  Logger.log('Errors: ' + errors);
+  if (errors > 0 && !DRY_RUN) {
+    throw new Error('Phase 3 mit ' + errors + ' Errors abgebrochen. Bitte Logger lesen, manuell beheben.');
+  }
+}
+
+/** Baut einen Index {fach#id: {sheet, row, headers, typDatenCol, optionenCol}}. */
+function baueFrageIndex_(ss) {
+  var index = {};
+  for (var t = 0; t < SANIERUNG_TABS.length; t++) {
+    var sheet = ss.getSheetByName(SANIERUNG_TABS[t]);
+    if (!sheet) continue;
+    var daten = sheet.getDataRange().getValues();
+    if (daten.length < 2) continue;
+    var headers = daten[0].map(function (h) { return String(h).trim(); });
+    var idCol = headers.indexOf('id');
+    var typDatenCol = headers.indexOf('typDaten');
+    var optionenCol = headers.indexOf('optionen');
+    if (idCol < 0) continue;
+    for (var i = 1; i < daten.length; i++) {
+      var id = String(daten[i][idCol]);
+      if (!id) continue;
+      index[SANIERUNG_TABS[t] + '#' + id] = {
+        sheet: sheet,
+        row: i + 1, // 1-based für Range
+        headers: headers,
+        typDatenCol: typDatenCol,
+        optionenCol: optionenCol,
+        zeile: daten[i]
+      };
+    }
+  }
+  return index;
+}
+
+/**
+ * Ersetzt nur die Distraktor-Texte einer Frage; korrekte Optionen bleiben unverändert.
+ * neueDistraktoren = Array von Strings in der gleichen Reihenfolge wie die alt-Distraktoren.
+ * Korrekt-Hash-Audit: Konkateniert die korrekt-Texte vor + nach Replace; bei Mismatch error.
+ */
+function schreibeDistraktorenZurueck_(loc, neueDistraktoren) {
+  var altOptionen = leseMcOptionen_(loc.zeile, loc.typDatenCol, loc.optionenCol);
+  if (!Array.isArray(altOptionen)) return { status: 'altOptionen kein Array' };
+
+  // Korrekt-Hash pre
+  var korrektPre = altOptionen
+    .filter(function (o) { return o && o.korrekt; })
+    .map(function (o) { return String(o.text || ''); })
+    .join('||');
+
+  var neueOptionen = [];
+  var distrIdx = 0;
+  for (var i = 0; i < altOptionen.length; i++) {
+    var opt = altOptionen[i];
+    if (opt && opt.korrekt) {
+      // Korrekt: unveraendert uebernehmen
+      neueOptionen.push(opt);
+    } else {
+      if (distrIdx >= neueDistraktoren.length) {
+        return { status: 'zu wenig neueDistraktoren (' + neueDistraktoren.length
+          + ') fuer alt-Distraktoren (' + (altOptionen.length - korrektPre.split('||').length) + ')' };
+      }
+      // Distraktor: nur Text ersetzen, alle anderen Felder beibehalten
+      var neu = Object.assign({}, opt);
+      neu.text = String(neueDistraktoren[distrIdx]);
+      neueOptionen.push(neu);
+      distrIdx++;
+    }
+  }
+
+  // Korrekt-Hash post (Sanity-Check)
+  var korrektPost = neueOptionen
+    .filter(function (o) { return o && o.korrekt; })
+    .map(function (o) { return String(o.text || ''); })
+    .join('||');
+  if (korrektPre !== korrektPost) {
+    return { status: 'korrekt-Hash-Mismatch (Invariante verletzt!)' };
+  }
+
+  if (DRY_RUN) return { status: 'ok' };
+
+  // Schreiben: typDaten.optionen aktualisieren (Vorrang vor optionen-Legacy-Spalte)
+  if (loc.typDatenCol >= 0) {
+    var typDaten = sicherJsonParse_(loc.zeile[loc.typDatenCol]) || {};
+    typDaten.optionen = neueOptionen;
+    loc.sheet.getRange(loc.row, loc.typDatenCol + 1).setValue(JSON.stringify(typDaten));
+  }
+  if (loc.optionenCol >= 0 && (loc.typDatenCol < 0 || loc.zeile[loc.optionenCol])) {
+    loc.sheet.getRange(loc.row, loc.optionenCol + 1).setValue(JSON.stringify(neueOptionen));
+  }
+
+  return { status: 'ok' };
+}
