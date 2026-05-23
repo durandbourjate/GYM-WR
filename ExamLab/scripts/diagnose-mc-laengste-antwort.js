@@ -227,6 +227,157 @@ function diagnoseMcMultiLaenge() {
   Logger.log('Befund: ' + bewertung);
 }
 
+/**
+ * DIAGNOSE: Multi-Choice-MC — Tell-Score-Histogramm + Perfekt-Ranking-Zähler.
+ *
+ * Pro Multi-MC-Frage:
+ *   - tell_score = (Ø_korrekt − Ø_distraktor) / Ø_korrekt (Bereich −∞ bis +1)
+ *   - perfektes_ranking = min(korrekt_laengen) > max(distraktor_laengen)
+ *
+ * Ausgabe: Histogramm in 0.10er-Bins + Anzahl Perfekt-Ranking + Top-20-IDs
+ * mit höchstem Tell-Score (für LP-Sichtprüfung beim Schwellen-Wählen).
+ *
+ * Edge-Cases:
+ *   - Fragen mit < 2 korrekten Optionen werden übersprungen (sind keine Multi-MC).
+ *   - Fragen mit Ø_korrekt === 0 (alle korrekten leerer Text) werden geloggt
+ *     und übersprungen — sie hätten soll_laenge=0 erzwungen.
+ *
+ * Ausgabe: Logger → Ansicht > Protokolle.
+ */
+function diagnoseMcMultiTellScore() {
+  var FRAGENSAMMLUNG_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
+  var TABS = ['BWL', 'VWL', 'Recht', 'Informatik'];
+
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+
+  // Bin-Grenzen: < 0.0, 0.0-0.10, 0.10-0.20, …, 0.50+
+  var BINS = [
+    { label: 'score < 0.0  ', min: -Infinity, max: 0.0 },
+    { label: '0.0  - 0.10 ', min: 0.0, max: 0.10 },
+    { label: '0.10 - 0.20 ', min: 0.10, max: 0.20 },
+    { label: '0.20 - 0.30 ', min: 0.20, max: 0.30 },
+    { label: '0.30 - 0.40 ', min: 0.30, max: 0.40 },
+    { label: '0.40 - 0.50 ', min: 0.40, max: 0.50 },
+    { label: '0.50 +      ', min: 0.50, max: Infinity }
+  ];
+  for (var b = 0; b < BINS.length; b++) BINS[b].count = 0;
+
+  var gesamt = 0;
+  var perfektesRanking = 0;
+  var topTells = []; // { id, score, tab }
+  var skipKorrektNull = 0;
+  var skipUnterzweiKorrekt = 0;
+
+  for (var t = 0; t < TABS.length; t++) {
+    var sheet = fragensammlung.getSheetByName(TABS[t]);
+    if (!sheet) continue;
+
+    var daten = sheet.getDataRange().getValues();
+    if (daten.length < 2) continue;
+
+    var headers = daten[0].map(function (h) { return String(h).trim(); });
+    var idCol = headers.indexOf('id');
+    var typCol = headers.indexOf('typ');
+    var typDatenCol = headers.indexOf('typDaten');
+    var optionenCol = headers.indexOf('optionen');
+    var geloeschtCol = headers.indexOf('geloescht_am');
+    if (typCol < 0) continue;
+
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][typCol]).trim() !== 'mc') continue;
+      if (geloeschtCol >= 0 && String(daten[i][geloeschtCol] || '').trim()) continue;
+
+      var optionen = leseMcOptionen_(daten[i], typDatenCol, optionenCol);
+      if (!optionen || optionen.length < 2) continue;
+
+      var korrekte = optionen.filter(function (o) { return o && o.korrekt; });
+      if (korrekte.length < 2) { skipUnterzweiKorrekt++; continue; }
+
+      var distraktoren = optionen.filter(function (o) { return !(o && o.korrekt); });
+      if (distraktoren.length === 0) continue;
+
+      var korrektLaengen = korrekte.map(function (o) { return textLaenge_(o.text); });
+      var distraktorLaengen = distraktoren.map(function (o) { return textLaenge_(o.text); });
+
+      var korrektAvg = mittelwert_(korrektLaengen);
+      var distraktorAvg = mittelwert_(distraktorLaengen);
+
+      if (korrektAvg === 0) {
+        skipKorrektNull++;
+        Logger.log('  SKIP korrektAvg=0: id=' + (idCol >= 0 ? daten[i][idCol] : '?')
+          + ' tab=' + TABS[t] + ' — alle korrekten Optionen leerer Text');
+        continue;
+      }
+
+      var tellScore = (korrektAvg - distraktorAvg) / korrektAvg;
+      var ranking = (min_(korrektLaengen) > max_(distraktorLaengen));
+
+      gesamt++;
+      if (ranking) perfektesRanking++;
+
+      for (var b = 0; b < BINS.length; b++) {
+        if (tellScore >= BINS[b].min && tellScore < BINS[b].max) {
+          BINS[b].count++;
+          break;
+        }
+      }
+
+      topTells.push({
+        id: idCol >= 0 ? String(daten[i][idCol]) : '?',
+        score: tellScore,
+        tab: TABS[t]
+      });
+    }
+  }
+
+  Logger.log('=== Multi-MC Tell-Score-Histogramm ===');
+  Logger.log('Total Multi-MC: ' + gesamt);
+  if (skipUnterzweiKorrekt > 0) Logger.log('  (uebersprungen, <2 korrekt: ' + skipUnterzweiKorrekt + ')');
+  if (skipKorrektNull > 0) Logger.log('  (uebersprungen, korrekt_avg=0: ' + skipKorrektNull + ')');
+  for (var b = 0; b < BINS.length; b++) {
+    var pct = gesamt > 0 ? (BINS[b].count / gesamt * 100) : 0;
+    Logger.log(BINS[b].label + ' : ' + pad_(BINS[b].count, 4) + ' (' + pct.toFixed(1) + '%)');
+  }
+  Logger.log('');
+  Logger.log('Perfektes Ranking: ' + perfektesRanking + ' Fragen ('
+    + (gesamt > 0 ? (perfektesRanking / gesamt * 100).toFixed(1) : '0.0') + '%)');
+  Logger.log('');
+
+  topTells.sort(function (a, b) { return b.score - a.score; });
+  Logger.log('Top-20 Tells (id, score, tab):');
+  for (var k = 0; k < Math.min(20, topTells.length); k++) {
+    Logger.log('  ' + topTells[k].id + '  ' + topTells[k].score.toFixed(2) + '  ' + topTells[k].tab);
+  }
+}
+
+/** Mittelwert eines nicht-leeren Number-Arrays. */
+function mittelwert_(arr) {
+  if (!arr || arr.length === 0) return 0;
+  var s = 0; for (var i = 0; i < arr.length; i++) s += arr[i];
+  return s / arr.length;
+}
+
+/** Minimum eines nicht-leeren Number-Arrays. */
+function min_(arr) {
+  if (!arr || arr.length === 0) return 0;
+  var m = arr[0]; for (var i = 1; i < arr.length; i++) if (arr[i] < m) m = arr[i];
+  return m;
+}
+
+/** Maximum eines nicht-leeren Number-Arrays. */
+function max_(arr) {
+  if (!arr || arr.length === 0) return 0;
+  var m = arr[0]; for (var i = 1; i < arr.length; i++) if (arr[i] > m) m = arr[i];
+  return m;
+}
+
+/** Pad einer Zahl auf Min-Länge mit führenden Spaces. */
+function pad_(n, w) {
+  var s = String(n);
+  while (s.length < w) s = ' ' + s;
+  return s;
+}
+
 /** Liest die MC-Optionen einer Zeile: zuerst typDaten.optionen, sonst optionen-Spalte. */
 function leseMcOptionen_(row, typDatenCol, optionenCol) {
   if (typDatenCol >= 0) {
