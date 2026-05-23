@@ -1,6 +1,7 @@
 import type { PruefungsConfig } from '../../../../../types/pruefung.ts'
 import { Section, Field } from '../ComposerUI.tsx'
 import { useStammdatenStore } from '../../../../../store/stammdatenStore.ts'
+import { toIsoDateInput } from '../../../../../utils/zeit.ts'
 
 interface Props {
   pruefung: PruefungsConfig
@@ -60,7 +61,7 @@ export default function GrunddatenSection({ pruefung, updatePruefung, toggleFach
         <Field label="Datum">
           <input
             type="date"
-            value={pruefung.datum}
+            value={toIsoDateInput(pruefung.datum)}
             onChange={(e) => updatePruefung({ datum: e.target.value })}
             className="input-field"
           />
