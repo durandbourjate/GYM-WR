@@ -158,12 +158,20 @@ var SOLL_LAENGE_TOLERANZ = 0.20;            // ±20 % Längen-Band für neue Dis
 
 **Ablauf:**
 
-1. Iteriert über alle 238 Multi-MC, berechnet `tell_score`, `perfektes_ranking`,
-   `soll_laenge = round(korrekt_avg_len)`.
-2. Setzt `in_roter_zone = (tell_score > SCHWELLE_TELL_SCORE) || (perfektes_ranking && SANIERE_PERFEKTES_RANKING_IMMER)`.
-3. Legt den Tab `MC-Sanierung-Multi-Review` an (oder leert ihn bei Wiederholungs-Lauf).
-4. Schreibt eine Zeile pro Frage mit allen Spalten (siehe Daten-Modell unten).
-5. Loggt Zähler: rote Zone = N, davon X mit perfektem Ranking, Y nur via Tell-Score.
+1. Iteriert über alle Multi-MC der vier Fachbereich-Tabs. Filter-Predicate:
+   `typ === 'mc' && optionen.filter(o => o.korrekt).length >= 2`. Fragen mit
+   < 2 korrekten Optionen sind keine Multi-MC und werden geloggt + übersprungen
+   (Datenfehler-Marker, nicht im Tab).
+2. Berechnet `tell_score`, `perfektes_ranking`, `soll_laenge = round(korrekt_avg_len)`.
+3. **Edge-Case-Guard `korrekt_avg_len === 0`** (alle korrekten Optionen leerer
+   Text — Datenfehler): Frage wird geloggt + übersprungen, nicht im Tab. Niemals
+   in rote Zone (würde `soll_laenge = 0` → leere Distraktoren erzwingen).
+4. Setzt `in_roter_zone = (tell_score > SCHWELLE_TELL_SCORE) || (perfektes_ranking && SANIERE_PERFEKTES_RANKING_IMMER)`.
+5. Legt den Tab `MC-Sanierung-Multi-Review` an (oder leert ihn bei Wiederholungs-Lauf,
+   nach dem Hart-Abbruch-Predicate).
+6. Schreibt eine Zeile pro Frage mit allen Spalten (siehe Daten-Modell unten).
+7. Loggt Zähler: rote Zone = N, davon X mit perfektem Ranking, Y nur via Tell-Score,
+   plus Datenfehler-Liste (Schritt 1+3).
 
 **Idempotenz:** Phase 0 ist beliebig oft wiederholbar — LP kann Schwelle anpassen
 und Phase 0 erneut laufen. Bei Wiederholung wird der Tab komplett neu geschrieben
@@ -171,6 +179,12 @@ und Phase 0 erneut laufen. Bei Wiederholung wird der Tab komplett neu geschriebe
 `review_status`-Werte vorhanden sind. Falls doch, bricht Phase 0 hart ab und
 verlangt manuelle Tab-Löschung — Schutz gegen versehentliches Überschreiben von
 LP-Arbeit.
+
+**Hart-Abbruch-Predicate (exakt):** Phase 0 iteriert die bestehenden Tab-Zeilen
+und bricht ab, sobald **mindestens eine Zelle** in der Spalte
+`distraktoren_neu_json` ODER in der Spalte `review_status` einen nicht-leeren
+Wert (`!== ''`) enthält. Header-Zeile zählt nicht. Leerer Tab und brandneuer Tab
+ohne Daten passieren die Prüfung problemlos.
 
 ### Daten-Modell — Review-Tab
 
@@ -190,7 +204,7 @@ LP-Arbeit.
 | `checker_status` | Phase 2 | `OK` / `FLAG` / `STICHPROBE` |
 | `checker_kommentar` | Phase 2 | Begründung bei FLAG |
 | `checker_detail_json` | Phase 2 | Pro-Distraktor-Status für Forensik |
-| `review_status` | LP | `freigegeben` / `nachbearbeitet` / `abgelehnt` |
+| `review_status` | LP | `''` (Default, „noch nicht reviewed") / `freigegeben` / `nachbearbeitet` / `abgelehnt` |
 | `lp_kommentar` | LP | optional |
 | `geschrieben_am` | Phase 3 | ISO-Timestamp; nicht-leer = bereits geschrieben (Idempotenz) |
 | `phase3_status` | Phase 3 | `geschrieben` / `error: <reason>` |
