@@ -105,6 +105,20 @@ function rcol_(headers, name) {
   return i;
 }
 
+/**
+ * Konvertiert 1-basierten Spalten-Index in A1-Notation-Buchstaben.
+ * 1 → 'A', 26 → 'Z', 27 → 'AA', 52 → 'AZ'. Für `getRangeList()`-Builder.
+ */
+function colIndexToA1_(n) {
+  var s = '';
+  while (n > 0) {
+    var rem = (n - 1) % 26;
+    s = String.fromCharCode(65 + rem) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
 /** Header-Definition für den Review-Tab. EXAKT diese Reihenfolge. */
 function reviewHeaders_() {
   return [
@@ -540,14 +554,17 @@ function importiereCheckerErgebnis_() {
   if (flagZeilen.length > 0) Logger.log('FLAG-Zeilen (Sheet-Zeile): ' + flagZeilen.join(', '));
   if (stichprobeZeilen.length > 0) Logger.log('STICHPROBE-Zeilen: ' + stichprobeZeilen.join(', '));
 
-  // Einfärben: FLAG = hellrot, STICHPROBE = hellgelb
+  // Einfärben: FLAG = hellrot, STICHPROBE = hellgelb.
+  // getRangeList = 1 API-Call pro Farbe statt 1 pro Zeile (relevant ab > 50 Zeilen).
   if (flagZeilen.length > 0 || stichprobeZeilen.length > 0) {
-    var hcols = headers.length;
-    for (var i = 0; i < flagZeilen.length; i++) {
-      tab.getRange(flagZeilen[i], 1, 1, hcols).setBackground('#fde0e0');
+    var lastColLetter = colIndexToA1_(headers.length);
+    if (flagZeilen.length > 0) {
+      var flagRanges = flagZeilen.map(function (z) { return 'A' + z + ':' + lastColLetter + z; });
+      tab.getRangeList(flagRanges).setBackground('#fde0e0');
     }
-    for (var j = 0; j < stichprobeZeilen.length; j++) {
-      tab.getRange(stichprobeZeilen[j], 1, 1, hcols).setBackground('#fff4cc');
+    if (stichprobeZeilen.length > 0) {
+      var stichRanges = stichprobeZeilen.map(function (z) { return 'A' + z + ':' + lastColLetter + z; });
+      tab.getRangeList(stichRanges).setBackground('#fff4cc');
     }
   }
 }
@@ -607,7 +624,10 @@ function finalisiereReviewStatus_() {
   var revStatCol = rcol_(headers, 'review_status');
   var idCol = rcol_(headers, 'id');
 
-  var n = 0;
+  // Erst alle freizugebenden Zeilen sammeln, dann mit getRangeList in einem
+  // API-Call schreiben (Alle bekommen denselben Wert 'freigegeben' → setValue
+  // auf RangeList ist atomisch genug). Skaliert auf 700+ Zeilen ohne Latenz-Spike.
+  var zeilenZuFreigeben = [];
   for (var r = 1; r < werte.length; r++) {
     var inRot = werte[r][rotCol] === true || String(werte[r][rotCol]).toLowerCase() === 'true';
     if (!inRot) continue;
@@ -615,11 +635,17 @@ function finalisiereReviewStatus_() {
     if (ckr !== 'OK') continue; // FLAG + STICHPROBE muss LP manuell setzen
     var rev = String(werte[r][revStatCol] || '').trim();
     if (rev !== '') continue;   // bereits gesetzt
-    tab.getRange(r + 1, revStatCol + 1).setValue('freigegeben');
-    n++;
+    zeilenZuFreigeben.push(r + 1);
+  }
+  if (zeilenZuFreigeben.length > 0) {
+    var revStatLetter = colIndexToA1_(revStatCol + 1);
+    var ranges = zeilenZuFreigeben.map(function (z) {
+      return revStatLetter + z + ':' + revStatLetter + z;
+    });
+    tab.getRangeList(ranges).setValue('freigegeben');
   }
   Logger.log('=== Fill-Down Review-Status ===');
-  Logger.log('Auf freigegeben gesetzt (OK, kein STICHPROBE/FLAG, bislang leer): ' + n);
+  Logger.log('Auf freigegeben gesetzt (OK, kein STICHPROBE/FLAG, bislang leer): ' + zeilenZuFreigeben.length);
 }
 
 /** LP-Doku: Anleitung im Logger, wie der Review-Tab als CSV exportiert wird. */
