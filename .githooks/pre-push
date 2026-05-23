@@ -10,6 +10,24 @@
 #
 # Override (für Notfälle): git push --no-verify
 
+# Skip bei reinem Delete-Push: git push --delete schickt local_oid=000... auf stdin.
+# Bei Mixed-Push (Delete + Code) Hook trotzdem laufen lassen. Stdin-Format laut
+# git-hooks(5): "<local_ref> <local_oid> <remote_ref> <remote_oid>" pro Ref.
+ZERO_OID="0000000000000000000000000000000000000000"
+any_refs=false
+all_deletes=true
+while read local_ref local_oid remote_ref remote_oid; do
+  any_refs=true
+  if [ "$local_oid" != "$ZERO_OID" ]; then
+    all_deletes=false
+  fi
+done
+
+if $any_refs && $all_deletes; then
+  echo "🔍 pre-push: skip ci-check (alle refs sind Deletes)"
+  exit 0
+fi
+
 set -e
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
