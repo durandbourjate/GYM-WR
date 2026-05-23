@@ -48,6 +48,9 @@ function runFinalisiereReviewStatus() { finalisiereReviewStatus_(); }
 function runExportiereRoteZoneCSV() { exportiereRoteZoneCSV_(); }
 
 // === GETEILTE HELFER =======================================================
+// textLaenge_, sicherJsonParse_, leseMcOptionen_ sind identisch zu
+// sanierung-mc-distraktoren.js — bei Änderung BEIDE Dateien anpassen.
+// mw_/mn_/mx_/rcol_/reviewHeaders_ sind multi-MC-spezifisch.
 
 /** Getrimmte Zeichenlänge eines Optionstexts (0 bei fehlendem Text). */
 function textLaenge_(text) {
