@@ -3180,7 +3180,7 @@ function ladePruefung(pruefungId, email) {
       gefaess: configRow.gefaess,
       semester: configRow.semester,
       fachbereiche: (configRow.fachbereiche || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
-      datum: configRow.datum,
+      datum: toIsoDateOnly_(configRow.datum),
       typ: configRow.typ,
       modus: configRow.modus || 'pruefung',
       zeitModus: configRow.zeitModus || 'countdown',
@@ -5903,7 +5903,7 @@ function ladeAktivePruefungenFuerSuS(email) {
         titel: row.titel || '',
         typ: row.typ || 'summativ',
         modus: row.modus || 'pruefung',
-        datum: row.datum || '',
+        datum: toIsoDateOnly_(row.datum),
         phase: istFreigeschaltet ? 'aktiv' : 'lobby',
         fachbereiche: String(row.fachbereiche || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
         klasse: row.klasse || '',
@@ -5975,7 +5975,7 @@ function mapConfigRow(row) {
     gefaess: row.gefaess,
     semester: row.semester,
     fachbereiche: (row.fachbereiche || '').split(',').map(s => s.trim()).filter(Boolean),
-    datum: row.datum,
+    datum: toIsoDateOnly_(row.datum),
     typ: row.typ,
     modus: row.modus || 'pruefung',
     dauerMinuten: Number(row.dauerMinuten),
@@ -8302,7 +8302,7 @@ function ladeKorrekturBerechne_(pruefungId) {
     return {
       pruefungId: pruefungId,
       pruefungTitel: configRow ? configRow.titel : pruefungId,
-      datum: configRow ? configRow.datum : '',
+      datum: toIsoDateOnly_(configRow ? configRow.datum : ''),
       klasse: configRow ? configRow.klasse : '',
       schueler: [],
       batchStatus: 'idle',
@@ -8352,7 +8352,7 @@ function ladeKorrekturBerechne_(pruefungId) {
   return {
     pruefungId: pruefungId,
     pruefungTitel: configRow ? configRow.titel : pruefungId,
-    datum: configRow ? configRow.datum : '',
+    datum: toIsoDateOnly_(configRow ? configRow.datum : ''),
     klasse: configRow ? configRow.klasse : '',
     schueler: Object.values(schuelerMap),
     batchStatus: statusJson.status || 'idle',
@@ -8981,7 +8981,7 @@ function ladeKorrekturenFuerSuSEndpoint(body) {
       ergebnis.push({
         pruefungId,
         titel: configRow.titel || pruefungId,
-        datum: configRow.datum || '',
+        datum: toIsoDateOnly_(configRow.datum),
         klasse: configRow.klasse || '',
         gesamtPunkte,
         maxPunkte,
@@ -9077,7 +9077,7 @@ function ladeKorrekturDetailEndpoint(body) {
     return jsonResponse({
       success: true,
       titel: configRow.titel || pruefungId,
-      datum: configRow.datum || '',
+      datum: toIsoDateOnly_(configRow.datum),
       klasse: configRow.klasse || '',
       fragen,
       antworten,
@@ -9552,7 +9552,7 @@ function ladeTrackerDatenEndpoint(body) {
         gefaess: row.gefaess || '',
         fachbereiche: (row.fachbereiche || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
         semester: row.semester || '',
-        datum: row.datum || '',
+        datum: toIsoDateOnly_(row.datum),
         typ: row.typ || 'summativ',
         gesamtpunkte: Number(row.gesamtpunkte) || 0,
         freigeschaltet: freigeschaltet,
@@ -15100,6 +15100,21 @@ function kalibrierungsStatistik(body) {
  *  lexikographisch mit ISO-Strings vergleichbar. */
 function toIsoStr_(wert) {
   if (wert instanceof Date) return wert.toISOString();
+  return String(wert || '');
+}
+
+/** Datum-Spalten (Tagesgenau) aus Sheet robust zu "YYYY-MM-DD" normieren.
+ *  Sheets parst ISO-Date-Strings beim Lesen zu Date-Objekten. Ohne diese
+ *  Normalisierung kommt im JSON ein ISO-with-time-String mit TZ-Shift
+ *  zurück, den `<input type="date">` im Frontend nicht akzeptiert.
+ *  Lokale Tageskomponenten verwenden (Schul-TZ = Europe/Zurich). */
+function toIsoDateOnly_(wert) {
+  if (wert instanceof Date) {
+    var y = wert.getFullYear();
+    var m = String(wert.getMonth() + 1).padStart(2, '0');
+    var d = String(wert.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + d;
+  }
   return String(wert || '');
 }
 
