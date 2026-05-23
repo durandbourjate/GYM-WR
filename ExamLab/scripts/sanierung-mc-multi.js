@@ -462,3 +462,173 @@ function schreibeDistraktorenZurueck_(loc, neueDistraktoren) {
 
   return { status: 'ok' };
 }
+
+// === IMPORT-HELFER (Phase 1+2 → Sheet) =====================================
+
+/**
+ * Validiert nach LP-CSV-Re-Import, dass distraktoren_neu_json für alle
+ * roten Zeilen befüllt ist und JSON-Arrays mit > 0 Elementen enthält.
+ * Loggt Statistik. Schreibt nichts.
+ */
+function importiereDistraktorenNeu_() {
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var tab = ss.getSheetByName(REVIEW_TAB);
+  if (!tab) throw new Error('Review-Tab fehlt: ' + REVIEW_TAB);
+  var werte = tab.getDataRange().getValues();
+  var headers = werte[0].map(function (h) { return String(h).trim(); });
+  var rotCol = rcol_(headers, 'in_roter_zone');
+  var distrNeuCol = rcol_(headers, 'distraktoren_neu_json');
+  var idCol = rcol_(headers, 'id');
+
+  var rot = 0, befuellt = 0, leer = 0, ungueltigJson = 0, leeresArray = 0;
+  for (var r = 1; r < werte.length; r++) {
+    var inRot = werte[r][rotCol] === true || String(werte[r][rotCol]).toLowerCase() === 'true';
+    if (!inRot) continue;
+    rot++;
+    var raw = String(werte[r][distrNeuCol] || '').trim();
+    if (!raw) { leer++; Logger.log('  LEER: id=' + werte[r][idCol]); continue; }
+    var parsed = sicherJsonParse_(raw);
+    if (!Array.isArray(parsed)) { ungueltigJson++; Logger.log('  KEIN ARRAY: id=' + werte[r][idCol]); continue; }
+    if (parsed.length === 0) { leeresArray++; Logger.log('  LEERES ARRAY: id=' + werte[r][idCol]); continue; }
+    befuellt++;
+  }
+  Logger.log('=== Phase-1-Import Verifikation ===');
+  Logger.log('Rote Zone gesamt: ' + rot);
+  Logger.log('Befüllt + valide: ' + befuellt);
+  Logger.log('Leer: ' + leer);
+  Logger.log('Ungültiges JSON: ' + ungueltigJson);
+  Logger.log('Leeres Array: ' + leeresArray);
+  if (befuellt < rot) {
+    Logger.log('WARNUNG: Nicht alle roten Zeilen sind befüllt. Phase 2 nicht starten, bis 100 %.');
+  }
+}
+
+/**
+ * Validiert nach Phase-2-Import: checker_status ist OK / FLAG / STICHPROBE.
+ * Loggt FLAG- und STICHPROBE-Zähler, hebt sie für LP-Review hervor.
+ */
+function importiereCheckerErgebnis_() {
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var tab = ss.getSheetByName(REVIEW_TAB);
+  if (!tab) throw new Error('Review-Tab fehlt: ' + REVIEW_TAB);
+  var werte = tab.getDataRange().getValues();
+  var headers = werte[0].map(function (h) { return String(h).trim(); });
+  var rotCol = rcol_(headers, 'in_roter_zone');
+  var statCol = rcol_(headers, 'checker_status');
+  var idCol = rcol_(headers, 'id');
+
+  var rot = 0, ok = 0, flag = 0, stichprobe = 0, leer = 0, ungueltig = 0;
+  var flagZeilen = [], stichprobeZeilen = [];
+  for (var r = 1; r < werte.length; r++) {
+    var inRot = werte[r][rotCol] === true || String(werte[r][rotCol]).toLowerCase() === 'true';
+    if (!inRot) continue;
+    rot++;
+    var s = String(werte[r][statCol] || '').trim().toUpperCase();
+    if (s === 'OK') ok++;
+    else if (s === 'FLAG') { flag++; flagZeilen.push(r + 1); }
+    else if (s === 'STICHPROBE') { stichprobe++; stichprobeZeilen.push(r + 1); }
+    else if (s === '') leer++;
+    else { ungueltig++; Logger.log('  UNGUELTIG: id=' + werte[r][idCol] + ' status=' + s); }
+  }
+  Logger.log('=== Phase-2-Import Verifikation ===');
+  Logger.log('Rote Zone gesamt: ' + rot);
+  Logger.log('OK: ' + ok);
+  Logger.log('FLAG: ' + flag);
+  Logger.log('STICHPROBE: ' + stichprobe);
+  Logger.log('Leer: ' + leer);
+  Logger.log('Ungültig: ' + ungueltig);
+  if (flagZeilen.length > 0) Logger.log('FLAG-Zeilen (Sheet-Zeile): ' + flagZeilen.join(', '));
+  if (stichprobeZeilen.length > 0) Logger.log('STICHPROBE-Zeilen: ' + stichprobeZeilen.join(', '));
+
+  // Einfärben: FLAG = hellrot, STICHPROBE = hellgelb
+  if (flagZeilen.length > 0 || stichprobeZeilen.length > 0) {
+    var hcols = headers.length;
+    for (var i = 0; i < flagZeilen.length; i++) {
+      tab.getRange(flagZeilen[i], 1, 1, hcols).setBackground('#fde0e0');
+    }
+    for (var j = 0; j < stichprobeZeilen.length; j++) {
+      tab.getRange(stichprobeZeilen[j], 1, 1, hcols).setBackground('#fff4cc');
+    }
+  }
+}
+
+/**
+ * Prüft pro roter Zeile, dass alle distraktoren_neu im Längen-Band liegen.
+ * Loggt Ausreisser ohne zu schreiben.
+ */
+function verifiziereLaengenband_() {
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var tab = ss.getSheetByName(REVIEW_TAB);
+  if (!tab) throw new Error('Review-Tab fehlt: ' + REVIEW_TAB);
+  var werte = tab.getDataRange().getValues();
+  var headers = werte[0].map(function (h) { return String(h).trim(); });
+  var rotCol = rcol_(headers, 'in_roter_zone');
+  var sollCol = rcol_(headers, 'soll_laenge');
+  var distrNeuCol = rcol_(headers, 'distraktoren_neu_json');
+  var idCol = rcol_(headers, 'id');
+
+  var ausreisser = 0;
+  for (var r = 1; r < werte.length; r++) {
+    var inRot = werte[r][rotCol] === true || String(werte[r][rotCol]).toLowerCase() === 'true';
+    if (!inRot) continue;
+    var soll = Number(werte[r][sollCol]);
+    if (!soll) continue;
+    var min = Math.round(soll * (1 - SOLL_LAENGE_TOLERANZ));
+    var max = Math.round(soll * (1 + SOLL_LAENGE_TOLERANZ));
+    var neue = sicherJsonParse_(werte[r][distrNeuCol]);
+    if (!Array.isArray(neue)) continue;
+    for (var d = 0; d < neue.length; d++) {
+      var l = textLaenge_(neue[d]);
+      if (l < min || l > max) {
+        ausreisser++;
+        Logger.log('  AUSREISSER id=' + werte[r][idCol] + ' distraktor[' + d + ']='
+          + l + ' (Band: ' + min + '-' + max + ')');
+      }
+    }
+  }
+  Logger.log('=== Längen-Band-Verifikation ===');
+  Logger.log('Ausreisser: ' + ausreisser);
+  Logger.log('(Toleranz: ±' + (SOLL_LAENGE_TOLERANZ * 100) + ' %)');
+}
+
+/**
+ * Fill-Down: setzt review_status='freigegeben' für alle roten OK-Zeilen
+ * die NICHT FLAG und NICHT STICHPROBE sind. LP-Bestätigungs-Schritt nach
+ * dem Review-Gate (R7).
+ */
+function finalisiereReviewStatus_() {
+  var ss = SpreadsheetApp.openById(SANIERUNG_FRAGENSAMMLUNG_ID);
+  var tab = ss.getSheetByName(REVIEW_TAB);
+  if (!tab) throw new Error('Review-Tab fehlt: ' + REVIEW_TAB);
+  var werte = tab.getDataRange().getValues();
+  var headers = werte[0].map(function (h) { return String(h).trim(); });
+  var rotCol = rcol_(headers, 'in_roter_zone');
+  var statCol = rcol_(headers, 'checker_status');
+  var revStatCol = rcol_(headers, 'review_status');
+  var idCol = rcol_(headers, 'id');
+
+  var n = 0;
+  for (var r = 1; r < werte.length; r++) {
+    var inRot = werte[r][rotCol] === true || String(werte[r][rotCol]).toLowerCase() === 'true';
+    if (!inRot) continue;
+    var ckr = String(werte[r][statCol] || '').trim().toUpperCase();
+    if (ckr !== 'OK') continue; // FLAG + STICHPROBE muss LP manuell setzen
+    var rev = String(werte[r][revStatCol] || '').trim();
+    if (rev !== '') continue;   // bereits gesetzt
+    tab.getRange(r + 1, revStatCol + 1).setValue('freigegeben');
+    n++;
+  }
+  Logger.log('=== Fill-Down Review-Status ===');
+  Logger.log('Auf freigegeben gesetzt (OK, kein STICHPROBE/FLAG, bislang leer): ' + n);
+}
+
+/** LP-Doku: Anleitung im Logger, wie der Review-Tab als CSV exportiert wird. */
+function exportiereRoteZoneCSV_() {
+  Logger.log('=== CSV-Export-Anleitung ===');
+  Logger.log('1. Tab "' + REVIEW_TAB + '" aktiv setzen');
+  Logger.log('2. Filter: Spalte "in_roter_zone" = TRUE');
+  Logger.log('   (Alternativ: alle Zeilen exportieren, Claude Code filtert)');
+  Logger.log('3. Datei → Herunterladen → Kommagetrennte Werte (.csv)');
+  Logger.log('4. Datei nach ~/Downloads/mc-multi-sanierung/MC-Multi-Review-export.csv ablegen');
+  Logger.log('5. Claude-Code-Session "Multi-MC Sanierung Phase 1" starten');
+}
