@@ -8,23 +8,48 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
-### Stand 23.05.2026 — Multi-MC-Sanierung Teil A LIVE auf `main` + `preview`
+### Stand 23.05.2026 SPÄT-2 — Multi-MC-Sanierung KOMPLETT ✓ MC-Audit-Projekt abgeschlossen
 
-**Multi-MC-Sanierung (Folge-Cluster der Single-MC) Teil A komplett auf `main`** (`55125d5`, `main`==`preview`). `feature/multi-mc-sanierung-spec` ist gemergt + lokal/remote gelöscht. 14 Commits, +2450 Zeilen, 5 Dateien.
+**Multi-MC-Sanierung Teil B Runbook R1–R7 in einer Session (~3 h) durchgelaufen.** Schluss-Diagnose `diagnoseMcMultiLaenge`: **UNAUFFÄLLIG**.
 
-**Diagnose-Baseline (23.05.2026):** 238 Multi-MC, Verhältnis korrekt/Distraktor 1.27× / 68.5 % Tells — LEICHT ERHÖHT (knapp unter AUFFÄLLIG-Schwelle). Spec/Plan/Code zielen auf datengetriebene Outlier-Sanierung (~60–100 Fragen in „roter Zone").
+**Aggregat-Werte:**
 
-**Code (alles Apps-Script):**
-- `scripts/diagnose-mc-laengste-antwort.js` +152 Z. — `diagnoseMcMultiTellScore()` für Tell-Score-Histogramm + Top-20-Tells.
-- `scripts/sanierung-mc-multi.js` +634 Z. (NEU) — komplette Pipeline: Phase 0 (Planung + Hart-Abbruch-Predicate), Phase 3 (Rückschreiben + Korrekt-Hash-Audit + Frage-Index), 5 Import-Helfer (Validatoren + Farb-Markierung FLAG/STICHPROBE + Fill-Down). DRY_RUN-Default true.
-- `apps-script-code.js` +6 Z. — TODO-Marker für künftige Multi-MC-KI-Generation.
-- Spec + Plan in `docs/superpowers/`, beide approved durch Reviewer + LP.
+| Metrik | Vorher | Nachher | Δ |
+|---|---|---|---|
+| Verhältnis korrekt/Distraktor | 1.27× (LEICHT ERHÖHT) | **1.02×** | −20 % |
+| Fragen mit Ø-korrekt > Ø-Distraktor | 68.5 % | **37.8 %** | −31 pp |
+| Perfektes Ranking | 85 (37.4 %) | **6 (2.6 %)** | −93 % |
+| Tell-Score > 0.30 | 59 Fragen | **0 Fragen** | −100 % |
+| Tell-Score-Schwerpunkt | rechts (positiv) | bei 0.0 (55.5 % < 0) | umgekippt |
 
-**Schutz-Mechanismen** (Reviewer: „hoch Confidence"): DRY_RUN mehrfach gegated · Korrekt-Hash-Audit via `JSON.stringify`-Delimiter (kollisions-sicher) defense-in-depth · Hart-Abbruch bei errors>0 && !DRY_RUN · Idempotenz via `geschrieben_am` · Live-Read via `baueFrageIndex_` · Hart-Abbruch-Predicate für Phase 0 (Schutz vor versehentlichem Überschreiben von LP-Arbeit).
+**Pipeline-Bilanz (R1–R7):**
+- R1 Setup Standalone-Apps-Script-Projekt — Diagnose-Datei aktualisiert, neue `sanierung-mc-multi.gs` angelegt.
+- R2 Tell-Score-Histogramm — 227 Multi-MC, Schwelle 0.30 (Default), Rote Zone projektiert.
+- R3 `runPhase0Planung` — Rote Zone **90 Fragen** (85 perfekt-Ranking + 5 nur via Tell-Score).
+- R4 Phase 1: **11 Sonnet-Subagenten** (BWL 3 / Recht 4 / VWL 4), 90/90 sauber im Längen-Band, `merge.js` 0 Validierungs-Probleme.
+- R5 Phase 2 Checker in **separater Claude-Code-Session** (Anti-Bias-Constraint): 18 Subagenten à 5 Fragen, **OK 69 / FLAG 12 / STICHPROBE 9** (Stichprobe-Quote 11.5 % via FNV-1a-Hash).
+- R6 LP-Review-Gate: 3 freigegeben (Checker übergewarnt) + 1 Trivial-Fix (WhatsApp-Schreibweise) + 8 Reviewer-Rewrites (2 weitere Sonnet-Subagenten) + 9 Stichprobe alle sauber. `apply-review.js` validiert + alles auf `freigegeben`.
+- R7 `runPhase3Rueckschreiben`: 90 geschrieben, 0 Errors, 0 Übersprungen. DRY_RUN-Pre-Check → echt-Run → DRY_RUN zurück.
 
-**OFFEN — Teil B (LP-geführt, kein Subagent):** R1 Setup im Standalone-Apps-Script-Projekt → R2 Histogramm + Schwelle wählen → R3 Phase 0 → R4 Phase 1 in Claude Code (Generierung) → R5 Phase 2 (Checker) → R6 Review-Gate → R7 Phase 3 + Schluss-Diagnose. Voller Runbook: `docs/superpowers/plans/2026-05-23-multi-mc-sanierung.md` ab Sektion „Runbook R1–R7". Aufwand-Schätzung 2.5–3 h LP-Arbeit + 20–30 Subagenten-Runs.
+**Gesamtprojekt-Bilanz (21.05.–23.05.2026):**
 
-**Spawn-Task offen (Performance, nicht blockierend):** Batch `setBackground`/`setValue` in `sanierung-mc-multi.js` — relevant erst bei roter Zone > 200 Zeilen.
+| Fragen-Typ | Anzahl | Vorher | Nachher | Sanierte |
+|---|---|---|---|---|
+| Single-Choice MC | 1'023 | 1.81× / 74.2 % | 0.96× / 18.8 % | 759 |
+| Multi-Choice MC | 227 | 1.27× / 68.5 % | 1.02× / 37.8 % | 90 |
+
+Längen-basierte Rate-Heuristik in der ExamLab-Fragensammlung **eliminiert**. ~850 Fragen mit neuen Distraktoren in 2 Tagen, ~50 Sonnet-Subagent-Calls.
+
+**Code-Stand:** `main` = `preview` = `55125d5` (Teil A der Multi-MC-Sanierung). Heutige Session war reine **Daten-Sanierung im Sheet**, keine Code-Änderung.
+
+**Lehren neu (in [[project_mc_laengste_antwort_audit]] dokumentiert):**
+- `phase3_rueckschreiben` schreibt NUR `review_status=freigegeben` zurück. „nachbearbeitet"-Status wird übersprungen — am Ende alles auf `freigegeben` setzen mit `lp_kommentar` als Audit-Trail.
+- Schweizer Recht hat revidierte Normen (z.B. Art. 79a StGB Gemeinnützige Arbeit als Vollzugsform seit 2018). Reviewer-Rewrites in Recht IMMER LP-finalisieren wegen möglicher aktueller Revisionen.
+- FNV-1a 32-bit über `'stichprobe#'+id` < 0.11 liefert deterministisch 11.5 % Stichprobe-Quote — wiederholbar zwischen Sessions.
+
+**Nächster grosser Thread:** **Backend-Migration** zu Supabase/peaknetworks. Spec fertig (`docs/superpowers/specs/2026-05-18-backend-migration-design.md`), wartet auf Plan-Phase + 5 Koordinations-Mails KW 21.
+
+**Spawn-Task weiterhin offen (Performance, nicht blockierend):** Batch `setBackground`/`setValue` in `sanierung-mc-multi.js` — wurde in dieser Session bei 90 Zeilen nicht zum Problem.
 
 ---
 
