@@ -8,6 +8,27 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 23.05.2026 SPÄT-3 — Hygiene-Sweep KOMPLETT, Werkbank ready für Backend-Migration
+
+Nach MC-Audit-Abschluss kompletter Hygiene-Sweep in derselben Session:
+
+- **Branch-Hygiene:** 19 alte Feature-Branches gelöscht (gemergt + remote). Übrig: `main`, `preview`, `gh-pages`.
+- **getGymStufe-2026-Default:** Memory war stale, Code in `gradeRequirements.ts:38` bereits dynamisch via `aktuellesSchuljahrEndjahr()`. Kein Fix nötig.
+- **Datum-Roundtrip-Bug:** Frontend-Defensive-Fix (`1d8339d`) + Backend-Wurzel-Fix (`ef947ec`) live.
+  - Frontend: `toIsoDateInput()` in `utils/zeit.ts` + 9 Tests, `GrunddatenSection` nutzt es.
+  - Backend: `toIsoDateOnly_()` Helper (analog `toIsoStr_`) + 8 Read-Stellen normalisiert.
+  - ⚠️ **Backend-Effekt wartet auf Apps-Script-Deploy** (User-Aktion: GAS-Editor → neue Bereitstellung).
+- **Status-Text Composer-Leiste:** Code-History-Recherche zeigt Logik byte-identisch zum alten Header (`d39f143` verschob nur Render-Stelle). Kein Code-Bug — E2E-Failure war Test-Timing.
+- **Pre-push-Hook bei `--delete` skippen** (`e80b766`): Stdin-Parse, wenn alle local_oid = 000... dann skip ci-check (`<2s` statt ~70s). Live-verifiziert 3× heute.
+
+**Refs:** `main` = `origin/main` = `origin/preview` = `ef947ec`. Working tree clean.
+
+vitest **2120 passed** + 4 todo, **9 lint-Audits clean**, **tsc-b + build clean**.
+
+**Kein dringender Punkt offen.** Nächster grosser Thread bleibt **Backend-Migration** (Spec `docs/superpowers/specs/2026-05-18-backend-migration-design.md`, wartet auf Plan-Phase + 5 KW-21-Mails).
+
+---
+
 ### Stand 23.05.2026 SPÄT-2 — Multi-MC-Sanierung KOMPLETT ✓ MC-Audit-Projekt abgeschlossen
 
 **Multi-MC-Sanierung Teil B Runbook R1–R7 in einer Session (~3 h) durchgelaufen.** Schluss-Diagnose `diagnoseMcMultiLaenge`: **UNAUFFÄLLIG**.
