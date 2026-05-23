@@ -240,7 +240,8 @@ function diagnoseMcMultiLaenge() {
  * Edge-Cases:
  *   - Fragen mit < 2 korrekten Optionen werden übersprungen (sind keine Multi-MC).
  *   - Fragen mit Ø_korrekt === 0 (alle korrekten leerer Text) werden geloggt
- *     und übersprungen — sie hätten soll_laenge=0 erzwungen.
+ *     und übersprungen — nicht ins Histogramm gezählt, hätten soll_laenge=0
+ *     erzwungen.
  *
  * Ausgabe: Logger → Ansicht > Protokolle.
  */
