@@ -306,8 +306,10 @@ var SANIERE_PERFEKTES_RANKING_IMMER = true; // perfektes Ranking immer sanieren
 var SOLL_LAENGE_TOLERANZ = 0.20;            // ±20 % Längen-Band für Distraktoren
 
 // === LIMITS ================================================================
-var MAX_DISTRAKTOREN = 5;                   // Sheet-Spalten distraktor_alt_1..5
-var ZEIT_BUDGET_MS = 5 * 60 * 1000;         // Puffer vor 6-Min-Apps-Script-Limit
+// (Multi-MC schreibt nur ~60-100 Zeilen — kein Cursor/Resume-Pattern nötig.
+// Falls die rote Zone künftig > 200 Fragen wird: PropertiesService-Resume aus
+// sanierung-mc-distraktoren.js kopieren — siehe CURSOR_P3 + cursorLesen_/
+// cursorSchreiben_/cursorLoeschen_ + ZEIT_BUDGET_MS dort.)
 
 // === RUN-WRAPPER ===========================================================
 // Dropdown im Apps-Script-Editor blendet Funktionen mit `_`-Suffix aus.
