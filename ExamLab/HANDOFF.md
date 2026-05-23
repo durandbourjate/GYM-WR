@@ -8,6 +8,26 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 23.05.2026 — Multi-MC-Sanierung Teil A LIVE auf `main` + `preview`
+
+**Multi-MC-Sanierung (Folge-Cluster der Single-MC) Teil A komplett auf `main`** (`55125d5`, `main`==`preview`). `feature/multi-mc-sanierung-spec` ist gemergt + lokal/remote gelöscht. 14 Commits, +2450 Zeilen, 5 Dateien.
+
+**Diagnose-Baseline (23.05.2026):** 238 Multi-MC, Verhältnis korrekt/Distraktor 1.27× / 68.5 % Tells — LEICHT ERHÖHT (knapp unter AUFFÄLLIG-Schwelle). Spec/Plan/Code zielen auf datengetriebene Outlier-Sanierung (~60–100 Fragen in „roter Zone").
+
+**Code (alles Apps-Script):**
+- `scripts/diagnose-mc-laengste-antwort.js` +152 Z. — `diagnoseMcMultiTellScore()` für Tell-Score-Histogramm + Top-20-Tells.
+- `scripts/sanierung-mc-multi.js` +634 Z. (NEU) — komplette Pipeline: Phase 0 (Planung + Hart-Abbruch-Predicate), Phase 3 (Rückschreiben + Korrekt-Hash-Audit + Frage-Index), 5 Import-Helfer (Validatoren + Farb-Markierung FLAG/STICHPROBE + Fill-Down). DRY_RUN-Default true.
+- `apps-script-code.js` +6 Z. — TODO-Marker für künftige Multi-MC-KI-Generation.
+- Spec + Plan in `docs/superpowers/`, beide approved durch Reviewer + LP.
+
+**Schutz-Mechanismen** (Reviewer: „hoch Confidence"): DRY_RUN mehrfach gegated · Korrekt-Hash-Audit via `JSON.stringify`-Delimiter (kollisions-sicher) defense-in-depth · Hart-Abbruch bei errors>0 && !DRY_RUN · Idempotenz via `geschrieben_am` · Live-Read via `baueFrageIndex_` · Hart-Abbruch-Predicate für Phase 0 (Schutz vor versehentlichem Überschreiben von LP-Arbeit).
+
+**OFFEN — Teil B (LP-geführt, kein Subagent):** R1 Setup im Standalone-Apps-Script-Projekt → R2 Histogramm + Schwelle wählen → R3 Phase 0 → R4 Phase 1 in Claude Code (Generierung) → R5 Phase 2 (Checker) → R6 Review-Gate → R7 Phase 3 + Schluss-Diagnose. Voller Runbook: `docs/superpowers/plans/2026-05-23-multi-mc-sanierung.md` ab Sektion „Runbook R1–R7". Aufwand-Schätzung 2.5–3 h LP-Arbeit + 20–30 Subagenten-Runs.
+
+**Spawn-Task offen (Performance, nicht blockierend):** Batch `setBackground`/`setValue` in `sanierung-mc-multi.js` — relevant erst bei roter Zone > 200 Zeilen.
+
+---
+
 ### Stand 22.05.2026 SPÄT-2 — LernzieleMiniModal fokusUnterthema-Scroll gefixt
 
 Das Unterthema-Mini-Modal scrollte beim Öffnen nicht zur angeklickten Sektion.
