@@ -114,12 +114,13 @@ function diagnoseMcLaengsteAntwort() {
   Logger.log('');
 
   var bewertung;
-  if (laengsteProzent > zufallProzent * 1.5) {
-    bewertung = 'AUFFÄLLIG — die korrekte Antwort ist deutlich öfter die längste als der Zufall erwarten lässt.';
-  } else if (laengsteProzent > zufallProzent * 1.2) {
+  var maxAbweichung = Math.max(laengsteProzent, kuerzesteProzent);
+  if (maxAbweichung > zufallProzent * 1.5) {
+    bewertung = 'AUFFÄLLIG — die Länge verrät die Korrektheit (längste oder kürzeste Option deutlich über Zufall).';
+  } else if (maxAbweichung > zufallProzent * 1.2) {
     bewertung = 'LEICHT ERHÖHT — überprüfenswert.';
   } else {
-    bewertung = 'UNAUFFÄLLIG — kein systematisches Längen-Muster.';
+    bewertung = 'UNAUFFÄLLIG — kein systematisches Längen-Muster (weder längste noch kürzeste).';
   }
   Logger.log('Befund: ' + bewertung);
   Logger.log('');
@@ -135,6 +136,95 @@ function diagnoseMcLaengsteAntwort() {
         + x.korrektLen + ' vs. Distraktor max ' + x.distraktorMax + ') | ' + x.fragetext);
     }
   }
+}
+
+/**
+ * DIAGNOSE: Multi-Choice-MC — verrät die Länge einer Option ihre Korrektheit?
+ *
+ * Prüft alle MC-Fragen mit >= 2 korrekten Optionen (Mehrfachauswahl) darauf, ob
+ * die korrekten Optionen im Schnitt länger sind als die Distraktoren — ein Tell
+ * nach dem Muster "die langen Optionen anklicken".
+ *
+ * Ausgabe: Logger → Ansicht > Protokolle.
+ */
+function diagnoseMcMultiLaenge() {
+  var FRAGENSAMMLUNG_ID = '1ASSRv7mSpmyD22PAMUJ8iekHwuamYkHpy9E6yxWNIVs';
+  var TABS = ['BWL', 'VWL', 'Recht', 'Informatik'];
+
+  var fragensammlung = SpreadsheetApp.openById(FRAGENSAMMLUNG_ID);
+
+  var gesamtMulti = 0;
+  var summeKorrektLen = 0;
+  var anzahlKorrekt = 0;
+  var summeDistraktorLen = 0;
+  var anzahlDistraktor = 0;
+  var frageKorrektLaenger = 0;  // Fragen, deren Ø-korrekt > Ø-Distraktor
+
+  for (var t = 0; t < TABS.length; t++) {
+    var sheet = fragensammlung.getSheetByName(TABS[t]);
+    if (!sheet) continue;
+
+    var daten = sheet.getDataRange().getValues();
+    if (daten.length < 2) continue;
+
+    var headers = daten[0].map(function (h) { return String(h).trim(); });
+    var typCol = headers.indexOf('typ');
+    var typDatenCol = headers.indexOf('typDaten');
+    var optionenCol = headers.indexOf('optionen');
+    var geloeschtCol = headers.indexOf('geloescht_am');
+    if (typCol < 0) continue;
+
+    for (var i = 1; i < daten.length; i++) {
+      if (String(daten[i][typCol]).trim() !== 'mc') continue;
+      if (geloeschtCol >= 0 && String(daten[i][geloeschtCol] || '').trim()) continue;
+
+      var optionen = leseMcOptionen_(daten[i], typDatenCol, optionenCol);
+      if (!optionen || optionen.length < 2) continue;
+
+      var korrekte = optionen.filter(function (o) { return o && o.korrekt; });
+      if (korrekte.length < 2) continue; // nur Mehrfachauswahl
+      gesamtMulti++;
+
+      var distraktoren = optionen.filter(function (o) { return !(o && o.korrekt); });
+      if (distraktoren.length === 0) continue;
+
+      var kSum = 0, dSum = 0;
+      for (var k = 0; k < korrekte.length; k++) {
+        var kl = textLaenge_(korrekte[k].text);
+        kSum += kl; summeKorrektLen += kl; anzahlKorrekt++;
+      }
+      for (var d = 0; d < distraktoren.length; d++) {
+        var dl = textLaenge_(distraktoren[d].text);
+        dSum += dl; summeDistraktorLen += dl; anzahlDistraktor++;
+      }
+      if ((kSum / korrekte.length) > (dSum / distraktoren.length)) frageKorrektLaenger++;
+    }
+  }
+
+  var oKorrekt = anzahlKorrekt > 0 ? (summeKorrektLen / anzahlKorrekt) : 0;
+  var oDistraktor = anzahlDistraktor > 0 ? (summeDistraktorLen / anzahlDistraktor) : 0;
+  var verhaeltnis = oDistraktor > 0 ? (oKorrekt / oDistraktor) : 0;
+  var frageProzent = gesamtMulti > 0 ? (frageKorrektLaenger / gesamtMulti * 100) : 0;
+
+  Logger.log('=== MC-Audit: Multi-Choice — Länge vs. Korrektheit ===');
+  Logger.log('Multi-Choice-MC gesamt (>= 2 korrekt): ' + gesamtMulti);
+  Logger.log('Ø Zeichenlänge korrekte Optionen:   ' + oKorrekt.toFixed(0));
+  Logger.log('Ø Zeichenlänge Distraktoren:        ' + oDistraktor.toFixed(0));
+  Logger.log('Verhältnis korrekt/Distraktor:      ' + verhaeltnis.toFixed(2) + 'x');
+  Logger.log('Fragen mit Ø-korrekt > Ø-Distraktor: ' + frageKorrektLaenger
+    + ' / ' + gesamtMulti + ' (' + frageProzent.toFixed(1) + '%)');
+  Logger.log('');
+
+  var bewertung;
+  if (verhaeltnis > 1.3 || frageProzent > 70) {
+    bewertung = 'AUFFÄLLIG — korrekte Optionen sind systematisch länger. '
+      + 'Multi-MC-Sanierung als Folge-Projekt aufsetzen.';
+  } else if (verhaeltnis > 1.15 || frageProzent > 60) {
+    bewertung = 'LEICHT ERHÖHT — überprüfenswert.';
+  } else {
+    bewertung = 'UNAUFFÄLLIG — kein systematisches Längen-Muster bei Multi-MC.';
+  }
+  Logger.log('Befund: ' + bewertung);
 }
 
 /** Liest die MC-Optionen einer Zeile: zuerst typDaten.optionen, sonst optionen-Spalte. */
