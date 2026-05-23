@@ -7340,6 +7340,12 @@ function kiAssistentEndpoint(body) {
         result = rufeClaudeAuf(systemPrompt, userPrompt, undefined, email);
         return jsonResponse({ success: true, ergebnis: result });
 
+      // NOTE: 'generiereOptionen' und 'generiereDistraktoren' sind Single-MC-spezifisch
+      // (genau 1 korrekte Option). Wenn künftig ein Multi-MC-KI-Generations-Endpoint
+      // hinzukommt: Längen-Überlappungs-Constraint aus den Single-MC-Prompts unten
+      // analog übernehmen (Distraktoren mit gleicher Vollständigkeit/Detailtiefe wie
+      // korrekte Optionen — keine systematische Korrelation zwischen Länge und
+      // Korrektheit). Siehe MC-Sanierung-Spec 2026-05-23.
       case 'generiereOptionen':
         if (!daten.fragetext) return jsonResponse({ error: 'Fragetext fehlt' });
         userPrompt = 'Generiere 4 Multiple-Choice-Optionen für die folgende Frage. ' +
