@@ -41,9 +41,10 @@ export default function KlassenLuecken({ fragen, fortschritte, anzahlSuS, fachFa
       // Pro SuS: Durchschnitts-Mastery für dieses Thema
       const susScores: Record<string, number> = {}
       const susCounts: Record<string, number> = {}
+      const idsSet = new Set(ids) // O(1)-Lookup statt ids.includes() im fortschritte-Loop
 
       for (const fp of fortschritte) {
-        if (!ids.includes(fp.fragenId)) continue
+        if (!idsSet.has(fp.fragenId)) continue
         if (!susScores[fp.email]) { susScores[fp.email] = 0; susCounts[fp.email] = 0 }
         susCounts[fp.email]++
         switch (fp.mastery) {
