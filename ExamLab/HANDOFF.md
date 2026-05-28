@@ -8,6 +8,32 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 28.05.2026 ABEND — State-Correctness-Gate (Triage + Baseline-Gate)
+
+**One-Liner:** Alle 42 Findings der zwei Bug-trächtigsten react-doctor-Regeln (`no-adjust-state-on-prop-change` 19 + `no-cascading-set-state` 23) triagiert → **0 echte Bugs**. Statt Churn-Refactoring wurde der verifiziert-saubere Stand als CI-Gate `lint:react-doctor-state` festgezurrt (pre-push, ~7s). **Branch `feature/react-doctor-state-gate` — wartet auf Merge-Freigabe.**
+
+**Triage-Ergebnis (3 Subagenten + 2 manuelle Proben):** Jedes der 42 Findings ist benigner Load-Effect, Timer/Listener **mit Cleanup**, oder bereits-angewendetes S129/S130-Remedy (Sync-on-id / key-Remount / ref-Guard). Kein Render-Loop-Tell (kein im Effect gesetzter State in dessen eigener Deps-Liste). Das ist die Dividende der früheren S129/S130-Arbeit. Vollständiger Audit-Trail: Anhang A der Spec.
+
+**Was gebaut wurde:**
+- `scripts/audit-react-doctor-state.mjs` — Gate nach `audit-no-emoji.mjs`-Muster: ruft `react-doctor --full --lint --no-dead-code --no-score --json`, filtert die 2 Regeln, Count-pro-Datei vs. Baseline. `--strict`/`--baseline`-Flags.
+- `scripts/react-doctor-state-baseline.json` — `per_file_max`, 42 Findings / 28 Dateien (gegen Triage gegengeprüft).
+- `react-doctor@0.2.10` als **exakt-gepinnte** devDep (kein Caret — 0.x-Tool kann Flagging zwischen Versionen ändern → Baseline-Churn).
+- `lint:react-doctor-state` in der `ci-check`-Kette (→ pre-push-Hook).
+
+**Commits (Branch):** `987f924` (devDep) · `aec3515` (Skript+Baseline) · `c3d21a5` (ci-check-Wiring) · HANDOFF-Commit folgt. Spec `f6c93f9`, Plan `aa0a35b`.
+
+**Verifikation:** Regression-Test (Wegwerf-Komponente mit prop-getriebenem Multi-setState → Gate failt exit 1) ✓. Drift-Test (Baseline temporär erhöht → IMPROVEMENT, exit 0) ✓. **Full `ci-check` exit 0** (10 Lints inkl. neues Gate, **vitest 2131 passed**, build ✓). Bonus: Gate ist präzise gescoped — `no-initialize-state` (3. Regel, konstante setStates) wird korrekt NICHT mitgezählt.
+
+**Workflow:** brainstorming (Spec + spec-reviewer) → writing-plans (Plan + plan-reviewer) → subagent-driven-development (Implementer pro Task + Verifikation). Spec `docs/superpowers/specs/2026-05-28-react-doctor-state-gate-design.md`, Plan `docs/superpowers/plans/2026-05-28-react-doctor-state-gate.md`.
+
+**Merge-Status:** Reines CI-Tooling, keine App-Verhaltensänderung → Browser-E2E entfällt. Merge nach `main`+`preview` wartet auf explizite User-Freigabe.
+
+**Zwei Follow-ups (nicht in diesem Scope):**
+1. **Memory-Korrektur:** `--no-score` IST ein gültiges react-doctor-Flag (0.2.10, „skip the score API and the share URL") — die Memory-Notiz „existiert nicht" ist stale.
+2. **CI-Coverage-Lücke:** deploy.yml enthält nur eine Teilmenge der Gates; die neueren (no-emoji, typo-tokens, storybook-coverage, wire-contract, no-inline-svg, react-doctor-state) laufen nur pre-push. Eigenes Thema.
+
+---
+
 ### TAGES-BILANZ 28.05.2026 — react-doctor Audit-Tag KOMPLETT
 
 **One-Liner:** 5 Sweeps in einem Tag, react-doctor Errors **23 → 1** (nur bewusst eslint-disabled), XSS-Stellen **1 → 0**, vitest **2120 → 2131**, alles LIVE auf `main` = `preview` = `53abcdb`. Working tree clean.
