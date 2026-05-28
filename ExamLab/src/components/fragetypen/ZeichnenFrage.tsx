@@ -119,11 +119,12 @@ export default function ZeichnenFrage({ frage }: Props) {
 
   // Fragewechsel-Sync: Store-Daten laden + pending Debounce flushen
   useEffect(() => {
+    const inaktivitaet = inaktivitaetRef
     // Cleanup: beim Verlassen der Frage pending Inaktivitäts-Timer flushen
     return () => {
-      if (inaktivitaetRef.current) {
-        clearTimeout(inaktivitaetRef.current)
-        inaktivitaetRef.current = null
+      if (inaktivitaet.current) {
+        clearTimeout(inaktivitaet.current)
+        inaktivitaet.current = null
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps — nur bei Fragewechsel

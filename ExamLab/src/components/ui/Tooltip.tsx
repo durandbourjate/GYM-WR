@@ -27,8 +27,9 @@ export default function Tooltip({ text, position = 'bottom', children }: Props) 
 
   // Cleanup bei Unmount
   useEffect(() => {
+    const timer = timerRef
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (timer.current) clearTimeout(timer.current)
     }
   }, [])
 

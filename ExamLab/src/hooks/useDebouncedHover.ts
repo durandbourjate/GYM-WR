@@ -36,10 +36,11 @@ export function useDebouncedHover(
 
   // Cleanup bei Unmount
   useEffect(() => {
+    const timer = timerRef
     return () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current)
-        timerRef.current = null
+      if (timer.current !== null) {
+        clearTimeout(timer.current)
+        timer.current = null
       }
     }
   }, [])

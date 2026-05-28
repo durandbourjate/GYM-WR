@@ -109,9 +109,10 @@ export function usePDFRenderer() {
   }, [])
 
   useEffect(() => {
+    const doc = docRef
     return () => {
-      docRef.current?.destroy()
-      docRef.current = null
+      doc.current?.destroy()
+      doc.current = null
     }
   }, [])
 

@@ -94,10 +94,12 @@ export function useStiftRendering({
   }, [])
 
   useEffect(() => {
+    const istAktiv = istAktivRef
+    const rafId = rafIdRef
     return () => {
-      istAktivRef.current = false
-      if (rafIdRef.current !== null) {
-        cancelAnimationFrame(rafIdRef.current)
+      istAktiv.current = false
+      if (rafId.current !== null) {
+        cancelAnimationFrame(rafId.current)
       }
     }
   }, [])

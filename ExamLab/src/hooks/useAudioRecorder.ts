@@ -26,11 +26,13 @@ export function useAudioRecorder(): AudioRecorderState {
 
   // Cleanup bei Unmount
   useEffect(() => {
+    const stream = streamRef
+    const timer = timerRef
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(t => t.stop())
+      if (stream.current) {
+        stream.current.getTracks().forEach(t => t.stop())
       }
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timer.current) clearInterval(timer.current)
       if (audioUrl) URL.revokeObjectURL(audioUrl)
     }
   }, [audioUrl])
