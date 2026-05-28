@@ -109,6 +109,10 @@ jobs:
         working-directory: ExamLab
         run: npm run lint:react-doctor-state --if-present
 
+      - name: Audit react-doctor Security Gate (no-danger + no-eval)
+        working-directory: ExamLab
+        run: npm run lint:react-doctor-security --if-present
+
       - name: Run vitest
         working-directory: ExamLab
         run: npm test
@@ -220,6 +224,11 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm run lint:react-doctor-state --if-present
+
+      - name: Audit react-doctor Security Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:react-doctor-security --if-present
 
       - name: Run vitest (staging)
         if: steps.checkout-preview.outcome == 'success'

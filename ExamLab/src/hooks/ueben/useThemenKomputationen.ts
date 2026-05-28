@@ -89,6 +89,7 @@ export function useThemenKomputationen(inputs: ThemenKomputationenInputs): Theme
   const themenMap = useMemo(() => {
     const map: Record<string, ThemenInfo[]> = {}
     const fachThema: Record<string, Record<string, Frage[]>> = {}
+    const sichtbareFaecherSet = new Set(sichtbareFaecher) // O(1)-Lookup im alleFragen-Loop
 
     for (const f of alleFragen) {
       const themaRaw = f.thema || 'Allgemein'
@@ -115,7 +116,7 @@ export function useThemenKomputationen(inputs: ThemenKomputationenInputs): Theme
         }
       }
 
-      if (sichtbareFaecher.length > 0 && !sichtbareFaecher.includes(fach)) continue
+      if (sichtbareFaecherSet.size > 0 && !sichtbareFaecherSet.has(fach)) continue
       if (!fachThema[fach]) fachThema[fach] = {}
       if (!fachThema[fach][thema]) fachThema[fach][thema] = []
       fachThema[fach][thema].push(f)

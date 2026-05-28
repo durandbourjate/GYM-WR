@@ -14,6 +14,9 @@ export const INDEX_BLACKLIST = [
   'hinweis',
 ] as const
 
+/** Set-Variante für O(1)-Lookup in stripSensibleFelder (heisser Index-Build-Pfad). */
+const INDEX_BLACKLIST_SET: Set<string> = new Set(INDEX_BLACKLIST)
+
 export type TrefferKategorie = 'frage' | 'pruefung' | 'thema' | 'kurs'
 
 export interface Treffer {
@@ -55,7 +58,7 @@ export function machtMatch(such: string, ...felder: (string | undefined)[]): boo
 export function stripSensibleFelder<T extends Record<string, unknown>>(obj: T): Partial<T> {
   const out: Record<string, unknown> = {}
   for (const k of Object.keys(obj)) {
-    if (INDEX_BLACKLIST.includes(k as (typeof INDEX_BLACKLIST)[number])) continue
+    if (INDEX_BLACKLIST_SET.has(k)) continue
     out[k] = obj[k]
   }
   return out as Partial<T>

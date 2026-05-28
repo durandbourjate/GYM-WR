@@ -1,24 +1,27 @@
 #!/usr/bin/env node
 /**
- * Audit-Skript: Regression-Gate für zwei react-doctor State-Correctness-Regeln.
+ * Audit-Skript: Regression-Gate für react-doctor Security-Regeln.
  *
- * Regeln: `no-adjust-state-on-prop-change` (S129-Muster) + `no-cascading-set-state`
- * (S130-Risiko) + `exhaustive-deps` (28.05.2026 ergänzt) + `no-derived-state`
- * (29.05.2026 ergänzt). Am 28.05.2026 wurden die ersten 42 State-Findings triagiert
- * → 0 echte Bugs (benigne Load-Effects / Timer-mit-Cleanup / Remedies). Am 29.05.2026
- * wurden alle 41 `no-derived-state`-Findings triagiert → ebenfalls 0 echte Refactors:
- * durchweg editierbare Kopien (sync-on-id), async-geladener State, optimistische
- * Toggles oder UI-Interaktions-State, wo useState korrekt ist und useMemo Bugs einführt.
- * Dieses Gate friert den sauberen Stand ein: neue Verletzungen über die Baseline
- * failen CI. Triage-Audit-Trail: specs/2026-05-28-react-doctor-state-gate-design.md.
+ * Regeln: `no-danger` (dangerouslySetInnerHTML) + `no-eval` (eval / Function-Konstruktor).
+ * Am 29.05.2026 wurden alle no-danger-Stellen triagiert → 0 aktive XSS-Lücken:
+ * jede läuft über DOMPurify.sanitize (SuS-/Backend-HTML), renderMarkdown
+ * (escape-first + fixe Tag-Whitelist, src/utils/markdown.ts) oder KaTeX mit
+ * trust:false (src/utils/latexRenderer.ts / FormelAnzeige / FormelFrageComponent).
+ * Die 1 no-eval-Stelle (src/services/poolSync.ts:76, dynamischer Function-Konstruktor
+ * für den Pool-Config-Loader) ist bewusst eslint-disabled + dokumentiert.
  *
- * Muster: Baseline-Snapshot wie scripts/audit-no-emoji.mjs (per_file_max, Counts
- * statt Zeilennummern → robust gegen Zeilen-Verschiebung).
+ * Dieses Gate friert den sauberen Stand ein: neue Danger-HTML- oder eval-Stellen
+ * über die Baseline failen CI und erzwingen einen bewussten Sanitization-Review +
+ * Baseline-Anhebung mit Begründung.
+ * Triage-Audit-Trail: docs/superpowers/specs/2026-05-28-no-danger-bestandsaufnahme.md.
+ *
+ * Muster: Baseline-Snapshot wie scripts/audit-react-doctor-state.mjs (per_file_max,
+ * Counts statt Zeilennummern → robust gegen Zeilen-Verschiebung).
  *
  * Aufruf:
- *   node scripts/audit-react-doctor-state.mjs            # report-only
- *   node scripts/audit-react-doctor-state.mjs --strict   # exit 1 bei Regression (CI-Gate)
- *   node scripts/audit-react-doctor-state.mjs --baseline # regeneriert per_file_max
+ *   node scripts/audit-react-doctor-security.mjs            # report-only
+ *   node scripts/audit-react-doctor-security.mjs --strict   # exit 1 bei Regression (CI-Gate)
+ *   node scripts/audit-react-doctor-security.mjs --baseline # regeneriert per_file_max
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
@@ -33,8 +36,8 @@ const ROOT = join(__dirname, '..') // repo root
 const STRICT = process.argv.includes('--strict')
 const UPDATE_BASELINE = process.argv.includes('--baseline')
 
-const RULES = new Set(['no-adjust-state-on-prop-change', 'no-cascading-set-state', 'exhaustive-deps', 'no-derived-state'])
-const baselinePath = join(ROOT, 'scripts/react-doctor-state-baseline.json')
+const RULES = new Set(['no-danger', 'no-eval'])
+const baselinePath = join(ROOT, 'scripts/react-doctor-security-baseline.json')
 const RD_BIN = join(ROOT, 'node_modules/.bin/react-doctor')
 const EXAMLAB = join(ROOT, 'ExamLab')
 
@@ -91,7 +94,7 @@ if (UPDATE_BASELINE) {
   const total = sortedKeys.reduce((s, k) => s + sortedCounts[k], 0)
   const next = {
     _comment:
-      'Baseline für lint:react-doctor-state. per_file_max = Count der State-Regeln (siehe rules[]) pro Datei. Bei Anstieg failt CI. Regenerieren: node scripts/audit-react-doctor-state.mjs --baseline (nur mit Begründung erhöhen).',
+      'Baseline für lint:react-doctor-security. per_file_max = Count der Security-Regeln (no-danger + no-eval) pro Datei. Bei Anstieg failt CI. Regenerieren: node scripts/audit-react-doctor-security.mjs --baseline (nur nach Sanitization-Review + mit Begründung erhöhen).',
     react_doctor_version: '0.2.10',
     rules: [...RULES],
     per_file_max: sortedCounts,
@@ -119,7 +122,7 @@ for (const [f, max] of Object.entries(PER_FILE)) {
 
 const baselineTotal = Object.values(PER_FILE).reduce((s, n) => s + n, 0)
 console.log('')
-console.log(`react-doctor-state-Audit (${[...RULES].join(' + ')}):`)
+console.log('react-doctor-security-Audit (no-danger + no-eval):')
 console.log(`  Baseline-Total:   ${baselineTotal}`)
 console.log(`  Aktuell:          ${total}`)
 console.log(`  Regressions:      ${regressions.length}`)
@@ -131,17 +134,17 @@ if (regressions.length > 0) {
     console.log(`  FAIL: ${r.path} — ${r.found} (baseline ${r.baseline}, +${r.diff})`)
   }
   if (STRICT) {
-    console.log('\nFAIL: Neue State-Correctness-Verletzung. Entweder:')
-    console.log('  (a) Den neuen useEffect fixen (Render-Loop-Guard / Sync-on-id /')
-    console.log('      key-Remount — siehe .claude/rules/code-quality.md S129/S130)')
-    console.log('  (b) Falls bewusst benigne: per_file_max in')
-    console.log('      scripts/react-doctor-state-baseline.json erhöhen (mit Begründung)')
+    console.log('\nFAIL: Neue Danger-HTML- oder eval-Stelle über Baseline. Entweder:')
+    console.log('  (a) Sanitization sicherstellen: DOMPurify.sanitize() für SuS-/Backend-HTML,')
+    console.log('      renderMarkdown() (escape-first) für LP-Markdown, oder KaTeX mit trust:false.')
+    console.log('  (b) Falls verifiziert-sicher: per_file_max in')
+    console.log('      scripts/react-doctor-security-baseline.json erhöhen (mit Begründung + Review).')
     process.exit(1)
   } else {
     console.log('\nWARN: Run mit --strict für CI-Gate.')
   }
 } else {
-  console.log('\nOK: Keine State-Correctness-Regression über Baseline.')
+  console.log('\nOK: Keine Security-Regression über Baseline.')
 }
 
 if (drifts.length > 0) {
