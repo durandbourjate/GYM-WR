@@ -29,7 +29,7 @@ const ROOT = join(__dirname, '..') // repo root
 const STRICT = process.argv.includes('--strict')
 const UPDATE_BASELINE = process.argv.includes('--baseline')
 
-const RULES = new Set(['no-adjust-state-on-prop-change', 'no-cascading-set-state'])
+const RULES = new Set(['no-adjust-state-on-prop-change', 'no-cascading-set-state', 'exhaustive-deps'])
 const baselinePath = join(ROOT, 'scripts/react-doctor-state-baseline.json')
 const RD_BIN = join(ROOT, 'node_modules/.bin/react-doctor')
 const EXAMLAB = join(ROOT, 'ExamLab')
