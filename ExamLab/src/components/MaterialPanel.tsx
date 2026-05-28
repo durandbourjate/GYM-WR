@@ -321,7 +321,10 @@ function MaterialInhalt({ material }: { material: PruefungsMaterial }) {
           src={material.url}
           className="flex-1 min-h-0 w-full border-0"
           title={material.titel}
-          sandbox="allow-scripts allow-same-origin"
+          // Sandbox NUR allow-scripts: moderne Sites laufen, aber iframe kann nicht auf
+          // parent-DOM/-Cookies zugreifen. Die Kombi mit allow-same-origin wäre
+          // effektiv kein Sandbox (iframe kann sich selbst entsandboxen).
+          sandbox="allow-scripts"
         />
       </div>
     )
