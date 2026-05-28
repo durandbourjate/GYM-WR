@@ -158,8 +158,9 @@ export default function PDFKorrektur({
   }, [lsKey, onUpdate])
 
   useEffect(() => {
+    const debounceTimer = debounceRef
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current)
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
     }
   }, [])
 

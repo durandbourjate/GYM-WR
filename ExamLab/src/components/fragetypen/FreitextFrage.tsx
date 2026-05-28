@@ -107,6 +107,7 @@ function FreitextAufgabe({ frage }: { frage: FreitextFrageType }) {
 
   // Sync editor content bei Fragewechsel + Cleanup für Debounce
   useEffect(() => {
+    const debounceTimer = debounceRef
     if (editor && !editor.isDestroyed) {
       const currentContent = editor.getHTML()
       if (currentContent !== gespeicherterText && gespeicherterText) {
@@ -117,9 +118,9 @@ function FreitextAufgabe({ frage }: { frage: FreitextFrageType }) {
     }
     // Cleanup: bei Fragewechsel oder Unmount pending Debounce sofort flushen
     return () => {
-      if (debounceRef.current && editor && !editor.isDestroyed) {
-        clearTimeout(debounceRef.current)
-        debounceRef.current = null
+      if (debounceTimer.current && editor && !editor.isDestroyed) {
+        clearTimeout(debounceTimer.current)
+        debounceTimer.current = null
         const html = editor.getHTML()
         onAntwort({ typ: 'freitext', text: html, formatierung: 'html' })
       }

@@ -58,6 +58,7 @@ export default function CodeFrageComponent({ frage }: Props) {
   useEffect(() => {
     if (!containerRef.current) return
     let abgebrochen = false
+    const debounceTimer = debounceRef
 
     async function init() {
       const [{ EditorView, lineNumbers, keymap }, { EditorState }, oneDarkModule, { indentWithTab }] = await Promise.all([
@@ -113,7 +114,7 @@ export default function CodeFrageComponent({ frage }: Props) {
 
     return () => {
       abgebrochen = true
-      if (debounceRef.current) clearTimeout(debounceRef.current)
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
       viewRef.current?.destroy()
       viewRef.current = null
     }

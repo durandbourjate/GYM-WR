@@ -156,17 +156,19 @@ export default function PDFFrage({ frage }: Props) {
 
   // --- Sync annotations from store on frage change ---
   useEffect(() => {
+    const debounceTimer = debounceRef
+    const annotationenTimer = annotationenRef
     const saved: PDFAnnotation[] = adapterAntwort?.typ === 'pdf' ? (adapterAntwort.annotationen ?? []) : []
     setAnnotationen(saved)
 
     return () => {
       // Flush pending debounce on unmount / frage change
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-        debounceRef.current = null
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current)
+        debounceTimer.current = null
         onAntwort({
           typ: 'pdf',
-          annotationen: annotationenRef.current,
+          annotationen: annotationenTimer.current,
         })
       }
     }
