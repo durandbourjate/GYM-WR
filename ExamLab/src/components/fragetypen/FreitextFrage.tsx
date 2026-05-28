@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import DOMPurify from 'dompurify'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -314,7 +315,10 @@ function FreitextLoesung({ frage, antwort }: { frage: FreitextFrageType; antwort
         {text ? (
           <div
             className="prose prose-slate dark:prose-invert max-w-none text-sm"
-            dangerouslySetInnerHTML={{ __html: text }}
+            // SuS-Quill/Tiptap-Output ist nicht garantiert sanitisiert (Editor
+            // erlaubt theoretisch HTML-Eingabe). DOMPurify entfernt <script>,
+            // on*-Handler und javascript:-URLs.
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }}
           />
         ) : (
           <p className="text-slate-500 italic text-sm">Keine Antwort abgegeben.</p>

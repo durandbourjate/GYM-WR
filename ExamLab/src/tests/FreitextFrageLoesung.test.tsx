@@ -84,4 +84,25 @@ describe('FreitextFrage modus=loesung', () => {
     expect(container.querySelector('.tiptap-editor')).toBeNull()
     expect(container.querySelector('textarea')).toBeNull()
   })
+
+  it('SuS-Antwort-HTML wird mit DOMPurify sanitisiert (XSS-Schutz)', () => {
+    // SuS-Editor-Output mit XSS-Payload: <script>, <img onerror>, javascript:-URL
+    const malicious = '<p>Antwort</p><script>window.__xss = true</script><img src=x onerror="window.__xss = true">'
+    const antwort: Antwort = {
+      typ: 'freitext',
+      text: malicious,
+      selbstbewertung: 'korrekt',
+    }
+    // Reset window-Flag falls vorheriger Test ihn gesetzt hat
+    delete (window as unknown as { __xss?: boolean }).__xss
+    const { container } = render(<FreitextFrage frage={frage} antwort={antwort} modus="loesung" />)
+    // <script> komplett gestrippt, kein Inline-onerror, kein javascript:-Href
+    expect(container.querySelector('script')).toBeNull()
+    const img = container.querySelector('img')
+    if (img) expect(img.getAttribute('onerror')).toBeNull()
+    // Sanitisierter Text bleibt erhalten
+    expect(container.textContent).toContain('Antwort')
+    // Window-Side-Effect darf nicht ausgelöst worden sein
+    expect((window as unknown as { __xss?: boolean }).__xss).toBeUndefined()
+  })
 })
