@@ -8,6 +8,33 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 28.05.2026 SPÄT — react-doctor Folge-Sweep Prio 1 + Prio 2 KOMPLETT
+
+Drei Folge-Fixes nach High-Confidence-Sweep, alle LIVE auf `main` + `preview` (`eb65b79`):
+
+**Commits (Branch `fix/react-doctor-folge-prio1-prio2`):**
+
+| # | Commit | Kategorie | File |
+|---|---|---|---|
+| – | `aa19e95` | docs | Spec |
+| – | `46f43b1` | docs | Plan |
+| F2 | `6cd3e33` | Security | `MaterialPanel.tsx:324` — sandbox `"allow-scripts allow-same-origin"` → `"allow-scripts"` |
+| F3 | `efc8287` | Accessibility | `L3Dropdown.tsx` — `useId()` + `aria-controls` (konditional) + `aria-selected={false}` |
+| F4 | `eb65b79` | Doku | `no-danger`-Inventar 47 Stellen kategorisiert |
+
+**Verifikation:**
+- react-doctor Errors: **15 → 13** (2× `role-has-required-aria-props` weg, Rest pre-existing Baseline)
+- `iframe-sandbox-combination`-Warning auf MaterialPanel:324 weg (verbleibend nur 6 Drive/PDF/Embed-iframes mit dokumentierter Sandbox-Pause)
+- vitest: **2127 + 6 todo → 2130 + 6 todo** (+3 neue Tests aus F2/F3)
+- 11 CI-Gates ✓
+- E2E staging: Build aktiv (2026-05-28), Console 0 Errors. L3Dropdown selber nicht auf Fragensammlung-Seite getestet (lebt in Header-Cascading-Tabs), Unit-Tests decken aria-Verifikation ab.
+
+**Wichtigster F4-Befund (für künftigen Audit):** `FreitextFrage.tsx:317` rendert SuS-Quill-Output **ohne DOMPurify** — einzige unsanitisierte SuS-Input-HTML-Stelle. Alle anderen 46 Stellen sind via `renderMarkdown` (LP-Content, markdown-it), DOMPurify (Backend-HTML) oder KaTeX (LaTeX-Output) abgesichert. Spec: `ExamLab/docs/superpowers/specs/2026-05-28-no-danger-bestandsaufnahme.md`.
+
+**Workflow:** Brainstorming → spec (`aa19e95`) → spec-reviewer (3 Issues behoben) → writing-plans (`46f43b1`) → plan-reviewer (3 Defensiv-Improvements behoben) → subagent-driven-development mit 3 Implementer (sonnet) + 6 Reviewer (haiku, parallel pro Task) + E2E + Merge.
+
+---
+
 ### Stand 28.05.2026 — react-doctor High-Confidence-Fixes KOMPLETT
 
 8 als `Error` gemeldete react-doctor-Findings vom 28.05.2026-Audit alle behoben in einer Subagent-driven Session (~3h).
