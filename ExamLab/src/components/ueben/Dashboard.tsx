@@ -79,16 +79,16 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
   }
   const [dashboardTab, setDashboardTab] = useState<'themen' | 'fortschritt' | 'ergebnisse'>('themen')
   const location = useLocation()
+  const pathname = location.pathname
 
   // Sync dashboardTab mit URL (L2-Tabs im neuen Header)
   useEffect(() => {
-    const p = location.pathname
-    if (p.includes('/fortschritt') && dashboardTab !== 'fortschritt') setDashboardTab('fortschritt')
-    else if (p.includes('/ergebnisse') && dashboardTab !== 'ergebnisse') setDashboardTab('ergebnisse')
-    else if (p === '/sus/ueben' || p === '/sus/ueben/' || p.startsWith('/sus/ueben/kurs/')) {
+    if (pathname.includes('/fortschritt') && dashboardTab !== 'fortschritt') setDashboardTab('fortschritt')
+    else if (pathname.includes('/ergebnisse') && dashboardTab !== 'ergebnisse') setDashboardTab('ergebnisse')
+    else if (pathname === '/sus/ueben' || pathname === '/sus/ueben/' || pathname.startsWith('/sus/ueben/kurs/')) {
       if (dashboardTab !== 'themen') setDashboardTab('themen')
     }
-  }, [location.pathname, dashboardTab])
+  }, [pathname, dashboardTab])
 
   const [lzMiniModal, setLzMiniModal] = useState<{ fach: string; thema: string; fokusUnterthema?: string } | null>(null)
 
