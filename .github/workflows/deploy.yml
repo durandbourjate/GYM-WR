@@ -82,6 +82,33 @@ jobs:
         # Sobald Bundle P-Doku auf main ist, aktiviert sich der Gate automatisch.
         run: npm run lint:musterloesung --if-present
 
+      # Spiegelt die ci-check-Kette aus dem pre-push-Hook, damit --no-verify-Pushes
+      # (oder ein nicht installierter Hook) diese Gates nicht umgehen. --if-present:
+      # skipt sauber falls ein Gate-Script (noch) nicht auf dem Branch existiert.
+      - name: Audit Wire-Contract Gate
+        working-directory: ExamLab
+        run: npm run lint:wire-contract --if-present
+
+      - name: Audit Emoji Gate
+        working-directory: ExamLab
+        run: npm run lint:no-emoji --if-present
+
+      - name: Audit Inline-SVG Gate
+        working-directory: ExamLab
+        run: npm run lint:no-inline-svg --if-present
+
+      - name: Audit Typo-Token Gate
+        working-directory: ExamLab
+        run: npm run lint:typo-tokens --if-present
+
+      - name: Audit Storybook-Coverage Gate
+        working-directory: ExamLab
+        run: npm run lint:storybook-coverage --if-present
+
+      - name: Audit react-doctor State-Correctness Gate
+        working-directory: ExamLab
+        run: npm run lint:react-doctor-state --if-present
+
       - name: Run vitest
         working-directory: ExamLab
         run: npm test
@@ -163,6 +190,36 @@ jobs:
         if: steps.checkout-preview.outcome == 'success'
         working-directory: preview-src/ExamLab
         run: npm run lint:musterloesung
+
+      - name: Audit Wire-Contract Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:wire-contract --if-present
+
+      - name: Audit Emoji Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:no-emoji --if-present
+
+      - name: Audit Inline-SVG Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:no-inline-svg --if-present
+
+      - name: Audit Typo-Token Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:typo-tokens --if-present
+
+      - name: Audit Storybook-Coverage Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:storybook-coverage --if-present
+
+      - name: Audit react-doctor State-Correctness Gate (staging)
+        if: steps.checkout-preview.outcome == 'success'
+        working-directory: preview-src/ExamLab
+        run: npm run lint:react-doctor-state --if-present
 
       - name: Run vitest (staging)
         if: steps.checkout-preview.outcome == 'success'
