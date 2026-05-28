@@ -272,9 +272,8 @@ export function ZeichnenToolbar({
       >
         <div className="grid grid-cols-3 gap-2" style={{ minWidth: 156 }}>
           {verfuegbareFarben.map((farbe) => (
-            <Tooltip text={farbe}>
+            <Tooltip key={farbe} text={farbe}>
               <button
-                key={farbe}
                 type="button"
                 onClick={() => onFarbeChange(farbe)}
                 className={[
