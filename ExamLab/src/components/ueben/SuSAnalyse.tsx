@@ -45,12 +45,16 @@ export default function SuSAnalyse() {
   useEffect(() => {
     if (!aktiveGruppe) return
     let abgebrochen = false
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+
     const lade = async () => {
       setLaden(true)
       setFehler(false)
       try {
         // Timeout: 15 Sekunden, dann Fehler anzeigen statt endlos laden
-        const timeout = new Promise<Frage[]>((_, reject) => setTimeout(() => reject(new Error('Timeout')), 15000))
+        const timeout = new Promise<Frage[]>((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('Timeout')), 15000)
+        })
         const laden = uebenFragenAdapter.ladeFragen(aktiveGruppe.id)
         const f = await Promise.race([laden, timeout])
         if (abgebrochen) return
@@ -65,10 +69,14 @@ export default function SuSAnalyse() {
         if (!abgebrochen) setFehler(true)
       } finally {
         if (!abgebrochen) setLaden(false)
+        if (timeoutId !== null) clearTimeout(timeoutId)
       }
     }
     lade()
-    return () => { abgebrochen = true }
+    return () => {
+      abgebrochen = true
+      if (timeoutId !== null) clearTimeout(timeoutId)
+    }
   }, [aktiveGruppe])
 
   // Themen-Analyse mit Recency
