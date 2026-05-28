@@ -45,12 +45,13 @@ export function LPAppHeaderContainer({ onHilfe, onEinstellungen, onZurueck, brea
   const theme: 'light' | 'dark' = istAktuellDunkel ? 'dark' : 'light'
 
   const location = useLocation()
+  const pathname = location.pathname
 
   const feedbackContext = useMemo<FeedbackContext>(() => ({
     rolle: 'lp',
-    ort: location.pathname,
+    ort: pathname,
     appVersion: APP_VERSION,
-  }), [location.pathname])
+  }), [pathname])
 
   // Kurse: alle Gruppen aus dem UebenGruppenStore.
   // ladeGruppen(email) gibt bereits nur Gruppen zurück, auf die der User Zugriff hat
