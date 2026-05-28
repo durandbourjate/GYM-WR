@@ -299,9 +299,8 @@ export function PDFToolbar({
       >
         <div className="grid grid-cols-3 gap-2" style={{ minWidth: 156 }}>
           {STANDARD_HIGHLIGHT_FARBEN.map((farbe) => (
-            <Tooltip text={farbe}>
+            <Tooltip key={farbe} text={farbe}>
               <button
-                key={farbe}
                 type="button"
                 onClick={() => onFarbeWechsel(farbe)}
                 className={[
