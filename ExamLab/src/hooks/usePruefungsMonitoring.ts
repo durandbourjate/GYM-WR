@@ -274,5 +274,5 @@ export function usePruefungsMonitoring(lockdownCallbacks?: MonitoringLockdownCal
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [config, abgegeben, setVerbindungsstatus])
+  }, [config, abgegeben, setVerbindungsstatus, backendVerfuegbar])
 }
