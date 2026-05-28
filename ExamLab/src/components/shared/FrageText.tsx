@@ -88,6 +88,11 @@ export default function FrageText({ text, className }: FrageTextProps) {
 
   const klassen = className ?? DEFAULT_KLASSEN
 
+  // useMemo VOR ALLEN Early-Returns — rules-of-hooks: Hook-Anzahl muss pro Render konstant sein.
+  // extrahiereSegmente ist eine reine Funktion; das Resultat wird in den !hatCode-Pfaden
+  // ungenutzt verworfen (kein Render-Cost).
+  const segmente = useMemo(() => extrahiereSegmente(text), [text])
+
   // Einfacher Fall: kein Code, kein LaTeX → normales Markdown-Rendering
   if (!hatCode && !hatLatex) {
     return (
@@ -112,9 +117,7 @@ export default function FrageText({ text, className }: FrageTextProps) {
     )
   }
 
-  // Komplexer Fall: Code-Blöcke (und evtl. LaTeX)
-  const segmente = useMemo(() => extrahiereSegmente(text), [text])
-
+  // Komplexer Fall: Code-Blöcke (und evtl. LaTeX) — `segmente` ist von oben
   return (
     <div className={klassen}>
       {segmente.map((seg, i) => {
