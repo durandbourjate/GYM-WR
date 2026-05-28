@@ -3,8 +3,12 @@
  * Audit-Skript: Regression-Gate für zwei react-doctor State-Correctness-Regeln.
  *
  * Regeln: `no-adjust-state-on-prop-change` (S129-Muster) + `no-cascading-set-state`
- * (S130-Risiko). Am 28.05.2026 wurden alle 42 Findings triagiert → 0 echte Bugs
- * (alle benigne Load-Effects / Timer-mit-Cleanup / bereits-angewendete Remedies).
+ * (S130-Risiko) + `exhaustive-deps` (28.05.2026 ergänzt) + `no-derived-state`
+ * (29.05.2026 ergänzt). Am 28.05.2026 wurden die ersten 42 State-Findings triagiert
+ * → 0 echte Bugs (benigne Load-Effects / Timer-mit-Cleanup / Remedies). Am 29.05.2026
+ * wurden alle 41 `no-derived-state`-Findings triagiert → ebenfalls 0 echte Refactors:
+ * durchweg editierbare Kopien (sync-on-id), async-geladener State, optimistische
+ * Toggles oder UI-Interaktions-State, wo useState korrekt ist und useMemo Bugs einführt.
  * Dieses Gate friert den sauberen Stand ein: neue Verletzungen über die Baseline
  * failen CI. Triage-Audit-Trail: specs/2026-05-28-react-doctor-state-gate-design.md.
  *
@@ -29,7 +33,7 @@ const ROOT = join(__dirname, '..') // repo root
 const STRICT = process.argv.includes('--strict')
 const UPDATE_BASELINE = process.argv.includes('--baseline')
 
-const RULES = new Set(['no-adjust-state-on-prop-change', 'no-cascading-set-state', 'exhaustive-deps'])
+const RULES = new Set(['no-adjust-state-on-prop-change', 'no-cascading-set-state', 'exhaustive-deps', 'no-derived-state'])
 const baselinePath = join(ROOT, 'scripts/react-doctor-state-baseline.json')
 const RD_BIN = join(ROOT, 'node_modules/.bin/react-doctor')
 const EXAMLAB = join(ROOT, 'ExamLab')
@@ -87,7 +91,7 @@ if (UPDATE_BASELINE) {
   const total = sortedKeys.reduce((s, k) => s + sortedCounts[k], 0)
   const next = {
     _comment:
-      'Baseline für lint:react-doctor-state. per_file_max = Count der 2 State-Regeln pro Datei. Bei Anstieg failt CI. Regenerieren: node scripts/audit-react-doctor-state.mjs --baseline (nur mit Begründung erhöhen).',
+      'Baseline für lint:react-doctor-state. per_file_max = Count der State-Regeln (siehe rules[]) pro Datei. Bei Anstieg failt CI. Regenerieren: node scripts/audit-react-doctor-state.mjs --baseline (nur mit Begründung erhöhen).',
     react_doctor_version: '0.2.10',
     rules: [...RULES],
     per_file_max: sortedCounts,
@@ -115,7 +119,7 @@ for (const [f, max] of Object.entries(PER_FILE)) {
 
 const baselineTotal = Object.values(PER_FILE).reduce((s, n) => s + n, 0)
 console.log('')
-console.log('react-doctor-state-Audit (no-adjust-state-on-prop-change + no-cascading-set-state):')
+console.log(`react-doctor-state-Audit (${[...RULES].join(' + ')}):`)
 console.log(`  Baseline-Total:   ${baselineTotal}`)
 console.log(`  Aktuell:          ${total}`)
 console.log(`  Regressions:      ${regressions.length}`)
