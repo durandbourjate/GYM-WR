@@ -8,6 +8,49 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 28.05.2026 — react-doctor High-Confidence-Fixes KOMPLETT
+
+8 als `Error` gemeldete react-doctor-Findings vom 28.05.2026-Audit alle behoben in einer Subagent-driven Session (~3h).
+
+**Commits (Branch `fix/react-doctor-high-confidence-errors` → merged main + preview):**
+
+| # | Commit | Rule | File |
+|---|---|---|---|
+| – | `fa33d55` | docs | Implementation-Plan |
+| 1 | `bdbaba9` | jsx-key | `PDFToolbar.tsx` (Farben-Map) |
+| 2 | `38888aa` | jsx-key | `ZeichnenToolbar.tsx` (Farben-Map) |
+| 3 | `d61dd10` | no-mutable-in-deps | `LPAppHeaderContainer.tsx` (pathname-hoist) |
+| 4 | `bb5701c` | no-mutable-in-deps | `SuSAppHeaderContainer.tsx` (pathname-hoist) |
+| 5 | `32ceb83` | no-mutable-in-deps | `Dashboard.tsx` (pathname-hoist) |
+| 6 | `4a748f7` | effect-needs-cleanup | `SuSAnalyse.tsx` (setTimeout cleanup) |
+| 7 | `45d8f46` | effect-needs-cleanup | `useLPDashboardData.ts` (setTimeout + 7 abgebrochen-Guards) |
+| 8 | `2d41b4b` | rules-of-hooks | `FrageText.tsx` (useMemo vor BEIDE Early-Returns) |
+
+**Verifikation:**
+- react-doctor Errors: **23 → 15** (Differenz = exakt 8, alle Ziel-Errors weg)
+- Verbleibend = pre-existing Baseline (12× `only-export-components`, 2× `role-has-required-aria-props` L3Dropdown, 1× `no-eval` poolSync.ts bewusst mit eslint-disable)
+- vitest: **2127 passed + 6 todo** (+9 neue Tests, +2 todo: Dashboard/useLPDashboardData smoke-skips wegen Store-Komplexität)
+- **11 CI-Gates** clean (`lint:as-any`, `no-alert`, `no-tests-dir`, `musterloesung`, `wire-contract`, `no-emoji`, `no-inline-svg`, `typo-tokens`, `storybook-coverage`, `vitest`, `build`)
+- tsc -b clean, vite build clean
+
+**E2E auf staging (Tab-Gruppe LP+SuS, build 2026-05-28T09:34:38Z):**
+- LP `/favoriten` → `/fragensammlung` Navigation clean (T3)
+- SuS `/sus` → FIBU-Detail → Übung-Start → Frage-Wechsel 1→2 → `/ergebnis` → `/sus/ueben/fortschritt` clean
+- SuSAnalyse-Komponente rendert (Level/Streak/Versuche/Meilensteine/Themen) → T5+T6 verifiziert
+- Console: 0 React-Hook-Errors, 0 jsx-key-Warnings, 0 no-mutable-Warnings, 0 effect-cleanup-Warnings. Nur 3 pre-existing `preWarmFragen` Backend-Warnings (rate-limit, unrelated).
+
+**Workflow:** superpowers `writing-plans` → plan-document-reviewer (Issues gefunden + behoben: FrageText hat 2 Early-Returns, default-export) → `subagent-driven-development` mit Implementer (haiku für jsx-key/pathname-hoist, sonnet für setTimeout-Cleanup + FrageText) + Spec-Reviewer + Code-Quality-Reviewer pro Task.
+
+**Nächster grosser Thread:** **Backend-Migration** weiterhin offen (Spec `docs/superpowers/specs/2026-05-18-backend-migration-design.md`, wartet auf Plan-Phase + 5 KW-21-Mails).
+
+**Optional Backlog aus dem Audit (nicht targeted):**
+- `only-export-components` (12×) — Fast-Refresh-DX, low-priority
+- `role-has-required-aria-props` (2× L3Dropdown combobox/option) — Accessibility-Audit
+- 46× `no-danger` Warnings — Pre-sanitisierungs-Audit (MediaAnhang/MaterialPanel/PDFAnnotationAnzeige)
+- 7× `iframe-missing-sandbox`, 1× `iframe sandbox=allow-scripts+allow-same-origin` MaterialPanel:324
+
+---
+
 ### Stand 23.05.2026 SPÄT-3 — Hygiene-Sweep KOMPLETT, Werkbank ready für Backend-Migration
 
 Nach MC-Audit-Abschluss kompletter Hygiene-Sweep in derselben Session:
