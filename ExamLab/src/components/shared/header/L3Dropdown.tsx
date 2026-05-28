@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useLayoutEffect } from 'react'
+import { useState, useRef, useEffect, useLayoutEffect, useId } from 'react'
 import { createPortal } from 'react-dom'
 import { Check } from 'lucide-react'
 import type { L3Mode, L3Item } from './types'
@@ -17,6 +17,7 @@ const MAX_LABEL_LEN = 37
 
 export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNewLabel, placeholder }: Props) {
   const [offen, setOffen] = useState(false)
+  const listboxId = useId()
   const ref = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const listboxRef = useRef<HTMLDivElement>(null)
@@ -84,6 +85,7 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded={offen}
+        aria-controls={offen ? listboxId : undefined}
         onClick={() => setOffen((o) => !o)}
         className={`px-3 py-1.5 text-sm rounded-md cursor-pointer whitespace-nowrap inline-flex items-center gap-1 border-l-2 border-b-2 border-transparent transition-colors ${
           keinItemGewaehlt
@@ -108,6 +110,7 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
       {offen && menuPos && createPortal(
         <div
           ref={listboxRef}
+          id={listboxId}
           role="listbox"
           style={{ position: 'fixed', top: menuPos.top, left: menuPos.left }}
           className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg min-w-[220px] p-1 z-[100]"
@@ -141,6 +144,7 @@ export function L3Dropdown({ mode, items, selectedIds, onSelect, onAddNew, addNe
               <button
                 type="button"
                 role="option"
+                aria-selected={false}
                 onClick={() => {
                   onAddNew()
                   setOffen(false)

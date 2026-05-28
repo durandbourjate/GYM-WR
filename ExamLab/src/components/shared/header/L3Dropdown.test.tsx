@@ -89,4 +89,30 @@ describe('L3Dropdown', () => {
     render(<L3Dropdown mode="single" items={itemsBase} selectedIds={[]} onSelect={() => {}} />)
     expect(screen.getByRole('combobox')).toHaveTextContent('Auswählen …')
   })
+
+  it('combobox button hat aria-controls auf listbox-id wenn offen', () => {
+    render(<L3Dropdown mode="single" items={[{ id: 'a', label: 'A' }]} selectedIds={[]} onSelect={() => {}} />)
+    const button = screen.getByRole('combobox')
+    expect(button.getAttribute('aria-controls')).toBeFalsy()  // closed
+    fireEvent.click(button)
+    const listboxId = button.getAttribute('aria-controls')
+    expect(listboxId).toBeTruthy()
+    expect(document.getElementById(listboxId!)?.getAttribute('role')).toBe('listbox')
+  })
+
+  it('"+ Neu" option hat aria-selected="false"', () => {
+    render(
+      <L3Dropdown
+        mode="single"
+        items={[]}
+        selectedIds={[]}
+        onSelect={() => {}}
+        onAddNew={() => {}}
+        addNewLabel="+ Test"
+      />,
+    )
+    fireEvent.click(screen.getByRole('combobox'))
+    const neuOption = screen.getByRole('option', { name: '+ Test' })  // exact-match, kein Regex
+    expect(neuOption.getAttribute('aria-selected')).toBe('false')
+  })
 })
