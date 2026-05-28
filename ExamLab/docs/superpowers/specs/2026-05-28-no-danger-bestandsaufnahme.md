@@ -1,5 +1,7 @@
 # `no-danger` Bestandsaufnahme (28.05.2026)
 
+> **UPDATE 28.05.2026 SPÄT-2:** Der primäre Audit-Target `FreitextFrage.tsx:317` wurde direkt im Anschluss an dieses Inventar gefixt (Commit `ecc5e5c`). Diese Datei dokumentiert den Stand vor dem Fix; eine spätere `no-danger`-Audit-Session braucht nur noch die übrigen 39 Markdown/LaTeX-Stellen + 2 KaTeX-Sonstiges-Stellen + 1 Backend-HTML-Stelle auf saubere Sanitization-Pfade prüfen. Alle 4 SuS-Antwort-HTML-Render-Stellen sind jetzt DOMPurify-geschützt.
+
 **Zweck:** Vorbereitung für Pre-Sanitisierungs-Audit der ~46 React-Danger-Prop-Stellen aus react-doctor-Warnings vom 28.05.2026.
 
 **Quelle:** `grep -rn 'dangerouslySetInnerHTML' src/ --include='*.tsx' --include='*.ts' | grep -v -E '(test\.|\.test)'`

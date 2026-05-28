@@ -8,6 +8,27 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 28.05.2026 SPÄT-2 — FreitextFrage XSS-Fix LIVE
+
+Direkter Follow-up zum F4-Inventar-Befund. LIVE auf `main` + `preview` (`ecc5e5c`).
+
+- **Fix:** `FreitextFrage.tsx:317` rendert `antwort.text` (SuS-Tiptap-Output) jetzt mit `DOMPurify.sanitize()`. Tiptap-Default-Schema produziert keinen rohen HTML-Tag-Soup, aber der Editor erlaubt theoretisch Inline-HTML-Eingaben — und 3 andere Render-Stellen für SuS-Antwort-Text (`AbgabeZusammenfassung`, `KorrekturPDFAnsicht`, `FreitextAnzeige`) verwenden bereits DOMPurify. Die fehlende Sanitisierung war Inkonsistenz, kein bewusstes Design.
+- **Test (vitest):** Failing-Test zuerst bestätigt: `<script>window.__xss=true</script>` im `antwort.text` wird tatsächlich in den DOM gerendert. Nach DOMPurify-Wrap: `<script>` gestrippt, kein `onerror`, kein window-Side-Effect. vitest **2130 → 2131**.
+- **Commit:** `ecc5e5c fix(freitextfrage): DOMPurify-Wrap auf SuS-Quill-Antwort`
+
+**Bilanz seit Audit-Start am 28.05.2026:**
+
+| Sweep | Commit | react-doctor Errors | XSS-Stellen offen |
+|---|---|---|---|
+| Vor-Audit | `e775bd5` | 23 | 1 (`FreitextFrage:317`) |
+| High-Confidence | `dd5f62d` | 15 | 1 |
+| Folge Prio 1+2 | `3524512` | 13 | 1 |
+| FreitextFrage-XSS | `ecc5e5c` | 13 | **0** |
+
+Damit ist das gesamte Sweep-Ziel erreicht: alle Ziel-Errors gefixt + die einzige unsanitisierte SuS-Input-Stelle aus dem `no-danger`-Inventar geschlossen.
+
+---
+
 ### Stand 28.05.2026 SPÄT — react-doctor Folge-Sweep Prio 1 + Prio 2 KOMPLETT
 
 Drei Folge-Fixes nach High-Confidence-Sweep, alle LIVE auf `main` + `preview` (`eb65b79`):
