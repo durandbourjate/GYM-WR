@@ -39,8 +39,8 @@ export default function AnalyseDashboard({ onSuSKlick }: AnalyseDashboardProps) 
     ladeFragen()
   }, [gruppeId, ladeGruppenFortschritt])
 
-  const fortschritte = gruppenFortschritt[gruppeId] || []
-  const sessions = gruppenSessions[gruppeId] || []
+  const fortschritte = useMemo(() => gruppenFortschritt[gruppeId] || [], [gruppenFortschritt, gruppeId])
+  const sessions = useMemo(() => gruppenSessions[gruppeId] || [], [gruppenSessions, gruppeId])
 
   const mitgliederNamen = useMemo(() => {
     const map: Record<string, string> = {}

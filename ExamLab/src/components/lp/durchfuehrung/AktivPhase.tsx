@@ -44,7 +44,7 @@ export default function AktivPhase({ config, schuelerStatus, startTimestamp, onB
   const basisEndeMs = startTimestamp + config.dauerMinuten * 60 * 1000
 
   // Tick-Interval: 1s wenn jemand in Overtime ist, sonst kein Tick nötig
-  const zeitverlaengerungen = config.zeitverlaengerungen ?? {}
+  const zeitverlaengerungen = useMemo(() => config.zeitverlaengerungen ?? {}, [config.zeitverlaengerungen])
   const hatOvertimeSuS = useMemo(() => {
     if (Object.keys(zeitverlaengerungen).length === 0) return false
     const now = jetzt
