@@ -19,11 +19,12 @@
     "lint:typo-tokens": "node ../scripts/audit-typo-tokens.mjs --strict",
     "lint:storybook-coverage": "node ../scripts/audit-storybook-coverage.mjs --strict",
     "lint:react-doctor-state": "node ../scripts/audit-react-doctor-state.mjs --strict",
+    "lint:react-doctor-security": "node ../scripts/audit-react-doctor-security.mjs --strict",
     "preview": "vite preview",
     "preview:lernen": "VITE_APP_MODE=lernen vite preview --outDir dist-lernen",
     "test": "vitest run",
     "test:watch": "vitest",
-    "ci-check": "npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir && npm run lint:musterloesung && npm run lint:wire-contract && npm run lint:no-emoji && npm run lint:no-inline-svg && npm run lint:typo-tokens && npm run lint:storybook-coverage && npm run lint:react-doctor-state && npm test && npm run build",
+    "ci-check": "npm run lint:as-any && npm run lint:no-alert && npm run lint:no-tests-dir && npm run lint:musterloesung && npm run lint:wire-contract && npm run lint:no-emoji && npm run lint:no-inline-svg && npm run lint:typo-tokens && npm run lint:storybook-coverage && npm run lint:react-doctor-state && npm run lint:react-doctor-security && npm test && npm run build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "postinstall": "cd .. && git config core.hooksPath .githooks 2>/dev/null || true"

@@ -127,3 +127,36 @@ Empfohlene Reihenfolge für die spätere Audit-Session:
 - `src/components/lp/korrektur/KorrekturPDFAnsicht.tsx` verwendet **DOMPurify** ✓
 - `src/components/AbgabeZusammenfassung.tsx` verwendet **DOMPurify** ✓
 - Apps-Script-Backend-Bereinigung: `bereinigeFrageFuerSuSUeben_` — entfernt Lösungsfelder, keine HTML-Sanitisierung (nicht relevant hier)
+
+---
+
+## Audit-Abschluss 29.05.2026 — verifiziert + Regression-Gate
+
+**Ergebnis: 0 aktive XSS-Lücken.** Alle Danger-Prop-Stellen (react-doctor `no-danger`,
+46 → 45 nach Dead-Code-Löschung) laufen über genau drei verifiziert-sichere Pfade:
+
+1. **DOMPurify.sanitize() (5 Stellen):** `AbgabeZusammenfassung:208`, `MaterialPanel:295`,
+   `KorrekturPDFAnsicht:199`, `FreitextAnzeige:14`, `FreitextFrage:322` (SuS-/Backend-HTML).
+2. **renderMarkdown() (~38 Stellen):** `src/utils/markdown.ts` ruft **zuerst `escapeHtml`**
+   (`< > & "` → Entities), injiziert dann nur eine fixe Tag-Whitelist (`strong`, `em`,
+   `code class=…`, `br`) per Regex auf den bereits escapten Text. Die Capture-Groups landen
+   im Element-Body, nicht in Attributen → **kein Injection-Vektor**. (Kein markdown-it wie
+   das ursprüngliche Inventar vermutete — ein simpler escape-first-Renderer, noch eindeutiger
+   sicher.)
+3. **KaTeX mit trust:false (FrageText-LaTeX-Pfad, `FormelAnzeige:25`, `FormelFrageComponent:239`):**
+   `renderToString(..., { throwOnError:false })` ohne `trust`-Option → KaTeX rendert kein
+   beliebiges HTML / kein `\href` aus dem Input. `renderLatexSync` läuft zudem stets auf bereits
+   per `renderMarkdown` escaptem Input (`< >` sind dort schon Entities).
+
+**Dead-Code entfernt:** `src/components/shared/LatexText.tsx` — 0 Aufrufer (von `FrageText.tsx`
+abgelöst), escapte selbst nicht vor `renderLatexSync`. Gelöscht → entfernt ein latentes
+Unsafe-Pattern + reduziert die Danger-Prop-Fläche.
+
+**no-eval (1 Stelle):** `src/services/poolSync.ts:76` (Function-Konstruktor für den
+Pool-Config-Loader) — bewusst, eslint-disabled, dokumentiert.
+
+**Regression-Gate:** `lint:react-doctor-security` (`scripts/audit-react-doctor-security.mjs`,
+Baseline `scripts/react-doctor-security-baseline.json`, 46 Findings / 28 Files). Verdrahtet in
+`ci-check` + `deploy.yml` (Production + Staging). Neue Danger-Prop-/eval-Stellen über der Baseline
+failen CI → erzwingen bewussten Sanitization-Review + Baseline-Anhebung mit Begründung.
+Verifiziert per Probe-Datei (neue Stelle → exit 1, nach Entfernen → exit 0).
