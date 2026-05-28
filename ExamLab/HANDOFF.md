@@ -8,6 +8,26 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 28.05.2026 SPÄT-ABEND — exhaustive-deps Bug-Fix + Wins + Gate
+
+**One-Liner:** Alle 65 `exhaustive-deps`-Findings triagiert (4 Subagenten + manuelle Verifikation) → **genau 1 echter Bug gefunden + gefixt**, 2 Perf-Wins, 11 ref-in-cleanup mechanisch transformiert, ~51 intentional/safe via Gate festgezurrt.
+
+**Der eine echte Bug:** `usePruefungsMonitoring.ts:277` — der Online/Offline-Listener-Effect liess `backendVerfuegbar` aus den Deps (Schwester-Effects Z.133/204/217 haben es). Folge: wenn `backendVerfuegbar` nach Mount false→true kippt (user.email async), behält der online-Handler stale `false` → bei Reconnect wird die Retry-Queue nicht verarbeitet → **SuS-Antwortverlust-Risiko**. Fix: `backendVerfuegbar` in Deps. Exam-kritisch, aber 1-Zeile + konsistent.
+
+**Verifikations-Lehre:** 2 von 3 Subagent-`REAL_BUG`-Flags waren Fehlalarme (UebungsToolView:118 durch Schwester-Effect abgedeckt, MaterialienSection:153 durch `[neuerTitel]`-Dep korrekt) — nur durch eigene Code-Lesung entlarvt. Subagenten bei exhaustive-deps überflaggen.
+
+**Was gefixt wurde (14):** Bug (1) + Unstable-Memo (2: AktivPhase:59, AnalyseDashboard:74 +sessions) + ref-in-cleanup (11: Code/Freitext/PDFFrage/PDFKorrektur/ZeichnenKorrektur debounceRef, Tooltip/useDebouncedHover timerRef, useAudioRecorder stream, useStiftRendering/ZeichnenFrage/usePDFRenderer). **ref-Transform-Technik:** `eslint-disable` silenced react-doctor NICHT (Regel-ID `exhaustive-deps`); stattdessen Ref-OBJEKT aliasieren (`const x = xxxRef`, Cleanup liest `x.current`) — beweisbar verhaltens-identisch.
+
+**Gate:** `exhaustive-deps` zur `audit-react-doctor-state.mjs` RULES-Menge → kombinierte react-doctor-Gate, Baseline **93** (42 State + 51 exhaustive-deps post-fix). `usePruefungsMonitoring` fällt 2→1 (nicht 0 — :204 bleibt intentional).
+
+**E2E (Staging, meine Branch deployed):** Build lädt sauber (LP+SuS), SuS-Üben-Pipeline (MC + Lückentext: Auswahl/Texteingabe/Submit→Feedback) 0 Console-Errors. ⚠️ Die spezifischen transformierten Editoren (Code/PDF/Zeichnen/Audio) + Reconnect/Korrektur NICHT einzeln browser-getestet (kamen nicht im Mix / brauchen Live-Prüfung) — Absicherung dort: beweisbar-identische Transforms + sauberer Build + ci-check.
+
+**Commits (Branch `feature/exhaustive-deps-bugfix-gate`):** `361b9a8` (Bug) · `ab1b268` (Memo) · `ea4e1d0` (5 debounceRef) · `466f0de` (6 ref) · `3391921` (Gate+Baseline). Spec `c8b836b`, Plan `ee5581a`. ci-check grün (2131 Tests). Branch wurde für Staging-E2E nach `preview` gepusht; Merge nach `main` mit User-Freigabe.
+
+**Nächste Audit-Baustellen (Rest):** `no-derived-state` (42×), `js-set-map-lookups` (189×), `no-danger`-Folge-Audit (Prio C). Gate-Muster ist die Blaupause.
+
+---
+
 ### Stand 28.05.2026 ABEND — State-Correctness-Gate (Triage + Baseline-Gate)
 
 **One-Liner:** Alle 42 Findings der zwei Bug-trächtigsten react-doctor-Regeln (`no-adjust-state-on-prop-change` 19 + `no-cascading-set-state` 23) triagiert → **0 echte Bugs**. Statt Churn-Refactoring wurde der verifiziert-saubere Stand als CI-Gate `lint:react-doctor-state` festgezurrt (pre-push, ~7s). **Branch `feature/react-doctor-state-gate` — wartet auf Merge-Freigabe.**
