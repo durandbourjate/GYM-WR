@@ -9,7 +9,8 @@ import { useShallow } from 'zustand/react/shallow'
 import { useTagsStore } from '../../../../store/tagsStore'
 import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
 import { tagNamenFromStore } from '../../../../utils/frageTagNamen'
-import { FragetypIcon, type Fragetyp } from '../../../ui/icons/FragetypIcon'
+import { FragetypIcon } from '../../../ui/icons/FragetypIcon'
+import type { Fragetyp } from '../../../ui/icons/fragetypIconMap'
 
 interface Props {
   frage: Frage | FrageSummary

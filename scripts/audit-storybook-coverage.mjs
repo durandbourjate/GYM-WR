@@ -3,8 +3,10 @@
  * Audit-Skript: Storybook-Coverage für Icon-Galerie.
  *
  * Hintergrund: Cluster G Icon-System lebt von zwei Source-of-Truth-Maps:
- * - `LUCIDE_KEY_MAP` in `ExamLab/src/components/ui/icons/NavIcon.tsx`
- * - `FRAGETYP_ICON_MAP` in `ExamLab/src/components/ui/icons/FragetypIcon.tsx`
+ * - `LUCIDE_KEY_MAP` in `ExamLab/src/components/ui/icons/navIconMaps.ts`
+ * - `FRAGETYP_ICON_MAP` in `ExamLab/src/components/ui/icons/fragetypIconMap.ts`
+ * (vor 28.05.2026 lagen die Maps in den jeweiligen Component-Files NavIcon.tsx /
+ *  FragetypIcon.tsx; ausgelagert für only-export-components react-doctor-Regel)
  *
  * Beide Maps werden auch in der Storybook-Icon-Galerie
  * (`ExamLab/src/components/ui/icons/Icons.stories.tsx`) gerendert. Dieses
@@ -33,8 +35,8 @@ const STRICT = process.argv.includes('--strict')
 
 const STORY_PATH = join(ROOT, 'ExamLab/src/components/ui/icons/Icons.stories.tsx')
 const REQUIRED_MAP_IMPORTS = [
-  { source: './NavIcon', name: 'LUCIDE_KEY_MAP' },
-  { source: './FragetypIcon', name: 'FRAGETYP_ICON_MAP' },
+  { source: './navIconMaps', name: 'LUCIDE_KEY_MAP' },
+  { source: './fragetypIconMap', name: 'FRAGETYP_ICON_MAP' },
 ]
 
 function fail(messages) {

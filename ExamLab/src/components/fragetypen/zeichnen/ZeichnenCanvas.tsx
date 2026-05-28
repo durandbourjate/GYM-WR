@@ -458,9 +458,3 @@ export function ZeichnenCanvas({
     </div>
   )
 }
-
-// Hilfsfunktion: Export-Trigger ohne imperatives Handle
-export function exportiereCanvasAlsPNG(canvas: HTMLCanvasElement | null): string {
-  if (!canvas) return ''
-  return canvas.toDataURL('image/png')
-}

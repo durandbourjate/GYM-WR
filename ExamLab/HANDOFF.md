@@ -8,6 +8,39 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 28.05.2026 SPÄT-3 — only-export-components Sweep LIVE
+
+react-doctor Errors **13 → 1** (nur `no-eval` poolSync.ts bewusst). Alle 12 `only-export-components`-Errors auf 9 Files behoben:
+
+| File | Strategie |
+|---|---|
+| `ZeichnenCanvas.tsx:463` | Dead-code `exportiereCanvasAlsPNG` entfernt (0 Consumer) |
+| `BatchConfirmModal.tsx:45` | `tagsModusAusPatch` → `batchConfirmModalUtils.ts` |
+| `VirtualisierteFragenListe.tsx:41,56` | `FlatItem` Type + `baueFlatItems` → `flatItems.ts` |
+| `PruefungsComposer.tsx:35` | `export { leereUebung }` Re-Export entfernt (Consumer importierte direkt) |
+| `LernzielKarte.tsx:21,29` | `KartenDaten` + `berechneKartenDaten` → `lernzielKartenDaten.ts` |
+| `BilanzEREditor.tsx`, `TKontoEditor.tsx` | Wrapper-Files komplett gelöscht (0 Consumer) |
+| `NavIcon.tsx:24,45,70,79` | `LUCIDE_KEY_MAP` + `EMOJI_TO_KEY` + 2 Utils → `navIconMaps.ts` |
+| `FragetypIcon.tsx:20` | `FRAGETYP_ICON_MAP` + `Fragetyp` Type → `fragetypIconMap.ts` |
+
+**Plus:** `scripts/audit-storybook-coverage.mjs` `REQUIRED_MAP_IMPORTS` aktualisiert auf neue Pfade. `Icons.stories.tsx` + 5 Component-Files + 3 Test-Files mit neuen Imports.
+
+**Verifikation:** vitest **2131 + 6 todo** (unverändert), tsc clean, **11 CI-Gates ✓** (inkl. storybook-coverage), react-doctor 1 Error.
+
+**Bilanz seit Audit-Start (28.05.2026):**
+
+| Sweep | Commit | Errors | XSS-Stellen |
+|---|---|---|---|
+| Vor-Audit | `e775bd5` | 23 | 1 |
+| High-Confidence | `dd5f62d` | 15 | 1 |
+| Folge Prio 1+2 | `3524512` | 13 | 1 |
+| FreitextFrage-XSS | `ecc5e5c` | 13 | **0** |
+| only-export-components | [pending] | **1** | 0 |
+
+Damit ist react-doctor essentiell sauber — der verbleibende `no-eval` ist bewusste eslint-disable in `poolSync.ts` (Pool-Config-Loader, dokumentiert in `claude-security-guidance.md`).
+
+---
+
 ### Stand 28.05.2026 SPÄT-2 — FreitextFrage XSS-Fix LIVE
 
 Direkter Follow-up zum F4-Inventar-Befund. LIVE auf `main` + `preview` (`ecc5e5c`).

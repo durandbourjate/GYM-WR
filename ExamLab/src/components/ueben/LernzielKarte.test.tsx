@@ -1,7 +1,8 @@
 // ExamLab/src/components/ueben/LernzielKarte.test.tsx
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { berechneKartenDaten, LernzielKarte } from './LernzielKarte'
+import { LernzielKarte } from './LernzielKarte'
+import { berechneKartenDaten } from './lernzielKartenDaten'
 import type { Lernziel } from '@shared/types/fragen-core'
 import type { FragenFortschritt } from '../../types/ueben/fortschritt'
 

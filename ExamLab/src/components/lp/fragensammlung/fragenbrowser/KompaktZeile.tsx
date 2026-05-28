@@ -7,7 +7,8 @@ import type { FragenPerformance } from '../../../../types/tracker.ts'
 import type { Gruppierung } from './gruppenHelfer.ts'
 import PoolBadges from './PoolBadges.tsx'
 import { useFragenSelectionStore } from '../../../../store/fragenSelectionStore.ts'
-import { FragetypIcon, type Fragetyp } from '../../../ui/icons/FragetypIcon'
+import { FragetypIcon } from '../../../ui/icons/FragetypIcon'
+import type { Fragetyp } from '../../../ui/icons/fragetypIconMap'
 
 interface Props {
   frage: Frage | FrageSummary

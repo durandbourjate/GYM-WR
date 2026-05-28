@@ -31,8 +31,7 @@ interface Props {
 
 type ComposerTab = 'config' | 'abschnitte' | 'vorschau' | 'analyse'
 
-import { leerePruefung, leereUebung } from './configVorlagen'
-export { leereUebung }
+import { leerePruefung } from './configVorlagen'
 
 export default function PruefungsComposer({ config, onZurueck, onDuplizieren }: Props) {
   const user = useAuthStore((s) => s.user)

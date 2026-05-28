@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { NavIcon } from './NavIcon'
 import {
-  NavIcon,
   iconStringToComponent,
   iconStringToCanonicalKey,
   LUCIDE_KEY_MAP,
   EMOJI_TO_KEY,
-} from './NavIcon'
+} from './navIconMaps'
 
 describe('iconStringToCanonicalKey', () => {
   it('Lucide-Key wird unverändert zurückgegeben', () => {

@@ -3,7 +3,8 @@
  */
 import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent } from '@testing-library/react'
-import BatchConfirmModal, { tagsModusAusPatch } from './BatchConfirmModal'
+import BatchConfirmModal from './BatchConfirmModal'
+import { tagsModusAusPatch } from './batchConfirmModalUtils'
 import type { FragenBulkPatch } from '@shared/types/fragen-core'
 
 describe('tagsModusAusPatch', () => {

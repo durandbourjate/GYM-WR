@@ -35,55 +35,10 @@ import type {
 } from '../../../../hooks/useFragenFilter.ts'
 import type { Frage } from '../../../../types/fragen-storage.ts'
 
+import { baueFlatItems, type FlatItem } from './flatItems.ts'
+
 /** Höhe der Sticky-Header-Lane in px (muss zur estimateSize-Headerhöhe passen). */
 const LANE_HOEHE = 36
-
-export type FlatItem =
-  | {
-      typ: 'header'
-      gruppeKey: string
-      gruppeLabel: string
-      fragenAnzahl: number
-      istAufgeklappt: boolean
-    }
-  | { typ: 'frage'; frage: FilterbareFrage; gruppeKey: string }
-
-/**
- * Plattet die gruppierte Anzeige zu einem flachen Item-Array.
- * - Bei `gruppierung === 'keine'`: nur Frage-Items, keine Header.
- * - Bei aktiver Gruppierung: Header pro Gruppe + Fragen nur wenn aufgeklappt.
- */
-export function baueFlatItems(
-  gruppierteAnzeige: GruppierteAnzeige[],
-  gruppierung: Gruppierung,
-  aufgeklappteGruppen: Set<string>,
-): FlatItem[] {
-  const items: FlatItem[] = []
-  if (gruppierung === 'keine') {
-    for (const gruppe of gruppierteAnzeige) {
-      for (const frage of gruppe.fragen) {
-        items.push({ typ: 'frage', frage, gruppeKey: gruppe.key })
-      }
-    }
-    return items
-  }
-  for (const gruppe of gruppierteAnzeige) {
-    const istAufgeklappt = aufgeklappteGruppen.has(gruppe.key)
-    items.push({
-      typ: 'header',
-      gruppeKey: gruppe.key,
-      gruppeLabel: gruppe.label,
-      fragenAnzahl: gruppe.fragen.length,
-      istAufgeklappt,
-    })
-    if (istAufgeklappt) {
-      for (const frage of gruppe.fragen) {
-        items.push({ typ: 'frage', frage, gruppeKey: gruppe.key })
-      }
-    }
-  }
-  return items
-}
 
 export interface Props {
   gruppierteAnzeige: GruppierteAnzeige[]

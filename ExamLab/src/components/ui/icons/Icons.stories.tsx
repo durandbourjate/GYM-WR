@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ComponentType } from 'react'
 import type { LucideProps } from 'lucide-react'
-import { LUCIDE_KEY_MAP } from './NavIcon'
-import { FRAGETYP_ICON_MAP } from './FragetypIcon'
+import { LUCIDE_KEY_MAP } from './navIconMaps'
+import { FRAGETYP_ICON_MAP } from './fragetypIconMap'
 import { TYPO } from '../../../styles/typografie'
 
 type IconEntry = { name: string; Icon: ComponentType<LucideProps> }

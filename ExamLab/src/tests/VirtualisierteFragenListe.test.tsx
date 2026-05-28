@@ -7,9 +7,7 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, fireEvent } from '@testing-library/react'
-import {
-  baueFlatItems,
-} from '../components/lp/fragensammlung/fragenbrowser/VirtualisierteFragenListe'
+import { baueFlatItems } from '../components/lp/fragensammlung/fragenbrowser/flatItems'
 import type { GruppierteAnzeige, FilterbareFrage } from '../hooks/useFragenFilter'
 
 // Mock useVirtualizer auf Modul-Ebene: Render-Tests bekommen alle Items sichtbar.

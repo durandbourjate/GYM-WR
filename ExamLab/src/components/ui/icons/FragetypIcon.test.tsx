@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import { FragetypIcon, FRAGETYP_ICON_MAP, type Fragetyp } from './FragetypIcon'
+import { FragetypIcon } from './FragetypIcon'
+import { FRAGETYP_ICON_MAP, type Fragetyp } from './fragetypIconMap'
 
 const ALLE_TYPEN: Fragetyp[] = [
   'mc', 'freitext', 'lueckentext', 'zuordnung', 'visualisierung',
