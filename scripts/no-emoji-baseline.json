@@ -7,6 +7,7 @@
     "ExamLab/src/utils/ueben/gamification.ts",
     "ExamLab/src/components/ui/icons/NavIcon.tsx",
     "ExamLab/src/components/ui/icons/NavIcon.test.tsx",
+    "ExamLab/src/components/ui/icons/navIconMaps.ts",
     "ExamLab/src/store/favoritenStore.test.ts"
   ],
   "per_file_max": {}
