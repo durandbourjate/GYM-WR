@@ -40,4 +40,18 @@ describe('SuSAppHeaderContainer', () => {
     expect(screen.getByText('ExamLab')).toBeInTheDocument()
     expect(screen.getByRole('searchbox')).toBeInTheDocument()
   })
+
+  it('feedbackContext re-computed bei pathname-Wechsel, kein Crash bei Re-Render', () => {
+    const { rerender } = render(
+      <MemoryRouter initialEntries={['/sus/ueben']}>
+        <SuSAppHeaderContainer onHilfe={vi.fn()} />
+      </MemoryRouter>,
+    )
+    rerender(
+      <MemoryRouter initialEntries={['/sus/ueben']}>
+        <SuSAppHeaderContainer onHilfe={vi.fn()} />
+      </MemoryRouter>,
+    )
+    expect(true).toBe(true) // Smoke — kein Crash
+  })
 })

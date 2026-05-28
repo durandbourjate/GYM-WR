@@ -55,13 +55,14 @@ export function SuSAppHeaderContainer({
 
   const navigate = useNavigate()
   const location = useLocation()
+  const pathname = location.pathname
   const [suchen, setSuchen] = useState('')
 
   const feedbackContext = useMemo<FeedbackContext>(() => ({
     rolle: 'sus',
-    ort: location.pathname,
+    ort: pathname,
     appVersion: APP_VERSION,
-  }), [location.pathname])
+  }), [pathname])
 
   // Kurse aus gruppenStore — Store liefert nur Gruppen, in denen SuS Mitglied ist.
   const gruppen = useUebenGruppenStore((s) => s.gruppen)
