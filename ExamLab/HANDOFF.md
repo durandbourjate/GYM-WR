@@ -8,6 +8,52 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### TAGES-BILANZ 28.05.2026 — react-doctor Audit-Tag KOMPLETT
+
+**One-Liner:** 5 Sweeps in einem Tag, react-doctor Errors **23 → 1** (nur bewusst eslint-disabled), XSS-Stellen **1 → 0**, vitest **2120 → 2131**, alles LIVE auf `main` = `preview` = `53abcdb`. Working tree clean.
+
+**Sweep-Zusammenfassung:**
+
+| # | Sweep | Commit | Errors | XSS |
+|---|---|---|---|---|
+| 1 | High-Confidence (8 Fixes) | `dd5f62d` | 23 → 15 | 1 |
+| 2 | Folge Prio 1+2 (3 Fixes) | `3524512` | 15 → 13 | 1 |
+| 3 | FreitextFrage XSS-Fix | `ecc5e5c` | 13 | 1 → **0** |
+| 4 | only-export-components (12 Fixes) | `53abcdb` | 13 → **1** | 0 |
+| 5 | Doku-Updates dazwischen | (mehrere) | — | — |
+
+**Was bleibt offen aus dem react-doctor Audit (Prio-sortiert):**
+
+1. **Priorität B — Quality-Gate-Kandidaten** (preventive Hardening, ~Wochen-Arbeit):
+   - 65× `exhaustive-deps` — useEffect-Deps-Vollständigkeit
+   - 42× `no-derived-state` — useState wo useMemo besser wäre
+   - 23× `no-cascading-set-state` — setState in setState
+   - 19× `no-adjust-state-on-prop-change` (S129-Pattern)
+   - 189× `js-set-map-lookups` (Performance)
+2. **Priorität C — `no-danger` Folge-Audit** (preventive Sanitization-Check):
+   - 39 Markdown/LaTeX-Stellen (via `renderMarkdown` — wahrscheinlich alle OK)
+   - 2 KaTeX-Sonstiges (`FormelAnzeige.tsx:25`, `FormelFrageComponent.tsx:239`)
+   - 1 Backend-HTML (`MaterialPanel.tsx:295`, hat DOMPurify)
+   - Inventar: `docs/superpowers/specs/2026-05-28-no-danger-bestandsaufnahme.md`
+3. **Priorität D — Stylistik-Skip-Klassen** (low-value):
+   - 512× `design-no-redundant-size-axes`
+   - 350× `button-has-type`
+   - 154× `design-no-em-dash-in-jsx-text`
+
+**ORTHOGONAL zum Audit (grösster offener Thread):** **Backend-Migration** Plan-Phase + 5 KW-21-Mails. Spec: `ExamLab/docs/superpowers/specs/2026-05-18-backend-migration-design.md`. Voller Kontext in Memory `project_backend_migration`.
+
+**Vorab als User-Aktion offen:** **Apps-Script-Deploy für datum-Fix vom 23.05.2026** (GAS-Editor → Bereitstellungen verwalten → Bearbeiten → Neue Version → Bereitstellen). Test: Prüfung anlegen, speichern, neu laden — Network-Tab muss `datum: "2026-05-23"` zeigen (nicht ISO-with-time).
+
+**Wichtige Memory-Lehren von heute:**
+- iframe `sandbox="allow-scripts allow-same-origin"` ist effektiv kein Sandbox (Kombi erlaubt Self-Entsandboxing). → `allow-scripts` alleine.
+- L3Dropdown-Pattern: `useId()` + konditionales `aria-controls={offen ? id : undefined}` (listbox existiert nur wenn offen).
+- `FreitextFrage:317`-Audit: Bei `no-danger`-Audits IMMER per failing-Test verifizieren — `<script>` war tatsächlich im DOM, kein theoretisches Risiko.
+- Bei Pfad-Refactors immer Audit-Scripts mit-migrieren (`audit-storybook-coverage.mjs` REQUIRED_MAP_IMPORTS, `no-emoji-baseline.json` allowlist).
+- react-doctor JSON dupliziert Errors wegen `projects[]`-Nesting → `unique` filtern für Distinct-Count.
+- `--no-score`-Flag existiert NICHT in react-doctor CLI — nur `--json`.
+
+---
+
 ### Stand 28.05.2026 SPÄT-3 — only-export-components Sweep LIVE
 
 react-doctor Errors **13 → 1** (nur `no-eval` poolSync.ts bewusst). Alle 12 `only-export-components`-Errors auf 9 Files behoben:
