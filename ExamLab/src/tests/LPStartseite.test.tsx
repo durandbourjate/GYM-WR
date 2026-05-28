@@ -35,9 +35,11 @@ let mockListenTab: 'pruefungen' | 'tracker' = 'pruefungen'
 let mockModus: 'pruefung' | 'uebung' | 'fragensammlung' = 'pruefung'
 let mockUebungsTab: 'uebungen' | 'durchfuehren' | 'analyse' = 'durchfuehren'
 
+// Stabile Referenz — neue Objekt-Literale pro Render würden useEffect([user]) re-triggern
+const STABLE_USER = { email: 'lp@gymhofwil.ch', name: 'Test LP' }
 vi.mock('../store/authStore', () => ({
   useAuthStore: (selector: (s: { user: { email: string; name: string } | null; istDemoModus: boolean }) => unknown) =>
-    selector({ user: { email: 'lp@gymhofwil.ch', name: 'Test LP' }, istDemoModus: false }),
+    selector({ user: STABLE_USER, istDemoModus: false }),
 }))
 
 vi.mock('../store/lpUIStore', () => ({

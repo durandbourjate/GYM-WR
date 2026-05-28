@@ -53,6 +53,9 @@ export function useLPDashboardData(opts: {
 
   // Alle Prüfungs-Configs + Tracker-Daten laden — byte-identisch zu LPStartseite.tsx Z. 300-394
   useEffect(() => {
+    let abgebrochen = false
+    let syncTimeoutId: ReturnType<typeof setTimeout> | null = null
+
     async function lade(): Promise<void> {
       if (!user) return
 
@@ -86,6 +89,8 @@ export function useLPDashboardData(opts: {
         configResult = null
       }
 
+      if (abgebrochen) return  // Guard nach await
+
       if (configResult) {
         setConfigs(configResult)
         useConfigsListStore.getState().setConfigs(configResult)
@@ -102,13 +107,17 @@ export function useLPDashboardData(opts: {
         const istDurchfuehrung = window.location.search.includes('id=')
         if (!sessionStorage.getItem(SYNC_DONE_KEY) && !istDurchfuehrung) {
           // 10s Verzögerung damit Dashboard-Laden + LP-Monitoring Vorrang haben
-          setTimeout(async () => {
+          syncTimeoutId = setTimeout(async () => {
+            if (abgebrochen) return  // Guard am Anfang des Timeout-Bodies
             try {
               // Seriell: erst Prüfung, dann Übung (nicht parallel!)
               await syncEinrichtungsPruefung(user.email, (msg) => toast.warning(msg))
+              if (abgebrochen) return
               await syncEinrichtungsUebung(user.email, (msg) => toast.warning(msg))
+              if (abgebrochen) return
               sessionStorage.setItem(SYNC_DONE_KEY, '1')
               const neueConfigs = await apiService.ladeAlleConfigs(user.email)
+              if (abgebrochen) return
               if (neueConfigs) {
                 setConfigs(neueConfigs)
                 useConfigsListStore.getState().setConfigs(neueConfigs)
@@ -124,21 +133,30 @@ export function useLPDashboardData(opts: {
         setBackendFehler(true)
       }
 
+      if (abgebrochen) return  // Guard vor letztem State-Setter
+
       // Dashboard sofort interaktiv zeigen (Tracker lädt im Hintergrund)
       setConfigsLadeStatus("fertig")
 
       // TrackerDaten im Hintergrund nachladen (non-blocking, ~6-8s)
       apiService.ladeTrackerDaten(user.email)
         .then(trackerResult => {
+          if (abgebrochen) return
           if (trackerResult) setTrackerDaten(trackerResult)
           setTrackerLadeStatus('fertig')
         })
         .catch(err => {
+          if (abgebrochen) return
           console.warn('[LP] Tracker-Laden fehlgeschlagen:', err)
           setTrackerLadeStatus('fertig')
         })
     }
     lade()
+
+    return () => {
+      abgebrochen = true
+      if (syncTimeoutId !== null) clearTimeout(syncTimeoutId)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- toast ist Modul-Singleton (useToast.ts toastApi), Identity stabil; deps byte-identisch zur Quelle LPStartseite Z. 394
   }, [user, istDemoModus])
 
