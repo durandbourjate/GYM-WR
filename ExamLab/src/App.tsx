@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+import { lazyMitRetry } from './utils/lazyMitRetry.ts'
 import { usePruefungStore } from './store/pruefungStore.ts'
 import { useAuthStore } from './store/authStore.ts'
 import { einrichtungsPruefung } from './data/einrichtungsPruefung.ts'
@@ -17,9 +18,6 @@ import Startbildschirm from './components/Startbildschirm.tsx'
 import Layout from './components/Layout.tsx'
 import FragenUebersicht from './components/FragenUebersicht.tsx'
 import AbgabeBestaetigung from './components/AbgabeBestaetigung.tsx'
-import DurchfuehrenDashboard from './components/lp/durchfuehrung/DurchfuehrenDashboard.tsx'
-
-import LPStartseite from './components/lp/LPStartseite.tsx'
 import ThemeToggle from './components/ThemeToggle.tsx'
 import { ToastContainer } from '@gymhofwil/shared'
 import SuSStartseite from './components/sus/SuSStartseite.tsx'
@@ -36,6 +34,21 @@ setKontenrahmenData(kontenrahmenJson.konten as Parameters<typeof setKontenrahmen
 // Hinweis: Eingebaute Prüfungen (EINGEBAUTE_PRUEFUNGEN) wurden entfernt.
 // Alle Prüfungen laufen jetzt über den normalen Backend-Datenfluss (Google Sheets).
 // Im Demo-Modus wird die einrichtungsPruefung aus data/einrichtungsPruefung.ts verwendet.
+
+// LP-only-Komponenten lazy laden: Diese werden nur auf dem LP-Pfad gerendert
+// (user.rolle === 'lp'). Statischer Import würde den kompletten LP-Bundle (~278kB
+// gzip) auch in den SuS-Entry ziehen. lazyMitRetry kapselt Chunk-Reload nach Deploy.
+const LPStartseite = lazyMitRetry(() => import('./components/lp/LPStartseite.tsx'))
+const DurchfuehrenDashboard = lazyMitRetry(() => import('./components/lp/durchfuehrung/DurchfuehrenDashboard.tsx'))
+
+// Geteilter Lade-Fallback (gleiches Muster wie router/Router.tsx::LoadingFallback)
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <p className="text-slate-500 dark:text-slate-400">Wird geladen...</p>
+    </div>
+  )
+}
 
 export default function App() {
   return (
@@ -281,9 +294,17 @@ function AppRoutes() {
   // Multi-Dashboard (?ids=) wird jetzt in LPStartseite unter /pruefung/monitoring gehandhabt
   if (user.rolle === 'lp') {
     if (pruefungIdAusUrl) {
-      return <DurchfuehrenDashboard pruefungId={pruefungIdAusUrl} />
+      return (
+        <Suspense fallback={<LoadingFallback />}>
+          <DurchfuehrenDashboard pruefungId={pruefungIdAusUrl} />
+        </Suspense>
+      )
     }
-    return <LPStartseite />
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <LPStartseite />
+      </Suspense>
+    )
   }
 
   // SuS ohne Prüfungs-ID: Startseite mit Üben/Prüfen-Auswahl.

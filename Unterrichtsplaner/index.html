@@ -7,6 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#1e40af" />
     <meta name="description" content="Jahresplanung WR – Gymnasium Hofwil" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!--
+      Content-Security-Policy — erlaubt exakt die externen Origins, die der Planer-Code referenziert:
+      - accounts.google.com : Google Identity Services (gsi/client, dynamisch geladen in gcal.ts) + OAuth-Popup → script-src, connect-src, frame-src
+      - www.googleapis.com : Google Calendar API v3 (gcal.ts gcalFetch) → connect-src
+      - script.google.com + script.googleusercontent.com : Apps-Script-Backend (synergyService/pruefungBridge appsScriptUrl, GAS leitet auf *.googleusercontent.com um) → connect-src
+      - *.googleusercontent.com : Google-Nutzerinhalte/Avatare (defensiv) → img-src, frame-src
+      - fonts.googleapis.com / fonts.gstatic.com : Google Fonts (in vite-PWA runtimeCaching konfiguriert) → style-src, font-src, connect-src
+      Tailwind-CSS wird gebündelt ausgeliefert (kein Runtime-CDN). 'unsafe-inline' für style-src wegen inline-Styles/Vite.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://accounts.google.com https://www.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.googleusercontent.com; font-src 'self' data: https://fonts.gstatic.com; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'self' https://accounts.google.com https://*.googleusercontent.com;" />
     <title>Unterrichtsplaner Hofwil</title>
   </head>
   <body>

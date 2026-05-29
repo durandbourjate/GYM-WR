@@ -2,7 +2,10 @@ import { useState, useRef } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
 import { COURSES } from '../data/courses';
 import { WEEKS } from '../data/weeks';
-import * as XLSX from 'xlsx';
+// xlsx (~429kB raw / ~140kB gzip) wird nur beim tatsächlichen Import gebraucht.
+// Daher Typ-only-Import (zur Buildzeit entfernt) + dynamischer Import() im Handler,
+// damit xlsx in einen separaten Chunk wandert und nicht im Haupt-Bundle landet.
+import type * as XLSX from 'xlsx';
 
 // Legacy type labels for Excel import preview (indices match lessonType values)
 const TYPE_LABELS = ['Andere', 'BWL', 'Recht/VWL', 'IN', 'Prüfung', 'Event', 'Ferien'];
@@ -63,18 +66,20 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
+      const XLSX = await import('xlsx');
       const data = new Uint8Array(evt.target!.result as ArrayBuffer);
       const wb = XLSX.read(data, { type: 'array' });
       setWorkbook(wb);
       setSheetNames(wb.SheetNames);
       setSelectedSheet(wb.SheetNames[0]);
-      loadSheet(wb, wb.SheetNames[0]);
+      await loadSheet(wb, wb.SheetNames[0]);
     };
     reader.readAsArrayBuffer(file);
   };
 
-  const loadSheet = (wb: XLSX.WorkBook, name: string) => {
+  const loadSheet = async (wb: XLSX.WorkBook, name: string) => {
+    const XLSX = await import('xlsx');
     const ws = wb.Sheets[name];
     const json: string[][] = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
     setRawData(json);
@@ -214,7 +219,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                 <div className="flex items-center gap-2">
                   <label className="text-[11px] text-slate-400">Sheet:</label>
                   <select value={selectedSheet}
-                    onChange={(e) => { setSelectedSheet(e.target.value); if (workbook) loadSheet(workbook, e.target.value); }}
+                    onChange={(e) => { setSelectedSheet(e.target.value); if (workbook) void loadSheet(workbook, e.target.value); }}
                     className="text-[11px] bg-slate-700 border border-slate-600 rounded px-2 py-1 text-slate-200">
                     {sheetNames.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>

@@ -23,6 +23,26 @@ interface TagsState {
   getByName: (name: string) => Tag | undefined
 }
 
+/**
+ * Modul-lokaler Memo-Cache fuer die id→Tag-Map, gekeyed auf die `tags`-Array-Reference.
+ *
+ * Hintergrund: `getByIds` wird pro Frage in heissen Such-/Filter-Pfaden aufgerufen
+ * (sucheAdapter.indexFragen/indexFragenVolltext, useFragenFilter). Eine `new Map(...)`
+ * pro Aufruf ist bei 20k Fragen O(n×m). Da die `tags`-Reference nur bei echter
+ * Mutation wechselt (Zustand setzt `tags` immer auf ein neues Array), koennen wir
+ * die Map cachen und nur bei Reference-Wechsel neu aufbauen.
+ *
+ * Identisches Muster wie `useTagsByIds` (Map aus tags), nur store-level statt im Hook.
+ */
+let tagsByIdCache: { ref: Tag[]; map: Map<string, Tag> } | null = null
+
+function getTagsByIdMap(tags: Tag[]): Map<string, Tag> {
+  if (!tagsByIdCache || tagsByIdCache.ref !== tags) {
+    tagsByIdCache = { ref: tags, map: new Map(tags.map((t) => [t.id, t])) }
+  }
+  return tagsByIdCache.map
+}
+
 export const useTagsStore = create<TagsState>((set, get) => ({
   tags: [],
   geladen: false,
@@ -57,7 +77,7 @@ export const useTagsStore = create<TagsState>((set, get) => ({
   getById: (id) => get().tags.find((t) => t.id === id),
 
   getByIds: (ids) => {
-    const map = new Map(get().tags.map((t) => [t.id, t]))
+    const map = getTagsByIdMap(get().tags)
     return ids.map((id) => map.get(id)).filter((t): t is Tag => Boolean(t))
   },
 

@@ -151,6 +151,33 @@ describe('tagsStore', () => {
     await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
     expect(vi.mocked(tagsApi.listeTags)).toHaveBeenCalledTimes(2)
   })
+
+  // === Map-Memoization (store-level tagsById cache) — Cache-Invalidierung bei Mutation ===
+
+  it('getByIds: spiegelt upsertLokal (neuer Tag wird nach Mutation gefunden)', async () => {
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
+    // warm den Cache mit der initialen tags-Reference
+    expect(useTagsStore.getState().getByIds(['t1']).map((t) => t.id)).toEqual(['t1'])
+    const neu: Tag = { id: 't3', name: 'neu', farbe: 'sky', archiviert: false, erstelltAm: '2026-01-02', erstelltVon: 'a@b' }
+    useTagsStore.getState().upsertLokal(neu)
+    // Cache muss invalidiert sein (tags-Reference wechselte) → t3 jetzt auffindbar
+    expect(useTagsStore.getState().getByIds(['t1', 't3']).map((t) => t.id)).toEqual(['t1', 't3'])
+  })
+
+  it('getByIds: spiegelt entferneLokal (entfernter Tag verschwindet nach Mutation)', async () => {
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
+    expect(useTagsStore.getState().getByIds(['t1', 't2']).map((t) => t.id)).toEqual(['t1', 't2'])
+    useTagsStore.getState().entferneLokal('t1')
+    expect(useTagsStore.getState().getByIds(['t1', 't2']).map((t) => t.id)).toEqual(['t2'])
+  })
+
+  it('getByIds: spiegelt upsertLokal-Update (geaenderter Tag liefert neuen Inhalt)', async () => {
+    await useTagsStore.getState().ladeAlleTags({ email: 'test@test' })
+    expect(useTagsStore.getState().getByIds(['t1'])[0].name).toBe('aktuell')
+    const aktualisiert: Tag = { id: 't1', name: 'umbenannt', farbe: 'pink', archiviert: false, erstelltAm: '2026-01-01', erstelltVon: 'a@b' }
+    useTagsStore.getState().upsertLokal(aktualisiert)
+    expect(useTagsStore.getState().getByIds(['t1'])[0].name).toBe('umbenannt')
+  })
 })
 
 // === Spawn-Task 17.05.2026 — useTagsByIds Hook ===
