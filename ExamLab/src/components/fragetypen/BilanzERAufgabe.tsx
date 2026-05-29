@@ -211,7 +211,7 @@ function KontoRow({ konto, konten, readOnly, onNrChange, onBetragChange, onRemov
         {konten.map(nr => <option key={nr} value={nr}>{nr} {kontoLabel(nr)}</option>)}
       </select>
       <input type="number" value={konto.betrag} onChange={e => onBetragChange(e.target.value)} disabled={readOnly}
-        placeholder="CHF" min="0" step="0.01" className={`${numInput} w-24 ${!readOnly && !konto.betrag ? 'border-violet-400 dark:border-violet-500' : ''}`} />
+        placeholder="CHF" min="0" step="0.01" aria-label="Betrag" className={`${numInput} w-24 ${!readOnly && !konto.betrag ? 'border-violet-400 dark:border-violet-500' : ''}`} />
       {!readOnly && canRemove && (
         <button type="button" onClick={onRemove} className={btnRemove}>×</button>
       )}
@@ -309,7 +309,7 @@ function BilanzSeiteUI({ seite, bilanzsumme, readOnly, konten, onUpdate, onBsCha
       <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-600 flex items-center justify-end gap-2">
         <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Bilanzsumme:</span>
         <input type="number" value={bilanzsumme} onChange={e => onBsChange(e.target.value)} disabled={readOnly}
-          placeholder="CHF" min="0" step="0.01" className={`${numInput} w-24 font-bold ${!readOnly && !bilanzsumme ? 'border-violet-400 dark:border-violet-500' : ''}`} />
+          placeholder="CHF" min="0" step="0.01" aria-label="Bilanzsumme" className={`${numInput} w-24 font-bold ${!readOnly && !bilanzsumme ? 'border-violet-400 dark:border-violet-500' : ''}`} />
       </div>
     </div>
   )
@@ -327,7 +327,7 @@ function ERUI({ er, onChange, readOnly, konten }: { er: ERFeldEingabe; onChange:
           <div key={stufe.id} className="rounded-md border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/30 p-3">
             <div className="flex items-center gap-2 mb-2">
               <input type="text" value={stufe.label} onChange={e => { const k = dc(); k.stufen[si].label = e.target.value; onChange(k) }} disabled={readOnly}
-                placeholder="Stufe (z.B. Bruttogewinn)" className={`${inputSm} flex-1 font-medium placeholder:text-slate-400`} />
+                placeholder="Stufe (z.B. Bruttogewinn)" aria-label="Stufenbezeichnung" className={`${inputSm} flex-1 font-medium placeholder:text-slate-400`} />
               {!readOnly && er.stufen.length > 1 && (
                 <button type="button" onClick={() => { const k = dc(); k.stufen.splice(si, 1); onChange(k) }} className={btnRemove}>×</button>
               )}
@@ -345,7 +345,7 @@ function ERUI({ er, onChange, readOnly, konten }: { er: ERFeldEingabe; onChange:
             <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-600 flex items-center gap-2">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Zwischentotal:</span>
               <input type="number" value={stufe.zwischentotal} onChange={e => { const k = dc(); k.stufen[si].zwischentotal = e.target.value; onChange(k) }} disabled={readOnly}
-                placeholder="CHF" step="0.01" className={`${numInput} w-28`} />
+                placeholder="CHF" step="0.01" aria-label="Zwischentotal" className={`${numInput} w-28`} />
             </div>
           </div>
         ))}
@@ -359,7 +359,7 @@ function ERUI({ er, onChange, readOnly, konten }: { er: ERFeldEingabe; onChange:
       <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-600 flex items-center gap-2">
         <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Gewinn/Verlust:</span>
         <input type="number" value={er.gewinnVerlust} onChange={e => { const k = dc(); k.gewinnVerlust = e.target.value; onChange(k) }} disabled={readOnly}
-          placeholder="CHF" step="0.01" className={`${numInput} w-32 font-bold`} />
+          placeholder="CHF" step="0.01" aria-label="Gewinn/Verlust" className={`${numInput} w-32 font-bold`} />
       </div>
     </div>
   )

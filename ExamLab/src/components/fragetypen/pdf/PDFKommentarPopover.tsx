@@ -17,7 +17,7 @@ export function PDFKommentarPopover({ position, initialText, onSave, onCancel }:
       style={{ left: position.x, top: position.y }}>
       <textarea ref={ref} value={text} onChange={e => setText(e.target.value)}
         className="w-full h-20 text-sm border border-slate-200 dark:border-slate-600 rounded p-1 resize-none bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-        placeholder="Kommentar..." />
+        placeholder="Kommentar..." aria-label="Kommentar" />
       <div className="flex justify-end gap-1 mt-1">
         <button onClick={onCancel} className="text-xs px-2 py-1 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Abbrechen</button>
         <button onClick={() => text.trim() && onSave(text.trim())}

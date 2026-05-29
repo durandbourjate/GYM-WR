@@ -143,7 +143,7 @@ export function PDFToolbar({
       {/* Markieren */}
       {(erlaubteWerkzeuge || []).includes('highlighter') && (
         <Tooltip text="Markieren">
-          <button type="button" aria-pressed={aktivesWerkzeug === 'highlighter'}
+          <button type="button" aria-pressed={aktivesWerkzeug === 'highlighter'} aria-label="Markieren"
             onClick={() => onWerkzeugWechsel('highlighter')} className={btnKlassen(aktivesWerkzeug === 'highlighter')}>
             <span className="inline-block w-4 h-1.5 bg-yellow-400 rounded-sm align-middle" />
           </button>
@@ -303,6 +303,7 @@ export function PDFToolbar({
               <button
                 type="button"
                 onClick={() => onFarbeWechsel(farbe)}
+                aria-label={`Farbe ${farbe}`}
                 className={[
                   'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
                   aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',

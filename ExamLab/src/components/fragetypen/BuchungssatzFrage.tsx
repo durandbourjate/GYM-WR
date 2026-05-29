@@ -150,6 +150,7 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
                 <button
                   type="button"
                   onClick={() => buchungEntfernen(bIdx)}
+                  aria-label={`Buchungssatz ${bIdx + 1} entfernen`}
                   className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,8 +164,10 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
             <div className="flex flex-wrap items-center gap-2">
               {/* Soll-Konto — Kategorie-Farben in SuS-Sicht ausgeblendet */}
               <div className="flex-1 min-w-[140px]">
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Soll</label>
+                <label htmlFor={`soll-${buchung.id}`} className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Soll</label>
                 <KontenSelect
+                  id={`soll-${buchung.id}`}
+                  ariaLabel="Soll-Konto"
                   value={buchung.sollKonto}
                   onChange={(nr) => feldAendern(bIdx, 'sollKonto', nr)}
                   config={frage.kontenauswahl}
@@ -181,8 +184,10 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
 
               {/* Haben-Konto — Kategorie-Farben in SuS-Sicht ausgeblendet */}
               <div className="flex-1 min-w-[140px]">
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Haben</label>
+                <label htmlFor={`haben-${buchung.id}`} className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Haben</label>
                 <KontenSelect
+                  id={`haben-${buchung.id}`}
+                  ariaLabel="Haben-Konto"
                   value={buchung.habenKonto}
                   onChange={(nr) => feldAendern(bIdx, 'habenKonto', nr)}
                   config={frage.kontenauswahl}
@@ -194,8 +199,10 @@ function BuchungssatzAufgabe({ frage }: { frage: BuchungssatzFrageType }) {
 
               {/* Betrag */}
               <div className="w-28 shrink-0">
-                <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Betrag</label>
+                <label htmlFor={`betrag-${buchung.id}`} className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Betrag</label>
                 <input
+                  id={`betrag-${buchung.id}`}
+                  aria-label="Betrag"
                   type="number"
                   value={buchung.betrag}
                   onChange={(e) => feldAendern(bIdx, 'betrag', e.target.value)}

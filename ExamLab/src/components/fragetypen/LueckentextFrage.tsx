@@ -150,6 +150,7 @@ function LueckentextAufgabe({ frage }: { frage: LueckentextFrageType }) {
                 onChange={(e) => handleChange(lueckenId, e.target.value)}
                 disabled={disabled}
                 placeholder={`Lücke ${lueckenNummer}`}
+                aria-label={`Lücke ${lueckenNummer}`}
                 spellCheck={rechtschreibpruefungAktiv}
                 lang={rechtschreibSprache}
                 className={`inline-block mx-1 px-3 py-1 w-48 text-base border-b-2 outline-none transition-colors text-slate-800 dark:text-slate-100

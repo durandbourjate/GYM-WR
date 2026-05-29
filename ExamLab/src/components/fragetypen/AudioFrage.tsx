@@ -59,7 +59,7 @@ export default function AudioFrage({ frage }: Props) {
       {audioUrl && (
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Bestehende Aufnahme:</p>
-          <audio controls controlsList="nodownload noplaybackrate" src={audioUrl} className="w-full" preload="metadata" />
+          <audio controls controlsList="nodownload noplaybackrate" src={audioUrl} className="w-full" preload="metadata" aria-label="Bestehende Audio-Aufnahme" />
         </div>
       )}
 

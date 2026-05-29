@@ -338,6 +338,7 @@ export function PDFSeite({
           type="text"
           inputMode="text"
           autoComplete="off"
+          aria-label="Text-Anmerkung"
           value={textOverlay.text}
           onChange={(e) => setTextOverlay(prev => ({ ...prev, text: e.target.value }))}
           onKeyDown={(e) => {

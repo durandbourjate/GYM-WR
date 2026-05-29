@@ -15,6 +15,10 @@ interface KontenSelectProps {
   placeholder?: string
   disabled?: boolean
   className?: string
+  /** Optional: id für das innere Eingabe-Element (für <label htmlFor> / Barrierefreiheit) */
+  id?: string
+  /** Optional: Barrierefreiheits-Label für das innere Eingabe-Element */
+  ariaLabel?: string
   /** Optional: Nur diese Kontonummern im Autocomplete anbieten (filtert sucheKonten) */
   filterKonten?: string[]
   /** Kompakte Darstellung (kleinere Höhe, Text) für verschachtelte Editoren */
@@ -48,6 +52,8 @@ export default function KontenSelect({
   placeholder = 'Konto wählen…',
   disabled = false,
   className = '',
+  id,
+  ariaLabel,
   filterKonten,
   compact = false,
   zeigeKategoriefarben,
@@ -72,6 +78,8 @@ export default function KontenSelect({
         placeholder={placeholder}
         disabled={disabled}
         className={className}
+        id={id}
+        ariaLabel={ariaLabel}
       />
     )
   }
@@ -86,6 +94,8 @@ export default function KontenSelect({
       filterKonten={filterKonten}
       compact={compact}
       farbenAktiv={farbenAktiv}
+      id={id}
+      ariaLabel={ariaLabel}
     />
   )
 }
@@ -99,6 +109,8 @@ function EingeschraenktSelect({
   placeholder,
   disabled,
   className,
+  id,
+  ariaLabel,
 }: {
   value: string
   onChange: (n: string) => void
@@ -106,6 +118,8 @@ function EingeschraenktSelect({
   placeholder: string
   disabled: boolean
   className: string
+  id?: string
+  ariaLabel?: string
 }) {
   const options = sucheKonten('', konten)
 
@@ -114,6 +128,8 @@ function EingeschraenktSelect({
       value={value}
       onChange={e => onChange(e.target.value)}
       disabled={disabled}
+      id={id}
+      aria-label={ariaLabel}
       className={`min-h-[44px] w-full rounded-md border px-3 py-2
         text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
         disabled:cursor-not-allowed disabled:opacity-50
@@ -145,6 +161,8 @@ function VollAutocomplete({
   filterKonten,
   compact = false,
   farbenAktiv = true,
+  id,
+  ariaLabel,
 }: {
   value: string
   onChange: (n: string) => void
@@ -154,6 +172,8 @@ function VollAutocomplete({
   filterKonten?: string[]
   compact?: boolean
   farbenAktiv?: boolean
+  id?: string
+  ariaLabel?: string
 }) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -243,6 +263,8 @@ function VollAutocomplete({
     <div ref={wrapperRef} className={`relative ${className}`}>
       <input
         ref={inputRef}
+        id={id}
+        aria-label={ariaLabel}
         type="text"
         value={displayValue}
         onChange={handleChange}

@@ -328,6 +328,7 @@ export default function Dashboard({ deepLinkZiel }: DashboardProps = {}) {
               value={suchtext}
               onChange={e => setSuchtext(e.target.value)}
               placeholder="Thema, Fach oder Frage suchen..."
+              aria-label="Thema, Fach oder Frage suchen"
               className="ml-auto w-64 max-w-[40%] px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500"
             />
           </div>

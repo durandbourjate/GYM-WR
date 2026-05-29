@@ -209,11 +209,12 @@ export default function FormelFrageComponent({ frage }: Props) {
 
       {/* LaTeX-Eingabe */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+        <label htmlFor="formel-latex-eingabe" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
           Formel (LaTeX)
         </label>
         <input
           ref={inputRef}
+          id="formel-latex-eingabe"
           type="text"
           value={eingabe}
           onChange={(e) => handleEingabe(e.target.value)}

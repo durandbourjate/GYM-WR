@@ -84,6 +84,7 @@ export default function KontoSeite({
                 onChange={(e) => onFeldAendern(anfangsbestandFeld, e.target.value)}
                 disabled={readOnly}
                 placeholder="0"
+                aria-label="Anfangsbestand"
                 className={`min-h-[36px] flex-1 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(anfangsbestand, readOnly)}`}
               />
             </div>
@@ -105,6 +106,7 @@ export default function KontoSeite({
                 min="1"
                 className={`min-h-[36px] w-10 rounded border bg-white px-1 py-1 text-xs text-center text-slate-700 dark:bg-slate-700 dark:text-slate-200 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(z.gfNr, readOnly)}`}
                 title="Geschäftsfall-Nr."
+                aria-label="Geschäftsfall-Nr."
               />
             )}
             <div className="flex-1 min-w-0">
@@ -125,11 +127,12 @@ export default function KontoSeite({
               placeholder="CHF"
               min="0"
               step="0.01"
+              aria-label="Betrag"
               className={`min-h-[36px] w-24 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(z.betrag, readOnly)}`}
             />
             {!readOnly && eintraege.length > 1 && (
               <button type="button" onClick={() => onZeileEntfernen(zIdx)}
-                className="min-h-[36px] min-w-[28px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors" title="Entfernen">
+                className="min-h-[36px] min-w-[28px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors" title="Entfernen" aria-label="Zeile entfernen">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -160,6 +163,7 @@ export default function KontoSeite({
             placeholder="CHF"
             min="0"
             step="0.01"
+            aria-label="Saldo"
             className={`min-h-[36px] w-24 rounded border bg-white px-2 py-1 text-sm text-right text-slate-900 dark:bg-slate-700 dark:text-slate-100 focus:outline-none disabled:opacity-50 placeholder:text-slate-400 ${brd(saldo, readOnly)}`}
           />
         </div>

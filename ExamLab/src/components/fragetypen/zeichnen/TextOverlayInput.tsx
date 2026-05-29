@@ -44,6 +44,7 @@ export function TextOverlayInput({
         inputMode="text"
         autoComplete="off"
         autoCapitalize="sentences"
+        aria-label="Text eingeben"
         value={text}
         onChange={e => setText(e.target.value)}
         onPointerDown={e => e.stopPropagation()}

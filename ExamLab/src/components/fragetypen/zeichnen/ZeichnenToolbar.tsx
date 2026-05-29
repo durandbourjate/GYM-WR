@@ -276,6 +276,7 @@ export function ZeichnenToolbar({
               <button
                 type="button"
                 onClick={() => onFarbeChange(farbe)}
+                aria-label={`Farbe ${farbe}`}
                 className={[
                   'w-[44px] h-[44px] flex items-center justify-center rounded-lg transition-all',
                   aktiveFarbe === farbe ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:scale-110',

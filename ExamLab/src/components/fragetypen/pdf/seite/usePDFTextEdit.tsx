@@ -82,6 +82,7 @@ export function usePDFTextEdit(params: UsePDFTextEditParams): UsePDFTextEditResu
       type="text"
       inputMode="text"
       autoComplete="off"
+      aria-label="Text-Anmerkung bearbeiten"
       value={editierendeAnnotation.text}
       onChange={(e) => setEditierendeAnnotation(prev => prev ? { ...prev, text: e.target.value } : null)}
       onKeyDown={(e) => {

@@ -84,6 +84,7 @@ export default function FarbenTab() {
                 onChange={(e) => setzefarbe(fach, e.target.value)}
                 className="w-7 h-7 rounded cursor-pointer border border-slate-200 dark:border-slate-600 p-0.5"
                 title={`Farbe für ${fach}`}
+                aria-label={`Farbe für ${fach}`}
               />
 
               {/* Name */}

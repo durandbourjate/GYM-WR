@@ -133,11 +133,17 @@ export function ThemaKarte({
         {!istGesperrt && <span>{sterneText(berechneSterne(fortschritt.quote))}</span>}
         {anzahlLernziele > 0 && onLernzieleKlick && (
           <span
+            role="button"
+            tabIndex={0}
             onClick={(e) => { e.stopPropagation(); onLernzieleKlick() }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); onLernzieleKlick() }
+            }}
             className="cursor-pointer hover:opacity-80 inline-flex items-center"
             title={`${anzahlLernziele} Lernziele`}
+            aria-label={`${anzahlLernziele} Lernziele`}
           >
-            <Flag className="w-3.5 h-3.5" />
+            <Flag className="w-3.5 h-3.5" aria-hidden="true" />
           </span>
         )}
       </div>

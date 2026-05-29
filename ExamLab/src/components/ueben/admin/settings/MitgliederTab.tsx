@@ -166,6 +166,7 @@ export default function MitgliederTab() {
             onChange={(e) => setEinladenEmail(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleEinladen() }}
             placeholder="E-Mail-Adresse"
+            aria-label="E-Mail-Adresse"
             className="flex-1 min-w-0 p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:outline-none focus:border-slate-500 text-sm"
           />
           <select

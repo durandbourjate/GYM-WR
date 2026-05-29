@@ -97,6 +97,7 @@ export default function AllgemeinTab() {
                 onChange={e => setNeuerName(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') handleNameSpeichern() }}
                 className="flex-1 p-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white text-sm focus:outline-none focus:border-slate-500"
+                aria-label="Gruppenname"
                 autoFocus
               />
               <button
@@ -209,8 +210,10 @@ export default function AllgemeinTab() {
           const wert = einstellungen.masterySchwellwerte?.[key] ?? DEFAULT_MASTERY_SCHWELLWERTE[key]
           return (
             <div key={key} className="flex items-center gap-3">
-              <label className="text-xs text-slate-600 dark:text-slate-300 w-44 shrink-0">{label}</label>
+              <label htmlFor={`mastery-${key}`} className="text-xs text-slate-600 dark:text-slate-300 w-44 shrink-0">{label}</label>
               <input
+                id={`mastery-${key}`}
+                aria-label={label}
                 type="range"
                 min={min}
                 max={max}
@@ -246,6 +249,7 @@ export default function AllgemeinTab() {
             value={einstellungen.maxAktiveThemen ?? 5}
             onChange={e => aktualisiereEinstellungen({ maxAktiveThemen: Number(e.target.value) })}
             className="flex-1"
+            aria-label="Maximale aktuelle Themen"
           />
           <span className="text-sm font-mono w-8 text-center">
             {einstellungen.maxAktiveThemen ?? 5}

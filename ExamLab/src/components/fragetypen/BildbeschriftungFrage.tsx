@@ -97,6 +97,7 @@ function BildbeschriftungAufgabe({ frage }: { frage: BildbeschriftungFrageType }
                 onChange={(e) => handleEingabe(beschriftung.id, e.target.value)}
                 disabled={disabled}
                 placeholder={`Label ${i + 1}`}
+                aria-label={`Beschriftung ${i + 1}`}
                 className={`min-w-[120px] max-w-[220px] w-auto px-2 py-1 text-sm rounded border shadow-sm
                   bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100
                   border-slate-300 dark:border-slate-600

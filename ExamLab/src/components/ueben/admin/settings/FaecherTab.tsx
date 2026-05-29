@@ -141,6 +141,7 @@ export default function FaecherTab() {
               onChange={() => toggleFach(fach)}
               className="w-4 h-4 rounded"
               id={`fach-${fach}`}
+              aria-label={`Fach ${fach} anzeigen`}
             />
             <label
               htmlFor={`fach-${fach}`}
@@ -167,6 +168,7 @@ export default function FaecherTab() {
                     onChange={() => toggleThema(fach, thema)}
                     className="w-4 h-4 rounded"
                     id={`thema-${fach}-${thema}`}
+                    aria-label={`Thema ${thema} anzeigen`}
                   />
                   <label
                     htmlFor={`thema-${fach}-${thema}`}
