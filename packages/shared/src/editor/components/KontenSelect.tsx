@@ -4,7 +4,7 @@
  * Farbschema: schlicht grau/slate, Kategorie-Farben nur in Badges + Zeilenhintergrund.
  */
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useId } from 'react'
 import { sucheKonten, kontoLabel, findKonto, type KontoEintrag } from '../kontenrahmen'
 import type { KontenauswahlConfig } from '../../types/fragen-core'
 
@@ -162,6 +162,7 @@ function VollAutocomplete({
   const wrapperRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
+  const listboxId = useId()
 
   // Angezeigte Ergebnisse (optional gefiltert auf bestimmte Kontonummern)
   const results = sucheKonten(query, filterKonten).slice(0, MAX_RESULTS)
@@ -266,6 +267,7 @@ function VollAutocomplete({
         aria-activedescendant={open && results[highlightIdx]
           ? `konto-opt-${results[highlightIdx].nummer}`
           : undefined}
+        aria-controls={open ? listboxId : undefined}
       />
 
       {/* Löschen-Button wenn Wert gesetzt */}
@@ -286,6 +288,7 @@ function VollAutocomplete({
       {open && (
         <ul
           ref={listRef}
+          id={listboxId}
           role="listbox"
           className="absolute z-50 mt-1 max-h-64 w-full min-w-[320px] overflow-auto rounded-md border
             border-slate-200 bg-white shadow-lg dark:border-slate-600 dark:bg-slate-800"
