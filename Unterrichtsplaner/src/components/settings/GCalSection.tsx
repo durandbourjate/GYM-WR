@@ -7,7 +7,7 @@ import { useInstanceStore, weekToDate } from '../../store/instanceStore';
 import { useGCalStore, type GCalCalendar } from '../../store/gcalStore';
 import { loginWithGoogle, logout as gcalLogout, fetchCalendarList, syncPlannerToCalendar, buildWeekYearMap, scanCalendarsForSpecialWeeks, checkCollisions, type SyncProgress, type ImportCandidate } from '../../services/gcal';
 import { Section } from './shared';
-import { formatGymLevel } from './SpecialWeeksEditor';
+import { formatGymLevel } from '../../utils/gymLevel';
 
 // === Google Calendar Section (v3.60) ===
 export function GCalSection() {

@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { SmallInput, SmallSelect } from './shared';
 import { generateId, type SpecialWeekConfig, type CourseConfig } from '../../store/settingsStore';
 import { getGymStufe } from '../../utils/gradeRequirements';
+import { formatGymLevel, normalizeGymLevel } from '../../utils/gymLevel';
 
 // === GYM-Level helpers ===
 const GYM_LEVEL_OPTIONS: { key: string; label: string }[] = [
@@ -51,19 +52,6 @@ function computeExcludedCourses(gymLevel: string | string[] | undefined, courses
     if (!matchesAny) excluded.push(c.id);
   }
   return excluded;
-}
-
-/** J5: Normalize gymLevel to string[] for display */
-function normalizeGymLevel(gl?: string | string[]): string[] {
-  if (!gl) return [];
-  return Array.isArray(gl) ? gl : [gl];
-}
-
-/** J5: Format gymLevel array for header display */
-export function formatGymLevel(gl?: string | string[]): string {
-  const arr = normalizeGymLevel(gl);
-  if (arr.length === 0) return '';
-  return arr.join(', ');
 }
 
 // === Special Weeks Editor (Hierarchisch: KW → GYM-Stufen) ===

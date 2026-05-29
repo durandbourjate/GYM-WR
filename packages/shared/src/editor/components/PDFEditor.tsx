@@ -31,8 +31,8 @@ export interface PDFEditorProps {
   }
 }
 
-// Standard-Highlight-Farben (auch exportiert für Host-Apps)
-export const STANDARD_HIGHLIGHT_FARBEN = [
+// Standard-Highlight-Farben (modul-intern; Host-Apps haben ihre eigene Kopie in pdf/PDFTypes.ts)
+const STANDARD_HIGHLIGHT_FARBEN = [
   '#FEF08A', // Gelb Pastell (Default für Markieren)
   '#FBCFE8', // Rosa Pastell
   '#BAE6FD', // Hellblau Pastell

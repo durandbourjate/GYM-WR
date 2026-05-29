@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import type { Course } from '../types';
 import { getSequenceInfoFromStore } from '../utils/colors';
 import { usePlannerStore } from '../store/plannerStore';
-import { getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel, CATEGORIES } from './DetailPanel';
-import { FACHBEREICH_COLORS_PREVIEW } from './InlineEdit';
+import { getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel, CATEGORIES } from '../data/blockCategories';
+import { FACHBEREICH_COLORS_PREVIEW } from '../data/categories';
 
 export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: { week: string; col: number; courses: Course[]; courseIndex: number; totalCourses: number }) {
   const { lessonDetails, weekData, sequences } = usePlannerStore();

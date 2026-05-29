@@ -6,9 +6,6 @@ import { CollectionPanel } from './CollectionPanel';
 import { DetailsTab } from './detail/DetailsTab';
 import { BatchEditTab } from './detail/BatchEditTab';
 
-// Re-export for use in WeekRows etc.
-export { CATEGORIES, getSubtypesForCategory, getEffectiveCategorySubtype, getCategoryLabel, getSubtypeLabel } from '../data/blockCategories';
-
 // Switcher: show batch edit when multiple cells selected, else normal details
 function BatchOrDetailsTab() {
   const { multiSelection } = usePlannerStore();

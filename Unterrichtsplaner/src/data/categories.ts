@@ -128,3 +128,10 @@ export const WR_BLOCK_COLORS: Record<string, { bg: string; fg: string; border: s
 };
 export const DEFAULT_BLOCK_COLOR = { bg: '#334155', fg: '#cbd5e1', border: '#64748b' };
 export function getBlockColors(sa?: string) { return (sa && WR_BLOCK_COLORS[sa]) || DEFAULT_BLOCK_COLOR; }
+
+/** Kategorie-Key → Primärfarbe (HoverPreview-Akzent). */
+export const FACHBEREICH_COLORS_PREVIEW: Record<string, string> = Object.fromEntries(WR_CATEGORIES.map(c => [c.key, c.color]));
+
+/** Dynamische Farb-Lookups für Sequenz-Balken — lesen aus WR_CATEGORIES, Fallback auf FALLBACK_CATEGORY. */
+export function getCatColor(key: string | undefined): string { return key ? (WR_CATEGORIES.find(c => c.key === key)?.color || FALLBACK_CATEGORY.border) : FALLBACK_CATEGORY.border; }
+export function getCatBorder(key: string | undefined): string { return key ? (WR_CATEGORIES.find(c => c.key === key)?.border || FALLBACK_CATEGORY.border) : FALLBACK_CATEGORY.border; }
