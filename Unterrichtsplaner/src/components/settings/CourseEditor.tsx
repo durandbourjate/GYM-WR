@@ -97,15 +97,17 @@ export function CourseEditor({ courses, onChange, schoolLevel, baseDuration = 45
 
   // Auto-expand and scroll to focused course
   useEffect(() => {
-    if (focusKursId) {
-      const course = courses.find(c => c.id === focusKursId);
-      if (course) {
-        setEditingId(course.id);
-        // Clear the focus request after handling
-        usePlannerStore.getState().setSettingsEditKursId(null);
-        setTimeout(() => focusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-      }
-    }
+    if (!focusKursId) return;
+    const course = courses.find(c => c.id === focusKursId);
+    if (!course) return;
+    setEditingId(course.id);
+    const id = setTimeout(() => {
+      focusRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Focus-Request erst NACH dem Scroll löschen: würde man focusKursId synchron im
+      // Effect clearen, triggert der sofortige Re-Run den Cleanup und bräche den Timer ab.
+      usePlannerStore.getState().setSettingsEditKursId(null);
+    }, 100);
+    return () => clearTimeout(id);
   }, [focusKursId]);
 
   const addCourse = () => {

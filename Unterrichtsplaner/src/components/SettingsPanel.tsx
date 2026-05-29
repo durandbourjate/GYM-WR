@@ -72,6 +72,10 @@ export function SettingsPanel() {
   // G6: pendingHolidayKw → auto-add holiday entry with pre-filled KW
   const pendingHolidayKw = usePlannerStore(s => s.pendingHolidayKw);
   const [forceOpenHolidays, setForceOpenHolidays] = useState(false);
+  const [pendingFerienScroll, setPendingFerienScroll] = useState(false);
+
+  // pendingHolidayKw konsumieren: Ferien-Eintrag sofort anlegen + Scroll anfordern.
+  // Trigger sofort löschen (one-shot → kein Duplikat-Eintrag bei einem späteren Remount).
   useEffect(() => {
     if (!pendingHolidayKw) return;
     const kw = pendingHolidayKw;
@@ -80,11 +84,20 @@ export function SettingsPanel() {
     updateSettings({
       holidays: [...settings.holidays, { id: generateId(), label: '', startWeek: kw, endWeek: kw }],
     });
-    setTimeout(() => {
-      const el = document.querySelector('[data-section="ferien"]');
-      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 200);
+    setPendingFerienScroll(true);
   }, [pendingHolidayKw]);
+
+  // Scroll zum Ferien-Abschnitt, sobald angefordert — eigener Effect mit Timer +
+  // clearTimeout-Cleanup (bei Unmount/Re-Run). Das Flag wird erst IM Timer gelöscht,
+  // damit der dadurch ausgelöste Re-Run den Scroll nicht vorzeitig abbricht.
+  useEffect(() => {
+    if (!pendingFerienScroll) return;
+    const id = setTimeout(() => {
+      document.querySelector('[data-section="ferien"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setPendingFerienScroll(false);
+    }, 200);
+    return () => clearTimeout(id);
+  }, [pendingFerienScroll]);
 
   const handleReset = useCallback(() => {
     if (confirm('Alle Einstellungen zurücksetzen? Die bestehende Planung bleibt erhalten.')) {

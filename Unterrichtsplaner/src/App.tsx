@@ -177,7 +177,8 @@ function PlannerContent() {
     (weekData.length > 0 ? weekData : hookWeeks).slice(s2StartIndex), [weekData, hookWeeks, s2StartIndex]);
 
   useEffect(() => {
-    setTimeout(() => curRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    const id = setTimeout(() => curRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    return () => clearTimeout(id);
   }, []);
 
   // Keyboard shortcut: Ctrl+Z for undo, Escape to close panel
