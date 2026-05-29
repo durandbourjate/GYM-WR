@@ -99,4 +99,15 @@ Die Verifikation ist der Kern dieses Tasks — sie adressiert genau den Punkt, d
 - Eine latexRenderer-Quelle, eine `katexModule`-Instanz, eine CSS-Lademethode (static).
 - ExamLab: kein doppeltes KaTeX-Laden mehr; LP-FormelEditor profitiert von S140-Fix.
 - Planer: unverändert KaTeX-frei (verifiziert, nicht angenommen).
-- shared-Package korrekt als `sideEffects: ["**/*.css"]` deklariert (Voraussetzung auch für künftige Konsolidierungen).
+
+## Implementierungs-Nachtrag (2026-05-29, nach Verifikation) — Ansatz A korrigiert
+
+**Ansatz A (static `katex.css` IM shared latexRenderer, abgesichert per `sideEffects`) wurde während der Umsetzung empirisch WIDERLEGT.**
+
+- Ein top-level `import 'katex/dist/katex.min.css'` im shared latexRenderer leakt die 59 KaTeX-Font-Assets in JEDE App, die den shared-Barrel importiert — auch den Planer (nur `useToast`). **Unabhängig von `sideEffects`:** sowohl `["**/*.css"]` als auch `false` getestet, beide leakten 59 Font-Dateien. Grund: Vites CSS-Asset-**Emit** läuft getrennt vom JS-Tree-Shaking — sobald das `katex.css` im Modulgraph verarbeitet wird, kopiert Vite die referenzierten Fonts ins dist, bevor/unabhängig davon, ob der Code später getreeshakt wird. `sideEffects` steuert nur das JS-Tree-Shaking, nicht den Asset-Emit.
+
+- **Finale (umgesetzte) Lösung:** shared latexRenderer ist **rein-JS** (nur Render-Logik, KEIN CSS-Import). Das static `katex.css` (S140-korrekte Font-Metrik) wird **app-lokal in den ExamLab-Shims** geladen: `ExamLab/src/utils/latexRenderer.ts` (deckt FrageText/FormelFrage/autoKorrektur) + `ExamLab/src/components/lp/frageneditor/FormelEditor.tsx` (deckt LP-Editor). **Kein `sideEffects`-Feld nötig** — der Leak-Schutz kommt vollständig daraus, dass der shared Renderer rein-JS und damit tree-shakebar ist.
+
+- **Verifiziert (/tmp-Builds + Browser-Smoke):** Planer 0 KaTeX-Assets · ExamLab 62 Fonts + katex.css (eigener lazy `katex-*.css`-Chunk, keine SuS-Erstladungs-Belastung) · KaTeX rendert visuell korrekt (`\frac{a}{b}+\sqrt{c}` → a/b+√c, Font-Metrik korrekt) · ExamLab ci-check alle Gates grün · Planer tsc/vitest/build grün.
+
+**Lehre (ergänzt #7):** Ein shared-Modul im Barrel-erreichbaren Graph darf KEINEN top-level CSS-Import tragen, dessen Assets nur eine Teilmenge der Apps braucht — der Asset-Emit lässt sich nicht per `sideEffects` weg-tree-shaken. CSS-Imports gehören an die app-lokalen Konsum-Stellen, nicht in den geteilten Barrel.
