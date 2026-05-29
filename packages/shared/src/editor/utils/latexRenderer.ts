@@ -1,36 +1,28 @@
 /**
  * LaTeX-Rendering-Utilities für Fragetexte.
- * Lazy-loaded KaTeX: wird erst beim ersten Aufruf geladen.
+ * Lazy-loaded KaTeX-JS; CSS via statischem Import (garantiert vor erstem Render —
+ * vermeidet Font-Metrik-Layout-Bruch durch async-CDN-Load, S140 Ticket 2).
  * Unterstützt $$...$$ (Display-Modus) und $...$ (Inline-Modus).
+ *
+ * CSS: bewusst KEIN top-level `import 'katex.css'` hier — das würde Vite die
+ * KaTeX-Font-Assets in JEDE App leaken, die den shared-Barrel importiert (auch
+ * den Planer, der nur useToast braucht). Das KaTeX-CSS wird app-lokal geladen
+ * (ExamLab-Entry), nicht über den shared-Graph.
  */
 
 let katexModule: typeof import('katex') | null = null
 let katexPromise: Promise<typeof import('katex')> | null = null
-let cssInjected = false
 
-/** Lazy-Load KaTeX und CSS (CSS wird sofort injiziert, nicht erst nach JS-Load) */
+/** Lazy-Load KaTeX-JS. CSS ist bereits via statischem Import oben geladen. */
 async function ladeKatex(): Promise<typeof import('katex')> {
   if (katexModule) return katexModule
   if (!katexPromise) {
-    // CSS sofort laden, parallel zum JS — verhindert kurzes Doppel-Rendering
-    injiziereKatexCSS()
     katexPromise = import('katex').then(mod => {
       katexModule = mod
       return mod
     })
   }
   return katexPromise
-}
-
-/** KaTeX-CSS dynamisch injizieren */
-function injiziereKatexCSS(): void {
-  if (cssInjected) return
-  cssInjected = true
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css'
-  link.crossOrigin = 'anonymous'
-  document.head.appendChild(link)
 }
 
 /** Prüft ob KaTeX bereits geladen ist */
