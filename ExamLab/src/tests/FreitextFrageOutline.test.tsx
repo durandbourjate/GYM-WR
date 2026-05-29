@@ -61,26 +61,29 @@ const frage = {
 describe('FreitextFrage Violett-Outline', () => {
   beforeEach(() => mockAdapter.mockReset())
 
-  it('Violett-Outline auf leerer Eingabe vor Antwort prüfen', () => {
+  // FreitextAufgabe (tiptap) wird per lazyMitRetry geladen → erst nach Auflösung
+  // des async-Chunks ist die Eingabefläche da. Daher findByTestId (async) statt
+  // getByTestId; der Suspense-Fallback rendert kurz davor.
+  it('Violett-Outline auf leerer Eingabe vor Antwort prüfen', async () => {
     mockAdapter.mockReturnValue(defaultAdapter())
     render(<FreitextFrage frage={frage} />)
-    const area = screen.getByTestId('freitext-input-area')
+    const area = await screen.findByTestId('freitext-input-area')
     expect(area.className).toContain('border-violet-400')
   })
 
-  it('Violett verschwindet nach Antwort prüfen (feedbackSichtbar=true)', () => {
+  it('Violett verschwindet nach Antwort prüfen (feedbackSichtbar=true)', async () => {
     const antwort: Antwort = { typ: 'freitext', text: '<p>Antwort</p>' }
     mockAdapter.mockReturnValue(defaultAdapter({ antwort, feedbackSichtbar: true, istGeprueft: true, disabled: true }))
     render(<FreitextFrage frage={frage} />)
-    const area = screen.getByTestId('freitext-input-area')
+    const area = await screen.findByTestId('freitext-input-area')
     expect(area.className).not.toContain('border-violet-400')
   })
 
-  it('Violett verschwindet wenn Antwort vorhanden', () => {
+  it('Violett verschwindet wenn Antwort vorhanden', async () => {
     const antwort: Antwort = { typ: 'freitext', text: '<p>Hallo</p>' }
     mockAdapter.mockReturnValue(defaultAdapter({ antwort }))
     render(<FreitextFrage frage={frage} />)
-    const area = screen.getByTestId('freitext-input-area')
+    const area = await screen.findByTestId('freitext-input-area')
     expect(area.className).not.toContain('border-violet-400')
   })
 })
