@@ -29,6 +29,10 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 ## Letzte Sessions
 
+### 29.05.2026 — effect-needs-cleanup Trio (App, SettingsPanel, CourseEditor)
+
+3 `setTimeout`-ohne-Cleanup useEffects aus dem react-doctor-Audit gefixt. **App.tsx:179** (Mount-Scroll, `deps=[]`): trivialer `clearTimeout`-Cleanup. **CourseEditor** + **SettingsPanel** hatten ein Self-Trigger-Muster (Effect cleart `settingsEditKursId`/`pendingHolidayKw` selbst → sofortiger Re-Run): ein naiver `return () => clearTimeout(id)` hätte den Scroll-Timer beim Re-Run (~16ms) abgebrochen, bevor er bei 100/200ms feuert → Scroll verpufft. **CourseEditor:** Trigger erst IM Timer löschen (kein vorzeitiger Re-Run). **SettingsPanel:** in zwei Effects gesplittet — Effect 1 konsumiert `pendingHolidayKw` sofort + legt Ferien-Eintrag an (one-shot, kein Duplikat) + setzt lokales Scroll-Flag; Effect 2 scrollt mit Same-Effect-Cleanup. Verifikation: TDD-Regressionstest `CourseEditor.test.tsx` (Self-Trigger-Scroll feuert + Unmount-Cleanup, red→green bestätigt), react-doctor `effect-needs-cleanup` 3→0, tsc + 50 vitest + build grün, Browser-E2E (App-Reload ohne Error, SettingsPanel legt Ferien-Eintrag an, 0 Console-Errors).
+
 ### 29.05.2026 — Bugfix rules-of-hooks (NoteCell + HoverPreview)
 
 react-doctor Voll-Audit fand 3 `rules-of-hooks`-Verletzungen im Planer (beim WeekRows-Split `39a1c9e`/R8-R13 eingeschleppt): `useEffect` lag NACH einem early-return. `NoteCell` wird bedingungslos pro Zelle gerendert (`WeekRows.tsx:736`) → taucht in einer montierten leeren Zelle eine Lektion auf, flippt der Hook-Count am selben Fiber 4→6 → React #310 „Rendered more hooks" (real erreichbar). `HoverPreview` dieselbe Klasse, aber latent (Parent unmountet via `showPreview`). Fix: beide Effekte vor den Early-Return gezogen, verhaltens-identisch (no-op/guarded ohne Entry), regelkonform zu `code-quality.md` S130. TDD-Regressionstest `NoteCell.test.tsx` (entry-Flip am Fiber, red→green). react-doctor `rules-of-hooks` 3→0; Gates state/security 0 Drift. tsc + 48 vitest + build grün. Browser-E2E im echten Planer: Live entry-Flip/Edit-Fokus/HoverPreview ohne Crash, Console leer.
