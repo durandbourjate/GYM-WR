@@ -13,15 +13,19 @@ export function NoteCell({ weekW, col, cellHeight }: { weekW: string; col: numbe
   const [text, setText] = useState(notes);
   const ref = useRef<HTMLTextAreaElement>(null);
 
+  // Hooks MÜSSEN vor jedem early-return stehen (rules-of-hooks / S130). Beide sind
+  // no-ops solange die Zelle leer ist (text wird dann nicht gerendert, ref.current
+  // ist null) — verhaltens-identisch, verhindert aber React #310, wenn in einer
+  // montierten leeren Zelle eine Lektion auftaucht (entry-Flip am selben Fiber).
+  useEffect(() => { setText(notes); }, [notes]);
+  useEffect(() => { if (editing && ref.current) { ref.current.focus(); ref.current.select(); } }, [editing]);
+
   // Check if this week has an entry at all
   const weekEntry = weekData.find(w => w.w === weekW);
   const entry = weekEntry?.lessons[col];
   if (!entry) return <td className="border-b border-slate-900/40 bg-slate-950/30" style={{ width: ncw, minWidth: ncw, maxWidth: ncw, height: cellHeight }} />;
 
   const displayNotes = notes;
-
-  useEffect(() => { setText(notes); }, [notes]);
-  useEffect(() => { if (editing && ref.current) { ref.current.focus(); ref.current.select(); } }, [editing]);
 
   if (editing) {
     return (

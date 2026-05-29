@@ -9,6 +9,17 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
   const { lessonDetails, weekData, sequences } = usePlannerStore();
   const previewRef = useRef<HTMLDivElement>(null);
   const [showAbove, setShowAbove] = useState(false);
+
+  // Vertical positioning: check on mount if parent cell is near viewport bottom.
+  // Hook MUSS vor dem early-return stehen (rules-of-hooks / S130) — no-op solange
+  // kein Preview-div gerendert ist (previewRef.current === null).
+  useEffect(() => {
+    if (previewRef.current?.parentElement) {
+      const rect = previewRef.current.parentElement.getBoundingClientRect();
+      setShowAbove(rect.bottom > window.innerHeight * 0.65);
+    }
+  }, []);
+
   const key = `${week}-${col}`;
   const detail = lessonDetails[key];
   const weekEntry = weekData.find(w => w.w === week);
@@ -30,14 +41,6 @@ export function HoverPreview({ week, col, courses, courseIndex, totalCourses }: 
 
   // Smart positioning: show left if course is in the right third of columns
   const showLeft = courseIndex > totalCourses * 0.6;
-
-  // Vertical positioning: check on mount if parent cell is near viewport bottom
-  useEffect(() => {
-    if (previewRef.current?.parentElement) {
-      const rect = previewRef.current.parentElement.getBoundingClientRect();
-      setShowAbove(rect.bottom > window.innerHeight * 0.65);
-    }
-  }, []);
 
   // Check if there's meaningful content beyond title/topic
   const hasNotes = !!(detail?.notes);
