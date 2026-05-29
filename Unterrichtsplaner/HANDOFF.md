@@ -29,6 +29,10 @@ Commit nach jedem erledigten Task: `git add -A && git commit -m "vX.XX: Beschrei
 
 ## Letzte Sessions
 
+### 29.05.2026 — Bugfix rules-of-hooks (NoteCell + HoverPreview)
+
+react-doctor Voll-Audit fand 3 `rules-of-hooks`-Verletzungen im Planer (beim WeekRows-Split `39a1c9e`/R8-R13 eingeschleppt): `useEffect` lag NACH einem early-return. `NoteCell` wird bedingungslos pro Zelle gerendert (`WeekRows.tsx:736`) → taucht in einer montierten leeren Zelle eine Lektion auf, flippt der Hook-Count am selben Fiber 4→6 → React #310 „Rendered more hooks" (real erreichbar). `HoverPreview` dieselbe Klasse, aber latent (Parent unmountet via `showPreview`). Fix: beide Effekte vor den Early-Return gezogen, verhaltens-identisch (no-op/guarded ohne Entry), regelkonform zu `code-quality.md` S130. TDD-Regressionstest `NoteCell.test.tsx` (entry-Flip am Fiber, red→green). react-doctor `rules-of-hooks` 3→0; Gates state/security 0 Drift. tsc + 48 vitest + build grün. Browser-E2E im echten Planer: Live entry-Flip/Edit-Fokus/HoverPreview ohne Crash, Console leer.
+
 ### 22.05.2026 — v3.108: Schuljahr-Helper (getMonth-Konvention zentralisiert)
 
 Die „ab Juli zählt das neue Schuljahr"-Konvention (`getMonth() >= 6`) lag dreifach inline: `gradeRequirements.ts` (Endjahr) + `PlannerTabs.tsx` (2× Startjahr für `defaultPresetId`). Folge-Refactor zu v3.107. Neuer Helper `utils/schuljahr.ts` mit `aktuellesSchuljahrStartjahr()` + `aktuellesSchuljahrEndjahr()` (Endjahr = Startjahr + 1) — die `getMonth()`-Schwelle lebt jetzt an genau einer Stelle. Verhalten unverändert, bestehende `getGymStufe`-Tests bleiben grün. TDD: `schuljahr.test.ts` (3 Tests). tsc + 47 vitest-Tests + build grün.
