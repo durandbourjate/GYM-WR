@@ -8,6 +8,26 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 29.05.2026 — react-doctor Audit-Backlog abgeschlossen (3 Tickets LIVE)
+
+**One-Liner:** Die letzten 3 react-doctor-Audit-Baustellen abgearbeitet → LIVE auf `main` = `preview` = `ec3fe3b`. Staging-E2E grün, 0 Console-Errors.
+
+**T1 — no-danger Security-Gate** (`fix/no-danger-audit-gate`): Alle 46 Danger-Prop-Stellen triagiert → **0 aktive XSS** (alle via DOMPurify / renderMarkdown escape-first in `src/utils/markdown.ts` / KaTeX trust:false). Toter `LatexText.tsx` gelöscht (0 Aufrufer, escapte selbst nicht). Neues Gate `lint:react-doctor-security` (no-danger + no-eval, Baseline 46/28 Files) in ci-check + deploy.yml (beide Hälften). Doku: `docs/superpowers/specs/2026-05-28-no-danger-bestandsaufnahme.md` (Abschluss-Sektion).
+
+**T2 — no-derived-state Gate** (`chore/no-derived-state-gate`): Alle 41 Findings triagiert → **0 echte Refactors** (durchweg editierbare Kopien mit sync-on-id / async-geladener State / optimistische Toggles / UI-Interaktions-State — useMemo würde Bugs einführen, z.B. Cursor-Sprünge bei FiBu-Editoren). `no-derived-state` als 4. Regel ins State-Gate, Baseline 93 → 134. Doku: `docs/superpowers/specs/2026-05-29-no-derived-state-triage.md`.
+
+**T3 — js-set-map-lookups Hotspots** (`perf/js-set-map-lookups-hotspots`): Von 189 Findings nur 9 im Frontend — **180 im Apps-Script-Backend bewusst übersprungen** (migration-pending + latenz- statt CPU-gebunden). 3 echte Hotspots gefixt (`array.includes` → `Set`, verhaltens-identisch): `KlassenLuecken` (ids), `useThemenKomputationen` (sichtbareFaecher), `useGlobalSuche.shared` (INDEX_BLACKLIST im stripSensibleFelder-Index-Build). 6 berechtigt geskippt (5 react-doctor-FP auf String-Methoden `.includes`/`.indexOf`, 1 vernachlässigbar in demoKorrektur). **Kein Gate** (Regel hat hohe FP-Rate bei String-Methoden + Backend-dominiert).
+
+**Verifikation:** ci-check grün (2131 Tests, beide Gates). Staging-E2E auf `ec3fe3b`: globale Suche (gruppierte Treffer, kein Lösungs-Leak), Üben-Themensteuerung + Fach-Filter „Recht", Analyse „Klassenweite Lücken", SuS-Dashboard — alle 0 Console-Errors. App-Shell lädt sauber trotz gelöschtem LatexText.
+
+**Workflow:** Pro Ticket eigene Branch off main, Octopus-Integrations-Branch für gemeinsamen Staging-E2E (push → preview deployt Staging), dann FF main + sync preview. Alle Triage-Flags selbst gegengelesen (exhaustive-deps-Lehre: Subagenten überflaggen).
+
+**Nächste Audit-Baustellen:** Nur noch Prio-D-Stylistik (512× design-no-redundant-size-axes, 350× button-has-type, 154× design-no-em-dash-in-jsx-text) — low-value, vermutlich Skip (höchstens Skip-Gate-Promotion). **Damit ist der react-doctor-Audit-Backlog im Wesentlichen abgeschlossen.** Grösster offener Thread bleibt die **Backend-Migration** (Spec fertig: `docs/superpowers/specs/2026-05-18-backend-migration-design.md`, wartet auf Plan-Phase + 5 KW-21-Koordinations-Mails).
+
+**Weiterhin offen (User-Aktion):** Apps-Script-Deploy für den datum-Fix vom 23.05.2026 (GAS-Editor → Bereitstellungen verwalten → neue Version).
+
+---
+
 ### Stand 28.05.2026 SPÄT-ABEND — exhaustive-deps Bug-Fix + Wins + Gate
 
 **One-Liner:** Alle 65 `exhaustive-deps`-Findings triagiert (4 Subagenten + manuelle Verifikation) → **genau 1 echter Bug gefunden + gefixt**, 2 Perf-Wins, 11 ref-in-cleanup mechanisch transformiert, ~51 intentional/safe via Gate festgezurrt.
