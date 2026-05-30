@@ -7,7 +7,7 @@ import { useMemo, useEffect, type ReactNode } from 'react'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
-import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
+import kontenrahmenJson from '../../../data/kontenrahmen-kmu.json'
 import { useUebenAuthStore } from '../../../store/ueben/authStore'
 import { uebenApiClient } from '../../../services/ueben/apiClient'
 
@@ -19,7 +19,7 @@ export default function UebenEditorProvider({ children }: Props) {
   const user = useUebenAuthStore(s => s.user)
 
   // Kontenrahmen einmalig laden (für FiBu-Fragetypen)
-  useEffect(() => { setKontenrahmenData(kontenrahmenDaten) }, [])
+  useEffect(() => { setKontenrahmenData(kontenrahmenJson.konten as Parameters<typeof setKontenrahmenData>[0]) }, [])
 
   const config: EditorConfig = useMemo(() => ({
     benutzer: {
