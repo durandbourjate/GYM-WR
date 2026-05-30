@@ -41,6 +41,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
+      // SW-Registrierung als externe registerSW.js (gedeckt durch CSP 'self') statt
+      // Inline-<script>import(...) — damit script-src kein 'unsafe-inline' mehr braucht.
+      injectRegister: 'script-defer',
       includeAssets: ['icon.svg'],
       manifest: {
         ...pwaManifest,
