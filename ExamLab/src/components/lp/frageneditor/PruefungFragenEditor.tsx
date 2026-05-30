@@ -12,7 +12,7 @@ import { istKonfiguriert } from '../../../services/apiClient.ts'
 import { EditorProvider } from '@shared/editor/EditorContext'
 import type { EditorConfig, EditorServices } from '@shared/editor/types'
 import { setKontenrahmenData } from '@shared/editor/kontenrahmen'
-import kontenrahmenDaten from '@shared/editor/kontenrahmenDaten'
+import kontenrahmenJson from '../../../data/kontenrahmen-kmu.json'
 import SharedFragenEditor from '@shared/editor/SharedFragenEditor'
 import type { SpeichernMeta, AutoSaveAdapter } from '@shared/editor/SharedFragenEditor'
 import type { FragenBulkPatch, TagsModus } from '@shared/types/fragen-core'
@@ -126,7 +126,7 @@ export default function PruefungFragenEditor({ frage, onSpeichern, onAbbrechen, 
   }, [])
 
   // Kontenrahmen für FiBu-Fragetypen laden
-  useEffect(() => { setKontenrahmenData(kontenrahmenDaten) }, [])
+  useEffect(() => { setKontenrahmenData(kontenrahmenJson.konten as Parameters<typeof setKontenrahmenData>[0]) }, [])
 
   // EditorProvider Config + Services
   // Zeitpunkte (Bundle 12 K-4): Modus+Anzahl aus SchulConfig, Fallback auf Legacy-semesterModell

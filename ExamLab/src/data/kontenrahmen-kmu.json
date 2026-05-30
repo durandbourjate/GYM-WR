@@ -1,90 +1,592 @@
 {
   "konten": [
-    { "nummer": "1000", "name": "Kasse", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Flüssige Mittel" },
-    { "nummer": "1010", "name": "Post", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Flüssige Mittel" },
-    { "nummer": "1020", "name": "Bank", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Flüssige Mittel" },
-    { "nummer": "1100", "name": "Forderungen aus Lieferungen und Leistungen (Debitoren)", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Forderungen" },
-    { "nummer": "1109", "name": "Delkredere (Wertberichtigung Forderungen)", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Forderungen" },
-    { "nummer": "1170", "name": "Vorsteuer (Verrechnungssteuer)", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Forderungen" },
-    { "nummer": "1176", "name": "Vorsteuer MWST auf Materialaufwand", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Forderungen" },
-    { "nummer": "1200", "name": "Warenvorrat (Handelswaren)", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Vorräte" },
-    { "nummer": "1210", "name": "Rohstoffe", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Vorräte" },
-    { "nummer": "1260", "name": "Fertige Erzeugnisse", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Vorräte" },
-    { "nummer": "1270", "name": "Unfertige Erzeugnisse", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Vorräte" },
-    { "nummer": "1300", "name": "Aktive Rechnungsabgrenzung (Transitorische Aktiven)", "kategorie": "aktiv", "gruppe": "Umlaufvermögen", "untergruppe": "Aktive Rechnungsabgrenzung" },
-    { "nummer": "1400", "name": "Wertschriften (kurzfristig)", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Finanzanlagen" },
-    { "nummer": "1440", "name": "Darlehen (gegeben)", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Finanzanlagen" },
-    { "nummer": "1500", "name": "Maschinen und Apparate", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Mobile Sachanlagen" },
-    { "nummer": "1510", "name": "Mobiliar und Einrichtungen", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Mobile Sachanlagen" },
-    { "nummer": "1520", "name": "Büromaschinen und Informatik", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Mobile Sachanlagen" },
-    { "nummer": "1530", "name": "Fahrzeuge", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Mobile Sachanlagen" },
-    { "nummer": "1540", "name": "Werkzeuge und Geräte", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Mobile Sachanlagen" },
-    { "nummer": "1600", "name": "Geschäftsliegenschaften", "kategorie": "aktiv", "gruppe": "Anlagevermögen", "untergruppe": "Immobilien" },
-
-    { "nummer": "2000", "name": "Verbindlichkeiten aus Lieferungen und Leistungen (Kreditoren)", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Kurzfristige Verbindlichkeiten" },
-    { "nummer": "2030", "name": "Erhaltene Anzahlungen", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Kurzfristige Verbindlichkeiten" },
-    { "nummer": "2100", "name": "Bankschulden (kurzfristig)", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Kurzfristige Verbindlichkeiten" },
-    { "nummer": "2200", "name": "Geschuldete MWST (Umsatzsteuer)", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Kurzfristige Verbindlichkeiten" },
-    { "nummer": "2206", "name": "Verrechnungssteuer", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Kurzfristige Verbindlichkeiten" },
-    { "nummer": "2270", "name": "Geschuldete Sozialversicherungen", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Kurzfristige Verbindlichkeiten" },
-    { "nummer": "2300", "name": "Passive Rechnungsabgrenzung (Transitorische Passiven)", "kategorie": "passiv", "gruppe": "Kurzfristiges Fremdkapital", "untergruppe": "Passive Rechnungsabgrenzung" },
-    { "nummer": "2400", "name": "Bankdarlehen (langfristig)", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Langfristige Verbindlichkeiten" },
-    { "nummer": "2420", "name": "Obligationenanleihe", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Langfristige Verbindlichkeiten" },
-    { "nummer": "2430", "name": "Darlehen (erhalten)", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Langfristige Verbindlichkeiten" },
-    { "nummer": "2450", "name": "Hypotheken", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Langfristige Verbindlichkeiten" },
-    { "nummer": "2500", "name": "Rückstellungen", "kategorie": "passiv", "gruppe": "Langfristiges Fremdkapital", "untergruppe": "Rückstellungen" },
-    { "nummer": "2800", "name": "Eigenkapital (Einzelunternehmung)", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Eigenkapital" },
-    { "nummer": "2850", "name": "Privat (Privatkonto)", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Eigenkapital" },
-    { "nummer": "2900", "name": "Gesetzliche Gewinnreserve", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },
-    { "nummer": "2950", "name": "Freiwillige Gewinnreserve", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },
-    { "nummer": "2970", "name": "Gewinnvortrag", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },
-    { "nummer": "2979", "name": "Jahresgewinn / Jahresverlust", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Reserven" },
-    { "nummer": "2980", "name": "Privat (Einzelunternehmung)", "kategorie": "passiv", "gruppe": "Eigenkapital", "untergruppe": "Eigenkapital" },
-
-    { "nummer": "3200", "name": "Warenertrag (Handelserlös)", "kategorie": "ertrag", "gruppe": "Betriebsertrag", "untergruppe": "Nettoerlöse" },
-    { "nummer": "3400", "name": "Dienstleistungsertrag", "kategorie": "ertrag", "gruppe": "Betriebsertrag", "untergruppe": "Nettoerlöse" },
-    { "nummer": "3800", "name": "Bestandesänderung Fertigfabrikate", "kategorie": "ertrag", "gruppe": "Betriebsertrag", "untergruppe": "Bestandesänderungen" },
-    { "nummer": "3900", "name": "Bestandesänderung unfertige Erzeugnisse", "kategorie": "ertrag", "gruppe": "Betriebsertrag", "untergruppe": "Bestandesänderungen" },
-    { "nummer": "3940", "name": "Eigenleistungen", "kategorie": "ertrag", "gruppe": "Betriebsertrag", "untergruppe": "Eigenleistungen" },
-
-    { "nummer": "4200", "name": "Warenaufwand (Handelswarenaufwand)", "kategorie": "aufwand", "gruppe": "Aufwand für Material und Waren", "untergruppe": "Warenaufwand" },
-    { "nummer": "4400", "name": "Aufwand für Drittleistungen", "kategorie": "aufwand", "gruppe": "Aufwand für Material und Waren", "untergruppe": "Drittleistungen" },
-
-    { "nummer": "5000", "name": "Lohnaufwand", "kategorie": "aufwand", "gruppe": "Personalaufwand", "untergruppe": "Löhne" },
-    { "nummer": "5200", "name": "Gehälter", "kategorie": "aufwand", "gruppe": "Personalaufwand", "untergruppe": "Löhne" },
-    { "nummer": "5700", "name": "Sozialversicherungsaufwand", "kategorie": "aufwand", "gruppe": "Personalaufwand", "untergruppe": "Sozialversicherungen" },
-
-    { "nummer": "6000", "name": "Raumaufwand (Miete)", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Raumaufwand" },
-    { "nummer": "6100", "name": "Unterhalt und Reparaturen", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Unterhalt" },
-    { "nummer": "6200", "name": "Fahrzeugaufwand", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Fahrzeugaufwand" },
-    { "nummer": "6300", "name": "Sachversicherungen", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Versicherungen" },
-    { "nummer": "6400", "name": "Energie- und Entsorgungsaufwand", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Energie" },
-    { "nummer": "6500", "name": "Verwaltungsaufwand", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Verwaltung" },
-    { "nummer": "6510", "name": "Büromaterial", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Verwaltung" },
-    { "nummer": "6530", "name": "Telefon und Internet", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Verwaltung" },
-    { "nummer": "6570", "name": "Informatikaufwand", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Verwaltung" },
-    { "nummer": "6580", "name": "Beratungsaufwand", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Verwaltung" },
-    { "nummer": "6600", "name": "Werbeaufwand", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Werbung" },
-    { "nummer": "6800", "name": "Abschreibungen auf Sachanlagen", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Abschreibungen" },
-    { "nummer": "6801", "name": "Abschreibungen auf Immobilien", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Abschreibungen" },
-    { "nummer": "6900", "name": "Finanzaufwand (Zinsaufwand)", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Finanzaufwand" },
-    { "nummer": "6910", "name": "Bankspesen", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Finanzaufwand" },
-    { "nummer": "6920", "name": "Kursverluste", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Finanzaufwand" },
-    { "nummer": "6950", "name": "Debitorenverluste (Forderungsverluste)", "kategorie": "aufwand", "gruppe": "Übriger betrieblicher Aufwand", "untergruppe": "Finanzaufwand" },
-
-    { "nummer": "7000", "name": "Finanzertrag (Zinsertrag)", "kategorie": "ertrag", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Finanzertrag" },
-    { "nummer": "7010", "name": "Dividendenertrag", "kategorie": "ertrag", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Finanzertrag" },
-    { "nummer": "7020", "name": "Kursgewinne", "kategorie": "ertrag", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Finanzertrag" },
-    { "nummer": "7500", "name": "Betriebsfremder Ertrag", "kategorie": "ertrag", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Betriebsfremder Ertrag" },
-    { "nummer": "7510", "name": "Ertrag aus Nebenbetrieb", "kategorie": "ertrag", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Betriebsfremder Ertrag" },
-    { "nummer": "7800", "name": "Betriebsfremder Aufwand", "kategorie": "aufwand", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Betriebsfremder Aufwand" },
-    { "nummer": "7810", "name": "Aufwand aus Nebenbetrieb", "kategorie": "aufwand", "gruppe": "Betrieblicher Nebenerfolg", "untergruppe": "Betriebsfremder Aufwand" },
-
-    { "nummer": "8000", "name": "Ausserordentlicher Ertrag", "kategorie": "ertrag", "gruppe": "Ausserordentlicher Erfolg", "untergruppe": "Ausserordentlicher Ertrag" },
-    { "nummer": "8010", "name": "Gewinn aus Anlagenverkauf", "kategorie": "ertrag", "gruppe": "Ausserordentlicher Erfolg", "untergruppe": "Ausserordentlicher Ertrag" },
-    { "nummer": "8500", "name": "Ausserordentlicher Aufwand", "kategorie": "aufwand", "gruppe": "Ausserordentlicher Erfolg", "untergruppe": "Ausserordentlicher Aufwand" },
-    { "nummer": "8510", "name": "Verlust aus Anlagenverkauf", "kategorie": "aufwand", "gruppe": "Ausserordentlicher Erfolg", "untergruppe": "Ausserordentlicher Aufwand" },
-
-    { "nummer": "9000", "name": "Erfolg (Abschluss)", "kategorie": "ertrag", "gruppe": "Abschluss", "untergruppe": "Abschluss" }
+    {
+      "nummer": "1000",
+      "name": "Kasse",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Flüssige Mittel"
+    },
+    {
+      "nummer": "1010",
+      "name": "Post",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Flüssige Mittel"
+    },
+    {
+      "nummer": "1020",
+      "name": "Bank",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Flüssige Mittel"
+    },
+    {
+      "nummer": "1100",
+      "name": "Forderungen aus Lieferungen und Leistungen (Debitoren)",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Forderungen"
+    },
+    {
+      "nummer": "1109",
+      "name": "Delkredere (Wertberichtigung Forderungen)",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Forderungen"
+    },
+    {
+      "nummer": "1170",
+      "name": "Vorsteuer (Verrechnungssteuer)",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Forderungen"
+    },
+    {
+      "nummer": "1176",
+      "name": "Vorsteuer MWST auf Materialaufwand",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Forderungen"
+    },
+    {
+      "nummer": "1190",
+      "name": "Sonstige Forderungen",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Forderungen"
+    },
+    {
+      "nummer": "1200",
+      "name": "Warenvorrat (Handelswaren)",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Vorräte"
+    },
+    {
+      "nummer": "1210",
+      "name": "Rohstoffe",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Vorräte"
+    },
+    {
+      "nummer": "1260",
+      "name": "Fertige Erzeugnisse",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Vorräte"
+    },
+    {
+      "nummer": "1270",
+      "name": "Unfertige Erzeugnisse",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Vorräte"
+    },
+    {
+      "nummer": "1300",
+      "name": "Aktive Rechnungsabgrenzung (Transitorische Aktiven)",
+      "kategorie": "aktiv",
+      "gruppe": "Umlaufvermögen",
+      "untergruppe": "Aktive Rechnungsabgrenzung"
+    },
+    {
+      "nummer": "1400",
+      "name": "Wertschriften (kurzfristig)",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Finanzanlagen"
+    },
+    {
+      "nummer": "1440",
+      "name": "Darlehen (gegeben)",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Finanzanlagen"
+    },
+    {
+      "nummer": "1500",
+      "name": "Maschinen und Apparate",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Mobile Sachanlagen"
+    },
+    {
+      "nummer": "1510",
+      "name": "Mobiliar und Einrichtungen",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Mobile Sachanlagen"
+    },
+    {
+      "nummer": "1520",
+      "name": "Büromaschinen und Informatik",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Mobile Sachanlagen"
+    },
+    {
+      "nummer": "1521",
+      "name": "Wertberichtigung Mobiliar (–)",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Sachanlagen"
+    },
+    {
+      "nummer": "1530",
+      "name": "Fahrzeuge",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Mobile Sachanlagen"
+    },
+    {
+      "nummer": "1540",
+      "name": "Werkzeuge und Geräte",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Mobile Sachanlagen"
+    },
+    {
+      "nummer": "1600",
+      "name": "Geschäftsliegenschaften",
+      "kategorie": "aktiv",
+      "gruppe": "Anlagevermögen",
+      "untergruppe": "Immobilien"
+    },
+    {
+      "nummer": "2000",
+      "name": "Verbindlichkeiten aus Lieferungen und Leistungen (Kreditoren)",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Kurzfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2030",
+      "name": "Erhaltene Anzahlungen",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Kurzfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2100",
+      "name": "Bankschulden (kurzfristig)",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Kurzfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2200",
+      "name": "Geschuldete MWST (Umsatzsteuer)",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Kurzfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2206",
+      "name": "Verrechnungssteuer",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Kurzfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2270",
+      "name": "Geschuldete Sozialversicherungen",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Kurzfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2300",
+      "name": "Passive Rechnungsabgrenzung (Transitorische Passiven)",
+      "kategorie": "passiv",
+      "gruppe": "Kurzfristiges Fremdkapital",
+      "untergruppe": "Passive Rechnungsabgrenzung"
+    },
+    {
+      "nummer": "2400",
+      "name": "Bankdarlehen (langfristig)",
+      "kategorie": "passiv",
+      "gruppe": "Langfristiges Fremdkapital",
+      "untergruppe": "Langfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2420",
+      "name": "Obligationenanleihe",
+      "kategorie": "passiv",
+      "gruppe": "Langfristiges Fremdkapital",
+      "untergruppe": "Langfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2430",
+      "name": "Darlehen (erhalten)",
+      "kategorie": "passiv",
+      "gruppe": "Langfristiges Fremdkapital",
+      "untergruppe": "Langfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2450",
+      "name": "Hypotheken",
+      "kategorie": "passiv",
+      "gruppe": "Langfristiges Fremdkapital",
+      "untergruppe": "Langfristige Verbindlichkeiten"
+    },
+    {
+      "nummer": "2500",
+      "name": "Rückstellungen",
+      "kategorie": "passiv",
+      "gruppe": "Langfristiges Fremdkapital",
+      "untergruppe": "Rückstellungen"
+    },
+    {
+      "nummer": "2800",
+      "name": "Eigenkapital (Einzelunternehmung)",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Eigenkapital"
+    },
+    {
+      "nummer": "2850",
+      "name": "Privat (Privatkonto)",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Eigenkapital"
+    },
+    {
+      "nummer": "2900",
+      "name": "Gesetzliche Gewinnreserve",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Reserven"
+    },
+    {
+      "nummer": "2950",
+      "name": "Freiwillige Gewinnreserve",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Reserven"
+    },
+    {
+      "nummer": "2970",
+      "name": "Gewinnvortrag",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Reserven"
+    },
+    {
+      "nummer": "2979",
+      "name": "Jahresgewinn / Jahresverlust",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Reserven"
+    },
+    {
+      "nummer": "2980",
+      "name": "Privat (Einzelunternehmung)",
+      "kategorie": "passiv",
+      "gruppe": "Eigenkapital",
+      "untergruppe": "Eigenkapital"
+    },
+    {
+      "nummer": "3200",
+      "name": "Warenertrag (Handelserlös)",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": "Nettoerlöse"
+    },
+    {
+      "nummer": "3400",
+      "name": "Dienstleistungsertrag",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": "Nettoerlöse"
+    },
+    {
+      "nummer": "3600",
+      "name": "Übriger Betriebsertrag",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "3800",
+      "name": "Bestandesänderung Fertigfabrikate",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "3805",
+      "name": "Debitorenverluste (Verluste aus Forderungen) (–)",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": "Ertragsminderung"
+    },
+    {
+      "nummer": "3900",
+      "name": "Bestandesänderung unfertige Erzeugnisse",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": "Bestandesänderungen"
+    },
+    {
+      "nummer": "3940",
+      "name": "Eigenleistungen",
+      "kategorie": "ertrag",
+      "gruppe": "Betriebsertrag",
+      "untergruppe": "Eigenleistungen"
+    },
+    {
+      "nummer": "4000",
+      "name": "Materialaufwand (Rohmaterialeinkauf)",
+      "kategorie": "aufwand",
+      "gruppe": "Aufwand für Material und Waren",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "4200",
+      "name": "Warenaufwand (Handelswarenaufwand)",
+      "kategorie": "aufwand",
+      "gruppe": "Aufwand für Material und Waren",
+      "untergruppe": "Warenaufwand"
+    },
+    {
+      "nummer": "4400",
+      "name": "Aufwand für Drittleistungen",
+      "kategorie": "aufwand",
+      "gruppe": "Aufwand für Material und Waren",
+      "untergruppe": "Drittleistungen"
+    },
+    {
+      "nummer": "4900",
+      "name": "Bestandesänderung Vorräte",
+      "kategorie": "aufwand",
+      "gruppe": "Aufwand für Material und Waren",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "5000",
+      "name": "Lohnaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Personalaufwand",
+      "untergruppe": "Löhne"
+    },
+    {
+      "nummer": "5200",
+      "name": "Lohnaufwand (Gehälter)",
+      "kategorie": "aufwand",
+      "gruppe": "Personalaufwand",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "5700",
+      "name": "Sozialversicherungsaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Personalaufwand",
+      "untergruppe": "Sozialversicherungen"
+    },
+    {
+      "nummer": "5800",
+      "name": "Übriger Personalaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Personalaufwand",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "6000",
+      "name": "Raumaufwand (Miete)",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Raumaufwand"
+    },
+    {
+      "nummer": "6100",
+      "name": "Unterhalt und Reparaturen",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Unterhalt"
+    },
+    {
+      "nummer": "6200",
+      "name": "Fahrzeugaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Fahrzeugaufwand"
+    },
+    {
+      "nummer": "6300",
+      "name": "Sachversicherungen",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Versicherungen"
+    },
+    {
+      "nummer": "6400",
+      "name": "Energie- und Entsorgungsaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Energie"
+    },
+    {
+      "nummer": "6500",
+      "name": "Verwaltungsaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Verwaltung"
+    },
+    {
+      "nummer": "6510",
+      "name": "Büromaterial",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Verwaltung"
+    },
+    {
+      "nummer": "6530",
+      "name": "Telefon und Internet",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Verwaltung"
+    },
+    {
+      "nummer": "6570",
+      "name": "Informatikaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Verwaltung"
+    },
+    {
+      "nummer": "6580",
+      "name": "Beratungsaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Verwaltung"
+    },
+    {
+      "nummer": "6600",
+      "name": "Werbeaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Werbung"
+    },
+    {
+      "nummer": "6700",
+      "name": "Übriger Betriebsaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": ""
+    },
+    {
+      "nummer": "6800",
+      "name": "Abschreibungen auf Sachanlagen",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Abschreibungen"
+    },
+    {
+      "nummer": "6801",
+      "name": "Abschreibungen auf Immobilien",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Abschreibungen"
+    },
+    {
+      "nummer": "6900",
+      "name": "Finanzaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Finanzergebnis"
+    },
+    {
+      "nummer": "6910",
+      "name": "Bankspesen",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Finanzaufwand"
+    },
+    {
+      "nummer": "6920",
+      "name": "Kursverluste",
+      "kategorie": "aufwand",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Finanzaufwand"
+    },
+    {
+      "nummer": "6950",
+      "name": "Finanzertrag",
+      "kategorie": "ertrag",
+      "gruppe": "Übriger betrieblicher Aufwand",
+      "untergruppe": "Finanzergebnis"
+    },
+    {
+      "nummer": "7000",
+      "name": "Ertrag Nebenbetrieb",
+      "kategorie": "ertrag",
+      "gruppe": "Betrieblicher Nebenerfolg",
+      "untergruppe": "Nebenbetrieb"
+    },
+    {
+      "nummer": "7010",
+      "name": "Aufwand Nebenbetrieb",
+      "kategorie": "aufwand",
+      "gruppe": "Betrieblicher Nebenerfolg",
+      "untergruppe": "Nebenbetrieb"
+    },
+    {
+      "nummer": "7500",
+      "name": "Immobilienertrag",
+      "kategorie": "ertrag",
+      "gruppe": "Betrieblicher Nebenerfolg",
+      "untergruppe": "Immobilien"
+    },
+    {
+      "nummer": "7510",
+      "name": "Immobilienaufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Betrieblicher Nebenerfolg",
+      "untergruppe": "Immobilien"
+    },
+    {
+      "nummer": "8000",
+      "name": "Betriebsfremder Aufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Ausserordentlicher Erfolg",
+      "untergruppe": "Betriebsfremd"
+    },
+    {
+      "nummer": "8010",
+      "name": "Betriebsfremder Ertrag",
+      "kategorie": "ertrag",
+      "gruppe": "Ausserordentlicher Erfolg",
+      "untergruppe": "Betriebsfremd"
+    },
+    {
+      "nummer": "8100",
+      "name": "Ausserordentlicher Aufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Ausserordentlicher Erfolg",
+      "untergruppe": "a.o./einmalig"
+    },
+    {
+      "nummer": "8110",
+      "name": "Ausserordentlicher Ertrag",
+      "kategorie": "ertrag",
+      "gruppe": "Ausserordentlicher Erfolg",
+      "untergruppe": "a.o./einmalig"
+    },
+    {
+      "nummer": "8900",
+      "name": "Steueraufwand",
+      "kategorie": "aufwand",
+      "gruppe": "Ausserordentlicher Erfolg",
+      "untergruppe": "Steuern"
+    },
+    {
+      "nummer": "9000",
+      "name": "Erfolg (Abschluss)",
+      "kategorie": "ertrag",
+      "gruppe": "Abschluss",
+      "untergruppe": "Abschluss"
+    }
   ]
 }
