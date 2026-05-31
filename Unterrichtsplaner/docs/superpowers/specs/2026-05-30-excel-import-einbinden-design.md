@@ -91,6 +91,17 @@ Erwartet und korrekt (man kann nicht in nicht-existente Kurse importieren). Im
 Upload-Schritt ein kleiner Hinweis, falls `courses.length === 0`: „Erst Kurse in den
 Einstellungen anlegen, dann importieren." (rein additiv, blockiert nichts).
 
+**Analog für Wochen (Review-Ergänzung):** Nach Umstellung von `WEEK_ORDER` auf die
+dynamischen `weeks` (`usePlannerData()` leitet sie pro Instanz via `generateWeekIds`
+aus `activeMeta` ab — nur der konfigurierte KW-Bereich) werden Zeilen mit einer KW
+**ausserhalb** dieses Bereichs von `autoMapRows` still auf `null` gesetzt (= übersprungen).
+Das ist die gewünschte Semantik (gleiche Begründung wie leere Kurse), aber eine
+Verhaltensänderung gegenüber dem heutigen statischen Voll-Kalender-`WEEK_ORDER`. Falls
+`mappedRows === 0`, denselben Hinweis-Mechanismus nutzen. **Invariante:** Zeilen-Validierung
+(`usePlannerData().weeks[].w`) und Schreib-Ziel (`weekData` via `weekMap.get(item.weekW)`)
+teilen denselben KW-Schlüsselraum, da beide aus derselben aktiven Instanz stammen → eine
+KW, die validiert, ist im `weekData` auflösbar.
+
 ## Datenfluss
 
 ```
@@ -129,8 +140,17 @@ Silent-Fail; vgl. `code-quality.md` § Error-Handling, `safety-pwa.md`). Kein `a
   BWL→1, Recht/VWL→2, Default→0).
 - Auto-Mapping mit **dynamischen** Kursen: ein Mock-`courses`-Set mit Cols 100+ →
   Header-Matching ordnet korrekt der dynamischen `col` zu (Regression gegen die
-  ursprüngliche statische Annahme). Reine Helfer ggf. aus der Komponente extrahieren,
-  damit testbar (nur falls nötig — sonst Komponententest).
+  ursprüngliche statische Annahme).
+  - **Extraktionsziel (Review-Präzisierung):** Die `autoMapColumns`/`autoMapRows`-Closures
+    sind NICHT rein (rufen `setColMappings`/`setRowMappings`, lesen Komponenten-State). Die
+    extrahierbaren, regressions-relevanten **reinen** Kerne sind (a) das **Header→col-Matching**
+    (nimmt `header: string` + `courses: Course[]`, gibt `col | null`) und (b) das **KW-Parsing**
+    (nimmt `firstCell: string` + erlaubte Wochen, gibt `weekW | null`). Diese beiden in
+    `utils/` ziehen und direkt testen.
+  - **Abgrenzung was der Unit-Test beweist:** Er deckt den **Mapping**-Pfad ab (Header→dynamische
+    `col`). Der eigentliche Bug „schreibt in Cols 2–35, Anzeige liest 100+" manifestiert sich
+    im **Schreib**-Pfad (`executeImport` → `week.lessons[item.col]`), den der Unit-Test nicht
+    ausführt. Der End-to-End-Schreibbeweis ist der **Browser-Test mit eigenen Kursen** (unten).
 
 **Browser-Verifikation (Pflicht vor Merge):**
 - Echte Test-xlsx (Kurse×Wochen-Raster) hochladen → Auto-Map prüfen → manuell
