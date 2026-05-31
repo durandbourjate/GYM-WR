@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { usePlannerStore } from '../store/plannerStore';
-import { COURSES } from '../data/courses';
-import { WEEKS } from '../data/weeks';
+import { usePlannerData } from '../hooks/usePlannerData';
+import { useToast } from '@gymhofwil/shared';
+import { detectLessonType, matchHeaderToCourse, parseWeekFromCell } from '../utils/excelImportMapping';
 // xlsx (~429kB raw / ~140kB gzip) wird nur beim tatsächlichen Import gebraucht.
 // Daher Typ-only-Import (zur Buildzeit entfernt) + dynamischer Import() im Handler,
 // damit xlsx in einen separaten Chunk wandert und nicht im Haupt-Bundle landet.
@@ -10,21 +11,6 @@ import type * as XLSX from 'xlsx';
 // Legacy type labels for Excel import preview (indices match lessonType values)
 const TYPE_LABELS = ['Andere', 'BWL', 'Recht/VWL', 'IN', 'Prüfung', 'Event', 'Ferien'];
 import type { LessonType, LessonEntry, BlockType } from '../types';
-
-const WEEK_ORDER = WEEKS.map(w => w.w);
-
-// LessonType detection from cell content
-function detectLessonType(text: string): LessonType {
-  const t = text.toLowerCase();
-  if (!t || t === '-' || t === '—') return 0;
-  if (/(ferien|auffahrt|pfingst)/.test(t)) return 6;
-  if (/(prüfung|test|pw |prüf\.)/.test(t)) return 4;
-  if (/(studienreise|sporttag|iw\d|besuchstag|tag d\.|fachschaftstag|schneesport|aufnahme|intensiv|orientierungslauf|konferenz|ma präs)/.test(t)) return 5;
-  if (/(progr|krypto|rtpp|byod|vsc |excel|projekt|vortrag|darknet|metadaten|rastergr|vektorgr|gesichtser)/.test(t)) return 3;
-  if (/(bwl|market|fibu|swot|porter|csr|standort|untern|st\. galler|selbstbeurteil|nwa)/.test(t)) return 1;
-  if (/(recht|vwl|or at|grundr|miete|person|gesellsch|genossensch|sozial|sozv|bip|preis|lorenzkurve|staats|marktversagen|wohnungsm|elastiz|gefangenen|ökon|dollar|gerechtigkeit|iconomix|ungleich|kosten-gewinn)/.test(t)) return 2;
-  return 0;
-}
 
 interface ColMapping {
   excelCol: number;      // 0-based index in sheet
@@ -48,6 +34,9 @@ interface ImportPreview {
 
 export function ExcelImport({ onClose }: { onClose: () => void }) {
   const { weekData, setWeekData, pushUndo, updateLessonDetail } = usePlannerStore();
+  const { courses, weeks } = usePlannerData();
+  const weekOrder = useMemo(() => weeks.map(w => w.w), [weeks]);
+  const toast = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<'upload' | 'map' | 'preview' | 'done'>('upload');
@@ -67,13 +56,17 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (evt) => {
-      const XLSX = await import('xlsx');
-      const data = new Uint8Array(evt.target!.result as ArrayBuffer);
-      const wb = XLSX.read(data, { type: 'array' });
-      setWorkbook(wb);
-      setSheetNames(wb.SheetNames);
-      setSelectedSheet(wb.SheetNames[0]);
-      await loadSheet(wb, wb.SheetNames[0]);
+      try {
+        const XLSX = await import('xlsx');
+        const data = new Uint8Array(evt.target!.result as ArrayBuffer);
+        const wb = XLSX.read(data, { type: 'array' });
+        setWorkbook(wb);
+        setSheetNames(wb.SheetNames);
+        setSelectedSheet(wb.SheetNames[0]);
+        await loadSheet(wb, wb.SheetNames[0]);
+      } catch {
+        toast.error('Datei konnte nicht gelesen werden. Ist es eine gültige Excel-Datei (.xlsx/.xls)?');
+      }
     };
     reader.readAsArrayBuffer(file);
   };
@@ -92,20 +85,11 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
   const autoMapColumns = (data: string[][]) => {
     if (data.length === 0) return;
     const headerRow = data[0];
-    const mappings: ColMapping[] = headerRow.map((header, idx) => {
-      const h = String(header).toLowerCase().trim();
-      // Try to match against course class names, days, etc.
-      let matched: number | null = null;
-      for (const c of COURSES) {
-        const cls = c.cls.toLowerCase();
-        const dayMatch = c.day.toLowerCase();
-        if (h.includes(cls) || h === `${cls} ${dayMatch}` || h === `${dayMatch} ${cls}`) {
-          matched = c.col;
-          break;
-        }
-      }
-      return { excelCol: idx, excelHeader: String(header), courseCol: matched };
-    });
+    const mappings: ColMapping[] = headerRow.map((header, idx) => ({
+      excelCol: idx,
+      excelHeader: String(header),
+      courseCol: matchHeaderToCourse(String(header), courses),
+    }));
     setColMappings(mappings);
   };
 
@@ -114,21 +98,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
     const mappings: RowMapping[] = [];
     for (let i = 1; i < data.length; i++) { // skip header
       const firstCell = String(data[i][0] || '').trim();
-      let weekW: string | null = null;
-      // Try KW patterns
-      const kwMatch = firstCell.match(/(?:kw|woche)\s*(\d{1,2})/i);
-      if (kwMatch) {
-        weekW = kwMatch[1].padStart(2, '0');
-      } else {
-        // Try pure number
-        const num = parseInt(firstCell);
-        if (num >= 1 && num <= 52) {
-          weekW = String(num).padStart(2, '0');
-        }
-      }
-      // Validate against WEEK_ORDER
-      if (weekW && !WEEK_ORDER.includes(weekW)) weekW = null;
-      mappings.push({ excelRow: i, weekW, firstCell });
+      mappings.push({ excelRow: i, weekW: parseWeekFromCell(firstCell, weekOrder), firstCell });
     }
     setRowMappings(mappings);
   };
@@ -208,6 +178,11 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                 onChange={handleFile}
                 className="block w-full text-[12px] text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-[12px] file:font-medium file:bg-indigo-600 file:text-white file:cursor-pointer hover:file:bg-indigo-500"
               />
+              {courses.length === 0 && (
+                <p className="text-[11px] text-amber-400">
+                  Dieser Planer hat noch keine Kurse. Erst unter Einstellungen Kurse anlegen, dann importieren.
+                </p>
+              )}
             </div>
           )}
 
@@ -246,7 +221,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                         }}
                         className="text-[11px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-slate-200 flex-1">
                         <option value="">— überspringen —</option>
-                        {COURSES.map(c => (
+                        {courses.map(c => (
                           <option key={c.col} value={c.col}>{c.cls} {c.day} {c.typ} ({c.les}L)</option>
                         ))}
                       </select>
@@ -273,7 +248,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                         }}
                         className="text-[11px] bg-slate-700 border border-slate-600 rounded px-1 py-0.5 text-slate-200 flex-1">
                         <option value="">— überspringen —</option>
-                        {WEEK_ORDER.map(w => <option key={w} value={w}>KW {w}</option>)}
+                        {weekOrder.map(w => <option key={w} value={w}>KW {w}</option>)}
                       </select>
                     </div>
                   ))}
@@ -327,7 +302,7 @@ export function ExcelImport({ onClose }: { onClose: () => void }) {
                   </thead>
                   <tbody>
                     {preview.slice(0, 100).map((p, i) => {
-                      const course = COURSES.find(c => c.col === p.col);
+                      const course = courses.find(c => c.col === p.col);
                       return (
                         <tr key={i} className={`border-b border-slate-700/30 ${p.isNew ? '' : 'text-amber-400'}`}>
                           <td className="px-1 py-0.5 text-slate-400">{p.weekW}</td>
