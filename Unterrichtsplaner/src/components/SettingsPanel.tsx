@@ -20,6 +20,7 @@ import { GCalSection } from './settings/GCalSection';
 import { NotenStandSection } from './settings/NotenStandSection';
 import { KursImportButton } from './settings/KursImportButton';
 import { SynergyConfigSection } from './settings/SynergyConfigSection';
+import { ExcelImport } from './ExcelImport';
 
 
 // === Main Settings Panel ===
@@ -73,6 +74,7 @@ export function SettingsPanel() {
   const pendingHolidayKw = usePlannerStore(s => s.pendingHolidayKw);
   const [forceOpenHolidays, setForceOpenHolidays] = useState(false);
   const [pendingFerienScroll, setPendingFerienScroll] = useState(false);
+  const [showExcelImport, setShowExcelImport] = useState(false);
 
   // pendingHolidayKw konsumieren: Ferien-Eintrag sofort anlegen + Scroll anfordern.
   // Trigger sofort löschen (one-shot → kein Duplikat-Eintrag bei einem späteren Remount).
@@ -495,6 +497,17 @@ export function SettingsPanel() {
             </div>
           </div>
 
+          {/* Stundenplan-Raster (Excel) */}
+          <div className="border-t pt-3" style={{ borderColor: 'var(--border)' }}>
+            <p className="text-[9px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Stundenplan-Raster (Excel)</p>
+            <p className="text-[9px] mb-1.5" style={{ color: 'var(--text-muted)' }}>Eine Excel-Tabelle (Kurse × Kalenderwochen) mit Lektionstiteln in den Planer importieren.</p>
+            <button onClick={() => setShowExcelImport(true)}
+              className="w-full py-1.5 rounded text-[11px] font-medium cursor-pointer transition-all"
+              style={{ background: 'var(--bg-hover)', color: 'var(--text-primary)' }}>
+              📊 Excel importieren
+            </button>
+          </div>
+
           {/* Sammlung */}
           <div className="border-t pt-3" style={{ borderColor: 'var(--border)' }}>
             <p className="text-[9px] font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Sammlung (Gesamtkonfiguration)</p>
@@ -522,6 +535,8 @@ export function SettingsPanel() {
           ⚠ Einstellungen zurücksetzen
         </button>
       </div>
+
+      {showExcelImport && <ExcelImport onClose={() => setShowExcelImport(false)} />}
     </div>
   );
 }
