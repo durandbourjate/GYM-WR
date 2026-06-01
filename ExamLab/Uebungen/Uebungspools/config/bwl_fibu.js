@@ -2808,12 +2808,12 @@ window.QUESTIONS = [
     q: "Buchen Sie: Verkauf einer alten Maschine (Buchwert CHF 8'000) für CHF 6'000.– auf Rechnung. Buchen Sie den Verlust separat.",
     konten: [
       {nr: "1100", name: "Debitoren"}, {nr: "1500", name: "Maschinen"},
-      {nr: "3800", name: "Ausserord. Ertrag"}, {nr: "6900", name: "Ausserord. Aufwand"},
+      {nr: "8110", name: "Ausserord. Ertrag"}, {nr: "8100", name: "Ausserord. Aufwand"},
       {nr: "1020", name: "Bank"}, {nr: "3200", name: "Warenertrag"}
     ],
     correct: [
       {soll: "1100", haben: "1500", betrag: 6000},
-      {soll: "6900", haben: "1500", betrag: 2000}
+      {soll: "8100", haben: "1500", betrag: 2000}
     ],
     explain: "Verkauf unter Buchwert: 1) Debitoren/Maschinen 6'000 (Verkaufserlös). 2) Ausserordentlicher Aufwand/Maschinen 2'000 (Buchverlust = 8'000 − 6'000)."
   },
