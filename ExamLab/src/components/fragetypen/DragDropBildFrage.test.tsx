@@ -45,7 +45,6 @@ function makeFrage(): DDType {
     bloom: 'K2',
     tags: [],
     punkte: 2,
-    musterlosung: '',
     bewertungsraster: [],
     verwendungen: [],
     fragetext: 'Ordne die Labels zu.',

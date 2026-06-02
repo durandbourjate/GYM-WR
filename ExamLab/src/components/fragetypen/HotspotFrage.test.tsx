@@ -52,7 +52,6 @@ function makeFrage(): HotspotFrageType {
     bloom: 'K2',
     tags: [],
     punkte: 2,
-    musterlosung: '',
     bewertungsraster: [],
     verwendungen: [],
     fragetext: 'Klicke auf den Konjunkturhochpunkt.',
