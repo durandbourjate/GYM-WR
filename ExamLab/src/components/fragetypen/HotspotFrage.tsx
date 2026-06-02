@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { HotspotFrage as HotspotFrageType } from '../../types/fragen-storage'
 import type { Antwort } from '../../types/antworten.ts'
@@ -10,6 +10,7 @@ import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 import { istZoneWohlgeformt } from '../../utils/zonen/migriereZone.ts'
 import { istPunktInPolygon } from '../../utils/zonen/polygon.ts'
 import { useSrAnsage } from '../../hooks/a11y/useSrAnsage.ts'
+import { useBildKoordinatenCursor } from '../../hooks/a11y/useBildKoordinatenCursor.ts'
 import { boundingBox, zentroid, positionsPhrase } from '../../utils/a11y/bildPosition.ts'
 
 interface Props {
@@ -40,11 +41,12 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const bildQuelle = ermittleBildQuelle(frage)
   const { ansage, ansageText } = useSrAnsage()
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const geklickt: { x: number; y: number }[] =
     antwort?.typ === 'hotspot' ? antwort.klicks : []
 
-  /** Shared placement logic — used by mouse handler and keyboard region buttons. */
+  /** Shared placement logic — used by mouse handler, keyboard region buttons, and arrow-cursor. */
   const setzeMarker = useCallback((pos: { x: number; y: number }) => {
     if (disabled) return
     let neueKlicks: { x: number; y: number }[]
@@ -55,6 +57,17 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
     }
     onAntwort({ typ: 'hotspot', klicks: neueKlicks })
   }, [disabled, frage.mehrfachauswahl, geklickt, onAntwort])
+
+  /** Sighted-keyboard cursor (arrow keys move position, Enter/Space places marker). */
+  const cursor = useBildKoordinatenCursor({
+    disabled,
+    onPlatzieren: (pos) => {
+      setzeMarker(pos)
+      ansage(frage.mehrfachauswahl
+        ? `Markierung ${geklickt.length + 1} gesetzt`
+        : 'Markierung gesetzt')
+    },
+  })
 
   const handleKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (disabled) return
@@ -67,6 +80,9 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
   function handleZuruecksetzen() {
     if (disabled) return
     onAntwort({ typ: 'hotspot', klicks: [] })
+    // Move focus back to the image container — the Zurücksetzen button unmounts
+    // when geklickt becomes empty so focus would otherwise fall to <body>.
+    requestAnimationFrame(() => containerRef.current?.focus())
   }
 
   return (
@@ -99,8 +115,13 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
           (nur viewBox) sichtbar sind statt auf 0 zu kollabieren */}
       <div className={`relative block w-full max-w-2xl ${!disabled && geklickt.length === 0 ? 'rounded-xl border-2 border-violet-400 dark:border-violet-500 p-1' : ''}`}>
         <div
-          className={`relative overflow-hidden w-full ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
+          ref={containerRef}
+          role="application"
+          aria-label="Bild — Pfeiltasten bewegen den Auswahlpunkt, Enter setzt eine Markierung"
+          tabIndex={disabled ? -1 : 0}
+          className={`relative overflow-hidden w-full focus-visible:outline-2 focus-visible:outline-violet-500 focus-visible:outline-offset-2 ${disabled ? 'cursor-not-allowed opacity-75' : 'cursor-crosshair'}`}
           onClick={handleKlick}
+          onKeyDown={cursor.onKeyDown}
         >
           {bildQuelle && (
             <img
@@ -110,6 +131,29 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
               style={{ objectFit: 'contain' }}
               draggable={false}
             />
+          )}
+
+          {/* Pfeil-Cursor Crosshair — nur sichtbar wenn der Cursor via Pfeiltasten aktiv ist */}
+          {cursor.aktiv && (
+            <div
+              data-testid="hotspot-cursor"
+              className="absolute pointer-events-none"
+              style={{
+                left: `${cursor.pos.x}%`,
+                top: `${cursor.pos.y}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              {/* Violetter Ring */}
+              <div className="w-5 h-5 rounded-full border-2 border-violet-500 bg-violet-200/40 shadow" />
+              {/* Kreuz */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-4 h-0.5 bg-violet-600" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-0.5 h-4 bg-violet-600" />
+              </div>
+            </div>
           )}
 
           {/* Klick-Marker */}
@@ -147,6 +191,7 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
+                    e.stopPropagation()
                     setzeMarker(c)
                     ansage(frage.mehrfachauswahl
                       ? `Markierung ${geklickt.length + 1} gesetzt`

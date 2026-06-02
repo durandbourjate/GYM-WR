@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import HotspotFrage from './HotspotFrage.tsx'
 import type { HotspotFrage as HotspotFrageType } from '../../types/fragen-storage'
@@ -218,5 +218,95 @@ describe('HotspotFrage — SR-Region-Overlays (Task 6)', () => {
     const btn1 = screen.getAllByRole('button', { name: /Bereich \d+ von \d+/ })[0]
     fireEvent.keyDown(btn1, { key: 'Enter' })
     expect(mockOnAntwort).not.toHaveBeenCalled()
+  })
+})
+
+describe('HotspotFrage — Pfeil-Cursor (sighted keyboard, Task 7)', () => {
+  beforeEach(() => {
+    mockOnAntwort.mockReset()
+    mockAdapter = {
+      antwort: null,
+      onAntwort: mockOnAntwort,
+      speichereZwischenstand: null,
+      onPruefen: null,
+      onSelbstbewerten: null,
+      disabled: false,
+      hatZwischenstand: false,
+      istGeprueft: false,
+      feedbackSichtbar: false,
+      korrekt: null,
+      markiertAlsUnsicher: false,
+      toggleUnsicher: vi.fn(),
+      speichertPruefung: false,
+      pruefFehler: null,
+      letzteMusterloesung: null,
+    }
+  })
+
+  it('image container has role="application", tabIndex 0, and aria-label containing "Pfeiltasten"', () => {
+    render(<HotspotFrage frage={makeFrage()} />)
+    const container = screen.getByRole('application')
+    expect(container).toBeTruthy()
+    expect(container).toHaveAttribute('tabindex', '0')
+    expect(container.getAttribute('aria-label')).toMatch(/Pfeiltasten/)
+  })
+
+  it('ArrowRight then Enter calls onAntwort with marker at x ≈ 52 and shows crosshair', () => {
+    render(<HotspotFrage frage={makeFrage()} />)
+    const container = screen.getByRole('application')
+
+    // Arrow key activates cursor (cursor starts at 50, ArrowRight moves to 52)
+    fireEvent.keyDown(container, { key: 'ArrowRight' })
+
+    // Crosshair should now be visible (cursor is aktiv)
+    const crosshair = container.querySelector('[data-testid="hotspot-cursor"]')
+    expect(crosshair).toBeTruthy()
+
+    // Enter places marker at current cursor position (x=52, y=50)
+    fireEvent.keyDown(container, { key: 'Enter' })
+
+    expect(mockOnAntwort).toHaveBeenCalledTimes(1)
+    const call = mockOnAntwort.mock.calls[0][0]
+    expect(call.typ).toBe('hotspot')
+    expect(call.klicks).toHaveLength(1)
+    expect(call.klicks[0].x).toBeCloseTo(52, 0)
+    expect(call.klicks[0].y).toBeCloseTo(50, 0)
+  })
+
+  it('crosshair is NOT visible before any arrow key press', () => {
+    render(<HotspotFrage frage={makeFrage()} />)
+    const container = screen.getByRole('application')
+    const crosshair = container.querySelector('[data-testid="hotspot-cursor"]')
+    expect(crosshair).toBeNull()
+  })
+
+  it('Reset focus: after clicking Zurücksetzen, focus moves to image container', () => {
+    // stub requestAnimationFrame to run synchronously
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0 })
+
+    // Provide pre-existing answer so Zurücksetzen button renders
+    mockAdapter = {
+      ...mockAdapter,
+      antwort: { typ: 'hotspot', klicks: [{ x: 40, y: 40 }] },
+      onAntwort: mockOnAntwort,
+    }
+
+    render(<HotspotFrage frage={makeFrage()} />)
+
+    const container = screen.getByRole('application')
+    const zurueckButton = screen.getByRole('button', { name: /Auswahl zur.cksetzen/i })
+
+    // Click Zurücksetzen
+    fireEvent.click(zurueckButton)
+
+    // onAntwort called with empty klicks
+    expect(mockOnAntwort).toHaveBeenCalledWith({ typ: 'hotspot', klicks: [] })
+
+    // Focus should have moved to the image container (via rAF)
+    expect(document.activeElement).toBe(container)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 })
