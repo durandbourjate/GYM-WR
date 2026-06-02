@@ -13,6 +13,7 @@ import { ZoneLabel } from '@shared/ui/ZoneLabel'
 import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 import { normalisiereDragDropBild, normalisiereDragDropAntwort } from '../../utils/ueben/fragetypNormalizer'
 import { gruppiereStacks, naechsteFreieLabelId } from '../../utils/dragdropBildUtils'
+import { aktivierbar } from '../../utils/a11y/aktivierbar.ts'
 
 interface Props {
   frage: DragDropBildFrageType
@@ -231,6 +232,7 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
                   onDragEnd={() => setDraggingLabelId(null)}
                   onClick={() => tapStack(s.text)}
                   aria-pressed={istSelektiert}
+                  {...aktivierbar(() => tapStack(s.text), { disabled })}
                   className={`px-3 py-1.5 text-sm rounded-lg border cursor-grab select-none transition-all
                     ${istSelektiert
                       ? 'bg-green-100 dark:bg-green-900/30 border-green-500 dark:border-green-400 text-green-700 dark:text-green-300 ring-2 ring-green-400 dark:ring-green-500'
