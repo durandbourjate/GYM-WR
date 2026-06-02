@@ -4,25 +4,25 @@
     {
       "name": "unterrichtsplaner-dev",
       "runtimeExecutable": "/usr/local/bin/npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/Unterrichtsplaner"],
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/durandbourjate/Code/GYM-WR-DUY/Unterrichtsplaner"],
       "port": 5173
     },
     {
       "name": "examlab-dev",
       "runtimeExecutable": "/usr/local/bin/npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/ExamLab"],
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/durandbourjate/Code/GYM-WR-DUY/ExamLab"],
       "port": 5174
     },
     {
       "name": "lernplattform-dev",
       "runtimeExecutable": "/usr/local/bin/npm",
-      "runtimeArgs": ["run", "dev:lernen", "--prefix", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/ExamLab"],
+      "runtimeArgs": ["run", "dev:lernen", "--prefix", "/Users/durandbourjate/Code/GYM-WR-DUY/ExamLab"],
       "port": 5175
     },
     {
       "name": "pools",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "/Users/durandbourjate/Documents/-Gym Hofwil/00 Automatisierung Unterricht/10 Github/GYM-WR-DUY/Uebungen/Uebungspools"],
+      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "/Users/durandbourjate/Code/GYM-WR-DUY/Uebungen/Uebungspools"],
       "port": 8765
     }
   ]
