@@ -8,6 +8,43 @@
 
 ## NÄCHSTE SESSION — Wiedereinstieg
 
+### Stand 02.06.2026 (SPÄT) — a11y Bild-Fragetypen IN ARBEIT auf Branch `feature/a11y-bild-fragetypen`
+
+**Resume:** Branch auschecken (NICHT `main`) → Plan `docs/superpowers/plans/2026-06-02-a11y-bild-fragetypen.md`, Fortschritts-Tabelle → **ab Task 8 (PDFAnmerkungsliste)** weiter via `subagent-driven-development`.
+
+**Erledigt 7/11, alle verifiziert, Branch grün (`tsc -b` exit 0, vitest 2217 passed / 6 todo):** Phase 1 — Bausteine `aktivierbar` / `useSrAnsage` / `useBildKoordinatenCursor` / `bildPosition`; Phase 2 — **DragDropBild**; Phase 3 — **Hotspot** (Region-Auswahl SR + Pfeil-Cursor sehend). Beide Üben-Fragetypen komplett keyboard+SR, je mit echten Fokus-/No-Leak-Teeth-Tests, Spec-Reviews ✅. 9 Commits.
+
+**Offen:** T8 PDFAnmerkungsliste (Review+Löschen, SR-Panel) · T9 in **`PDFViewer`** mounten (nicht PDFSeite — Reviewer-Empfehlung) + Toolbar-ARIA + Text/Kommentar-Cursor · T10 Freihand→Text-Notiz-Hinweis · **T11 Browser-E2E mit echten LP+SuS-Logins (Tab-Gruppe) + Security/No-Leak + HANDOFF.** PDF = exam-kritisch → voller Regression-Prevention-Browser-Lauf vor Merge; Merge erst nach LP-Freigabe.
+
+**Spec-Entscheidungen:** proaktive WCAG-Härtung · Hotspot „beides kombiniert" · PDF-Freihand→Text-Notiz-Alternative · rein additiv, Antwort-State unverändert, kein Lösungs-Leak. Spec: `docs/superpowers/specs/2026-06-02-a11y-bild-fragetypen-design.md`.
+
+**cwd-Falle:** Bash-cwd resettet zwischen Calls auf Repo-Root → in jedem Bash-Call `cd ExamLab/ &&` prefixen.
+
+---
+
+### Stand 02.06.2026 — Backlog gegen Code/Git verifiziert: alles erledigt ausser a11y
+
+**One-Liner:** Der vermeintliche ExamLab-Backlog wurde gegen Code + Git geprüft — **praktisch alles war längst erledigt** (die Wiedereinstiegs-Liste + Memory waren tagelang stale). Einzige echt offene Feature-Arbeit: **a11y der Bild-Fragetypen**. Backend-Migration bewusst vertagt.
+
+**Verifiziert erledigt (mit Beleg, NICHT mehr als „offen" behandeln):**
+- **react-doctor T1/T2/T3** — live (`ec3fe3b`); Gates `lint:react-doctor-state` + `lint:react-doctor-security` aktiv (Commits `4cbbcd2`/`0063f74`/`325f264`).
+- **Cluster D** (Batch-Edit) — Code vollständig vorhanden (`useFragenBatchEdit.ts`, `BatchConfirmModal.tsx`, batchMode in `FragenBrowser`/`PruefungFragenEditor` verdrahtet).
+- **Cluster H** (Tag-Modell) — final, `tagsLegacy`-Spalte bereits entfernt (kein Code-Treffer mehr). Phase 3 lief schon am 17.05., nicht „ab 29.05.".
+- **Bug B** (Test-Seeder schrieb `mastery` als Zahl) — gefixt in `27b1a60` (22.05): `Math.round(...*100)` → `berechneMastery_(richtigInFolge)` (String). Ist mit dem datum-Deploy vom 02.06. mit-live gegangen (selbe `apps-script-code.js`, `27b1a60` ist Ancestor). Optionale Kosmetik: Testgruppe re-seeden (Seeder-Guard `getLastRow()>1` verhindert Auto-Overwrite) — Konsument `LernzielKarte` ist laut `dd08967` ohnehin gegen Müll-Werte gehärtet.
+- **MC-Sanierung Single + Multi** — komplett (`a79b0a5`/`c9c47c6`, 23.05, beide auf origin/main). Single-MC Längen-Tell **74.2 % → 18.8 %** (unter Zufall ~25 %), Multi-MC 68.5 % → 37.8 %. ⚠️ Die kolportierte „759/1023 = 74 %" war die **VORHER**-Zahl bzw. die „Sanierte"-Spalte — KEIN offener Rest.
+- **Apps-Script datum-Fix** — am 02.06. vom User deployed.
+
+**Einzig echt offen (verifiziert):**
+- 🔴 **a11y Bild-Fragetypen** — Tastatur/Screenreader. Verifiziert ungebaut: `components/fragetypen/HotspotFrage.tsx` + `DragDropBildFrage.tsx` je **0** Tastatur-Handler, `fragetypen/pdf/PDFSeite.tsx` nur 1/7. Eigene Brainstorm→Spec→Plan-Session; Touch/44px nicht brechen. Zwei Klassen: DragDropBild = diskret (hat schon Tap-Flow → Tab+Enter), Hotspot/PDF = freie Koordinate (Pfeiltasten/Raster, schwerer).
+
+**Skip-Kandidat / Nice-to-have:** Prio-D-Stylistik (`button-has-type` 350× etc., low-value) · Mobile/iPad-Audit · Storybook Phase 2 · `updateFrageMitPatch_`-Batch-Perf (Apps-Script, migrationsnah).
+
+**Vertagt (User):** Backend-Migration (Spec fertig: `docs/superpowers/specs/2026-05-18-backend-migration-design.md`).
+
+> **META-LEHRE (wichtig):** HANDOFF + Memory + Spec-Baselines trugen tagelang erledigte Punkte als „offen" (T1-T3, Cluster D/H, Bug B, MC-Sanierung). **Backlog-Status IMMER gegen Code/Git verifizieren, bevor man ihn abarbeitet** — Spec-„Vorher"-Zahlen und alte Backlog-Tabellen lesen sich wie offener Rest. Diese Session bestand fast nur aus Verifikation statt Arbeit, weil die Doku log.
+
+---
+
 ### Stand 29.05.2026 — react-doctor Audit-Backlog abgeschlossen (3 Tickets LIVE)
 
 **One-Liner:** Die letzten 3 react-doctor-Audit-Baustellen abgearbeitet → LIVE auf `main` = `preview` = `ec3fe3b`. Staging-E2E grün, 0 Console-Errors.

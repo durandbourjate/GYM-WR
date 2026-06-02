@@ -12,6 +12,28 @@
 
 ---
 
+## Fortschritt (Stand 02.06.2026, Branch `feature/a11y-bild-fragetypen`)
+
+> **Resume hier:** Plan ab **Task 8** abarbeiten (subagent-driven-development). Branch grün: `tsc -b` exit 0, vitest 2217 passed / 6 todo. **Bash-cwd resettet zwischen Calls auf Repo-Root → in jedem Bash-Call `cd .../ExamLab &&` prefixen.**
+
+| Task | Status | Commit |
+|---|---|---|
+| T1 `aktivierbar` | ✅ | `82a6ae7` |
+| T2 `useSrAnsage` | ✅ | `43edefc` |
+| T3 `useBildKoordinatenCursor` | ✅ | `ad821e4` |
+| T4 DragDropBild Pool-Chips | ✅ | `a37abf7` |
+| T5 DragDropBild Zonen + Fokus + SR | ✅ | `75493c7` + Tests `5eda373` |
+| T6 Hotspot Region-Overlays (SR) + `bildPosition.ts` | ✅ Spec-Review ✅ | `a164fa5` |
+| T7 Hotspot Pfeil-Cursor + Reset-Fokus | ✅ | `7ee62a8` |
+| **T8 PDFAnmerkungsliste** | ⏳ **NÄCHSTER** | — |
+| T9 PDFViewer mount + Toolbar-ARIA + Text/Kommentar-Cursor | ⏳ | — |
+| T10 PDF Freihand→Text-Notiz-Hinweis | ⏳ | — |
+| T11 Browser-E2E (echte LP+SuS-Logins) + Security/No-Leak + HANDOFF | ⏳ | — |
+
+**Erledigt:** beide Üben-Fragetypen (DragDropBild + Hotspot) komplett keyboard+SR, je mit echten Fokus-/No-Leak-Teeth-Tests; Bausteine `aktivierbar`/`useSrAnsage`/`useBildKoordinatenCursor`/`bildPosition` stehen + getestet → T8–T10 bauen darauf auf. **T9 in `PDFViewer` mounten** (nicht PDFSeite — Reviewer-Empfehlung, s. Task 9 Step 1). PDF = exam-kritisch → vor Merge voller Regression-Prevention-Browser-Lauf (T11). Merge erst nach LP-Freigabe; **kein** Direkt-Commit auf `main`.
+
+---
+
 ## File Structure
 
 **Neu:**
