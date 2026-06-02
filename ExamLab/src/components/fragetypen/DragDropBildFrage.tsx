@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef } from 'react'
 import { Check, X } from 'lucide-react'
 import { useFrageAdapter } from '../../hooks/useFrageAdapter.ts'
 import type { DragDropBildFrage as DragDropBildFrageType } from '../../types/fragen-storage'
@@ -14,6 +14,7 @@ import { istEingabeLeer } from '../../utils/ueben/leereEingabenDetektor.ts'
 import { normalisiereDragDropBild, normalisiereDragDropAntwort } from '../../utils/ueben/fragetypNormalizer'
 import { gruppiereStacks, naechsteFreieLabelId } from '../../utils/dragdropBildUtils'
 import { aktivierbar } from '../../utils/a11y/aktivierbar.ts'
+import { useSrAnsage } from '../../hooks/a11y/useSrAnsage.ts'
 
 interface Props {
   frage: DragDropBildFrageType
@@ -49,6 +50,7 @@ export default function DragDropBildFrage({ frage, modus = 'aufgabe', antwort: a
 function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType }) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frageRaw.id)
   const bildQuelle = ermittleBildQuelle(frageRaw)
+  const { ansage, ansageText } = useSrAnsage()
 
   // Defensive Normalisierung — robust gegen IDB-Restore aus unbereinigten Caches.
   const frage = useMemo(() => normalisiereDragDropBild(frageRaw), [frageRaw])
@@ -61,6 +63,9 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
   const zuordnungen = normAntwort.zuordnungen
   const labelMap = useMemo(() => new Map(frage.labels.map(l => [l.id, l])), [frage.labels])
   const stacks = useMemo(() => gruppiereStacks(frage.labels, zuordnungen), [frage.labels, zuordnungen])
+
+  // Ref-Map für die Platzieren-Buttons: zoneId → button-Element (Fokus-Management nach Place/Remove)
+  const platzierenBtnRefs = useRef<Map<string, HTMLButtonElement | null>>(new Map())
 
   const [draggingLabelId, setDraggingLabelId] = useState<string | null>(null)
   const [dragOverZone, setDragOverZone] = useState<string | null>(null)
@@ -107,16 +112,29 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
   const handleZoneKlick = useCallback((zoneId: string) => {
     if (disabled) return
     if (selectedLabelId) {
+      const text = labelMap.get(selectedLabelId)?.text ?? ''
+      const zoneNr = (frage.zielzonen ?? []).findIndex(z => z.id === zoneId) + 1
       platzieren(selectedLabelId, zoneId)
       setSelectedLabelId(null)
+      ansage(`«${text}» in Zone ${zoneNr} platziert`)
+      // Fokus nach Render auf den Platzieren-Button dieser Zone setzen
+      requestAnimationFrame(() => {
+        platzierenBtnRefs.current.get(zoneId)?.focus()
+      })
     }
-  }, [disabled, selectedLabelId, platzieren])
+  }, [disabled, selectedLabelId, labelMap, frage.zielzonen, platzieren, ansage])
 
-  const handlePlatziertKlick = useCallback((e: React.MouseEvent, labelId: string) => {
+  const handlePlatziertKlick = useCallback((e: React.MouseEvent | React.KeyboardEvent, labelId: string, zoneId: string) => {
     if (disabled) return
     e.stopPropagation()
+    const text = labelMap.get(labelId)?.text ?? ''
     entfernen(labelId)
-  }, [disabled, entfernen])
+    ansage(`«${text}» entfernt`)
+    // Fokus zurück auf Platzieren-Button dieser Zone
+    requestAnimationFrame(() => {
+      platzierenBtnRefs.current.get(zoneId)?.focus()
+    })
+  }, [disabled, labelMap, entfernen, ansage])
 
   const tapStack = useCallback((text: string) => {
     if (disabled) return
@@ -134,6 +152,9 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
 
   return (
     <div className="flex flex-col gap-5">
+      {/* SR-Ankündigungen für Platzieren/Entfernen */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">{ansageText}</div>
+
       <div className="flex flex-wrap items-center gap-2">
         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${fachbereichFarbe(frage.fachbereich)}`}>
           {frage.fachbereich}
@@ -166,16 +187,26 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
             />
           )}
 
-          {(frage.zielzonen ?? []).map((zone) => {
+          {(frage.zielzonen ?? []).map((zone, zoneIdx) => {
             const platzierteIds = platzierteIdsInZone(zone.id)
             const istBelegt = platzierteIds.length > 0
             const istDragOver = dragOverZone === zone.id
+            const zoneNr = zoneIdx + 1
+            const belegteTexte = platzierteIds.map(lid => labelMap.get(lid)?.text ?? '').filter(Boolean)
+            const ariaLabelGruppe = istBelegt
+              ? `Zone ${zoneNr}, belegt: ${belegteTexte.join(', ')}`
+              : `Zone ${zoneNr}, leer`
 
             return (
+              // Zone-Container: role="group" für SR-Struktur.
+              // onDragOver/onDragLeave/onDrop bleiben hier — Drop-Events bubbeln, Drop-Ziel unverändert.
+              // Kein onClick mehr auf dem Container — Placement lebt auf dem Platzieren-Button.
               <div
                 key={zone.id}
+                role="group"
+                aria-label={ariaLabelGruppe}
                 data-testid={`zone-${zone.id}`}
-                className={`absolute flex flex-col items-center justify-center gap-1 p-1 rounded transition-colors select-none overflow-auto
+                className={`absolute rounded transition-colors select-none overflow-visible
                   ${istBelegt
                     ? 'bg-blue-500/20 border-2 border-blue-500 dark:bg-blue-400/20 dark:border-blue-400'
                     : istDragOver
@@ -190,21 +221,38 @@ function DragDropBildAufgabe({ frage: frageRaw }: { frage: DragDropBildFrageType
                 onDragOver={(e) => handleDragOver(e, zone.id)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, zone.id)}
-                onClick={() => handleZoneKlick(zone.id)}
               >
-                {platzierteIds.map(lid => (
-                  <span
-                    key={lid}
-                    data-testid={`platziert-${lid}`}
-                    onClick={(e) => handlePlatziertKlick(e, lid)}
-                    className={`px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded text-slate-800 dark:text-slate-100 shadow-sm text-xs truncate max-w-full
-                      ${!disabled ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 hover:ring-1 hover:ring-red-400' : ''}
-                    `}
-                    title={!disabled ? 'Klicken zum Entfernen' : undefined}
-                  >
-                    {labelMap.get(lid)?.text ?? ''}
-                  </span>
-                ))}
+                {/* Flächiger Platzieren-Button: absolute inset-0, sitzt hinter den Chips.
+                    Chips verwenden relative z-10 + pointer-events-auto um darüber zu liegen. */}
+                <button
+                  ref={el => { platzierenBtnRefs.current.set(zone.id, el) }}
+                  type="button"
+                  aria-label={`In Zone ${zoneNr} platzieren`}
+                  className="absolute inset-0 w-full h-full rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 cursor-pointer"
+                  onClick={() => handleZoneKlick(zone.id)}
+                  disabled={disabled}
+                />
+                {/* Platzierte Chips als Geschwister des Platzieren-Buttons (NICHT verschachtelt).
+                    pointer-events-none auf dem Wrapper, pointer-events-auto auf jedem Chip-Button,
+                    damit Klicks den Platzieren-Button nicht unterbrechen wenn kein Chip getroffen wird. */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-1 pointer-events-none">
+                  {platzierteIds.map(lid => (
+                    <button
+                      key={lid}
+                      type="button"
+                      data-testid={`platziert-${lid}`}
+                      aria-label={`«${labelMap.get(lid)?.text ?? ''}» entfernen`}
+                      onClick={(e) => handlePlatziertKlick(e, lid, zone.id)}
+                      disabled={disabled}
+                      className={`relative z-10 pointer-events-auto px-1.5 py-0.5 bg-white dark:bg-slate-800 rounded text-slate-800 dark:text-slate-100 shadow-sm text-xs truncate max-w-full border-0
+                        ${!disabled ? 'cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20 hover:ring-1 hover:ring-red-400 focus:outline-none focus:ring-2 focus:ring-red-400' : ''}
+                      `}
+                      title={!disabled ? 'Klicken zum Entfernen' : undefined}
+                    >
+                      {labelMap.get(lid)?.text ?? ''}
+                    </button>
+                  ))}
+                </div>
               </div>
             )
           })}
