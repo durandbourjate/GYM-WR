@@ -9,6 +9,8 @@ import { ermittleBildQuelle } from '@shared/utils/mediaQuelleResolver'
 import { mediaQuelleZuImgSrc } from '@shared/utils/mediaQuelleUrl'
 import { istZoneWohlgeformt } from '../../utils/zonen/migriereZone.ts'
 import { istPunktInPolygon } from '../../utils/zonen/polygon.ts'
+import { useSrAnsage } from '../../hooks/a11y/useSrAnsage.ts'
+import { boundingBox, zentroid, positionsPhrase } from '../../utils/a11y/bildPosition.ts'
 
 interface Props {
   frage: HotspotFrageType
@@ -37,24 +39,30 @@ export default function HotspotFrage({ frage, modus = 'aufgabe', antwort: antwor
 function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
   const { antwort, onAntwort, disabled, feedbackSichtbar, korrekt } = useFrageAdapter(frage.id)
   const bildQuelle = ermittleBildQuelle(frage)
+  const { ansage, ansageText } = useSrAnsage()
 
   const geklickt: { x: number; y: number }[] =
     antwort?.typ === 'hotspot' ? antwort.klicks : []
+
+  /** Shared placement logic — used by mouse handler and keyboard region buttons. */
+  const setzeMarker = useCallback((pos: { x: number; y: number }) => {
+    if (disabled) return
+    let neueKlicks: { x: number; y: number }[]
+    if (frage.mehrfachauswahl) {
+      neueKlicks = [...geklickt, pos]
+    } else {
+      neueKlicks = [pos]
+    }
+    onAntwort({ typ: 'hotspot', klicks: neueKlicks })
+  }, [disabled, frage.mehrfachauswahl, geklickt, onAntwort])
 
   const handleKlick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (disabled) return
     const rect = e.currentTarget.getBoundingClientRect()
     const x = ((e.clientX - rect.left) / rect.width) * 100
     const y = ((e.clientY - rect.top) / rect.height) * 100
-
-    let neueKlicks: { x: number; y: number }[]
-    if (frage.mehrfachauswahl) {
-      neueKlicks = [...geklickt, { x, y }]
-    } else {
-      neueKlicks = [{ x, y }]
-    }
-    onAntwort({ typ: 'hotspot', klicks: neueKlicks })
-  }, [disabled, frage.id, frage.mehrfachauswahl, geklickt, onAntwort])
+    setzeMarker({ x, y })
+  }, [disabled, setzeMarker])
 
   function handleZuruecksetzen() {
     if (disabled) return
@@ -112,8 +120,47 @@ function HotspotAufgabe({ frage }: { frage: HotspotFrageType }) {
               style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
             />
           ))}
+
+          {/* SR-Pfad: transparente fokussierbare Region-Buttons — pointer-events:none damit
+              Mausklicks auf das Bild fallen. Keyboard-Fokus + onKeyDown bleiben aktiv. */}
+          {(frage.bereiche ?? []).map((b, i) => {
+            const bb = boundingBox(b.punkte ?? [])
+            const c = zentroid(b.punkte ?? [])
+            const n = (frage.bereiche ?? []).length
+            return (
+              <button
+                key={b.id}
+                type="button"
+                aria-label={`Bereich ${i + 1} von ${n}, ${positionsPhrase(c)}`}
+                disabled={disabled}
+                tabIndex={0}
+                className="absolute bg-transparent border-0 p-0 m-0 focus:outline-2 focus:outline-violet-500"
+                style={{
+                  left: `${bb.x}%`,
+                  top: `${bb.y}%`,
+                  width: `${bb.breite}%`,
+                  height: `${bb.hoehe}%`,
+                  minWidth: '44px',
+                  minHeight: '44px',
+                  pointerEvents: 'none',
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setzeMarker(c)
+                    ansage(frage.mehrfachauswahl
+                      ? `Markierung ${geklickt.length + 1} gesetzt`
+                      : 'Markierung gesetzt')
+                  }
+                }}
+              />
+            )
+          })}
         </div>
       </div>
+
+      {/* SR aria-live-Region */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">{ansageText}</div>
 
       {/* Zuruecksetzen-Button */}
       {!disabled && geklickt.length > 0 && (
