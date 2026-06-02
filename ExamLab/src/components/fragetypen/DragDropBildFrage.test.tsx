@@ -1,28 +1,33 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import DragDropBildFrage from './DragDropBildFrage.tsx'
 import type { DragDropBildFrage as DDType } from '../../types/fragen-storage'
 
 const mockOnAntwort = vi.fn()
 
+// Controllable mock adapter — overridden per-test as needed.
+// Intentionally untyped to avoid FrageAdapterResult import that would cause tsc -b
+// to fail if the type shape ever diverges.
+let mockAdapter = {
+  antwort: null as unknown,
+  onAntwort: mockOnAntwort,
+  speichereZwischenstand: null,
+  onPruefen: null,
+  onSelbstbewerten: null,
+  disabled: false,
+  hatZwischenstand: false,
+  istGeprueft: false,
+  feedbackSichtbar: false,
+  korrekt: null,
+  markiertAlsUnsicher: false,
+  toggleUnsicher: vi.fn(),
+  speichertPruefung: false,
+  pruefFehler: null,
+  letzteMusterloesung: null,
+}
+
 vi.mock('../../hooks/useFrageAdapter.ts', () => ({
-  useFrageAdapter: () => ({
-    antwort: null,
-    onAntwort: mockOnAntwort,
-    speichereZwischenstand: null,
-    onPruefen: null,
-    onSelbstbewerten: null,
-    disabled: false,
-    hatZwischenstand: false,
-    istGeprueft: false,
-    feedbackSichtbar: false,
-    korrekt: null,
-    markiertAlsUnsicher: false,
-    toggleUnsicher: vi.fn(),
-    speichertPruefung: false,
-    pruefFehler: null,
-    letzteMusterloesung: null,
-  }),
+  useFrageAdapter: () => mockAdapter,
 }))
 
 function makeFrage(): DDType {
@@ -61,7 +66,26 @@ function makeFrage(): DDType {
 }
 
 describe('DragDropBildFrage — Pool-Chip Tastaturzugänglichkeit', () => {
-  beforeEach(() => mockOnAntwort.mockReset())
+  beforeEach(() => {
+    mockOnAntwort.mockReset()
+    mockAdapter = {
+      antwort: null,
+      onAntwort: mockOnAntwort,
+      speichereZwischenstand: null,
+      onPruefen: null,
+      onSelbstbewerten: null,
+      disabled: false,
+      hatZwischenstand: false,
+      istGeprueft: false,
+      feedbackSichtbar: false,
+      korrekt: null,
+      markiertAlsUnsicher: false,
+      toggleUnsicher: vi.fn(),
+      speichertPruefung: false,
+      pruefFehler: null,
+      letzteMusterloesung: null,
+    }
+  })
 
   it('Pool-Chip ist per Tastatur fokussierbar und Enter wählt aus', () => {
     render(<DragDropBildFrage frage={makeFrage()} />)
@@ -73,7 +97,30 @@ describe('DragDropBildFrage — Pool-Chip Tastaturzugänglichkeit', () => {
 })
 
 describe('DragDropBildFrage — Zonen Tastaturzugänglichkeit (Task 5)', () => {
-  beforeEach(() => mockOnAntwort.mockReset())
+  beforeEach(() => {
+    mockOnAntwort.mockReset()
+    mockAdapter = {
+      antwort: null,
+      onAntwort: mockOnAntwort,
+      speichereZwischenstand: null,
+      onPruefen: null,
+      onSelbstbewerten: null,
+      disabled: false,
+      hatZwischenstand: false,
+      istGeprueft: false,
+      feedbackSichtbar: false,
+      korrekt: null,
+      markiertAlsUnsicher: false,
+      toggleUnsicher: vi.fn(),
+      speichertPruefung: false,
+      pruefFehler: null,
+      letzteMusterloesung: null,
+    }
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
 
   it('Zone ist role="group" mit aria-label das "Zone" enthält', () => {
     render(<DragDropBildFrage frage={makeFrage()} />)
@@ -112,34 +159,44 @@ describe('DragDropBildFrage — Zonen Tastaturzugänglichkeit (Task 5)', () => {
   })
 
   it('Platziertes Chip ist ein Button mit Entfernen-Semantik und Klick ruft onAntwort auf', () => {
-    // Frage mit vorhandener Zuordnung simulieren (wir mounten und platzieren manuell)
+    // Adapter mit vorhandener Zuordnung vorbefüllen — Chip wird direkt gerendert.
+    mockAdapter = {
+      ...mockAdapter,
+      antwort: { typ: 'dragdrop_bild', zuordnungen: { l1: 'z1' } },
+      onAntwort: mockOnAntwort,
+    }
+
     render(<DragDropBildFrage frage={makeFrage()} />)
-    // Label auswählen + platzieren
-    fireEvent.click(screen.getByRole('button', { name: /Konjunktur/ }))
-    fireEvent.click(screen.getByRole('button', { name: /platzieren/i }))
-    mockOnAntwort.mockReset()
-    // Jetzt muss ein Entfernen-Button sichtbar sein — wir prüfen onAntwort-Aufruf
-    // Da das State lokal ist und wir kein kontrolliertes antwort-Prop haben,
-    // testen wir stattdessen dass nach Platzierung ein "entfernen"-Button erscheint
-    // Frage: state ist intern → wir testen über direktes Rendering mit antwort-Prop möglich.
-    // Alternative: onAntwort aus Task 3 wurde aufgerufen (s.o.) — das reicht für diese Schicht.
-    // Chip-Button-Semantik testen via separatem Render mit platziertem Chip:
-    const { rerender } = render(<DragDropBildFrage frage={makeFrage()} />)
-    void rerender  // suppress lint
-    // Tatsächlicher Smoke: onAntwort wurde beim Platzieren aufgerufen
-    expect(true).toBe(true) // Platzhalter — echte Entfernen-Tests folgen unten
+
+    // Entfernen-Button für «Konjunktur» muss mit zugänglichem Namen sichtbar sein
+    const entfernenBtn = screen.getByRole('button', { name: /«Konjunktur».*entfernen/i })
+    expect(entfernenBtn).toBeTruthy()
+
+    // Klick entfernt das Label — onAntwort mit leerem zuordnungen aufgerufen
+    fireEvent.click(entfernenBtn)
+    expect(mockOnAntwort).toHaveBeenCalledWith(
+      expect.objectContaining({ typ: 'dragdrop_bild', zuordnungen: {} }),
+    )
   })
 
-  it('Fokus fällt nach Platzieren auf den Platzieren-Button (nicht body)', () => {
+  it('Fokus fällt nach Platzieren auf den Platzieren-Button (rAF flushed, nicht body)', () => {
+    // rAF synchron ausführen, damit Fokus-Aufruf in handleZoneKlick sofort wirkt
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => { cb(0); return 0 })
+
     render(<DragDropBildFrage frage={makeFrage()} />)
+
+    // Pool-Chip auswählen (kein manuelles pre-focus des Platzieren-Buttons)
     const poolChip = screen.getByRole('button', { name: /Konjunktur/ })
     fireEvent.click(poolChip)
+
+    // Platzieren-Button aktivieren — rAF läuft synchron → .focus() wird sofort aufgerufen
     const platzierenBtn = screen.getByRole('button', { name: /platzieren/i })
-    platzierenBtn.focus()
     fireEvent.click(platzierenBtn)
-    // Nach onAntwort-Aufruf soll Fokus auf dem Platzieren-Button bleiben (nicht body)
+
+    // Fokus muss auf dem Platzieren-Button liegen, nicht auf document.body
     expect(document.activeElement).not.toBe(document.body)
     expect(document.activeElement?.tagName).toBe('BUTTON')
+    expect(document.activeElement).toBe(platzierenBtn)
   })
 
   it('Entfernen-Button im belegten Zone-Chip ist kein Nachkomme des Platzieren-Buttons', () => {
